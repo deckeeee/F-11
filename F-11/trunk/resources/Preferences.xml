@@ -15,7 +15,7 @@
 	<property key="/server/jdbc/option" value="?useUnicode=true&amp;characterEncoding=Windows-31J&amp;zeroDateTimeBehavior=convertToNull" />
 	<property key="/server/jdbc/dbname" value="wifedb" />
 	<property key="/server/jdbc/username" value="root" />
-	<property key="/server/jdbc/password" value="freedom9713" />
+	<property key="/server/jdbc/password" value="password" />
 	<property key="/org.xml.sax.driver" value="org.apache.xerces.parsers.SAXParser" />
 	<property key="/server/mail/smtp/servername" value="mail.inside.frdm.co.jp" />
 	<property key="/server/mail/smtp/disableHolder" value="P1_D_1900015_Digital" />
