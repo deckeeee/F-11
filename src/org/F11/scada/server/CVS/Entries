@@ -1,0 +1,29 @@
+/ManagerDelegator.dicon/1.1.2.3/Mon Mar 20 07:48:36 2006//TF-11_2_0_0
+/ManagerDelegator.java/1.20.2.17/Thu Sep  6 09:47:22 2007//TF-11_2_0_0
+/ScheduleHolderOwner.java/1.1.2.1/Mon Mar 20 07:48:36 2006/-kk/TF-11_2_0_0
+/ServerConstruction.java/1.1.2.1/Thu Jan 25 04:27:29 2007//TF-11_2_0_0
+D/alarm////
+D/autoprint////
+D/command////
+D/comment////
+D/communicater////
+D/converter////
+D/dao////
+D/demand////
+D/deploy////
+D/edit////
+D/entity////
+D/event////
+D/frame////
+D/goda////
+D/invoke////
+D/io////
+D/logging////
+D/operationlog////
+D/output////
+D/register////
+D/remove////
+D/rmi////
+D/schedule////
+D/timeset////
+D/wifi////

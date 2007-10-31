@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components.dtd">
+
+<components>
+	<include path="resources/j2ee.dicon"/>
+	
+	<!-- alarmPrintService -->
+	<component name="alarmPrintDAO"
+		class="org.F11.scada.server.alarm.print.AlarmPrintDAOImpl">
+		<arg>"org/F11/scada/server/alarm/print/AlarmPrintDAOImpl.dicon"</arg>
+	</component>
+
+	<component name="alarmPrinter"
+		class="org.F11.scada.server.alarm.print.AlarmPrinterImpl">
+	</component>
+	
+	<component name="alarmPrintService"
+		class="org.F11.scada.server.alarm.print.AlarmPrintService">
+		<arg>alarmPrintDAO</arg>
+		<arg>alarmPrinter</arg>
+		<aspect pointcut="insertEvent">j2ee.requiredTx</aspect>
+	</component>
+</components>
