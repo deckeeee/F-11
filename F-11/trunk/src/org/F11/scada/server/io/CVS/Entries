@@ -1,0 +1,28 @@
+/AbstractAutoPrintDataService.java/1.1.2.3/Fri Oct 12 02:22:00 2007/-kk/TF-11_2_0_0
+/AlarmPrintDataStore.java/1.6.2.1/Fri Dec 29 03:20:18 2006//TF-11_2_0_0
+/AllTests.java/1.1.2.1/Fri Jun  2 09:19:25 2006/-kk/TF-11_2_0_0
+/AutoPrintDataService.java/1.1.2.1/Fri Jun  2 02:18:02 2006/-kk/TF-11_2_0_0
+/AutoPrintDataStore.java/1.5.2.13/Fri Dec 29 03:20:18 2006//TF-11_2_0_0
+/AutoPrintDataStoreTest.java/1.1.2.2/Tue Mar 13 06:22:40 2007/-kk/TF-11_2_0_0
+/DataSelector.java/1.1.2.1/Thu Apr 14 07:25:08 2005//TF-11_2_0_0
+/HandlerFactory.java/1.6.4.3/Fri Dec 29 03:20:18 2006//TF-11_2_0_0
+/ItemUtil.java/1.1.2.1/Mon May 15 09:50:31 2006/-kk/TF-11_2_0_0
+/LogTableAutoPrintDataService.dicon/1.1.2.2/Thu Jun 15 09:16:42 2006/-kk/TF-11_2_0_0
+/LogTableAutoPrintDataService.java/1.1.2.1/Fri Jun  2 02:18:02 2006/-kk/TF-11_2_0_0
+/PointNameDataStore.java/1.6.2.6/Fri Oct 12 02:22:00 2007//TF-11_2_0_0
+/SQLUtility.java/1.1.2.3/Thu May 18 06:52:57 2006//TF-11_2_0_0
+/SelectHandler.java/1.6.4.3/Fri Dec 29 03:20:18 2006//TF-11_2_0_0
+/SelectiveAllDataValueListHandler.java/1.1.2.1/Tue Jun 14 07:32:47 2005//TF-11_2_0_0
+/SelectiveAllDataValueListHandlerElement.java/1.1.2.1/Tue Jun 14 07:32:47 2005//TF-11_2_0_0
+/SelectiveAllDataValueListHandlerManager.java/1.1.2.3/Thu Sep  6 09:46:47 2007//TF-11_2_0_0
+/SelectiveValueListHandler.java/1.1.2.2/Thu Feb  9 01:09:17 2006//TF-11_2_0_0
+/SelectiveValueListHandlerElement.java/1.1.2.2/Thu Feb  9 01:09:17 2006//TF-11_2_0_0
+/SelectiveValueListHandlerManager.java/1.1.2.5/Thu Sep  6 09:46:57 2007//TF-11_2_0_0
+/StrategyUtility.java/1.6.2.2/Fri Dec 29 03:20:18 2006//TF-11_2_0_0
+D/Util////
+/ValueListHandler.java/1.7/Fri Oct  6 06:12:13 2006//TF-11_2_0_0
+/ValueListHandlerElement.java/1.3/Fri Oct  6 06:12:13 2006//TF-11_2_0_0
+/ValueListHandlerManager.java/1.3.4.2/Fri Dec 29 03:20:18 2006//TF-11_2_0_0
+/ValueListHandlerManagerImpl.java/1.1.2.1/Thu Sep  6 09:47:05 2007/-kk/TF-11_2_0_0
+D/nio////
+D/postgresql////

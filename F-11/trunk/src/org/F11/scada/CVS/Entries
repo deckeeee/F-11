@@ -1,0 +1,33 @@
+/AllTests.java/1.6.2.18/Thu Oct 25 05:28:57 2007//TF-11_2_0_0
+/EnvironmentManager.java/1.8.2.3/Fri Dec 29 03:20:05 2006//TF-11_2_0_0
+/EnvironmentManagerProperty.java/1.1.2.2/Wed Jul  6 02:20:45 2005//TF-11_2_0_0
+/EnvironmentManagerPropertyTest.java/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/EnvironmentManagerPropertyTest.properties/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/EnvironmentManagerStrategy.java/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/EnvironmentManagerStrategyFactory.java/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/EnvironmentManagerXML.java/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/EnvironmentManagerXMLTest.java/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/EnvironmentManagerXMLTest.xml/1.1.2.1/Tue Feb 15 07:54:50 2005//TF-11_2_0_0
+/Globals.java/1.4.2.4/Fri May 11 01:47:46 2007//TF-11_2_0_0
+/GlobalsTest.java/1.1.2.1/Tue Oct 25 08:21:00 2005/-kk/TF-11_2_0_0
+/Service.java/1.1.2.1/Thu Mar 10 02:35:48 2005//TF-11_2_0_0
+/ServiceExcecutor.dicon/1.1.2.4/Fri Mar  3 09:22:05 2006//TF-11_2_0_0
+/ServiceExcecutor.java/1.1.2.4/Fri Oct 12 02:22:00 2007//TF-11_2_0_0
+/WifeException.java/1.4.6.1/Fri Dec 29 03:20:05 2006//TF-11_2_0_0
+/WifeUtilities.java/1.20.2.9/Fri Dec 29 03:20:05 2006//TF-11_2_0_0
+D/applet////
+D/data////
+D/etc////
+D/exception////
+D/graph////
+D/misc////
+D/parser////
+D/scheduling////
+D/security////
+D/server////
+D/sql////
+D/test////
+D/theme////
+D/tool////
+D/util////
+D/xwife////

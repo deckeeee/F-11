@@ -1,0 +1,10 @@
+/AllTests.java/1.1.2.1/Wed Aug  3 02:29:19 2005//TF-11_2_0_0
+/OperationLoggingDao.java/1.1.2.1/Wed Jul  6 02:20:54 2005//TF-11_2_0_0
+/OperationLoggingDaoTest.dicon/1.1.2.1/Wed Jul  6 02:20:54 2005//TF-11_2_0_0
+/OperationLoggingDaoTest.java/1.1.2.1/Wed Jul  6 02:20:54 2005//TF-11_2_0_0
+/OperationLoggingFinderDao.java/1.1.2.3/Mon Apr  3 10:09:02 2006//TF-11_2_0_0
+/OperationLoggingFinderDaoTest.dicon/1.1.2.1/Wed Aug  3 02:29:19 2005//TF-11_2_0_0
+/OperationLoggingFinderDaoTest.java/1.1.2.4/Fri Apr  7 09:18:37 2006//TF-11_2_0_0
+/OperationLoggingFinderDao_getCount.sql/1.1.2.3/Tue Apr 11 07:27:52 2006/-kk/TF-11_2_0_0
+/OperationLoggingFinderDao_select.sql/1.1.2.4/Tue Apr 11 07:27:53 2006/-kk/TF-11_2_0_0
+/OperationLoggingFinderDao_select_hsql.sql/1.1.2.3/Fri Apr  7 09:18:37 2006/-kk/TF-11_2_0_0
