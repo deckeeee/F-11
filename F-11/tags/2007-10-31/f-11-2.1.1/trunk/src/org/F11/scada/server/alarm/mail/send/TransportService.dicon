@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components>
+	<include path="org/F11/scada/server/alarm/mail/dao/AlarmEmailSentService.dicon"/>
+
+	<component class="java.util.concurrent.LinkedBlockingQueue" />
+	<component class="org.F11.scada.server.alarm.mail.send.TransportCoreImpl">
+	</component>
+	<component class="org.F11.scada.server.alarm.mail.send.TransportServiceImpl" >
+		<property name="retryCount">
+		@java.lang.Integer@parseInt(@org.F11.scada.EnvironmentManager@get("/server/mail/message/retry", "5"))
+		</property>
+		<property name="waitTime">
+		@java.lang.Long@parseLong(@org.F11.scada.EnvironmentManager@get("/server/mail/message/wait", "1000"))
+		</property>
+	</component>
+</components>
