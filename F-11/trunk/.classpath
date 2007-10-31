@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry including="Explorer.dicon|ServerConstruction.dicon" kind="src" path="resources"/>
+	<classpathentry including="resources/*" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JIM"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
