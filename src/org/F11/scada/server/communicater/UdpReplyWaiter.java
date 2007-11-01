@@ -27,7 +27,8 @@ import java.nio.ByteBuffer;
 import org.apache.log4j.Logger;
 
 /**
- * UDPポートとデータをやり取りするクラスです。 複数スレッドからの通信要求には対応していません。
+ * UDPポートとデータをやり取りするクラスです。
+ * 複数スレッドからの通信要求には対応していません。
  */
 public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 	private final static Logger log = Logger.getLogger(UdpReplyWaiter.class);
@@ -49,21 +50,29 @@ public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 	private boolean recvWaiting = false;
 
 	/**
-	 * コンストラクタ 通信するUDPポートをマネージャーから取得します。
-	 * 
+	 * コンストラクタ
+	 * 通信するUDPポートをマネージャーから取得します。
 	 * @param device デバイス情報
 	 * @param header 受信すべきヘッダー
 	 */
 	public UdpReplyWaiter(Environment device, byte[] header)
-			throws IOException, InterruptedException {
+		throws IOException, InterruptedException {
 		this.header = header;
 		timeout = device.getPlcTimeout();
-		local = new InetSocketAddress(device.getHostIpAddress(), device
-				.getHostPortNo());
-		target = new InetSocketAddress(device.getPlcIpAddress(), device
-				.getPlcPortNo());
-		portChannel = (UdpPortChannel) PortChannelManager.getInstance()
-				.addPortListener(device.getDeviceKind(), target, local, this);
+		local =
+			new InetSocketAddress(
+				device.getHostIpAddress(),
+				device.getHostPortNo());
+		target =
+			new InetSocketAddress(
+				device.getPlcIpAddress(),
+				device.getPlcPortNo());
+		portChannel =
+			(UdpPortChannel) PortChannelManager.getInstance().addPortListener(
+				device.getDeviceKind(),
+				target,
+				local,
+				this);
 	}
 
 	// @see org.F11.scada.server.communicater.ReplyWaiter#close()
@@ -71,20 +80,19 @@ public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 		PortChannelManager.getInstance().removePortListener(local, this);
 	}
 
-	// @see
-	// org.F11.scada.server.communicater.ReplyWaiter#syncSendRecv(java.nio.ByteBuffer,
-	// java.nio.ByteBuffer)
-	public synchronized void syncSendRecv(
-			ByteBuffer sendBuffer,
-			ByteBuffer recvBuffer) throws InterruptedException {
+	// @see org.F11.scada.server.communicater.ReplyWaiter#syncSendRecv(java.nio.ByteBuffer, java.nio.ByteBuffer)
+	public void syncSendRecv(ByteBuffer sendBuffer, ByteBuffer recvBuffer)
+		throws InterruptedException {
 		log.debug("syncSendRecv()");
 		this.recvBuffer = recvBuffer;
 		recvBuffer.clear().flip();
 		// ポートへ送信要求
 		portChannel.sendRequest(target, sendBuffer);
-		// 受信待ち
-		recvWaiting = true;
-		wait(timeout);
+		synchronized (this) {
+			// 受信待ち
+			recvWaiting = true;
+			wait(timeout);
+		}
 	}
 
 	// @see org.F11.scada.server.communicater.RecvListener#getRecvAddress()
@@ -97,8 +105,7 @@ public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 		return header;
 	}
 
-	// @see
-	// org.F11.scada.server.communicater.RecvListener#recvPerformed(java.nio.ByteBuffer)
+	// @see org.F11.scada.server.communicater.RecvListener#recvPerformed(java.nio.ByteBuffer)
 	public synchronized void recvPerformed(ByteBuffer data) {
 		log.debug("recvPerformed()");
 		if (recvWaiting) {

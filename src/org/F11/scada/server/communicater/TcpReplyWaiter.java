@@ -74,17 +74,19 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	// @see
 	// org.F11.scada.server.communicater.ReplyWaiter#syncSendRecv(java.nio.ByteBuffer,
 	// java.nio.ByteBuffer)
-	public synchronized void syncSendRecv(
-			ByteBuffer sendBuffer,
-			ByteBuffer recvBuffer) throws IOException, InterruptedException {
+	public void syncSendRecv(ByteBuffer sendBuffer, ByteBuffer recvBuffer)
+			throws IOException,
+			InterruptedException {
 		log.debug("syncSendRecv()");
 		this.recvBuffer = recvBuffer;
 		recvBuffer.clear().flip();
 		// ポートへ送信要求
 		portChannel.sendRequest(target, sendBuffer);
-		// 受信待ち
-		recvWaiting = true;
-		wait(timeout);
+		synchronized (this) {
+			// 受信待ち
+			recvWaiting = true;
+			wait(timeout);
+		}
 	}
 
 	// @see org.F11.scada.server.communicater.RecvListener#getRecvAddress()
