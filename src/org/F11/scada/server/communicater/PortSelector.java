@@ -39,6 +39,9 @@ import org.apache.log4j.Logger;
  */
 public final class PortSelector implements Runnable {
 	private final static Logger log = Logger.getLogger(PortSelector.class);
+	private static final int WAIT_TIME = 1000;
+	/** 保持する最大数 */
+	private static final int COMMAND_MAX = 2000;
 
 	/** セレクタを監視するスレッド */
 	private Thread thread;
@@ -49,8 +52,6 @@ public final class PortSelector implements Runnable {
 
 	/** 内部からの処理要求を保持するキュー */
 	private LinkedList commands = new LinkedList();
-	/** 保持する最大数 */
-	private static final int COMMAND_MAX = 2000;
 
 	/**
 	 * コンストラクタ 監視スレッドを開始します。
@@ -74,9 +75,7 @@ public final class PortSelector implements Runnable {
 	 * リスナーが登録されていれば True
 	 */
 	public synchronized boolean isActive() {
-		if (enterKeys.isEmpty())
-			return false;
-		return true;
+		return !enterKeys.isEmpty();
 	}
 
 	/**
@@ -95,7 +94,7 @@ public final class PortSelector implements Runnable {
 		synchronized (this) {
 			while (!enterKeys.containsKey(listener)) {
 				selector.wakeup();
-				wait(1000);
+				wait(WAIT_TIME);
 			}
 		}
 	}
@@ -116,7 +115,7 @@ public final class PortSelector implements Runnable {
 		synchronized (this) {
 			while (enterKeys.containsKey(listener)) {
 				selector.wakeup();
-				wait(1000);
+				wait(WAIT_TIME);
 			}
 			if (selector.keys().isEmpty()) {
 				selector.wakeup();
@@ -231,7 +230,7 @@ public final class PortSelector implements Runnable {
 			throws InterruptedException {
 		// キューが空くまで待機
 		while (COMMAND_MAX <= commands.size()) {
-			wait(1000);
+			wait(WAIT_TIME);
 		}
 		commands.addLast(command);
 		selector.wakeup();
@@ -280,7 +279,7 @@ public final class PortSelector implements Runnable {
 			return null;
 		}
 
-	};
+	}
 
 	/*
 	 * クローズ要求を実行するクラスです。
@@ -298,6 +297,7 @@ public final class PortSelector implements Runnable {
 			}
 			SelectionKey key = (SelectionKey) enterKeys.remove(listener);
 			if (key != null) {
+				key.attach(null);
 				key.cancel();
 				listener.close();
 				return null;
@@ -307,7 +307,7 @@ public final class PortSelector implements Runnable {
 			}
 		}
 
-	};
+	}
 
 	/*
 	 * 再オープン要求を実行するクラスです。
@@ -323,6 +323,7 @@ public final class PortSelector implements Runnable {
 			log.debug("ReopenChannel. " + listener.toString());
 			SelectionKey key = (SelectionKey) enterKeys.remove(listener);
 			if (key != null) {
+				key.attach(null);
 				key.cancel();
 				listener.close();
 				return new OpenChannel(listener);
@@ -332,7 +333,7 @@ public final class PortSelector implements Runnable {
 			} 
 		}
 
-	};
+	}
 
 	/*
 	 * 変更要求を実行するクラスです。
@@ -355,7 +356,7 @@ public final class PortSelector implements Runnable {
 			return null;
 		}
 
-	};
+	}
 
 	/*
 	 * 変更要求を実行するクラスです。
@@ -378,6 +379,6 @@ public final class PortSelector implements Runnable {
 			return null;
 		}
 
-	};
+	}
 
 }
