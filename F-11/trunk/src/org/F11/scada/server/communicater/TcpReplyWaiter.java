@@ -46,7 +46,7 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	private ByteBuffer recvBuffer;
 
 	/** 受信待ちフラグ */
-	private boolean recvWaiting = false;
+	private volatile boolean recvWaiting = false;
 
 	/**
 	 * コンストラクタ 通信するTCPポートをマネージャーから取得します。
@@ -78,13 +78,13 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 			throws IOException,
 			InterruptedException {
 		log.debug("syncSendRecv()");
+		// 受信待ち
+		recvWaiting = true;
 		this.recvBuffer = recvBuffer;
 		recvBuffer.clear().flip();
 		// ポートへ送信要求
 		portChannel.sendRequest(target, sendBuffer);
 		synchronized (this) {
-			// 受信待ち
-			recvWaiting = true;
 			wait(timeout);
 		}
 	}
