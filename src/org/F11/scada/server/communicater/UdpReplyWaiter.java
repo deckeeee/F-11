@@ -47,7 +47,7 @@ public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 	private ByteBuffer recvBuffer;
 
 	/** 受信待ちフラグ */
-	private boolean recvWaiting = false;
+	private volatile boolean recvWaiting = false;
 
 	/**
 	 * コンストラクタ
@@ -84,13 +84,13 @@ public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 	public void syncSendRecv(ByteBuffer sendBuffer, ByteBuffer recvBuffer)
 		throws InterruptedException {
 		log.debug("syncSendRecv()");
+		// 受信待ち
+		recvWaiting = true;
 		this.recvBuffer = recvBuffer;
 		recvBuffer.clear().flip();
 		// ポートへ送信要求
 		portChannel.sendRequest(target, sendBuffer);
 		synchronized (this) {
-			// 受信待ち
-			recvWaiting = true;
 			wait(timeout);
 		}
 	}
