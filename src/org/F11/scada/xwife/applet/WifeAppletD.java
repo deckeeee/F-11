@@ -39,7 +39,9 @@ import org.F11.scada.applet.operationlog.DefaultOperationLoggingTableModel;
 import org.F11.scada.applet.operationlog.OperationLoggingFinder;
 import org.F11.scada.applet.operationlog.OperationLoggingTable;
 import org.F11.scada.server.alarm.table.FindAlarmCondition;
+import org.F11.scada.util.ComponentUtil;
 import org.F11.scada.xwife.applet.alarm.AlarmFactory;
+import org.F11.scada.xwife.applet.alarm.AlarmTabbedPane;
 
 /**
  * WIFE システムのメインコンソール画面です。 ツリー形式の選択画面、平面図、一覧表、警報一覧表等を表示します。
@@ -84,7 +86,10 @@ public class WifeAppletD extends AbstractNewApplet {
 		protected void setPanelAlarmList() {
 			tab = new JTabbedPane();
 			AlarmFactory factory = new AlarmFactory();
-			tab.addTab("警報一覧", factory.getAlarm(wifeApplet));
+			JComponent alarm = factory.getAlarm(wifeApplet);
+			tab.addTab("警報一覧", alarm);
+
+			setTabSync(alarm);
 
 			// 検索条件
 			panelAlarmList = new JPanel(new BorderLayout());
@@ -105,6 +110,21 @@ public class WifeAppletD extends AbstractNewApplet {
 			box.add(panelNewAlarm);
 			box.add(panelAlarmList);
 			add(box, BorderLayout.CENTER);
+		}
+
+		private void setTabSync(JComponent alarm) {
+			if (wifeApplet.configuration.getBoolean(
+					"org.F11.scada.xwife.applet.AppletD.tabsync",
+					false)) {
+				AlarmTabbedPane tab1 = (AlarmTabbedPane) ComponentUtil
+						.getChildrenComponent(
+								AlarmTabbedPane.class,
+								panelNewAlarm);
+				AlarmTabbedPane tab2 = (AlarmTabbedPane) ComponentUtil
+						.getChildrenComponent(AlarmTabbedPane.class, alarm);
+				tab1.addChangeListener(new TabSyncListener(tab2));
+				tab2.addChangeListener(new TabSyncListener(tab1));
+			}
 		}
 
 		protected void createOperationFinder(JTabbedPane tabbedPane) {
@@ -181,6 +201,31 @@ public class WifeAppletD extends AbstractNewApplet {
 		protected JComponent getAlarmNewLine(AbstractWifeApplet wifeApplet) {
 			AlarmFactory factory = new AlarmFactory();
 			return factory.getAlarm(wifeApplet);
+		}
+	}
+
+	/**
+	 * 複数のタブペインの選択インデックスを同期するリスナーです。
+	 * 
+	 * @author maekawa
+	 * 
+	 */
+	private static class TabSyncListener implements ChangeListener {
+		/** 同期するタブペイン */
+		private final JTabbedPane pane;
+
+		/**
+		 * 同期するリスナーを生成します。
+		 * 
+		 * @param pane 同期するタブペイン
+		 */
+		TabSyncListener(JTabbedPane pane) {
+			this.pane = pane;
+		}
+
+		public void stateChanged(ChangeEvent e) {
+			JTabbedPane tab = (JTabbedPane) e.getSource();
+			pane.setSelectedIndex(tab.getSelectedIndex());
 		}
 	}
 
