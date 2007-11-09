@@ -405,6 +405,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		separateScheduleLimit(mainPanel);
 		showSortColumn(mainPanel);
 		typeDmode(mainPanel);
+		typeDTabSync(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -499,15 +500,42 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("警報一覧を表示".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.typeDmode",
-										"true");
+						manager.setClientConf(
+								"org.F11.scada.xwife.applet.typeDmode",
+								"true");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.typeDmode",
-										"false");
+						manager.setClientConf(
+								"org.F11.scada.xwife.applet.typeDmode",
+								"false");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void typeDTabSync(JPanel mainPanel) {
+		mainPanel.add(new JLabel("TypeDタブ同期："));
+		JComboBox cb = new JComboBox(new String[] { "無し", "有り" });
+		cb.setToolTipText("TypeD警報一覧の表示方法を選択。");
+		if ("false".equals(manager.getClientConf(
+				"org.F11.scada.xwife.applet.AppletD.tabsync",
+				"false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("無し".equals(e.getItem())) {
+						manager.setClientConf(
+								"org.F11.scada.xwife.applet.AppletD.tabsync",
+								"false");
+					} else {
+						manager.setClientConf(
+								"org.F11.scada.xwife.applet.AppletD.tabsync",
+								"true");
 					}
 				}
 			}

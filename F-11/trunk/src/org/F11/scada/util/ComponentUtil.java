@@ -20,6 +20,8 @@
 
 package org.F11.scada.util;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -34,5 +36,27 @@ public abstract class ComponentUtil {
 	public static boolean contains(Rectangle rectangle, Point point) {
 		return point.x >= 0 && point.y >= 0 && rectangle.width >= point.x
 				&& rectangle.height >= point.y;
+	}
+
+	/**
+	 * コンテナ内の対象クラス子コンポーネントを返します。
+	 * 
+	 * @param klass 検索するクラス
+	 * @param container 検索対象になるコンテナオブジェクト
+	 * @return 検索対象コンテナオブジェクト内に、検索するクラスが存在する場合はそのコンポーネントを存在しない場合は null を返します。
+	 */
+	public static Component getChildrenComponent(
+			Class<?> klass,
+			Container container) {
+		Component ret = null;
+		Component[] components = container.getComponents();
+		for (int i = 0; i < components.length; i++) {
+			Component component = components[i];
+			if (klass.isInstance(component)) {
+				ret = component;
+				break;
+			}
+		}
+		return ret;
 	}
 }
