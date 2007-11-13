@@ -20,5 +20,27 @@
 
 package org.F11.scada.server.logging.report.schedule;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 public class OneHourMonthOutSchedule extends DailySchedule {
+	public Timestamp startTime(long now, boolean startMode) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(now);
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		int y = cal.get(Calendar.YEAR);
+		int m = cal.get(Calendar.MONTH);
+		cal.clear();
+		cal.set(y, m, 1);
+		return new Timestamp(cal.getTimeInMillis());
+	}
+
+	public Timestamp endTime(long now, boolean startMode) {
+		Timestamp start = startTime(now, startMode);
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(start.getTime());
+		cal.add(Calendar.MONTH, 1);
+		cal.add(Calendar.MINUTE, 1);
+		return new Timestamp(cal.getTimeInMillis());
+	}
 }

@@ -9,6 +9,7 @@
 	<entry key="org.F11.scada.applet.dialog.isConfirm">false</entry>
 	<entry key="org.F11.scada.applet.schedule.point.SeparateSchedule">true</entry>
 	<entry key="org.F11.scada.applet.schedule.point.limit">26</entry>
+	<entry key="org.F11.scada.xwife.applet.AppletD.tabsync">true</entry>
 	<entry key="org.F11.scada.xwife.applet.alarm.PriorityController">true</entry>
 	<entry key="org.F11.scada.xwife.applet.alarm.noncheck">true</entry>
 	<entry key="org.F11.scada.xwife.applet.alarm.occurrence">true</entry>
