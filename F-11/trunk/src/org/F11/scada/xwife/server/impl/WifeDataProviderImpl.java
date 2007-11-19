@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JComponent;
@@ -96,7 +97,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	private final HolderRegisterBuilder builder;
 	private SendRequestSupport sendRequestSupport;
 	private final long communicateWaitTime;
-	private final ReentrantLock lock = new ReentrantLock();
+	private final Lock lock = new ReentrantLock();
 
 	/**
 	 * コンストラクタ
@@ -234,7 +235,6 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	 */
 	private void syncInitRead(Set defines, boolean sameDataBalk) {
 		DataHolder errdh = getDataHolder(Globals.ERR_HOLDER);
-		long entryDate = System.currentTimeMillis();
 		try {
 			Map bytedataMap = communicater.syncRead(defines, sameDataBalk);
 			for (Iterator it = bytedataMap.entrySet().iterator(); it.hasNext();) {
@@ -245,14 +245,13 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			}
 			if (sameDataBalk
 					&& isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
-				setErrorHolder(errdh, entryDate, WifeDataDigital
-						.valueOfFalse(0));
+				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
 			}
 		} catch (InterruptedException e) {
 		} catch (Exception e) {
 			if (sameDataBalk
 					&& isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
-				setErrorHolder(errdh, entryDate, WifeDataDigital.valueOfTrue(0));
+				setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0));
 			}
 			logger.warn("通信エラー", e);
 		}
@@ -260,7 +259,6 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 
 	private void syncRead(Set defines, boolean sameDataBalk) {
 		DataHolder errdh = getDataHolder(Globals.ERR_HOLDER);
-		long entryDate = System.currentTimeMillis();
 		// ここでは interrupt をかけないこと
 		lock.lock();
 		try {
@@ -273,15 +271,14 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			}
 			if (sameDataBalk
 					&& isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
-				setErrorHolder(errdh, entryDate, WifeDataDigital
-						.valueOfFalse(0));
+				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
 			}
 		} catch (InterruptedException e) {
 			return;
 		} catch (Exception e) {
 			if (sameDataBalk
 					&& isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
-				setErrorHolder(errdh, entryDate, WifeDataDigital.valueOfTrue(0));
+				setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0));
 			}
 			logger.warn("通信エラー", e);
 		} finally {
@@ -293,7 +290,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		syncRead(defines, true);
 	}
 
-	private void setErrorHolder(DataHolder errdh, long entryDate, WifeData value) {
+	private void setErrorHolder(DataHolder errdh, WifeData value) {
+		long entryDate = System.currentTimeMillis();
 		errdh.setValue(value, new Date(entryDate), WifeQualityFlag.GOOD);
 		synchronized (holderJurnal) {
 			TimeIncrementWrapper.put(entryDate, new HolderData(
@@ -318,16 +316,14 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		defdata.put(def_h, wd.toByteArray());
 
 		DataHolder errdh = getDataHolder(Globals.ERR_HOLDER);
-		long entryDate = System.currentTimeMillis();
 		try {
 			communicater.syncWrite(defdata);
 			if (isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
-				setErrorHolder(errdh, entryDate, WifeDataDigital
-						.valueOfFalse(0));
+				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
 			}
 		} catch (Exception e) {
 			if (isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
-				setErrorHolder(errdh, entryDate, WifeDataDigital.valueOfTrue(0));
+				setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0));
 			}
 			logger.warn("書込み通信エラー:", e);
 		}
