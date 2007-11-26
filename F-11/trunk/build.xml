@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="F11Project Version 2" default="build" basedir=".">
+<project name="F11_2_1_x" default="build" basedir=".">
 	<property name="src" value="." />
 	<property name="build" value="build" />
 	<property name="dist"  value="dist" />
