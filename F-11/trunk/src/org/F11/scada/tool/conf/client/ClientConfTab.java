@@ -406,6 +406,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		showSortColumn(mainPanel);
 		typeDmode(mainPanel);
 		typeDTabSync(mainPanel);
+		imageLoader(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -535,6 +536,35 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 					} else {
 						manager.setClientConf(
 								"org.F11.scada.xwife.applet.AppletD.tabsync",
+								"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void imageLoader(JPanel mainPanel) {
+		mainPanel.add(new JLabel("画像読込："));
+		JComboBox cb = new JComboBox(new String[] { "新形式(BMP可)", "旧形式" });
+		cb.setToolTipText("画像ファイル読込方法を選択。");
+		if ("true".equals(manager.getClientConf(
+				"org.F11.scada.applet.symbol.GraphicManager",
+				"true"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("旧形式".equals(e.getItem())) {
+						manager.setClientConf(
+								"org.F11.scada.applet.symbol.GraphicManager",
+								"false");
+					} else {
+						manager.setClientConf(
+								"org.F11.scada.applet.symbol.GraphicManager",
 								"true");
 					}
 				}
