@@ -34,6 +34,7 @@ import javax.swing.ImageIcon;
 
 import org.F11.scada.applet.ClientConfiguration;
 import org.apache.commons.configuration.Configuration;
+import org.apache.log4j.Logger;
 
 /**
  * シンボルに使用するグラフィック画像の管理をします。
@@ -41,14 +42,17 @@ import org.apache.commons.configuration.Configuration;
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public abstract class GraphicManager {
+	private static Logger logger = Logger.getLogger(GraphicManager.class);
 	private static final String IMAGES_BASE_PATH = "/images";
 	private static ImageLoader imageLoader;
 	static {
 		Configuration configuration = new ClientConfiguration();
 		if (configuration.getBoolean("org.F11.scada.applet.symbol.GraphicManager", true)) {
 			imageLoader = new DefaultImageLoader();
+			logger.info("DefaultImageLoader");
 		} else {
 			imageLoader = new IconImageLoader();
+			logger.info("IconImageLoader");
 		}
 	}
 
@@ -87,19 +91,30 @@ public abstract class GraphicManager {
 		return path;
 	}
 
+	/**
+	 * イメージをロードするクラスのインターフェイス
+	 * 
+	 * @author maekawa
+	 *
+	 */
 	interface ImageLoader {
-		Icon getIcon(String path);
-	}
-
-	private static class DefaultImageLoader implements ImageLoader {
-		private Map<String, Icon> iconMap = new WeakHashMap<String, Icon>();
-
 		/**
 		 * Iconのインスタンス生成
 		 * 
 		 * @param path 画像イメージへのパス
 		 * @return 画像イメージの Icon オブジェクト。ファイルが存在しなければnull を返す。
 		 */
+		Icon getIcon(String path);
+	}
+
+	/**
+	 * デフォルトのイメージローダークラス。ImageIOを使用して画像をロードします。アニメシンボルを使用すると動作に支障が出る為、その時はIconImageLoaderを使用してください。
+	 * @author maekawa
+	 *
+	 */
+	private static class DefaultImageLoader implements ImageLoader {
+		private Map<String, Icon> iconMap = new WeakHashMap<String, Icon>();
+
 		public Icon getIcon(String path) {
 			Icon ic = null;
 			if (iconMap.containsKey(path)) {
