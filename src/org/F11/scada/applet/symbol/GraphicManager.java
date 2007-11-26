@@ -32,6 +32,9 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.F11.scada.applet.ClientConfiguration;
+import org.apache.commons.configuration.Configuration;
+
 /**
  * シンボルに使用するグラフィック画像の管理をします。
  * 
@@ -39,7 +42,15 @@ import javax.swing.ImageIcon;
  */
 public abstract class GraphicManager {
 	private static final String IMAGES_BASE_PATH = "/images";
-	private static Map icons = new WeakHashMap();
+	private static ImageLoader imageLoader;
+	static {
+		Configuration configuration = new ClientConfiguration();
+		if (configuration.getBoolean("org.F11.scada.applet.symbol.GraphicManager", true)) {
+			imageLoader = new DefaultImageLoader();
+		} else {
+			imageLoader = new IconImageLoader();
+		}
+	}
 
 	/**
 	 * Iconのインスタンス生成
@@ -48,40 +59,7 @@ public abstract class GraphicManager {
 	 * @return 画像イメージの Icon オブジェクト。ファイルが存在しなければnull を返す。
 	 */
 	public static synchronized Icon get(String path) {
-		Icon ic = null;
-		if (icons.containsKey(path)) {
-			ic = (Icon) icons.get(path);
-		} else {
-			if (path != null) {
-				Image image = loadImage(path);
-				if (null != image) {
-					ic = new ImageIcon(image);
-					icons.put(path, ic);
-				}
-			}
-		}
-		return ic;
-	}
-
-	private static Image loadImage(String path) {
-		InputStream is = null;
-		URL url = GraphicManager.class.getResource(path);
-		if (null == url) {
-			return null;
-		}
-		try {
-			is = url.openStream();
-			return ImageIO.read(is);
-		} catch (Exception e) {
-			return null;
-		} finally {
-			if (null != is) {
-				try {
-					is.close();
-				} catch (IOException e) {
-				}
-			}
-		}
+		return imageLoader.getIcon(path);
 	}
 
 	/**
@@ -109,4 +87,74 @@ public abstract class GraphicManager {
 		return path;
 	}
 
+	interface ImageLoader {
+		Icon getIcon(String path);
+	}
+
+	private static class DefaultImageLoader implements ImageLoader {
+		private Map<String, Icon> iconMap = new WeakHashMap<String, Icon>();
+
+		/**
+		 * Iconのインスタンス生成
+		 * 
+		 * @param path 画像イメージへのパス
+		 * @return 画像イメージの Icon オブジェクト。ファイルが存在しなければnull を返す。
+		 */
+		public Icon getIcon(String path) {
+			Icon ic = null;
+			if (iconMap.containsKey(path)) {
+				ic = (Icon) iconMap.get(path);
+			} else {
+				if (path != null) {
+					Image image = loadImage(path);
+					if (null != image) {
+						ic = new ImageIcon(image);
+						iconMap.put(path, ic);
+					}
+				}
+			}
+			return ic;
+		}
+
+		private Image loadImage(String path) {
+			InputStream is = null;
+			URL url = GraphicManager.class.getResource(path);
+			if (null == url) {
+				return null;
+			}
+			try {
+				is = url.openStream();
+				return ImageIO.read(is);
+			} catch (Exception e) {
+				return null;
+			} finally {
+				if (null != is) {
+					try {
+						is.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+		}
+	}
+
+	private static class IconImageLoader implements ImageLoader {
+		private Map<String, Icon> iconMap = new WeakHashMap<String, Icon>();
+
+		public Icon getIcon(String path) {
+			Icon ic = null;
+			if (iconMap.containsKey(path)) {
+				ic = (Icon) iconMap.get(path);
+			} else {
+				if (path != null) {
+					URL url = GraphicManager.class.getResource(path);
+					if (url != null) {
+						ic = new ImageIcon(url);
+						iconMap.put(path, ic);
+					}
+				}
+			}
+			return ic;
+		}
+	}
 }
