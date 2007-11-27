@@ -41,6 +41,7 @@ import org.F11.scada.applet.symbol.TableSymbol;
 import org.F11.scada.applet.symbol.table.ColumnGroup;
 import org.F11.scada.applet.symbol.table.GroupableTableHeader;
 import org.F11.scada.parser.Util.DisplayState;
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -56,6 +57,7 @@ public class TableState implements State {
 
 	SymbolProperty symbolProperty;
 	ListTable listTable;
+	private int rowHeight = -1;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -96,6 +98,12 @@ public class TableState implements State {
 		}
 		listTable.setColumnSelectionAllowed(false);
 		listTable.setRowSelectionAllowed(false);
+
+		String rowHeightStr = AttributesUtil.getNonNullString(atts
+				.getValue("rowheight"));
+		if (null != rowHeightStr) {
+			rowHeight = Integer.parseInt(rowHeightStr);
+		}
 
 		JScrollPane scroll = new JScrollPane(listTable);
 		String loc_x = atts.getValue("x");
@@ -162,18 +170,22 @@ public class TableState implements State {
 
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					int max_h = 16;
-					for (int r = 0; r < listTable.getRowCount(); r++) {
-						for (int c = 0; c < listTable.getColumnCount(); c++) {
-							Object o = listTable.getValueAt(r, c);
-							if (!(o instanceof JLabel))
-								continue;
-							Dimension d = ((JLabel) o).getPreferredSize();
-							if (max_h < d.height)
-								max_h = d.height;
+					if (0 > rowHeight) {
+						int max_h = 16;
+						for (int r = 0; r < listTable.getRowCount(); r++) {
+							for (int c = 0; c < listTable.getColumnCount(); c++) {
+								Object o = listTable.getValueAt(r, c);
+								if (!(o instanceof JLabel))
+									continue;
+								Dimension d = ((JLabel) o).getPreferredSize();
+								if (max_h < d.height)
+									max_h = d.height;
+							}
 						}
+						listTable.setRowHeight(max_h);
+					} else {
+						listTable.setRowHeight(rowHeight);
 					}
-					listTable.setRowHeight(max_h);
 				}
 			});
 			stack.pop();
