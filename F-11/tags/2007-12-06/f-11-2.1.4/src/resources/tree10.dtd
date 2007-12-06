@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!--
+<!DOCTYPE tree PUBLIC "-//F-11 2.0//DTD F11 Tree Configuration//EN" 
+	"http://f-11.sourceforge.jp/dtds/tree10.dtd">
+-->
+<!ELEMENT tree (root)>
+<!ATTLIST tree initpage CDATA #REQUIRED>
+<!ELEMENT root (node*)>
+<!ATTLIST root name CDATA #REQUIRED>
+<!ELEMENT node (node*)>
+<!ATTLIST node name CDATA #REQUIRED>
+<!ATTLIST node page CDATA #IMPLIED>
