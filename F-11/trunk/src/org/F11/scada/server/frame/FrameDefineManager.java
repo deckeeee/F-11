@@ -87,6 +87,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		SendRequestSupport {
 
 	private static final long serialVersionUID = 9182991988246291052L;
+	private static final int SCHEDULE_DATA_TYPE = 16;
 	/** ポイント名称文字列変換 開始文字列 */
 	private static final String POINT_NAME_BRA = "$(";
 	/** ポイント名称文字列変換 終了文字列 */
@@ -124,10 +125,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	 * 
 	 * @param recvPort RMIシリアライズオブジェクト送受信のポート番号
 	 */
-	public FrameDefineManager(
-			String recvPort,
-			HolderRegisterBuilder builder) throws RemoteException, MalformedURLException,
-			IOException {
+	public FrameDefineManager(String recvPort, HolderRegisterBuilder builder)
+			throws RemoteException, MalformedURLException, IOException {
 		this(
 				Integer.parseInt(recvPort),
 				"/resources/XWifeAppletDefine.xml",
@@ -480,7 +479,12 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		for (Iterator i = holders.iterator(); i.hasNext();) {
 			HolderString hs = (HolderString) i.next();
 			if (noSystemItems.containsKey(hs)) {
-				newItems.add(noSystemItems.get(hs));
+				Item item = (Item) noSystemItems.get(hs);
+				if (item.getDataType() == SCHEDULE_DATA_TYPE) {
+					item = itemDao.getItem(new HolderString(item
+							.getProvider(), item.getHolder()));
+				}
+				newItems.add(item);
 			}
 		}
 		return (Item[]) newItems.toArray(new Item[0]);
