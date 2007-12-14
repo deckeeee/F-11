@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -152,7 +153,8 @@ public class PageDefine implements Serializable {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("editTime=").append(new Timestamp(editTime));
-		buffer.append(",srcXml=").append(getSrcXml());
+		buffer.append(", srcXml=").append(getSrcXml());
+		buffer.append(", holdersSet=" + holdersSet);
 		return buffer.toString();
 	}
 
@@ -178,7 +180,7 @@ public class PageDefine implements Serializable {
 	 * @return このページが保持しているデータホルダーのセットを返します
 	 */
 	public Set getDataHolders() {
-		return holdersSet;
+		return new HashSet(holdersSet);
 	}
 
 	/**
