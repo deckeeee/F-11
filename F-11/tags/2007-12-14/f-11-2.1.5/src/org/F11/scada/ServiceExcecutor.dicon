@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components namespace="service" >
+	<description>各サービス実行</description>
+	
+	<include path="org/F11/scada/server/output/OutputService.dicon"/>
+	<include path="org/F11/scada/server/remove/Remove.dicon"/>
+	
+	<component class="org.F11.scada.ServiceExcecutor" name="serviceExecutor">
+		<!--
+		<initMethod name="addService">
+			<arg>output.outputThread</arg>
+		</initMethod>
+		-->
+		<initMethod name="addService">
+			<arg>remove</arg>
+		</initMethod>
+		<destroyMethod name="clearService" />
+	</component>
+</components>
