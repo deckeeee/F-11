@@ -12,7 +12,6 @@
 		<description kind="short">F-11 Client</description> 
 		<icon href="images/F-11LOGO.gif"/>
 		<icon kind="splash" href="images/F-11LOGO.gif"/>
-		<offline-allowed/> 
 		<shortcut online="false">
 			<desktop/>
 			<menu submenu="My Corporation Apps"/>
