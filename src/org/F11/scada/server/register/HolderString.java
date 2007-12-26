@@ -24,76 +24,90 @@ import java.io.Serializable;
 
 /**
  * データプロバイダ名とデータホルダー名を保持するヘルパークラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class HolderString implements Serializable {
-    private static final long serialVersionUID = 69885175004763840L;
-    private String provider;
-    private String holder;
-    private volatile int hashCode = 0;
+	private static final long serialVersionUID = 69885175004763840L;
+	private String provider;
+	private String holder;
+	private volatile int hashCode = 0;
 
-    public HolderString() {}
-    
-    public HolderString(String provider, String holder) {
-        this.provider = provider;
-        this.holder = holder;
-    }
-    
-    public HolderString(String value) {
-        this(value.substring(0, value.indexOf("_")), value.substring(value.indexOf("_") + 1));
-    }
+	public HolderString() {
+	}
 
-    public String getHolder() {
-        return holder;
-    }
+	public HolderString(String provider, String holder) {
+		this.provider = provider;
+		this.holder = holder;
+	}
 
-    public String getProvider() {
-        return provider;
-    }
+	public HolderString(String value) {
+		try {
+			this.provider = value.substring(0, value.indexOf("_"));
+			this.holder = value.substring(value.indexOf("_") + 1);
+		} catch (StringIndexOutOfBoundsException e) {
+			throw new IllegalArgumentException(
+					"文字列が 'プロバイダ_ホルダ' で無い (設定された文字列 = " + value + ")",
+					e);
+		}
+	}
 
-    public void setHolder(String holder) {
-        this.holder = holder;
-    }
+	public String getHolder() {
+		return holder;
+	}
 
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
+	public String getProvider() {
+		return provider;
+	}
 
-    /* (Javadoc なし)
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "{provider=" + provider + ", holder=" + holder + "}";
-    }
-    
-    /* (Javadoc なし)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
+	public void setHolder(String holder) {
+		this.holder = holder;
+	}
 
-        if (!(obj instanceof HolderString)) {
-            return false;
-        }
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
 
-        HolderString hs = (HolderString) obj;
-        
-        return provider.equals(hs.provider)
-        	&& holder.equals(hs.holder);
-    }
-    
-    /* (Javadoc なし)
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-    	if (hashCode == 0) {
+	/*
+	 * (Javadoc なし)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "{provider=" + provider + ", holder=" + holder + "}";
+	}
+
+	/*
+	 * (Javadoc なし)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+
+		if (!(obj instanceof HolderString)) {
+			return false;
+		}
+
+		HolderString hs = (HolderString) obj;
+
+		return provider.equals(hs.provider) && holder.equals(hs.holder);
+	}
+
+	/*
+	 * (Javadoc なし)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		if (hashCode == 0) {
 			int result = 17;
 			result = 37 * result + provider.hashCode();
 			result = 37 * result + holder.hashCode();
 			hashCode = result;
-    	}
-    	return hashCode;
-    }
+		}
+		return hashCode;
+	}
 }
