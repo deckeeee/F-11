@@ -48,4 +48,13 @@ public class HolderStringTest extends TestCase {
         assertFalse(h.equals(h4));
         assertFalse(h.hashCode() == h4.hashCode());
     }
+    
+    public void testIllegalString() throws Exception {
+    	try {
+    		new HolderString("null");
+    		fail();
+    	} catch (IllegalArgumentException e) {
+    		e.printStackTrace();
+		}
+	}
 }
