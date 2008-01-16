@@ -82,6 +82,8 @@ public class CsvoutTask implements LoggingDataListener {
 	private final ItemUtil util;
 	/** プリントデータ更新クラス */
 	private final AutoPrintDataService stor = new AutoPrintDataStore();
+	/** ファイル名日時オフセット(ミリ秒) */
+	private final long midOffset;
 
 	/** ロギングAPI */
 	private static Logger logger;
@@ -91,6 +93,7 @@ public class CsvoutTask implements LoggingDataListener {
 	 * 
 	 * @param name ロギング名
 	 * @param dataHolders データホルダーのリスト
+	 * @param midOffset
 	 * @param factoryName データ永続クラス名
 	 * @exception SQLException DBMSに接続できなかったとき
 	 */
@@ -105,8 +108,8 @@ public class CsvoutTask implements LoggingDataListener {
 			String csv_foot,
 			int keepCount,
 			boolean data_head,
-			boolean dataMode) throws NoSuchFieldException,
-			IllegalAccessException {
+			boolean dataMode,
+			long midOffset) throws NoSuchFieldException, IllegalAccessException {
 		super();
 		logger = Logger.getLogger(getClass().getName());
 
@@ -120,6 +123,7 @@ public class CsvoutTask implements LoggingDataListener {
 		this.data_head = data_head;
 		this.dataMode = dataMode;
 		this.handlerManager = handlerManager;
+		this.midOffset = midOffset;
 		CsvScheduleFactory factory = new CsvScheduleFactory();
 		csvSchedule = factory.getCsvSchedule(schedule);
 		S2Container container = S2ContainerUtil.getS2Container();
@@ -139,7 +143,7 @@ public class CsvoutTask implements LoggingDataListener {
 				// ファイル名変更
 				DateFormat fileDf = new SimpleDateFormat(csv_mid);
 				File newFile = new File(currDir + csv_head
-						+ fileDf.format(startTime) + csv_foot);
+						+ fileDf.format(getMidTime(startTime)) + csv_foot);
 				newFile.delete();
 				tmpFile.renameTo(newFile);
 			}
@@ -147,6 +151,10 @@ public class CsvoutTask implements LoggingDataListener {
 			FilenameFilter filter = new CsvFilter(csv_head, csv_foot);
 			removeOldFile(dir.listFiles(filter), keepCount);
 		}
+	}
+
+	private Timestamp getMidTime(Timestamp startTime) {
+		return new Timestamp(startTime.getTime() - midOffset);
 	}
 
 	/**

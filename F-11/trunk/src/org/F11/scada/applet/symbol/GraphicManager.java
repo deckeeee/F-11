@@ -24,7 +24,9 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.SoftReference;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -47,7 +49,9 @@ public abstract class GraphicManager {
 	private static ImageLoader imageLoader;
 	static {
 		Configuration configuration = new ClientConfiguration();
-		if (configuration.getBoolean("org.F11.scada.applet.symbol.GraphicManager", true)) {
+		if (configuration.getBoolean(
+				"org.F11.scada.applet.symbol.GraphicManager",
+				true)) {
 			imageLoader = new DefaultImageLoader();
 			logger.info("DefaultImageLoader");
 		} else {
@@ -95,7 +99,7 @@ public abstract class GraphicManager {
 	 * イメージをロードするクラスのインターフェイス
 	 * 
 	 * @author maekawa
-	 *
+	 * 
 	 */
 	interface ImageLoader {
 		/**
@@ -109,26 +113,36 @@ public abstract class GraphicManager {
 
 	/**
 	 * デフォルトのイメージローダークラス。ImageIOを使用して画像をロードします。アニメシンボルを使用すると動作に支障が出る為、その時はIconImageLoaderを使用してください。
+	 * 
 	 * @author maekawa
-	 *
+	 * 
 	 */
 	private static class DefaultImageLoader implements ImageLoader {
-		private Map<String, Icon> iconMap = new WeakHashMap<String, Icon>();
+		private Map<String, SoftReference<Icon>> iconMap = new HashMap<String, SoftReference<Icon>>();
 
 		public Icon getIcon(String path) {
-			Icon ic = null;
 			if (iconMap.containsKey(path)) {
-				ic = (Icon) iconMap.get(path);
+				SoftReference<Icon> ref = iconMap.get(path);
+				Icon icon = ref.get();
+				return null == icon ? createIcon(path) : icon;
 			} else {
-				if (path != null) {
-					Image image = loadImage(path);
-					if (null != image) {
-						ic = new ImageIcon(image);
-						iconMap.put(path, ic);
-					}
-				}
+				return createIcon(path);
 			}
-			return ic;
+		}
+
+		private Icon createIcon(String path) {
+			if (path != null) {
+				Image image = loadImage(path);
+				if (null != image) {
+					Icon ic = new ImageIcon(image);
+					iconMap.put(path, new SoftReference<Icon>(ic));
+					return ic;
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
 		}
 
 		private Image loadImage(String path) {

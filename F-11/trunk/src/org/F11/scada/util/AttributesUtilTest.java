@@ -48,4 +48,12 @@ public class AttributesUtilTest extends TestCase {
 		assertTrue(AttributesUtil.isSpaceOrNull(""));
 		assertFalse(AttributesUtil.isSpaceOrNull("aaaaa"));
 	}
+	
+	public void testGetLongValue() throws Exception {
+		assertEquals(0, AttributesUtil.getLongValue(null));
+		assertEquals(0, AttributesUtil.getLongValue(""));
+		assertEquals(0, AttributesUtil.getLongValue("ABCDEFG"));
+		assertEquals(256, AttributesUtil.getLongValue("256"));
+		assertEquals(-256, AttributesUtil.getLongValue("-256"));
+	}
 }
