@@ -70,6 +70,9 @@ public abstract class LoggingSchedule {
 			60L);
 	/** 1分毎ロギング月出力スケジュール */
 	public static final LoggingSchedule ONEHOURMONTHOUT = new HourSchedule();
+	
+	/** 1月分/月ロギング出力スケジュール(吉本専用) */
+	public static final LoggingSchedule MONTHLYMONTHOUT = new MonthlySchedule();
 
 	/** GODA(10分間隔)のロギングスケジュール。 */
 	public static final LoggingSchedule GODA = new TenMinuteSchedule();

@@ -72,4 +72,16 @@ public abstract class AttributesUtil {
 	public static boolean isSpaceOrNull(String str) {
 		return str == null || "".equals(str);
 	}
+	
+	public static long getLongValue(String s) {
+		if (isSpaceOrNull(s)) {
+			return 0L;
+		} else {
+			try {
+				return Long.parseLong(s);
+			} catch (Exception e) {
+				return 0L;
+			}
+		}
+	}
 }

@@ -25,11 +25,13 @@ import java.util.Stack;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
 import org.F11.scada.server.logging.report.CsvoutTask;
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 /**
  * xpath /logging/csvouttask 状態を表すクラスです。
+ * 
  * @author hori
  */
 public class CsvoutTaskState implements State {
@@ -42,6 +44,7 @@ public class CsvoutTaskState implements State {
 	int keepCnt;
 	boolean data_head;
 	boolean data_mode;
+	long midOffset;
 
 	TaskState state;
 
@@ -75,7 +78,9 @@ public class CsvoutTaskState implements State {
 
 		data_head = Boolean.valueOf(atts.getValue("data_head")).booleanValue();
 
-	    data_mode = Boolean.valueOf(atts.getValue("data_mode")).booleanValue();
+		data_mode = Boolean.valueOf(atts.getValue("data_mode")).booleanValue();
+
+		midOffset = AttributesUtil.getLongValue(atts.getValue("mid_offset"));
 
 		this.state = state;
 	}
@@ -98,8 +103,7 @@ public class CsvoutTaskState implements State {
 		}
 
 		try {
-			CsvoutTask task =
-				new CsvoutTask(
+			CsvoutTask task = new CsvoutTask(
 					state.name,
 					state.state.handlerManager,
 					state.schedule,
@@ -110,7 +114,8 @@ public class CsvoutTaskState implements State {
 					csv_foot,
 					keepCnt,
 					data_head,
-					data_mode);
+					data_mode,
+					midOffset);
 			state.loggingDataListeners.add(task);
 		} catch (Exception ex) {
 			ex.printStackTrace();

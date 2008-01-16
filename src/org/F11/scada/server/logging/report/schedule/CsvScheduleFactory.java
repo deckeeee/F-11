@@ -51,6 +51,8 @@ public class CsvScheduleFactory {
 			return new GODA01Schedule();
 		} else if (name.startsWith("GODA")) {
 			return new GODASchedule();
+		} else if ("MONTHLYMONTHOUT".equalsIgnoreCase(name)) {
+			return new MonthlyMonthOutSchedule();
 		} else {
 			throw new IllegalArgumentException("指定されたスケジュールはありません。 " + name);
 		}
