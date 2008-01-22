@@ -28,7 +28,6 @@ import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -111,14 +110,8 @@ public abstract class GraphicManager {
 		Icon getIcon(String path);
 	}
 
-	/**
-	 * デフォルトのイメージローダークラス。ImageIOを使用して画像をロードします。アニメシンボルを使用すると動作に支障が出る為、その時はIconImageLoaderを使用してください。
-	 * 
-	 * @author maekawa
-	 * 
-	 */
-	private static class DefaultImageLoader implements ImageLoader {
-		private Map<String, SoftReference<Icon>> iconMap = new HashMap<String, SoftReference<Icon>>();
+	private abstract static class AbstractImageLoader implements ImageLoader {
+		protected Map<String, SoftReference<Icon>> iconMap = new HashMap<String, SoftReference<Icon>>();
 
 		public Icon getIcon(String path) {
 			if (iconMap.containsKey(path)) {
@@ -130,7 +123,18 @@ public abstract class GraphicManager {
 			}
 		}
 
-		private Icon createIcon(String path) {
+		abstract protected Icon createIcon(String path);
+	}
+
+	/**
+	 * デフォルトのイメージローダークラス。ImageIOを使用して画像をロードします。アニメシンボルを使用すると動作に支障が出る為、その時はIconImageLoaderを使用してください。
+	 * 
+	 * @author maekawa
+	 * 
+	 */
+	private static class DefaultImageLoader extends AbstractImageLoader {
+		@Override
+		protected Icon createIcon(String path) {
 			if (path != null) {
 				Image image = loadImage(path);
 				if (null != image) {
@@ -167,23 +171,21 @@ public abstract class GraphicManager {
 		}
 	}
 
-	private static class IconImageLoader implements ImageLoader {
-		private Map<String, Icon> iconMap = new WeakHashMap<String, Icon>();
-
-		public Icon getIcon(String path) {
-			Icon ic = null;
-			if (iconMap.containsKey(path)) {
-				ic = (Icon) iconMap.get(path);
-			} else {
-				if (path != null) {
-					URL url = GraphicManager.class.getResource(path);
-					if (url != null) {
-						ic = new ImageIcon(url);
-						iconMap.put(path, ic);
-					}
+	private static class IconImageLoader extends AbstractImageLoader {
+		@Override
+		protected Icon createIcon(String path) {
+			if (path != null) {
+				URL url = GraphicManager.class.getResource(path);
+				if (url != null) {
+					Icon ic = new ImageIcon(url);
+					iconMap.put(path, new SoftReference<Icon>(ic));
+					return ic;
+				} else {
+					return null;
 				}
+			} else {
+				return null;
 			}
-			return ic;
 		}
 	}
 }
