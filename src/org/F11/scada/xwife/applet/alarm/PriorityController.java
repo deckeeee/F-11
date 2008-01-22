@@ -66,9 +66,11 @@ public class PriorityController implements TableModelListener, CheckTableListene
 		pageChanger.pressShiftKey();
 		TableModel model = (TableModel) e.getSource();
 		synchronized (currentAlarm) {
-			changePage(model);
-			playSound(model);
-			clearPriority(model);
+			if (TableModelEvent.INSERT == e.getType()) {
+				changePage(model);
+				playSound(model);
+				clearPriority(model);
+			}
 		}
 	}
 
