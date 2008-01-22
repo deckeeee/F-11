@@ -171,12 +171,17 @@ public class AlarmReferencerImpl extends AbstractTableModel implements
 						return "OFF";
 					}
 				} else {
-					System.out.println("hoder null");
+					logger.error("デジタルホルダではありません = " + dr.getDataProviderName()
+							+ "_" + dr.getDataHolderName());
+					return "エラー";
 				}
 			} else {
-				System.out.println("hoder null");
+				logger.info("hoder null = " + dr.getDataProviderName() + "_"
+						+ dr.getDataHolderName());
+				return "エラー";
 			}
 		default:
+			logger.info("カラム番号が異常です = " + col);
 			return "エラー";
 		}
 	}
