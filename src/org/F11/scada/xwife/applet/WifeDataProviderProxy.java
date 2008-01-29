@@ -76,7 +76,6 @@ public class WifeDataProviderProxy extends AbstractDataProvider implements
 	private DataAccessable alarmRef;
 	private final Logger logger = Logger.getLogger(WifeDataProviderProxy.class);
 	private final long cycleTime;
-	// private volatile long valueChangeNewestTime;
 	private AtomicLong valueChangeNewestTime = new AtomicLong(0);
 	/** 前回エラー値 */
 	private boolean oldError;
