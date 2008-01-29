@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry excluding="JavaWebStart/|META-INF/|SQL/|build/|classes/|data/|device/|docs/|lock/|misc/|pagedefine/|src/|treedefine/" including="resources/Explorer.dicon|resources/ServerConstruction.dicon" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JIM"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-core.jar"/>
@@ -35,5 +34,6 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jim"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

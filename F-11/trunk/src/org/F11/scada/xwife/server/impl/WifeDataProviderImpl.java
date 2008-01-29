@@ -78,7 +78,6 @@ import org.apache.log4j.Logger;
  */
 public class WifeDataProviderImpl extends AbstractDataProvider implements
 		WifeDataProvider {
-
 	private static final long serialVersionUID = -4052507689962832517L;
 	private static Logger logger = Logger.getLogger(WifeDataProviderImpl.class);
 	private static final Class[][] TYPE_INFO = { { DataHolder.class,
@@ -98,6 +97,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	private SendRequestSupport sendRequestSupport;
 	private final long communicateWaitTime;
 	private final Lock lock = new ReentrantLock();
+	/** クライアントとの差分データ取得時のオフセット(時間がずれる為少し前からジャーナルを取得する) */
+	private final int getDataOffset;
+	private final boolean isPageChangeInterrupt;
 
 	/**
 	 * コンストラクタ
@@ -141,6 +143,15 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 				"/server/communicateWaitTime",
 				"500"));
 		communicateWaitTime = Math.max(500, wait);
+		int offset = Integer.parseInt(EnvironmentManager.get(
+				"/server/getDataOffset",
+				"-5000"));
+		getDataOffset = Math.min(-5000, offset);
+		logger.info("getDataOffset=" + getDataOffset);
+		isPageChangeInterrupt = Boolean.valueOf(
+				EnvironmentManager
+						.get("/server/isPageChangeInterrupt", "false"))
+				.booleanValue();
 	}
 
 	/**
@@ -493,7 +504,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		}
 		List list = Collections.EMPTY_LIST;
 		synchronized (holderJurnal) {
-			SortedMap smap = holderJurnal.tailMap(new Long(t + 1));
+			SortedMap smap = holderJurnal.tailMap(new Long(t + getDataOffset));
 			list = new ArrayList(smap.values());
 		}
 		sendRequestSupport.setSendRequestDateMap(session, System
@@ -536,7 +547,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	}
 
 	public void lock() {
-		thread.interrupt();
+		if (isPageChangeInterrupt) {
+			thread.interrupt();
+		}
 		lock.lock();
 	}
 

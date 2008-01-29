@@ -200,12 +200,12 @@ public final class LinkageCommand {
 	}
 
 	public void removeDefine(Collection dh_commands) {
-		ArrayList commands = new ArrayList(dh_commands);
-		Collections.sort(commands, comp);
-		for (Iterator i = commands.iterator(); i.hasNext();) {
-			WifeCommand command = (WifeCommand) i.next();
-			removeDefine(command);
-		}
+//		ArrayList commands = new ArrayList(dh_commands);
+//		Collections.sort(commands, comp);
+//		for (Iterator i = commands.iterator(); i.hasNext();) {
+//			WifeCommand command = (WifeCommand) i.next();
+//			removeDefine(command);
+//		}
 	}
 
 	public void removeDefine(WifeCommand dh_command) {
