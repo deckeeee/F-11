@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 import jp.gr.javacons.jim.AbstractDataProvider;
@@ -75,7 +76,8 @@ public class WifeDataProviderProxy extends AbstractDataProvider implements
 	private DataAccessable alarmRef;
 	private final Logger logger = Logger.getLogger(WifeDataProviderProxy.class);
 	private final long cycleTime;
-	private volatile long valueChangeNewestTime;
+	// private volatile long valueChangeNewestTime;
+	private AtomicLong valueChangeNewestTime = new AtomicLong(0);
 	/** 前回エラー値 */
 	private boolean oldError;
 	/** サーバーエラー例外 */
@@ -197,7 +199,12 @@ public class WifeDataProviderProxy extends AbstractDataProvider implements
 	}
 
 	public void setValueChangeNewestTime(long l) {
-		valueChangeNewestTime = l;
+		long old = valueChangeNewestTime.get();
+		do {
+			if (old == l) {
+				break;
+			}
+		} while (!valueChangeNewestTime.compareAndSet(old, l));
 	}
 
 	public void syncRead() {
@@ -211,16 +218,16 @@ public class WifeDataProviderProxy extends AbstractDataProvider implements
 							logger.fatal("Exception caught: ", serverError);
 						}
 					}
-	
+
 					try {
 						List holderDatas = null;
-						if (valueChangeNewestTime == 0) {
+						if (valueChangeNewestTime.get() == 0) {
 							holderDatas = alarmRef
 									.getHoldersData(getDataProviderName());
 						} else {
 							holderDatas = alarmRef.getHoldersData(
 									getDataProviderName(),
-									valueChangeNewestTime,
+									valueChangeNewestTime.get(),
 									session);
 						}
 						setHolderData(holderDatas);
@@ -244,17 +251,20 @@ public class WifeDataProviderProxy extends AbstractDataProvider implements
 						} catch (Exception e1) {
 							serverError = e1;
 						}
-						ThreadUtil.sleep(Globals.RMI_CONNECTION_RETRY_WAIT_TIME);
+						ThreadUtil
+								.sleep(Globals.RMI_CONNECTION_RETRY_WAIT_TIME);
 						continue;
 					} catch (Exception e) {
-						logger.info("HoldersDatas retry rmi lookup. (" + i + ")");
+						logger.info("HoldersDatas retry rmi lookup. (" + i
+								+ ")");
 						serverError = e;
 						try {
 							lookup();
 						} catch (Exception e1) {
 							serverError = e1;
 						}
-						ThreadUtil.sleep(Globals.RMI_CONNECTION_RETRY_WAIT_TIME);
+						ThreadUtil
+								.sleep(Globals.RMI_CONNECTION_RETRY_WAIT_TIME);
 						continue;
 					}
 				}
@@ -305,23 +315,24 @@ public class WifeDataProviderProxy extends AbstractDataProvider implements
 								}
 							}
 
-							if (valueChangeNewestTime < entryDate.getTime()) {
-								valueChangeNewestTime = entryDate.getTime();
+							if (valueChangeNewestTime.get() < entryDate
+									.getTime()) {
+								setValueChangeNewestTime(entryDate.getTime());
 							}
 						}
 					}
 				} catch (BCDConvertException e) {
-//					if (logger.isDebugEnabled()) {
-//						logger.debug("BCDConvertException :" + dh);
-//					}
+					// if (logger.isDebugEnabled()) {
+					// logger.debug("BCDConvertException :" + dh);
+					// }
 					dh.setValue(dh.getValue(), entryDate, WifeQualityFlag.BAD);
 				}
 			}
-//			else {
-//				if (logger.isDebugEnabled()) {
-//					logger.debug("DataHolder is null :" + hd.getHolder());
-//				}
-//			}
+			// else {
+			// if (logger.isDebugEnabled()) {
+			// logger.debug("DataHolder is null :" + hd.getHolder());
+			// }
+			// }
 		}
 	}
 
