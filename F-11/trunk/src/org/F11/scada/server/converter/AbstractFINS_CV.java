@@ -163,7 +163,6 @@ public abstract class AbstractFINS_CV implements Converter {
 	/** 前回実行コマンドを作成します。 */
 	public void retryCommand(ByteBuffer sendBuffer) {
 		sendBuffer.put(head);
-		incrementSid();
 		sendBuffer.put(sid);
 		finsCommand.retryCommand(sendBuffer);
 	}
