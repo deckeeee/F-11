@@ -29,12 +29,19 @@ public class MonthlyMonthOutSchedule implements CsvSchedule {
 	public Timestamp startTime(long now, boolean startMode) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(now);
-		cal.add(Calendar.MONTH, -1);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 0);
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
 	public Timestamp endTime(long now, boolean startMode) {
-		return startTime(now, startMode);
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(now);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.add(Calendar.MINUTE, 1);
+		return new Timestamp(cal.getTimeInMillis());
 	}
 
 	public boolean isOutput() {
