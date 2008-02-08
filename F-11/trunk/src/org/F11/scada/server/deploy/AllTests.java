@@ -33,7 +33,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTest(new TestSuite(FileListerTest.class));
 		suite.addTest(new TestSuite(PageFileDeployerTest.class));
-		suite.addTest(new TestSuite(PageFileDeploymentScannerTest.class));
+//		suite.addTest(new TestSuite(PageFileDeploymentScannerTest.class));
 		//$JUnit-END$
 		return suite;
 	}

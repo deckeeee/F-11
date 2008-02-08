@@ -84,7 +84,7 @@ public class PageFileDeploymentScannerTest extends TestCase {
 		TestDeployer deployer = new TestDeployer();
 		PageFileDeploymentScanner scanner = new PageFileDeploymentScanner(
 				deployer,
-				1);
+				1000);
 		long sleep = scanner.getPeriod() * 2L;
 
 		File root = new File("utest");

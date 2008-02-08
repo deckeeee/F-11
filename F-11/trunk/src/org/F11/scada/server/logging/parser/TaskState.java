@@ -94,6 +94,8 @@ public class TaskState implements State, TaskStateble {
 			stack.push(new ColumnState(tagName, atts, this));
 		} else if (tagName.equals("csvout")) {
 			stack.push(new CsvoutTaskState(tagName, atts, this));
+		} else if (tagName.equals("formatedcsvout")) {
+			stack.push(new FormatedCsvoutTaskState(tagName, atts, this));
 		} else {
 			logger.debug("tagName:" + tagName);
 		}

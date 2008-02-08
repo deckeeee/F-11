@@ -74,6 +74,8 @@ public class TaskState implements State {
 			stack.push(new ColumnState(tagName, atts, this));
 		} else if (tagName.equals("csvout")) {
 			stack.push(new DummyState(tagName, atts, this));
+		} else if (tagName.equals("formatedcsvout")) {
+			stack.push(new DummyState(tagName, atts, this));
 		} else {
 			logger.debug("tagName:" + tagName);
 		}
