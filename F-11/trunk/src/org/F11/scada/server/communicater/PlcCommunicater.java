@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.F11.scada.EnvironmentManager;
 import org.F11.scada.WifeException;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.server.converter.Converter;
@@ -40,7 +39,6 @@ import org.apache.log4j.Logger;
  */
 public final class PlcCommunicater implements Communicater {
 	private final static Logger log = Logger.getLogger(PlcCommunicater.class);
-	private static final double PHI = (1 + Math.sqrt(5D)) / 2;
 	/** リードライトロックオブジェクト */
 	private final ReadWriteLock lock = new ReadWriteLock();
 	/** デバイス情報 */
@@ -58,8 +56,6 @@ public final class PlcCommunicater implements Communicater {
 	private ByteBuffer recvBuffer = ByteBuffer.allocateDirect(2048);
 	/** 読込みデータバッファ */
 	private ByteBuffer recvData = ByteBuffer.allocateDirect(2048);
-	/** ページ切り替え後の通信エラー待ち時間 */
-	private final long afterInterruptTime;
 
 	/**
 	 * コンストラクター
@@ -86,11 +82,6 @@ public final class PlcCommunicater implements Communicater {
 		this.device = device;
 		this.converter = converter;
 		this.linkageCommand = new LinkageCommand(converter);
-		int timeoutq = Math.min(500, device.getPlcTimeout() / 4);
-		afterInterruptTime = Long.parseLong(EnvironmentManager.get(
-				"/server/afterInterruptTime",
-				"" + timeoutq));
-		log.info("afterInterruptTime=" + afterInterruptTime);
 	}
 
 	// @see org.F11.scada.server.communicater.Communicater#close()
@@ -221,13 +212,8 @@ public final class PlcCommunicater implements Communicater {
 			} else {
 				ex = converter.checkCommandResponce(recvBuffer);
 				if (ex != null) {
-					if (WifeException.WIFE_NET_RESPONCE_HEAD_ERROR == ex
-							.getDetailCode()) {
-						Thread.sleep(afterInterruptTime);
-					} else {
-						// タイムアウト以外のエラー発生ならば試行の前に待つ
-						Thread.sleep(device.getPlcTimeout());
-					}
+					// タイムアウト以外のエラー発生ならば試行の前に待つ
+					Thread.sleep(device.getPlcTimeout());
 				}
 			}
 			// エラー発生なら試行を繰り返す
@@ -245,14 +231,8 @@ public final class PlcCommunicater implements Communicater {
 				} else {
 					ex = converter.checkCommandResponce(recvBuffer);
 					if (ex != null) {
-						if (WifeException.WIFE_NET_RESPONCE_HEAD_ERROR == ex
-								.getDetailCode()) {
-							log.info("interrupt=" + getInterruptTime(i));
-							Thread.sleep(getInterruptTime(i));
-						} else {
-							// タイムアウト以外のエラー発生ならば試行の前に待つ
-							Thread.sleep(device.getPlcTimeout());
-						}
+						// タイムアウト以外のエラー発生ならば試行の前に待つ
+						Thread.sleep(device.getPlcTimeout());
 					}
 				}
 				if (ex != null) {
@@ -270,11 +250,6 @@ public final class PlcCommunicater implements Communicater {
 			converter.getResponceData(recvBuffer, recvData);
 		}
 		recvData.flip();
-	}
-
-	private long getInterruptTime(int i) {
-		double r = 1D + ((i + 1) / PHI);
-		return Math.round(r * afterInterruptTime);
 	}
 
 	/*
