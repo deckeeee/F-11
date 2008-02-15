@@ -259,6 +259,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
+			insRow[model.getColumn("最新警報モード")] = new Integer(rs.getInt("new_info_mode"));
 			model.insertRow(0, insRow, key);
 		}
 

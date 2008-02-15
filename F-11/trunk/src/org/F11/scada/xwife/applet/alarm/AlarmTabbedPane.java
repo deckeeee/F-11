@@ -217,6 +217,7 @@ public class AlarmTabbedPane extends JTabbedPane {
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
 		removeColumns(career, 12);
+		career.removeColumn(career.getColumn(career.getColumnName(5)));
 		career.setBackground(alarmTableConfig.getBackGroundColor());
 		JTableHeader tableHeader = career.getTableHeader();
 		tableHeader.setBackground(alarmTableConfig.getHeaderBackGroundColor());
