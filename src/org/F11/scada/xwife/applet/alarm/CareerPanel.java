@@ -22,7 +22,6 @@
 package org.F11.scada.xwife.applet.alarm;
 
 import java.awt.BorderLayout;
-import java.awt.FontMetrics;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,7 +36,9 @@ import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmTableConfig;
+import org.F11.scada.util.TableUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
+import org.F11.scada.xwife.applet.SortColumnUtil;
 import org.F11.scada.xwife.server.AlarmDataProvider;
 
 public class CareerPanel extends JPanel {
@@ -45,13 +46,10 @@ public class CareerPanel extends JPanel {
 	private AlarmTable career;
 	/** メインアプレットの参照です */
 	private AbstractWifeApplet wifeApplet;
-	/**
-	 * 日付、記号、状態のカラムのサイズです。
-	 */
-	private int DATE_FIELD_WIDTH = 120;
+	private static final String STATUS_FIELD_STRING = "警報・状態";
+	private static final String DATE_FIELD_STRING = "8888/88/88 88:88:88";
 	private int UNIT_FIELD_WIDTH = 150;
-	private int STATS_FIELD_WIDTH = 70;
-	
+
 	public CareerPanel(AbstractWifeApplet wifeApplet) {
 		super(new BorderLayout());
 		this.wifeApplet = wifeApplet;
@@ -60,37 +58,33 @@ public class CareerPanel extends JPanel {
 	}
 
 	private void addCareer(AlarmTableConfig alarmTableConfig) {
-		DataHolder dh = Manager.getInstance().findDataHolder(AlarmDataProvider.PROVIDER_NAME,
+		DataHolder dh = Manager.getInstance().findDataHolder(
+				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.CAREER);
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
-		//			removeColumns(career, 7);
-		removeColumns(career, 11);
+		removeColumns(career, 12);
+		career.removeColumn(career.getColumn(career.getColumnName(5)));
 		career.setBackground(alarmTableConfig.getBackGroundColor());
 		JTableHeader tableHeader = career.getTableHeader();
-		tableHeader.setBackground(alarmTableConfig
-				.getHeaderBackGroundColor());
-		tableHeader.setForeground(alarmTableConfig
-				.getHeaderForeGroundColor());
-		FontMetrics metrics = career.getFontMetrics(career.getFont());
-		DATE_FIELD_WIDTH = metrics.stringWidth("8888/88/88 88:88:88") + 8;
-		STATS_FIELD_WIDTH = metrics.stringWidth("警報・状態") + 8;
+		tableHeader.setBackground(alarmTableConfig.getHeaderBackGroundColor());
+		tableHeader.setForeground(alarmTableConfig.getHeaderForeGroundColor());
 
-		TableColumn tc = career.getColumn(career.getColumnName(0));
-		tc.setPreferredWidth(DATE_FIELD_WIDTH);
-		tc.setMaxWidth(tc.getPreferredWidth());
-		tc = career.getColumn(career.getColumnName(1));
-		tc.setPreferredWidth(UNIT_FIELD_WIDTH);
-		tc.setMaxWidth(tc.getPreferredWidth());
-		tc = career.getColumn(career.getColumnName(3));
-		tc.setPreferredWidth(STATS_FIELD_WIDTH);
-		tc.setMaxWidth(tc.getPreferredWidth());
+		TableUtil.setColumnWidth(career, 0, DATE_FIELD_STRING);
+		TableUtil.setColumnWidth(career, 1, UNIT_FIELD_WIDTH);
+		TableUtil.setColumnWidth(career, 3, STATUS_FIELD_STRING);
+		SortColumnUtil.removeSortColumn(
+				career,
+				4,
+				wifeApplet,
+				STATUS_FIELD_STRING);
 		JScrollPane sp = new JScrollPane(career);
 		add(sp, BorderLayout.CENTER);
 	}
 
 	/**
 	 * 先頭カラムから n カラムを削除します。
+	 * 
 	 * @param table 対象のテーブル
 	 * @param removeColumnCount 削除するカラム数
 	 */
@@ -102,6 +96,7 @@ public class CareerPanel extends JPanel {
 
 	/**
 	 * 対象のテーブルに AlarmTableCellRenderer を設定します。
+	 * 
 	 * @param table 対象のテーブル
 	 */
 	private void setAlarmTableCellRenderer(JTable table) {
