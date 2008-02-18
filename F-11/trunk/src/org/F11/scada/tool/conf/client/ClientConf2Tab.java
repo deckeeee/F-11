@@ -201,6 +201,7 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 		});
 		mainPanel.add(cb);
 		setNewAlarmCondition(mainPanel);
+		setUseNewInfoMode(mainPanel);
 		
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -226,6 +227,33 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 					} else {
 						manager.setClientConf(
 								"org.F11.scada.xwife.applet.newalarm",
+								"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void setUseNewInfoMode(JPanel mainPanel) {
+		mainPanel.add(new JLabel("最新警報表示モード："));
+		JComboBox cb = new JComboBox(new String[]{"常に表示(旧)", "モード有効"});
+		if ("false".equals(manager.getClientConf(
+				"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode", "false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("常に表示(旧)".equals(e.getItem())) {
+						manager.setClientConf(
+								"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode",
+								"false");
+					} else {
+						manager.setClientConf(
+								"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode",
 								"true");
 					}
 				}
