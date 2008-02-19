@@ -56,6 +56,8 @@ public interface WifeDataProvider extends DataProvider, Runnable, Service {
 	public static final String PARA_NAME_DEMAND = "demandReferencer";
 	/** INITIALからGOODになった場合のフラグ(警報・状態では無視する必要がある為) */
 	public static final String PARA_NAME_INIT2GOOD = "org.F11.scada.xwife.server.init2good";
+	/** 計算式のパラメータ名です */
+	public static final String PARA_NAME_EXPRESSION = "org.F11.scada.xwife.server.expression";
 
 	/** プロバイダー・ホルダー間セパレーター文字列 */
 	public static final String SEPARATER = "_";
