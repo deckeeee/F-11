@@ -388,3 +388,12 @@ CREATE TABLE schedule_group_table (
 );
 CREATE INDEX schedule_group_table_groupno ON schedule_group_table (group_no);
 CREATE INDEX schedule_group_table_pageid ON schedule_group_table (page_id);
+
+-- 無通信プロバイダ アイテム計算式テーブル 
+CREATE TABLE item_formula_table (
+  id IDENTITY,
+  holder VARCHAR(100) NOT NULL,
+  formula CHARACTER,
+  PRIMARY KEY (id)
+);
+CREATE INDEX item_formula_table_holder ON item_formula_table (holder);

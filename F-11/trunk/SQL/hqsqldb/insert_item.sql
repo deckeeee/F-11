@@ -292,6 +292,9 @@ INSERT INTO item_table VALUES(0, 'P1',  'D_3328_BcdSingle', 0,  true, 0,  3328, 
 INSERT INTO item_table VALUES(0, 'P1',  'D_3329_BcdSingle', 0,  true, 0,  3329, false, 0, 2, 3, 0, '', false, 0, '', '', 4, NULL, NULL, NULL, false);
 INSERT INTO item_table VALUES(0, 'P1',  'D_3330_BcdSingle', 0,  true, 0,  3330, false, 0, 2, 3, 0, '', false, 0, '', '', 4, NULL, NULL, NULL, false);
 
+INSERT INTO item_table VALUES(36,    'FORMULA', 'D_500_BcdSingle',   0,  true, 0, 19000, false, 0, 0, 0, 0, '状態一覧表', true, 0, '', '', NULL, NULL, NULL, 5, true);
+INSERT INTO item_table VALUES(90999, 'FORMULA', 'D_19000AA_Digital', 0,  true, 0, 19000, false, 1, 1, 0, 0, '空調平面図', true, 0, '', '', NULL, NULL, NULL, 5, true);
+
 
 /* 表示メッセージ定義 */
 INSERT INTO message_table VALUES(0, true, '発生');
@@ -345,6 +348,8 @@ INSERT INTO point_table VALUES(53, '', 'スケジュール4', NULL);
 INSERT INTO point_table VALUES(54, '', 'スケジュール5', NULL);
 
 -- INSERT INTO point_table VALUES(36, '', '1F A室 温度', NULL);
+
+INSERT INTO point_table VALUES (90999,'90999','名前90999', NULL);
 
 /* 表示属性 */
 --                                 ID   NAME       Alarm On/Off   Sum On/Off      Print On/Off  Snd CK     Smod Hmod Cmod Nmod Pri    chat
@@ -465,3 +470,6 @@ INSERT INTO autoprint_property_table (task_name, property, value) VALUES('month'
 
 -- 多レコードロギング定義
 INSERT INTO multi_record_define_table (logging_table_name, provider, com_memory_kinds, com_memory_address, word_length, record_count) VALUES('log_table_sec', 'P1', 0, 10000, 880, 20);
+
+-- 無通信プロバイダ アイテム計算式テーブル 
+INSERT INTO item_formula_table (holder, formula) VALUES ('D_19000AA_Digital','P1_D_1900008_Digital || P1_D_1900009_Digital');
