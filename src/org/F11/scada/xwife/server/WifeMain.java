@@ -1,27 +1,19 @@
 /*
- * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/xwife/server/WifeMain.java,v 1.32.2.35 2007/10/26 02:26:26 frdm Exp $
- * $Revision: 1.32.2.35 $
- * $Date: 2007/10/26 02:26:26 $
- * 
+ * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/xwife/server/WifeMain.java,v
+ * 1.32.2.35 2007/10/26 02:26:26 frdm Exp $ $Revision: 1.32.2.35 $ $Date:
+ * 2007/10/26 02:26:26 $
  * =============================================================================
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Project F-11 <http://www.F-11.org/>.
- * All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Project F-11
+ * <http://www.F-11.org/>. All Rights Reserved. This program is free software;
+ * you can redistribute it and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version. This program is
+ * distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details. You
+ * should have received a copy of the GNU General Public License along with this
+ * program; if not, write to the Free Software Foundation, Inc., 59 Temple Place -
+ * Suite 330, Boston, MA 02111-1307, USA.
  */
 
 package org.F11.scada.xwife.server;
@@ -51,17 +43,21 @@ import org.F11.scada.Service;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.security.AccessControl;
 import org.F11.scada.server.ManagerDelegator;
+import org.F11.scada.server.alarm.AlarmReferencer;
 import org.F11.scada.server.alarm.table.AlarmListFinder;
 import org.F11.scada.server.alarm.table.AlarmListFinderDelegator;
 import org.F11.scada.server.autoprint.AutoPrintEditor;
 import org.F11.scada.server.autoprint.AutoPrintEditorFactory;
 import org.F11.scada.server.command.CommandProvider;
 import org.F11.scada.server.comment.PointCommentService;
+import org.F11.scada.server.dao.ItemDao;
 import org.F11.scada.server.deploy.PageFileDeployer;
 import org.F11.scada.server.deploy.PageFileDeploymentScanner;
 import org.F11.scada.server.deploy.TreeFileDeployer;
 import org.F11.scada.server.edit.ServerEditHandler;
 import org.F11.scada.server.edit.ServerEditManager;
+import org.F11.scada.server.formula.FormulaDataProviderImpl;
+import org.F11.scada.server.formula.ItemFormulaService;
 import org.F11.scada.server.frame.FrameDefineManager;
 import org.F11.scada.server.frame.FrameEditHandlerFactory;
 import org.F11.scada.server.frame.editor.FrameEditHandler;
@@ -75,6 +71,7 @@ import org.F11.scada.server.logging.LoggingManager;
 import org.F11.scada.server.logging.SelectiveAllDataLoggingHandler;
 import org.F11.scada.server.logging.SelectiveLoggingHandler;
 import org.F11.scada.server.operationlog.OperationLoggingFinderService;
+import org.F11.scada.server.register.HolderRegisterBuilder;
 import org.F11.scada.server.schedule.SchedulePointService;
 import org.F11.scada.server.timeset.TimeSetManager;
 import org.F11.scada.theme.DefaultWifeTheme;
@@ -87,7 +84,6 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.seasar.framework.container.S2Container;
 
 /**
- * 
  * @author maekawa
  * @version
  */
@@ -125,16 +121,25 @@ public class WifeMain extends JPanel {
 
 		S2Container container = S2ContainerUtil.getS2Container();
 
-		DataProviderFactory dataProviderFactory = (DataProviderFactory) container
-				.getComponent(DataProviderFactory.class);
+		DataProviderFactory dataProviderFactory = (DataProviderFactory) container.getComponent(DataProviderFactory.class);
 		frameDef = (FrameDefineManager) container.getComponent("frameManager");
 
-		for (Iterator it = dataProviderFactory.create().iterator(); it
-				.hasNext();) {
+		for (Iterator it = dataProviderFactory.create().iterator(); it.hasNext();) {
 			WifeDataProvider dp = (WifeDataProvider) it.next();
 			dp.setSendRequestSupport(frameDef);
 			dp.start();
 		}
+
+		ItemDao itemDao = (ItemDao) container.getComponent(ItemDao.class);
+		HolderRegisterBuilder builder = (HolderRegisterBuilder) container.getComponent(HolderRegisterBuilder.class);
+		AlarmReferencer alarm = (AlarmReferencer) container.getComponent(WifeDataProvider.PARA_NAME_ALARM);
+		AlarmReferencer demand = (AlarmReferencer) container.getComponent(WifeDataProvider.PARA_NAME_DEMAND);
+		ItemFormulaService service = (ItemFormulaService) container.getComponent(ItemFormulaService.class);
+		WifeDataProvider dp = new FormulaDataProviderImpl(30000, itemDao,
+				builder, alarm, demand, service);
+		dp.setSendRequestSupport(frameDef);
+		dp.start();
+
 		valueListHandlerManager = new ValueListHandlerManagerImpl(
 				rmiReceivePort);
 		LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
@@ -153,20 +158,14 @@ public class WifeMain extends JPanel {
 		new TimeSetManager();
 
 		FrameEditHandlerFactory factory = new FrameEditHandlerFactory(
-				rmiReceivePort,
-				frameDef,
-				logManager.getTaskMap());
+				rmiReceivePort, frameDef, logManager.getTaskMap());
 		frameEditHandler = factory.createFrameEditHandler();
-		AutoPrintEditorFactory autoPrintEditorFactory = (AutoPrintEditorFactory) container
-				.getComponent(AutoPrintEditorFactory.class);
-		AutoPrintEditor autoPrintEditor = autoPrintEditorFactory
-				.getAutoPrintEditor();
-		serverEditHandler = new ServerEditManager(
-				rmiReceivePort,
+		AutoPrintEditorFactory autoPrintEditorFactory = (AutoPrintEditorFactory) container.getComponent(AutoPrintEditorFactory.class);
+		AutoPrintEditor autoPrintEditor = autoPrintEditorFactory.getAutoPrintEditor();
+		serverEditHandler = new ServerEditManager(rmiReceivePort,
 				autoPrintEditor);
 
-		managerDelegator = (ManagerDelegator) container
-				.getComponent(ManagerDelegator.class);
+		managerDelegator = (ManagerDelegator) container.getComponent(ManagerDelegator.class);
 
 		setTreeDeployer();
 
@@ -176,13 +175,10 @@ public class WifeMain extends JPanel {
 
 		alarmListFinder = new AlarmListFinderDelegator(rmiReceivePort);
 
-		operationLoggingFinderService = (OperationLoggingFinderService) container
-				.getComponent("finderservice");
-		pointCommentService = (PointCommentService) container
-				.getComponent("commentService");
+		operationLoggingFinderService = (OperationLoggingFinderService) container.getComponent("finderservice");
+		pointCommentService = (PointCommentService) container.getComponent("commentService");
 		if (WifeUtilities.isSchedulePoint()) {
-			schedulePointService = (SchedulePointService) container
-					.getComponent("scheduleService");
+			schedulePointService = (SchedulePointService) container.getComponent("scheduleService");
 			schedulePointService.init();
 		}
 
@@ -206,9 +202,7 @@ public class WifeMain extends JPanel {
 		frameDef.setLock(lock);
 		frameDef.setCondition(condition);
 		PageFileDeploymentScanner pageScanner = new PageFileDeploymentScanner(
-				new PageFileDeployer(frameDef),
-				lock,
-				condition);
+				new PageFileDeployer(frameDef), lock, condition);
 		File page = new File("pagedefine");
 		logger.info("Page Define root : " + page.getAbsolutePath());
 		pageScanner.addFile(page);
@@ -216,8 +210,7 @@ public class WifeMain extends JPanel {
 
 	private void setTreeDeployer() {
 		PageFileDeploymentScanner treeScanner = new PageFileDeploymentScanner(
-				new TreeFileDeployer(frameDef.getTreeDefineManager()),
-				5000L);
+				new TreeFileDeployer(frameDef.getTreeDefineManager()), 5000L);
 		File menu = new File("treedefine");
 		logger.info("Tree Define root : " + menu.getAbsolutePath());
 		treeScanner.addFile(menu);
@@ -229,8 +222,7 @@ public class WifeMain extends JPanel {
 	}
 
 	private void startupWait() throws InterruptedException {
-		String waitTimeStr = EnvironmentManager
-				.get("/server/startup/wait", "0");
+		String waitTimeStr = EnvironmentManager.get("/server/startup/wait", "0");
 		long waitTime = Long.parseLong(waitTimeStr);
 		Thread.sleep(waitTime * 1000);
 	}
@@ -265,8 +257,7 @@ public class WifeMain extends JPanel {
 		if (url != null) {
 			DOMConfigurator.configure(url);
 		} else {
-			url = clazz
-					.getResource("/resources/xwife_server_main_log4j.properties");
+			url = clazz.getResource("/resources/xwife_server_main_log4j.properties");
 			PropertyConfigurator.configure(url);
 		}
 	}
@@ -329,8 +320,7 @@ public class WifeMain extends JPanel {
 		}
 
 		int port = Integer.parseInt(EnvironmentManager.get(
-				"/server/rmi/managerdelegator/port",
-				"1099"));
+				"/server/rmi/managerdelegator/port", "1099"));
 		try {
 			LocateRegistry.createRegistry(port);
 		} catch (RemoteException e) {
@@ -338,10 +328,9 @@ public class WifeMain extends JPanel {
 		}
 
 		int rmiReceivePort = Integer.parseInt(EnvironmentManager.get(
-				"/server/rmi/managerdelegator/rmiReceivePort",
-				"" + RMI_RECV_PORT_SERVER));
-		JFrame frame = new JFrame(EnvironmentManager.get(
-				"/server/title",
+				"/server/rmi/managerdelegator/rmiReceivePort", ""
+						+ RMI_RECV_PORT_SERVER));
+		JFrame frame = new JFrame(EnvironmentManager.get("/server/title",
 				"F-11 Server"));
 		try {
 			WifeMain main = new WifeMain(rmiReceivePort);
@@ -353,10 +342,8 @@ public class WifeMain extends JPanel {
 			frame.setVisible(true);
 		} catch (Exception e) {
 			logger.fatal("サーバー起動時にエラーが発生しました。", e);
-			showDialog(
-					"サーバー起動時にエラーが発生しました。\nサーバー起動を終了します。",
-					"サーバー起動時にエラーが発生しました。",
-					JOptionPane.ERROR_MESSAGE);
+			showDialog("サーバー起動時にエラーが発生しました。\nサーバー起動を終了します。",
+					"サーバー起動時にエラーが発生しました。", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 			return;
 		}
