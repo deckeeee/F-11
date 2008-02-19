@@ -25,4 +25,5 @@
 	<include path="org/F11/scada/server/io/nio/LogTableHandlerFactory.dicon"/>
 	<include path="org/F11/scada/server/autoprint/AutoPrintDataServiceFactory.dicon"/>
 	<include path="org/F11/scada/server/schedule/SchedulePointService.dicon"/>
+	<include path="org/F11/scada/server/formula/ItemFormulaService.dicon"/>
 </components>
