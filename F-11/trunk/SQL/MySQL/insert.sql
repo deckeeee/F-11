@@ -16422,6 +16422,8 @@ INSERT INTO item_table VALUES (0,'P1','D_2272_Schedule',0,1,0,2272,0,0,2,16,'Sev
 INSERT INTO item_table VALUES (0,'P1','D_2328_Schedule',0,1,0,2328,0,0,2,16,'SevenDays, 4','',0,0,'','',1,NULL,NULL,NULL,0);
 INSERT INTO item_table VALUES (0,'P1','D_4100_StringData',0,1,0,4100,0,0,2,22,'10','',0,0,'','',2,NULL,NULL,NULL,0);
 
+INSERT INTO item_table VALUES (36,'FORMULA','D_500_BcdSingle',0,1,0,19000,0,0,0,0,'0','状態一覧表',1,1,'/sounds/wave/DANGER.WAV','',NULL,NULL,1,0,1);
+INSERT INTO item_table VALUES (90999,'FORMULA','D_19000AA_Digital',0,1,0,19000,0,1,1,0,'0','空調平面図',1,2,'/sounds/wave/Alarm02.WAV','',NULL,NULL,1,0,1);
 --
 -- Dumping data for table `message_table`
 --
@@ -20990,6 +20992,8 @@ INSERT INTO point_table VALUES (117,'117','名前117','A','','','');
 INSERT INTO point_table VALUES (118,'118','名前118','A','','','');
 INSERT INTO point_table VALUES (10,'AHU-10-1','10F A室 空調機','','','','');
 
+INSERT INTO point_table VALUES (90999,'90999','名前90999','','','','');
+
 --
 -- Dumping data for table `policy_define_table`
 --
@@ -21184,3 +21188,5 @@ INSERT INTO user_define_table VALUES ('user2','7e58d63b60197ceb55a1c487989a3720'
 INSERT INTO user_define_table VALUES ('user101','','2005-08-08 16:30:00','2005-08-08 16:30:00');
 INSERT INTO user_define_table VALUES ('user102','','2005-08-15 14:24:42','2005-08-15 14:24:42');
 
+
+INSERT INTO item_formula_table VALUES (1, 'D_19000AA_Digital','P1_D_1900008_Digital || P1_D_1900009_Digital');

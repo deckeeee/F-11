@@ -510,3 +510,13 @@ CREATE TABLE user_define_table (
   PRIMARY KEY  (username)
 ) TYPE=MyISAM;
 
+-- 無通信プロバイダ アイテム計算式テーブル 
+DROP TABLE IF EXISTS item_formula_table;
+CREATE TABLE item_formula_table (
+  id bigint(20) NOT NULL auto_increment,
+  holder varchar(100) NOT NULL default '',
+  formula text,
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY item_formula_table_holder (holder)
+) TYPE=MyISAM;
