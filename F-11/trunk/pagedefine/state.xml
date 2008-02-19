@@ -1797,7 +1797,7 @@
 					<f11:textsymbol value="’âŽ~" opaque="true"
 						foreground="white" background="darkgreen" blink="false"
 						visible="true">
-						<f11:if value="P1_D_1900005_Digital">
+						<f11:if value="P1_D_1900009_Digital">
 							<f11:property value="‰^“]" foreground="white"
 								background="red" />
 							<f11:property value="’âŽ~" foreground="white"
@@ -1807,7 +1807,7 @@
 					<f11:textsymbol value="’âŽ~" opaque="true"
 						foreground="white" background="darkgreen" blink="false"
 						visible="true">
-						<f11:if value="P1_D_1900005_Digital">
+						<f11:if value="P1_D_1900008_Digital">
 							<f11:property value="‰^“]" foreground="white"
 								background="red" />
 							<f11:property value="’âŽ~" foreground="white"
@@ -1817,7 +1817,7 @@
 					<f11:textsymbol value="”­¶" opaque="true"
 						foreground="navy" background="navy" blink="false"
 						visible="true">
-						<f11:if value="P1_D_1900004_Digital">
+						<f11:if value="FORMULA_D_19000AA_Digital">
 							<f11:property value="”­¶" foreground="black"
 								background="yellow" blink="true" />
 							<f11:property value="”­¶" foreground="navy"
