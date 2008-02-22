@@ -330,7 +330,12 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		Manager manager = Manager.getInstance();
 		for (Iterator i = set.iterator(); i.hasNext();) {
 			String dpname = (String) i.next();
-			wdps.add(manager.getDataProvider(dpname));
+			DataProvider dataProvider = manager.getDataProvider(dpname);
+			if (null != dataProvider) {
+				wdps.add(dataProvider);
+			} else {
+				log.error("サーバーに存在しないプロバイダがページに定義されています = " + dpname);
+			}
 		}
 		return wdps;
 	}
