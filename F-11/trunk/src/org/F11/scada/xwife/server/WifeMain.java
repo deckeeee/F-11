@@ -132,16 +132,18 @@ public class WifeMain extends JPanel {
 			dp.start();
 		}
 
-		ItemDao itemDao = (ItemDao) container.getComponent(ItemDao.class);
-		HolderRegisterBuilder builder = (HolderRegisterBuilder) container
-				.getComponent(HolderRegisterBuilder.class);
-		AlarmReferencer alarm = (AlarmReferencer) container
-				.getComponent(WifeDataProvider.PARA_NAME_ALARM);
-		AlarmReferencer demand = (AlarmReferencer) container
-				.getComponent(WifeDataProvider.PARA_NAME_DEMAND);
 		boolean isUseFormula = Boolean.valueOf(
-				EnvironmentManager.get("/server/formula/isUseFormula", "false")).booleanValue();
+				EnvironmentManager.get(
+						"/server/formula/isUseFormula",
+						"false")).booleanValue();
 		if (isUseFormula) {
+			ItemDao itemDao = (ItemDao) container.getComponent(ItemDao.class);
+			HolderRegisterBuilder builder = (HolderRegisterBuilder) container
+					.getComponent(HolderRegisterBuilder.class);
+			AlarmReferencer alarm = (AlarmReferencer) container
+					.getComponent(WifeDataProvider.PARA_NAME_ALARM);
+			AlarmReferencer demand = (AlarmReferencer) container
+					.getComponent(WifeDataProvider.PARA_NAME_DEMAND);
 			ItemFormulaService service = (ItemFormulaService) container
 					.getComponent(ItemFormulaService.class);
 			WifeDataProvider dp = new FormulaDataProviderImpl(

@@ -48,7 +48,6 @@ public class PageXmlUtil {
 		HolderStringSet holderStringSet = new HolderStringSet();
 
 		Digester digester = new Digester();
-
 		URL url = PageXmlUtil.class.getResource("/resources/pagemap10.dtd");
 		if (null == url) {
 			throw new IllegalStateException(
@@ -57,7 +56,6 @@ public class PageXmlUtil {
 		digester.register("-//F-11 2.0//DTD F11 Page Configuration//EN", url
 				.toString());
 		digester.setValidating(true);
-
 		digester.setNamespaceAware(true);
 		digester.addRuleSet(new PageXmlRuleSet());
 		digester.push(holderStringSet);

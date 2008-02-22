@@ -21,6 +21,7 @@
 package org.F11.scada.server.register.impl;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.DataProvider;
@@ -34,8 +35,6 @@ import org.F11.scada.server.register.HolderRegister;
 import org.F11.scada.server.register.WifeDataUtil;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * デジタルデータのHolderRegisterクラスです。
@@ -71,8 +70,6 @@ public class DigitalHolderRegister implements HolderRegister {
 				.getParameter(WifeDataProvider.PARA_NAME_ALARM);
 		if (null != rf) {
 			ar.removeReferencer(rf);
-		} else {
-			logger.error("DataReferencer is null = " + getKey(item));
 		}
 		RegisterUtil.removeDataHolder(item);
 	}
