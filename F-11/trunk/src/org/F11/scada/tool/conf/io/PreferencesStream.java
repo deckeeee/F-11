@@ -148,6 +148,7 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/mail/smtp/port", "25"));
 		pw.println(getXmlProp("/server/mail/smtp/user", ""));
 		pw.println(getXmlProp("/server/mail/smtp/password", ""));
+		pw.println(getXmlProp("/server/formula/isUseFormula", "false"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

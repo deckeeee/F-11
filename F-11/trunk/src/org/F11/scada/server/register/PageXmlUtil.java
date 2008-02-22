@@ -23,72 +23,83 @@ package org.F11.scada.server.register;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Set;
 
 import org.apache.commons.digester.Digester;
 import org.xml.sax.SAXException;
 
-
 public class PageXmlUtil {
-    private PageXmlUtil() {}
+	private PageXmlUtil() {
+	}
 
-    public static Set getHolderStrings(String xml) {
-        StringReader in = new StringReader(xml);
-        try {
-            return getHolderStrings(in);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-        }
-    }
-    
-    public static Set getHolderStrings(Reader xml) {
-        HolderStringSet holderStringSet = new HolderStringSet();
+	public static Set getHolderStrings(String xml) {
+		StringReader in = new StringReader(xml);
+		try {
+			return getHolderStrings(in);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+	}
 
-        Digester digester = new Digester();
-        digester.setNamespaceAware(true);
-        digester.addRuleSet(new PageXmlRuleSet());
-        digester.push(holderStringSet);
+	public static Set getHolderStrings(Reader xml) {
+		HolderStringSet holderStringSet = new HolderStringSet();
 
-        try {
-            digester.parse(xml);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        }
+		Digester digester = new Digester();
 
-        return holderStringSet;
-    }
-    
-    public static boolean isCache(String xml) {
-        StringReader in = new StringReader(xml);
-        try {
-            return isCache(in);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-        }
-    }
+		URL url = PageXmlUtil.class.getResource("/resources/pagemap10.dtd");
+		if (null == url) {
+			throw new IllegalStateException(
+					"/resources/pagemap10.dtd がクラスパス上に存在しません");
+		}
+		digester.register("-//F-11 2.0//DTD F11 Page Configuration//EN", url
+				.toString());
+		digester.setValidating(true);
 
-    public static boolean isCache(Reader in) {
-        PageCache pageCache = new PageCache();
+		digester.setNamespaceAware(true);
+		digester.addRuleSet(new PageXmlRuleSet());
+		digester.push(holderStringSet);
 
-        Digester digester = new Digester();
-        digester.setNamespaceAware(true);
-        digester.addRuleSet(new PageXmlCacheRuleSet());
-        digester.push(pageCache);
+		try {
+			digester.parse(xml);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
 
-        try {
-            digester.parse(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        }
+		return holderStringSet;
+	}
 
-        return pageCache.isCache();
-    }
+	public static boolean isCache(String xml) {
+		StringReader in = new StringReader(xml);
+		try {
+			return isCache(in);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+	}
+
+	public static boolean isCache(Reader in) {
+		PageCache pageCache = new PageCache();
+
+		Digester digester = new Digester();
+		digester.setNamespaceAware(true);
+		digester.addRuleSet(new PageXmlCacheRuleSet());
+		digester.push(pageCache);
+
+		try {
+			digester.parse(in);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+
+		return pageCache.isCache();
+	}
 }

@@ -240,6 +240,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		outputMode(mainPanel);
 		testMode(mainPanel);
 		communicateWaitTime(mainPanel);
+		useFormula(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -448,6 +449,36 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				"100"));
 		communicateWaitTime.getDocument().addDocumentListener(this);
 		mainPanel.add(communicateWaitTime);
+	}
+
+	private void useFormula(JPanel mainPanel) {
+		mainPanel.add(new JLabel("仮想ホルダ："));
+		JComboBox cb = new JComboBox();
+		cb.addItem("使用しない");
+		cb.addItem("使用する");
+		String prefix = manager.getPreferences(
+				"/server/formula/isUseFormula",
+				"false");
+		if ("false".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("使用しない".equals(e.getItem()))
+						manager.setPreferences(
+								"/server/systemtime/testMode",
+								"false");
+					else
+						manager.setPreferences(
+								"/server/systemtime/testMode",
+								"true");
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
