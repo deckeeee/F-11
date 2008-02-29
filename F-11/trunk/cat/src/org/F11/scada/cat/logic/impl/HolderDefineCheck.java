@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.F11.scada.cat.logic.ExecuteTask;
 import org.F11.scada.cat.util.ExtFileFilter;
 import org.F11.scada.server.dao.ItemDao;
 import org.F11.scada.server.deploy.FileLister;
@@ -87,15 +88,22 @@ public class HolderDefineCheck extends AbstractCheckLogic {
 		this.itemDao = itemDao;
 	}
 
-	public void execute(String path) throws IOException, InterruptedException {
+	public void execute(String path, ExecuteTask task) throws IOException {
 		if (isSelected) {
 			Formatter out = null;
 			try {
 				out = new Formatter(outFile);
 				FileLister lister = new FileLister();
-				Collection<File> files = lister.listFiles(getRoot(path), FILTER);
+				Collection<File> files =
+					lister.listFiles(getRoot(path), FILTER);
+				int value = 0;
 				for (File file : files) {
+					if (task.isCancelled()) {
+						break;
+					}
 					checkFile(file, out);
+					task.setMsg(toString() + "é¿çsíÜ...");
+					task.setProgress(value++, files.size());
 				}
 			} finally {
 				if (null != out) {

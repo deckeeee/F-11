@@ -32,7 +32,7 @@ import org.jdesktop.application.Task;
  * チェックロジックを実行するタスクです。
  * 
  * @author maekawa
- *
+ * 
  */
 public class ExecuteTask extends Task<Void, Void> {
 	private final Log log = LogFactory.getLog(ExecuteTask.class);
@@ -40,7 +40,10 @@ public class ExecuteTask extends Task<Void, Void> {
 	private final List<CheckLogic> checkLogics;
 	private final String path;
 
-	public ExecuteTask(Application application, List<CheckLogic> checkLogics, String path) {
+	public ExecuteTask(
+			Application application,
+			List<CheckLogic> checkLogics,
+			String path) {
 		super(application);
 		this.checkLogics = checkLogics;
 		this.path = path;
@@ -49,14 +52,10 @@ public class ExecuteTask extends Task<Void, Void> {
 
 	@Override
 	protected Void doInBackground() throws InterruptedException {
-		int i = 1;
-		int max = getExecuteLogic();
 		try {
 			for (CheckLogic logic : checkLogics) {
 				if (logic.isSelected() && !isCancelled()) {
-					setMessage(logic.toString() + "実行中...");
-					setProgress(i++, 0, max);
-					logic.execute(path);
+					logic.execute(path, this);
 				}
 			}
 		} catch (IOException e) {
@@ -64,16 +63,6 @@ public class ExecuteTask extends Task<Void, Void> {
 			return null;
 		}
 		return null;
-	}
-
-	private int getExecuteLogic() {
-		int max = 0;
-		for (CheckLogic logic : checkLogics) {
-			if (logic.isSelected()) {
-				max++;
-			}
-		}
-		return max;
 	}
 
 	@Override
@@ -86,4 +75,11 @@ public class ExecuteTask extends Task<Void, Void> {
 		setMessage("Canceled");
 	}
 
+	public void setProgress(float value, float max) {
+		super.setProgress(value, 0, max);
+	}
+
+	public void setMsg(String msg) {
+		super.setMessage(msg);
+	}
 }

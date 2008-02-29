@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Formatter;
 import java.util.List;
 
+import org.F11.scada.cat.logic.ExecuteTask;
 import org.F11.scada.cat.util.ExtFileFilter;
 import org.F11.scada.server.deploy.FileLister;
 import org.apache.commons.logging.Log;
@@ -78,7 +79,8 @@ public class ImagePathCheck extends AbstractCheckLogic {
 		return text;
 	}
 
-	public void execute(String path) throws IOException, InterruptedException {
+	public void execute(String path, ExecuteTask task)
+			throws IOException {
 		if (isSelected) {
 			Formatter out = null;
 			try {
@@ -86,8 +88,14 @@ public class ImagePathCheck extends AbstractCheckLogic {
 				FileLister lister = new FileLister();
 				Collection<File> files =
 					lister.listFiles(getRoot(path), FILTER);
+				int value = 0;
 				for (File file : files) {
+					if (task.isCancelled()) {
+						break;
+					}
 					checkFile(file, out, path);
+					task.setMsg(toString() + "é¿çsíÜ...");
+					task.setProgress(value++, files.size());
 				}
 			} finally {
 				if (null != out) {
@@ -97,7 +105,8 @@ public class ImagePathCheck extends AbstractCheckLogic {
 		}
 	}
 
-	private void checkFile(File file, Formatter out, String path) throws IOException {
+	private void checkFile(File file, Formatter out, String path)
+			throws IOException {
 		LineNumberReader in = null;
 		try {
 			in = new LineNumberReader(new FileReader(file));
@@ -112,7 +121,12 @@ public class ImagePathCheck extends AbstractCheckLogic {
 		}
 	}
 
-	private void checkLine(String line, Formatter out, int i, File file, String path) {
+	private void checkLine(
+			String line,
+			Formatter out,
+			int i,
+			File file,
+			String path) {
 		checkComment(line);
 		if (!isComment) {
 			String imagePath = getImagePath(line);
