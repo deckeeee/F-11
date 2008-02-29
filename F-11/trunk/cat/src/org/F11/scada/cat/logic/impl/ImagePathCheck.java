@@ -63,10 +63,13 @@ public class ImagePathCheck extends AbstractCheckLogic {
 	}
 
 	private void createExtentions(ResourceMap resourceMap) {
-		int index = 8;
-		extentions = new ArrayList<String>(index);
-		for (int i = 0; i < index; i++) {
-			extentions.add(resourceMap.getString("extentions[" + i + "]"));
+		extentions = new ArrayList<String>();
+		for (int i = 0;; i++) {
+			String extention = resourceMap.getString("extentions[" + i + "]");
+			if ("//END".equalsIgnoreCase(extention)) {
+				break;
+			}
+			extentions.add(extention);
 		}
 	}
 
