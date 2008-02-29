@@ -36,7 +36,7 @@
 	<classpathentry kind="lib" path="lib/s2-dao-1.0.39.jar"/>
 	<classpathentry kind="lib" path="lib/s2-extension-2.3.15.jar"/>
 	<classpathentry kind="lib" path="lib/s2-framework-2.3.15.jar"/>
-	<classpathentry kind="lib" path="cat/lib/AppFramework-1.03.jar"/>
-	<classpathentry kind="lib" path="cat/lib/swing-worker.jar"/>
+	<classpathentry kind="lib" path="lib/AppFramework-1.03.jar"/>
+	<classpathentry kind="lib" path="lib/swing-worker.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
