@@ -33,6 +33,7 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.F11.scada.cat.logic.ExecuteTask;
 import org.F11.scada.cat.util.ExtFileFilter;
 import org.F11.scada.server.deploy.FileLister;
 import org.F11.scada.server.deploy.PageDefineUtil;
@@ -69,7 +70,8 @@ public class TreePageCheck extends AbstractCheckLogic {
 		return text;
 	}
 
-	public void execute(String path) throws IOException, InterruptedException {
+	public void execute(String path, ExecuteTask task)
+			throws IOException {
 		if (isSelected) {
 			Formatter out = null;
 			try {
@@ -77,8 +79,8 @@ public class TreePageCheck extends AbstractCheckLogic {
 				FileLister lister = new FileLister();
 				Collection<File> files =
 					lister.listFiles(getRoot(path), FILTER);
-				Map<String, PageDefine> pageMap = createPageMap(files);
-				checkTree(out, path, pageMap);
+				Map<String, PageDefine> pageMap = createPageMap(files, task);
+				checkTree(out, path, pageMap, task);
 			} finally {
 				if (null != out) {
 					out.close();
@@ -87,20 +89,24 @@ public class TreePageCheck extends AbstractCheckLogic {
 		}
 	}
 
-	private Map<String, PageDefine> createPageMap(Collection<File> files)
-			throws IOException,
-			InterruptedException {
+	private Map<String, PageDefine> createPageMap(
+			Collection<File> files,
+			ExecuteTask task) throws IOException {
 		HashMap<String, PageDefine> map = new HashMap<String, PageDefine>();
+		int value = 0;
 		for (File file : files) {
+			if (task.isCancelled()) {
+				break;
+			}
 			map.putAll(getPageMap(file));
+			task.setMsg(toString() + "é¿çsíÜ...");
+			task.setProgress(value++, files.size());
 		}
 		return map;
 	}
 
 	private Map<String, PageDefine> getPageMap(File file)
-			throws IOException,
-			InterruptedException {
-		Thread.sleep(1L);
+			throws IOException {
 		BufferedInputStream in = null;
 		try {
 			in = new BufferedInputStream(new FileInputStream(file));
@@ -120,12 +126,19 @@ public class TreePageCheck extends AbstractCheckLogic {
 	private void checkTree(
 			Formatter out,
 			String path,
-			Map<String, PageDefine> pageMap) throws IOException {
+			Map<String, PageDefine> pageMap,
+			ExecuteTask task) throws IOException {
 		FileLister lister = new FileLister();
 		Collection<File> files =
 			lister.listFiles(new File(path, TREE_FOLDER), FILTER);
+		int value = 0;
 		for (File file : files) {
+			if (task.isCancelled()) {
+				break;
+			}
 			checkFile(out, path, file, pageMap);
+			task.setMsg(toString() + "é¿çsíÜ...");
+			task.setProgress(value++, files.size());
 		}
 	}
 
@@ -133,7 +146,8 @@ public class TreePageCheck extends AbstractCheckLogic {
 			Formatter out,
 			String path,
 			File file,
-			Map<String, PageDefine> pageMap) throws IOException {
+			Map<String, PageDefine> pageMap)
+			throws IOException {
 		LineNumberReader in = null;
 		try {
 			in = new LineNumberReader(new FileReader(file));

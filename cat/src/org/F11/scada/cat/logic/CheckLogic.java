@@ -35,8 +35,9 @@ public interface CheckLogic extends CheckableItem {
 	 * チェック処理を実行します。
 	 * 
 	 * @param path TODO
+	 * @param task TODO
 	 * @throws IOException TODO
-	 * @throws InterruptedException TODO
 	 */
-	void execute(String path) throws IOException, InterruptedException;
+	void execute(String path, ExecuteTask task)
+			throws IOException;
 }

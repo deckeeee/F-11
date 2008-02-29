@@ -22,6 +22,7 @@ package org.F11.scada.cat.logic.impl;
 
 import java.io.IOException;
 
+import org.F11.scada.cat.logic.ExecuteTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.application.Application;
@@ -44,7 +45,7 @@ public class WriteFlagCheck extends AbstractCheckLogic {
 		return text;
 	}
 	
-	public void execute(String path) throws IOException, InterruptedException {
+	public void execute(String path, ExecuteTask task) throws IOException {
 		if (isSelected) {
 			log.info("path = " + path + " execute : " + isSelected);
 			try {

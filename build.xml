@@ -5,7 +5,6 @@
 	<property name="build" value="build" />
 	<property name="dist"  value="dist" />
 	<property name="lib"  value="lib" />
-	<property name="catlib"  value="cat/lib" />
 	<property name="docs"  value="docs" />
 	<property name="Javadoc"  value="Javadoc" />
 	<property name="classes"  value="classes" />
@@ -16,10 +15,6 @@
     <!-- Compilation Classpath -->
     <path id="compile.classpath">
     	<fileset dir="${lib}">
-    		<include name="*.jar"/>
-    		<exclude name="*F-11.jar"/>
-    	</fileset>
-    	<fileset dir="${catlib}">
     		<include name="*.jar"/>
     		<exclude name="*F-11.jar"/>
     	</fileset>
