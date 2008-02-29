@@ -21,6 +21,7 @@
 				<component class="org.F11.scada.cat.logic.impl.TreePageCheck" />
 			</arg>
 		</initMethod>
+		<!--
 		<initMethod name="addCheckLogic" >
 			<arg>
 				<component class="org.F11.scada.cat.logic.impl.ReadFlagCheck" />
@@ -36,5 +37,6 @@
 				<component class="org.F11.scada.cat.logic.impl.HolderTypeCheck" />
 			</arg>
 		</initMethod>
+		-->
 	</component>
 </components>
