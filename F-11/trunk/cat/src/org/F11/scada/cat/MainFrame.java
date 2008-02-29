@@ -73,7 +73,7 @@ public class MainFrame extends SingleFrameApplication {
 
 	private void getCheckLogics() {
 		// cat用のコンテナを生成
-		S2Container container = S2ContainerFactory.create("app.dicon");
+		S2Container container = S2ContainerFactory.create("cat.dicon");
 		CheckLogicFactory factory =
 			(CheckLogicFactory) container.getComponent(CheckLogicFactory.class);
 		checkLogics = factory.getCheckLogics();
