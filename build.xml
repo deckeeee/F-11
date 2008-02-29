@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="F11_2_1_x" default="build" basedir=".">
 	<property name="src" value="." />
+	<property name="catsrc" value="cat/src" />
 	<property name="build" value="build" />
 	<property name="dist"  value="dist" />
 	<property name="lib"  value="lib" />
+	<property name="catlib"  value="cat/lib" />
 	<property name="docs"  value="docs" />
 	<property name="Javadoc"  value="Javadoc" />
 	<property name="classes"  value="classes" />
@@ -17,6 +19,10 @@
     		<include name="*.jar"/>
     		<exclude name="*F-11.jar"/>
     	</fileset>
+    	<fileset dir="${catlib}">
+    		<include name="*.jar"/>
+    		<exclude name="*F-11.jar"/>
+    	</fileset>
     </path>
 
 	<target name="prepare">
@@ -26,6 +32,10 @@
 
 	<target name="compile" depends="prepare">
 		<javac srcdir="${src}" destdir="${classes}" debug="on"
+			excludes="**/*Test*" encoding="Windows-31J" target="1.5" source="1.5">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="${catsrc}" destdir="${classes}" debug="on"
 			excludes="**/*Test*" encoding="Windows-31J" target="1.5" source="1.5">
 			<classpath refid="compile.classpath"/>
 		</javac>
@@ -61,6 +71,14 @@
 			</fileset>
 			<fileset dir="${src}/src">
 				<exclude name="**/resources/*"/>
+				<include name="**/*.dicon"/>
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+				<include name="**/*.txt"/>
+				<include name="**/*.sql"/>
+			</fileset>
+			<fileset dir="${catsrc}">
+				<include name="**/resources/*"/>
 				<include name="**/*.dicon"/>
 				<include name="**/*.properties"/>
 				<include name="**/*.xml"/>
