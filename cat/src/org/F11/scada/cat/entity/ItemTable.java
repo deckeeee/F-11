@@ -20,6 +20,12 @@
 
 package org.F11.scada.cat.entity;
 
+/**
+ * item_tableのエンティティーオブジェクト
+ * 
+ * @author maekawa
+ *
+ */
 public class ItemTable {
 	public static final String TABLE = "item_table";
 

@@ -34,9 +34,9 @@ public interface CheckLogic extends CheckableItem {
 	/**
 	 * チェック処理を実行します。
 	 * 
-	 * @param path TODO
-	 * @param task TODO
-	 * @throws IOException TODO
+	 * @param path 処理対象物件フォルダパス
+	 * @param task Taskオブジェクトの参照
+	 * @throws IOException ファイル処理での例外
 	 */
 	void execute(String path, ExecuteTask task)
 			throws IOException;

@@ -24,10 +24,16 @@ import java.io.File;
 
 import org.F11.scada.cat.logic.CheckLogic;
 
+/**
+ * チェックロジックの基底クラス
+ * 
+ * @author maekawa
+ *
+ */
 public abstract class AbstractCheckLogic implements CheckLogic {
 	protected static final String CHECK_LOG_FOLDER = "check";
 	protected static final String PAGEDEFINE = "pagedefine";
-
+	/** この処理が選択されているかの有無 */
 	protected boolean isSelected;
 	/** エラーログ出力ファイル */
 	protected File outFile;

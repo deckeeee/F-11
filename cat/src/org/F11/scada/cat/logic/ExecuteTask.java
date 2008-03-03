@@ -38,6 +38,7 @@ public class ExecuteTask extends Task<Void, Void> {
 	private final Log log = LogFactory.getLog(ExecuteTask.class);
 	/** チェックロジックのリスト */
 	private final List<CheckLogic> checkLogics;
+	/** 物件フォルダのパス */
 	private final String path;
 
 	public ExecuteTask(
