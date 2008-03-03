@@ -88,6 +88,9 @@ public abstract class AbstractButtonSymbol extends JButton {
 		String height = property.getProperty("height");
 		if (width != null && height != null) {
 			this.setBounds(loc.x, loc.y, Integer.parseInt(width), Integer.parseInt(height));
+			Dimension d = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
+			setPreferredSize(d);
+			setMaximumSize(d);
 		} else {
 			Dimension dm = this.getPreferredSize();
 			this.setBounds(loc.x, loc.y, dm.width, dm.height);
