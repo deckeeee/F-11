@@ -39,6 +39,12 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.Resource;
 import org.jdesktop.application.ResourceMap;
 
+/**
+ * ページ定義内のイメージファイルが、実在しているかチェックするロジック
+ * 
+ * @author maekawa
+ *
+ */
 public class ImagePathCheck extends AbstractCheckLogic {
 	private static final int EXTENTION_LENGTH = 4;
 	private static final String IMAGES_FOLDER = "/images/";
@@ -52,6 +58,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 	private String formatMsg;
 	/** イメージファイルの拡張子文字列リスト */
 	private List<String> extentions;
+	/** コメント処理中の有無 */
 	private boolean isComment;
 
 	public ImagePathCheck() {

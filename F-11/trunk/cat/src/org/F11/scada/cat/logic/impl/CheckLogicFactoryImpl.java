@@ -27,6 +27,12 @@ import java.util.List;
 import org.F11.scada.cat.logic.CheckLogic;
 import org.F11.scada.cat.logic.CheckLogicFactory;
 
+/**
+ * 処理ロジックファクトリーの実装
+ * 
+ * @author maekawa
+ *
+ */
 public class CheckLogicFactoryImpl implements CheckLogicFactory {
 	private final List<CheckLogic> checkLogics;
 

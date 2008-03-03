@@ -44,11 +44,18 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.Resource;
 import org.xml.sax.SAXException;
 
+/**
+ * ツリーに定義されているページ定義が存在しているかをチェックするロジック。
+ * 
+ * @author maekawa
+ *
+ */
 public class TreePageCheck extends AbstractCheckLogic {
 	private static final String TREE_FOLDER = "treedefine";
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
 	private static final String CHECK_LOG = "tree_page.log";
 	private final Log log = LogFactory.getLog(TreePageCheck.class);
+	/** コメント処理中の有無 */
 	private boolean isComment;
 	@Resource
 	private String text;
