@@ -51,6 +51,12 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.Resource;
 import org.xml.sax.SAXException;
 
+/**
+ * 書き込みフォルダがポリシー定義されているかチェックするロジック
+ * 
+ * @author maekawa
+ *
+ */
 public class WriteFlagCheck extends AbstractCheckLogic {
 	private static final int INCLUDE_DEFINE_LINE = 2;
 	private static final String CHECK_LOG = "write_flag.log";
