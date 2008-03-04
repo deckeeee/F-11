@@ -33,17 +33,17 @@ import org.F11.scada.applet.expression.Expression;
  * HolderStringÇï€éùÇ∑ÇÈSetÉNÉâÉXÇ≈Ç∑ÅB
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
- public class HolderStringSet implements Set, Serializable {
+ public class HolderStringSet implements Set<HolderString>, Serializable {
 	 private static final long serialVersionUID = -718325314424531400L;
 
-	 private final Set holderStringSet;
+	 private final Set<HolderString> holderStringSet;
      
      public HolderStringSet() {
          this(16);
      }
 
-     public HolderStringSet(Collection c) {
-         holderStringSet = new HashSet(c);
+     public HolderStringSet(Collection<HolderString> c) {
+         holderStringSet = new HashSet<HolderString>(c);
      }
      
      public HolderStringSet(int initialCapacity) {
@@ -51,7 +51,7 @@ import org.F11.scada.applet.expression.Expression;
      }
      
      public HolderStringSet(int initialCapacity, float loadFactor) {
-         holderStringSet = new HashSet(initialCapacity, loadFactor);
+         holderStringSet = new HashSet<HolderString>(initialCapacity, loadFactor);
      }
 
     /* (Javadoc Ç»Çµ)
@@ -85,7 +85,7 @@ import org.F11.scada.applet.expression.Expression;
     /* (Javadoc Ç»Çµ)
      * @see java.util.Collection#add(java.lang.Object)
      */
-    public boolean add(Object o) {
+    public boolean add(HolderString o) {
         return holderStringSet.add(o);
     }
 
@@ -106,35 +106,35 @@ import org.F11.scada.applet.expression.Expression;
     /* (Javadoc Ç»Çµ)
      * @see java.util.Collection#addAll(java.util.Collection)
      */
-    public boolean addAll(Collection c) {
+    public boolean addAll(Collection<? extends HolderString> c) {
         return holderStringSet.addAll(c);
     }
 
     /* (Javadoc Ç»Çµ)
      * @see java.util.Collection#containsAll(java.util.Collection)
      */
-    public boolean containsAll(Collection c) {
+    public boolean containsAll(Collection<?> c) {
         return holderStringSet.containsAll(c);
     }
 
     /* (Javadoc Ç»Çµ)
      * @see java.util.Collection#removeAll(java.util.Collection)
      */
-    public boolean removeAll(Collection c) {
+    public boolean removeAll(Collection<?> c) {
         return holderStringSet.removeAll(c);
     }
 
     /* (Javadoc Ç»Çµ)
      * @see java.util.Collection#retainAll(java.util.Collection)
      */
-    public boolean retainAll(Collection c) {
+    public boolean retainAll(Collection<?> c) {
         return holderStringSet.retainAll(c);
     }
 
     /* (Javadoc Ç»Çµ)
      * @see java.util.Collection#iterator()
      */
-    public Iterator iterator() {
+    public Iterator<HolderString> iterator() {
         return holderStringSet.iterator();
     }
 

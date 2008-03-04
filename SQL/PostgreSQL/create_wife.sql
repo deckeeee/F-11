@@ -178,6 +178,7 @@ CREATE TABLE policy_define_table (
 	renewdate TIMESTAMP,
 	PRIMARY KEY (principal, name, permission)
 );
+CREATE INDEX policy_define_table_name_idx ON policy_define_table (name);
 
 /* E_Mail送信先グループ */
 CREATE TABLE email_group_table (

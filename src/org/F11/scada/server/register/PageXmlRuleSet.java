@@ -28,7 +28,7 @@ import org.apache.commons.digester.RuleSetBase;
  * 
  * @author maekawa
  */
-class PageXmlRuleSet extends RuleSetBase {
+public class PageXmlRuleSet extends RuleSetBase {
     private static final String HOLDER_STRING = "org.F11.scada.server.register.HolderString";
     private static final String[] ATTRIBUTE_STRINGS = {"provider", "holder"};
     private static final String[] DRAWLINE_ATTRIBUTE = {"start_x", "start_y"};

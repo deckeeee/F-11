@@ -412,8 +412,9 @@ CREATE TABLE policy_define_table (
   permission varchar(50) NOT NULL default '',
   entrydate datetime default NULL,
   renewdate datetime default NULL,
-  PRIMARY KEY  (principal,name,permission)
-) TYPE=MyISAM;
+  PRIMARY KEY  (principal,name,permission),
+  KEY policy_define_table_name_idx (name)
+  ) TYPE=MyISAM;
 
 --
 -- Table structure for table `priority_table`

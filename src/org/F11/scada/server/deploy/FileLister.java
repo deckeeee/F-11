@@ -26,21 +26,23 @@ import java.util.Collection;
 
 /**
  * ファイルの一覧を生成するクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class FileLister {
-	
+
 	/**
 	 * 引数でフィルタリングされたファイルをコレクションで返します。
+	 * 
 	 * @param root 一覧生成のルートとなるディレクトリ
 	 * @param filter ファイルフィルター
 	 * @return 引数でフィルタリングされたファイルをコレクションで返します。
 	 */
-	public Collection listFiles(File root, FileFilter filter) {
+	public Collection<File> listFiles(File root, FileFilter filter) {
 		if (root == null) {
 			throw new IllegalArgumentException("root is null.");
 		}
-		
+
 		if (!root.exists()) {
 			throw new IllegalArgumentException("root not exists.");
 		}
@@ -48,11 +50,11 @@ public class FileLister {
 		if (filter == null) {
 			throw new IllegalArgumentException("filter is null.");
 		}
-		
-		ArrayList result = new ArrayList();
-		
+
+		ArrayList<File> result = new ArrayList<File>();
+
 		File[] files = root.listFiles(filter);
-		
+
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				File file = files[i];
@@ -63,7 +65,7 @@ public class FileLister {
 				}
 			}
 		}
-		
+
 		return result;
 	}
 }

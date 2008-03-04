@@ -28,6 +28,8 @@ import org.F11.scada.EnvironmentManager;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.parser.AppletFrameDefine;
 import org.F11.scada.server.frame.PageDefine;
+import org.F11.scada.server.register.PageXmlRuleSet;
+import org.apache.commons.digester.RuleSet;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -37,26 +39,44 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * ページ定義XMLとPageDefineクラスに関するユーティリティークラスです
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class PageDefineUtil {
 	/**
 	 * ストリームで渡されたXMLをパースして、ページ名称とページ定義オブジェクトのマップを生成して返します
+	 * 
 	 * @param in XMLのストリーム
 	 * @return ページ名称とページ定義オブジェクトのマップ
 	 * @throws IOException 入出力エラー発生時
 	 */
-	public static Map parse(InputStream in) throws IOException, SAXException {
-		PageHandler handler = new PageHandler();
+	public static Map<String, PageDefine> parse(InputStream in)
+			throws IOException,
+			SAXException {
+		return parse(in, new PageXmlRuleSet());
+	}
+
+	/**
+	 * ストリームで渡されたXMLをパースして、ページ名称とページ定義オブジェクトのマップを生成して返します
+	 * 
+	 * @param in XMLのストリーム
+	 * @return ページ名称とページ定義オブジェクトのマップ
+	 * @throws IOException 入出力エラー発生時
+	 */
+	public static Map<String, PageDefine> parse(InputStream in, RuleSet ruleSet)
+			throws IOException,
+			SAXException {
+		PageHandler handler = new PageHandler(ruleSet);
 		// パース
 		XMLReader parser =
-			XMLReaderFactory.createXMLReader(EnvironmentManager.get("/org.xml.sax.driver", ""));
+			XMLReaderFactory.createXMLReader(EnvironmentManager.get(
+				"/org.xml.sax.driver",
+				""));
 		parser.setContentHandler(handler);
 		InputSource is = new InputSource(in);
 		parser.parse(is);
 		return handler.getPageMap();
 	}
-
 
 	/**
 	 * ページ定義XMLをパースして、ページ名称とページ定義オブジェクトのマップを生成する、SAXハンドラクラスです
@@ -69,21 +89,28 @@ public class PageDefineUtil {
 		/** ページ定義XML文字列 */
 		private StringBuffer page;
 		/** ページ名称とページ定義オブジェクトのマップです */
-		private Map pages;
+		private Map<String, PageDefine> pages;
+		/** ホルダ抽出ルール */
+		private RuleSet ruleSet;
 
 		/**
 		 * コンストラクタ
 		 */
 		public PageHandler() {
-			super();
-			pages = new HashMap();
+			this(new PageXmlRuleSet());
 		}
 
-		/* (non-Javadoc)
-		 * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-		 */
-		public void startElement(String uri, String localName, String qName, Attributes attributes)
-			throws SAXException {
+		public PageHandler(RuleSet ruleSet) {
+			super();
+			pages = new HashMap<String, PageDefine>();
+			this.ruleSet = ruleSet;
+		}
+
+		public void startElement(
+				String uri,
+				String localName,
+				String qName,
+				Attributes attributes) throws SAXException {
 
 			if (localName.equals("page_map")) {
 				return;
@@ -91,45 +118,51 @@ public class PageDefineUtil {
 				pageName = attributes.getValue("name");
 				page = new StringBuffer();
 				page.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-				page.append("<f11:page_map xmlns:f11=\"http://www.F-11.org/scada\">");
+				page
+					.append("<f11:page_map xmlns:f11=\"http://www.F-11.org/scada\">");
 			} else if (localName.equals("statusbar")) {
 				pageName = AppletFrameDefine.ITEM_KEY_STATUSBAR;
 				page = new StringBuffer();
 				page.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-				page.append("<f11:page_map xmlns:f11=\"http://www.F-11.org/scada\">");
+				page
+					.append("<f11:page_map xmlns:f11=\"http://www.F-11.org/scada\">");
 			}
 			page.append("<").append(qName);
 			for (int i = 0; i < attributes.getLength(); i++) {
 				page.append(" ").append(attributes.getQName(i)).append("=\"");
-				page.append(WifeUtilities.htmlEscape(attributes.getValue(i))).append("\"");
+				page
+					.append(WifeUtilities.htmlEscape(attributes.getValue(i)))
+					.append("\"");
 			}
 			page.append(">");
 		}
 
-		/* (non-Javadoc)
-		 * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
-		 */
-		public void endElement(String uri, String localName, String qName) throws SAXException {
+		public void endElement(String uri, String localName, String qName)
+				throws SAXException {
 			if (localName.equals("page_map")) {
 				return;
 			}
 			page.append("</").append(qName).append(">");
 			if (localName.equals("page") || localName.equals("statusbar")) {
 				page.append("</f11:page_map>");
-				
-				pages.put(pageName, new PageDefine(System.currentTimeMillis(), page.toString()));
-			
+
+				pages.put(pageName, new PageDefine(
+					System.currentTimeMillis(),
+					page.toString(),
+					ruleSet));
+
 				pageName = null;
 				page = null;
 			}
 		}
-		
+
 		/**
 		 * パース結果より生成されたページ名称とページ定義オブジェクトのマップを返します
+		 * 
 		 * @return ページ名称とページ定義オブジェクトのマップを返します
 		 */
-		public Map getPageMap() {
-			return new HashMap(pages);
+		public Map<String, PageDefine> getPageMap() {
+			return new HashMap<String, PageDefine>(pages);
 		}
 	}
 }
