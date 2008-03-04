@@ -27,16 +27,30 @@ import java.net.URL;
 import java.util.Set;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.RuleSet;
 import org.xml.sax.SAXException;
 
-public class PageXmlUtil {
-	private PageXmlUtil() {
+/**
+ * ページ定義からホルダ定義を抽出するユーティリティークラスです。
+ * 
+ * @author maekawa
+ *
+ */
+abstract public class PageXmlUtil {
+	/**
+	 * 対象のxmlからホルダ定義を抽出します。
+	 * 
+	 * @param xml ページ定義
+	 * @return HolderStringのセット
+	 */
+	public static Set<HolderString> getHolderStrings(String xml) {
+		return getHolderStrings(xml, new PageXmlRuleSet());
 	}
 
-	public static Set getHolderStrings(String xml) {
+	public static Set<HolderString> getHolderStrings(String xml, RuleSet ruleSet) {
 		StringReader in = new StringReader(xml);
 		try {
-			return getHolderStrings(in);
+			return getHolderStrings(in, ruleSet);
 		} finally {
 			if (in != null) {
 				in.close();
@@ -44,20 +58,24 @@ public class PageXmlUtil {
 		}
 	}
 
-	public static Set getHolderStrings(Reader xml) {
+	public static Set<HolderString> getHolderStrings(Reader xml) {
+		return getHolderStrings(xml, new PageXmlRuleSet());
+	}
+
+	public static Set<HolderString> getHolderStrings(Reader xml, RuleSet ruleSet) {
 		HolderStringSet holderStringSet = new HolderStringSet();
 
 		Digester digester = new Digester();
 		URL url = PageXmlUtil.class.getResource("/resources/pagemap10.dtd");
 		if (null == url) {
 			throw new IllegalStateException(
-					"/resources/pagemap10.dtd がクラスパス上に存在しません");
+				"/resources/pagemap10.dtd がクラスパス上に存在しません");
 		}
 		digester.register("-//F-11 2.0//DTD F11 Page Configuration//EN", url
-				.toString());
+			.toString());
 		digester.setValidating(true);
 		digester.setNamespaceAware(true);
-		digester.addRuleSet(new PageXmlRuleSet());
+		digester.addRuleSet(ruleSet);
 		digester.push(holderStringSet);
 
 		try {

@@ -157,7 +157,7 @@ public class HolderDefineCheck extends AbstractCheckLogic {
 			try {
 				// ホルダがページ定義XMLに存在するか
 				boolean isFind = false;
-				in = new LineNumberReader(new FileReader(badHolder.file));
+				in = new LineNumberReader(new FileReader(badHolder.getFile()));
 				for (String line = in.readLine(); null != line; line =
 					in.readLine()) {
 					if (isFindHolder(badHolder, line)) {
@@ -178,7 +178,7 @@ public class HolderDefineCheck extends AbstractCheckLogic {
 	}
 
 	private boolean isFindHolder(BadHolder badHolder, String line) {
-		return line.indexOf(badHolder.holderString.getHolder()) > 0;
+		return line.indexOf(badHolder.getHolderString().getHolder()) > 0;
 	}
 
 	private void write(
@@ -188,23 +188,13 @@ public class HolderDefineCheck extends AbstractCheckLogic {
 			boolean notInc) {
 		out.format(
 			getFormat(notInc),
-			badHolder.file.getAbsolutePath(),
+			badHolder.getFile().getAbsolutePath(),
 			lineno,
-			badHolder.holderString.getProvider(),
-			badHolder.holderString.getHolder());
+			badHolder.getHolderString().getProvider(),
+			badHolder.getHolderString().getHolder());
 	}
 
 	private String getFormat(boolean notInc) {
 		return notInc ? logFormatInc : logFormat;
-	}
-
-	private static class BadHolder {
-		private final File file;
-		private final HolderString holderString;
-
-		public BadHolder(File file, HolderString holderString) {
-			this.file = file;
-			this.holderString = holderString;
-		}
 	}
 }

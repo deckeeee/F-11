@@ -29,7 +29,10 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+import org.F11.scada.server.register.HolderString;
+import org.F11.scada.server.register.PageXmlRuleSet;
 import org.F11.scada.server.register.PageXmlUtil;
+import org.apache.commons.digester.RuleSet;
 
 /**
  * ページ定義XMLと更新日付を保持する不変クラスです。
@@ -52,7 +55,7 @@ public class PageDefine implements Serializable {
 	/** ページ作成(更新)日付 */
 	private final long editTime;
 	/** このページが使用しているホルダのセット */
-	private final Set holdersSet;
+	private final Set<HolderString> holdersSet;
 	/** このページのキャッシュ属性 */
 	private final boolean isCache;
 	/** ページ定義の圧縮済みデータ */
@@ -66,8 +69,12 @@ public class PageDefine implements Serializable {
 	 * コンストラクタ
 	 */
 	public PageDefine(long editTime, String srcXml) {
+		this(editTime, srcXml, new PageXmlRuleSet());
+	}
+
+	public PageDefine(long editTime, String srcXml, RuleSet ruleSet) {
 		this.editTime = editTime;
-		holdersSet = PageXmlUtil.getHolderStrings(srcXml);
+		holdersSet = PageXmlUtil.getHolderStrings(srcXml, ruleSet);
 		isCache = PageXmlUtil.isCache(srcXml);
 		srcXmlData = compress(srcXml);
 	}
@@ -82,7 +89,7 @@ public class PageDefine implements Serializable {
 	 */
 	private PageDefine(
 			long editTime,
-			Set holdersSet,
+			Set<HolderString> holdersSet,
 			boolean isCache,
 			byte[] srcXmlData,
 			int srcXmlDataLength,
@@ -166,12 +173,12 @@ public class PageDefine implements Serializable {
 	 */
 	private Object readResolve() throws ObjectStreamException {
 		return new PageDefine(
-				editTime,
-				holdersSet,
-				isCache,
-				srcXmlData,
-				srcXmlDataLength,
-				compressedDataLength);
+			editTime,
+			holdersSet,
+			isCache,
+			srcXmlData,
+			srcXmlDataLength,
+			compressedDataLength);
 	}
 
 	/**
@@ -179,8 +186,8 @@ public class PageDefine implements Serializable {
 	 * 
 	 * @return このページが保持しているデータホルダーのセットを返します
 	 */
-	public Set getDataHolders() {
-		return new HashSet(holdersSet);
+	public Set<HolderString> getDataHolders() {
+		return new HashSet<HolderString>(holdersSet);
 	}
 
 	/**
@@ -200,8 +207,8 @@ public class PageDefine implements Serializable {
 		int result = 1;
 		result = prime * result + compressedDataLength;
 		result = prime * result + (int) (editTime ^ (editTime >>> 32));
-		result = prime * result
-				+ ((holdersSet == null) ? 0 : holdersSet.hashCode());
+		result =
+			prime * result + ((holdersSet == null) ? 0 : holdersSet.hashCode());
 		result = prime * result + (isCache ? 1231 : 1237);
 		result = prime * result + PageDefine.hashCode(srcXmlData);
 		result = prime * result + srcXmlDataLength;
