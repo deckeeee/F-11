@@ -21,54 +21,57 @@ package org.F11.scada.applet.symbol;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.Point;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
 
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 
 /**
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
  */
 public abstract class AbstractButtonSymbol extends JButton {
-	protected static Logger logger = Logger.getLogger(AbstractButtonSymbol.class);
+	protected static Logger logger =
+		Logger.getLogger(AbstractButtonSymbol.class);
 
 	protected AbstractButtonSymbol(SymbolProperty property) {
 		super();
-		
+
 		String value = property.getProperty("value");
 		if (value != null) {
 			Icon icon = GraphicManager.get(value);
 			if (icon != null)
-				this.setIcon(icon);
+				setIcon(icon);
 			else
-				this.setText(value);
+				setText(value);
 		}
 
 		String loc_x = property.getProperty("x");
 		String loc_y = property.getProperty("y");
 		if (loc_x != null && loc_y != null) {
-			this.setLocation(Integer.parseInt(loc_x), Integer.parseInt(loc_y));
+			setLocation(Integer.parseInt(loc_x), Integer.parseInt(loc_y));
 		}
 
 		String toolTipText = property.getProperty("tooltiptext");
 		if (toolTipText != null)
-			this.setToolTipText(toolTipText);
+			setToolTipText(toolTipText);
 
 		/** trueデフォルト */
 		if ("false".equals(property.getProperty("opaque")))
-			this.setOpaque(false);
+			setOpaque(false);
 		else
-			this.setOpaque(true);
+			setOpaque(true);
 
 		Color color = ColorFactory.getColor(property.getProperty("foreground"));
 		if (color != null)
-			this.setForeground(color);
+			setForeground(color);
 
 		color = ColorFactory.getColor(property.getProperty("background"));
 		if (color != null)
-			this.setBackground(color);
+			setBackground(color);
 
 		String fontName = property.getProperty("font");
 		String fontStyle = property.getProperty("font_style");
@@ -80,20 +83,45 @@ public abstract class AbstractButtonSymbol extends JButton {
 			else if ("ITALIC".equals(fontStyle.toUpperCase()))
 				style = Font.ITALIC;
 			Font font = new Font(fontName, style, Integer.parseInt(fontSize));
-			this.setFont(font);
+			setFont(font);
 		}
 
 		Point loc = this.getLocation();
 		String width = property.getProperty("width");
 		String height = property.getProperty("height");
+		Insets insets = getInsets(property.getProperty("margin"));
 		if (width != null && height != null) {
-			this.setBounds(loc.x, loc.y, Integer.parseInt(width), Integer.parseInt(height));
-			Dimension d = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
+			setBounds(loc.x, loc.y, Integer.parseInt(width), Integer
+				.parseInt(height));
+			Dimension d =
+				new Dimension(Integer.parseInt(width), Integer.parseInt(height));
 			setPreferredSize(d);
 			setMaximumSize(d);
+			setMargin(insets);
 		} else {
-			Dimension dm = this.getPreferredSize();
-			this.setBounds(loc.x, loc.y, dm.width, dm.height);
+			Dimension dm = getPreferredSize();
+			setBounds(loc.x, loc.y, dm.width, dm.height);
+			setMargin(insets);
 		}
+	}
+
+	private Insets getInsets(String insetStr) {
+		if (!AttributesUtil.isSpaceOrNull(insetStr)) {
+			String[] p = insetStr.split("\\,");
+			try {
+				return new Insets(
+					getParam(p[0]),
+					getParam(p[1]),
+					getParam(p[2]),
+					getParam(p[3]));
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return null;
+	}
+
+	private int getParam(String p) {
+		return Integer.parseInt(p.trim());
 	}
 }
