@@ -48,7 +48,6 @@ import org.jdesktop.application.ResourceMap;
 public class ImagePathCheck extends AbstractCheckLogic {
 	private static final int EXTENTION_LENGTH = 4;
 	private static final String IMAGES_FOLDER = "/images/";
-	private static final String CHECK_LOG = "image_path.log";
 	private static final FileFilter FILTER = new ExtFileFilter(".xml", ".inc");
 	private final Log log = LogFactory.getLog(ImagePathCheck.class);
 	/** このチェックロジックのキャプション。AppFrameworkにて注入される。 */
@@ -56,17 +55,19 @@ public class ImagePathCheck extends AbstractCheckLogic {
 	private String text;
 	@Resource
 	private String formatMsg;
+	@Resource
+	private String checkLog;
 	/** イメージファイルの拡張子文字列リスト */
 	private List<String> extentions;
 	/** コメント処理中の有無 */
 	private boolean isComment;
 
 	public ImagePathCheck() {
-		outFile = getOutFile(CHECK_LOG);
 		ResourceMap resourceMap =
 			Application.getInstance().getContext().getResourceMap(
 				AbstractCheckLogic.class);
 		resourceMap.injectFields(this);
+		outFile = getOutFile(checkLog);
 		createExtentions(resourceMap);
 	}
 
