@@ -53,7 +53,6 @@ import org.xml.sax.SAXException;
 public class TreePageCheck extends AbstractCheckLogic {
 	private static final String TREE_FOLDER = "treedefine";
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
-	private static final String CHECK_LOG = "tree_page.log";
 	private final Log log = LogFactory.getLog(TreePageCheck.class);
 	/** ÉRÉÅÉìÉgèàóùíÜÇÃóLñ≥ */
 	private boolean isComment;
@@ -65,11 +64,13 @@ public class TreePageCheck extends AbstractCheckLogic {
 	private String saxErrorMsg;
 	@Resource
 	private String formatMsg;
+	@Resource
+	private String checkLog;
 
 	public TreePageCheck() {
-		outFile = getOutFile(CHECK_LOG);
 		Application.getInstance().getContext().getResourceMap(
 			AbstractCheckLogic.class).injectFields(this);
+		outFile = getOutFile(checkLog);
 	}
 
 	@Override

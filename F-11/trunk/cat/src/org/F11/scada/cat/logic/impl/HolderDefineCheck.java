@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  */
 public class HolderDefineCheck extends AbstractCheckLogic {
 	private static final int INCLUDE_DEFINE_LINE = 2;
-	private static final String CHECK_LOG = "holder_define.log";
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
 	private final Log log = LogFactory.getLog(HolderDefineCheck.class);
 	private ItemDao itemDao;
@@ -72,11 +71,13 @@ public class HolderDefineCheck extends AbstractCheckLogic {
 	private String fileNotFoundMsg;
 	@Resource
 	private String saxErrorMsg;
+	@Resource
+	private String checkLog;
 
 	public HolderDefineCheck() {
-		outFile = getOutFile(CHECK_LOG);
 		Application.getInstance().getContext().getResourceMap(
 			AbstractCheckLogic.class).injectFields(this);
+		outFile = getOutFile(checkLog);
 	}
 
 	@Override

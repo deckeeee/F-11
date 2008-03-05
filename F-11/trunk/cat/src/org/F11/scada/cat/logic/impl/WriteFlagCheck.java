@@ -55,11 +55,10 @@ import org.xml.sax.SAXException;
  * 書き込みフォルダがポリシー定義されているかチェックするロジック
  * 
  * @author maekawa
- *
+ * 
  */
 public class WriteFlagCheck extends AbstractCheckLogic {
 	private static final int INCLUDE_DEFINE_LINE = 2;
-	private static final String CHECK_LOG = "write_flag.log";
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
 	private final Log log = LogFactory.getLog(WriteFlagCheck.class);
 	private PolicyDefineDao dao;
@@ -74,11 +73,13 @@ public class WriteFlagCheck extends AbstractCheckLogic {
 	private String fileNotFoundMsg;
 	@Resource
 	private String saxErrorMsg;
+	@Resource
+	private String checkLog;
 
 	public WriteFlagCheck() {
-		outFile = getOutFile(CHECK_LOG);
 		Application.getInstance().getContext().getResourceMap(
 			AbstractCheckLogic.class).injectFields(this);
+		outFile = getOutFile(checkLog);
 	}
 
 	public void setDao(PolicyDefineDao dao) {
