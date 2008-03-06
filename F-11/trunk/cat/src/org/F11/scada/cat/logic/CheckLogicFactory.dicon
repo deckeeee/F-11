@@ -27,12 +27,12 @@
 				<component class="org.F11.scada.cat.logic.impl.WriteFlagCheck" />
 			</arg>
 		</initMethod>
-		<!--
 		<initMethod name="addCheckLogic" >
 			<arg>
 				<component class="org.F11.scada.cat.logic.impl.ReadFlagCheck" />
 			</arg>
 		</initMethod>
+		<!--
 		<initMethod name="addCheckLogic" >
 			<arg>
 				<component class="org.F11.scada.cat.logic.impl.HolderTypeCheck" />

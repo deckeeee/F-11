@@ -55,7 +55,7 @@ public class ExecuteTask extends Task<Void, Void> {
 	protected Void doInBackground() throws InterruptedException {
 		try {
 			for (CheckLogic logic : checkLogics) {
-				if (logic.isSelected() && !isCancelled()) {
+				if (!isCancelled()) {
 					logic.execute(path, this);
 				}
 			}

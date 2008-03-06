@@ -48,14 +48,14 @@ import org.xml.sax.SAXException;
  * ツリーに定義されているページ定義が存在しているかをチェックするロジック。
  * 
  * @author maekawa
- *
+ * 
  */
 public class TreePageCheck extends AbstractCheckLogic {
 	private static final String TREE_FOLDER = "treedefine";
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
 	private final Log log = LogFactory.getLog(TreePageCheck.class);
 	/** コメント処理中の有無 */
-	private boolean isComment;
+	private final XmlCommentChecker checker;
 	@Resource
 	private String text;
 	@Resource
@@ -71,6 +71,7 @@ public class TreePageCheck extends AbstractCheckLogic {
 		Application.getInstance().getContext().getResourceMap(
 			AbstractCheckLogic.class).injectFields(this);
 		outFile = getOutFile(checkLog);
+		checker = new XmlCommentChecker();
 	}
 
 	@Override
@@ -78,8 +79,7 @@ public class TreePageCheck extends AbstractCheckLogic {
 		return text;
 	}
 
-	public void execute(String path, ExecuteTask task)
-			throws IOException {
+	public void execute(String path, ExecuteTask task) throws IOException {
 		if (isSelected) {
 			Formatter out = null;
 			try {
@@ -113,8 +113,7 @@ public class TreePageCheck extends AbstractCheckLogic {
 		return map;
 	}
 
-	private Map<String, PageDefine> getPageMap(File file)
-			throws IOException {
+	private Map<String, PageDefine> getPageMap(File file) throws IOException {
 		BufferedInputStream in = null;
 		try {
 			in = new BufferedInputStream(new FileInputStream(file));
@@ -154,8 +153,7 @@ public class TreePageCheck extends AbstractCheckLogic {
 			Formatter out,
 			String path,
 			File file,
-			Map<String, PageDefine> pageMap)
-			throws IOException {
+			Map<String, PageDefine> pageMap) throws IOException {
 		LineNumberReader in = null;
 		try {
 			in = new LineNumberReader(new FileReader(file));
@@ -177,8 +175,8 @@ public class TreePageCheck extends AbstractCheckLogic {
 			String line,
 			Map<String, PageDefine> pageMap,
 			int i) {
-		checkComment(line);
-		if (!isComment) {
+		checker.checkComment(line);
+		if (!checker.isComment()) {
 			String pageName = getPageName(line);
 			if (isContainPage(pageMap, pageName)) {
 				write(out, file, pageName, i);
@@ -192,19 +190,6 @@ public class TreePageCheck extends AbstractCheckLogic {
 		return null != pageName
 			&& !"".equals(pageName)
 			&& !pageMap.containsKey(pageName);
-	}
-
-	private void checkComment(String line) {
-		String startStr = "<!--";
-		int start = line.lastIndexOf(startStr);
-		if (start >= 0) {
-			isComment = true;
-		}
-		String endStr = "-->";
-		int end = line.lastIndexOf(endStr, start + startStr.length());
-		if (end >= 0) {
-			isComment = false;
-		}
 	}
 
 	private String getPageName(String line) {
