@@ -24,9 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
@@ -58,10 +56,11 @@ import org.xml.sax.SAXException;
  * 
  */
 public class WriteFlagCheck extends AbstractCheckLogic {
-	private static final int INCLUDE_DEFINE_LINE = 2;
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
 	private final Log log = LogFactory.getLog(WriteFlagCheck.class);
 	private PolicyDefineDao dao;
+	/** エラーホルダを出力するヘルパークラス */
+	private final ErrorHolderWriter writer;
 
 	@Resource
 	private String text;
@@ -80,6 +79,7 @@ public class WriteFlagCheck extends AbstractCheckLogic {
 		Application.getInstance().getContext().getResourceMap(
 			AbstractCheckLogic.class).injectFields(this);
 		outFile = getOutFile(checkLog);
+		writer = new ErrorHolderWriter(logFormat, logFormatInc);
 	}
 
 	public void setDao(PolicyDefineDao dao) {
@@ -142,15 +142,15 @@ public class WriteFlagCheck extends AbstractCheckLogic {
 			map.entrySet().iterator(); it.hasNext();) {
 			Map.Entry<String, PageDefine> entry = it.next();
 			Set<HolderString> set = entry.getValue().getDataHolders();
-			ArrayList<BadHolder> badHolders =
-				new ArrayList<BadHolder>(set.size());
+			ArrayList<ErrorHolder> badHolders =
+				new ArrayList<ErrorHolder>(set.size());
 			for (HolderString hs : set) {
 				List<PolicyDefineTable> list = dao.getPolicyDefines(getDto(hs));
 				if (isBad(list)) {
-					badHolders.add(new BadHolder(file, hs));
+					badHolders.add(new ErrorHolder(file, hs));
 				}
 			}
-			writeBadholder(badHolders, out);
+			writer.writeBadholder(badHolders, out);
 		}
 	}
 
@@ -170,54 +170,6 @@ public class WriteFlagCheck extends AbstractCheckLogic {
 		PolicyDefineTable policy = new PolicyDefineTable();
 		policy.setName(hs.getProvider() + "_" + hs.getHolder());
 		return policy;
-	}
-
-	private void writeBadholder(ArrayList<BadHolder> badHolders, Formatter out)
-			throws IOException {
-		for (BadHolder badHolder : badHolders) {
-			LineNumberReader in = null;
-			try {
-				// ホルダがページ定義XMLに存在するか
-				boolean isFind = false;
-				in = new LineNumberReader(new FileReader(badHolder.getFile()));
-				for (String line = in.readLine(); null != line; line =
-					in.readLine()) {
-					if (isFindHolder(badHolder, line)) {
-						write(out, badHolder, in.getLineNumber(), false);
-						isFind = true;
-					}
-				}
-				// ページ定義XMLに無かったので、実体参照によるincファイル内にあるはず。
-				if (!isFind) {
-					write(out, badHolder, INCLUDE_DEFINE_LINE, true);
-				}
-			} finally {
-				if (null != in) {
-					in.close();
-				}
-			}
-		}
-	}
-
-	private boolean isFindHolder(BadHolder badHolder, String line) {
-		return line.indexOf(badHolder.getHolderString().getHolder()) > 0;
-	}
-
-	private void write(
-			Formatter out,
-			BadHolder badHolder,
-			int lineno,
-			boolean notInc) {
-		out.format(
-			getFormat(notInc),
-			badHolder.getFile().getAbsolutePath(),
-			lineno,
-			badHolder.getHolderString().getProvider(),
-			badHolder.getHolderString().getHolder());
-	}
-
-	private String getFormat(boolean notInc) {
-		return notInc ? logFormatInc : logFormat;
 	}
 
 	/**

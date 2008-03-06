@@ -60,7 +60,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 	/** イメージファイルの拡張子文字列リスト */
 	private List<String> extentions;
 	/** コメント処理中の有無 */
-	private boolean isComment;
+	private final XmlCommentChecker checker;
 
 	public ImagePathCheck() {
 		ResourceMap resourceMap =
@@ -68,6 +68,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 				AbstractCheckLogic.class);
 		resourceMap.injectFields(this);
 		outFile = getOutFile(checkLog);
+		checker = new XmlCommentChecker();
 		createExtentions(resourceMap);
 	}
 
@@ -135,8 +136,8 @@ public class ImagePathCheck extends AbstractCheckLogic {
 			int i,
 			File file,
 			String path) {
-		checkComment(line);
-		if (!isComment) {
+		checker.checkComment(line);
+		if (!checker.isComment()) {
 			String imagePath = getImagePath(line);
 			if (null != imagePath) {
 				File image = new File(path, imagePath);
@@ -144,19 +145,6 @@ public class ImagePathCheck extends AbstractCheckLogic {
 					write(imagePath, out, i, file);
 				}
 			}
-		}
-	}
-
-	private void checkComment(String line) {
-		String startStr = "<!--";
-		int start = line.lastIndexOf(startStr);
-		if (start >= 0) {
-			isComment = true;
-		}
-		String endStr = "-->";
-		int end = line.lastIndexOf(endStr, start + startStr.length());
-		if (end >= 0) {
-			isComment = false;
 		}
 	}
 

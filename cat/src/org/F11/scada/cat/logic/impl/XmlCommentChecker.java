@@ -20,24 +20,24 @@
 
 package org.F11.scada.cat.logic.impl;
 
-import java.io.File;
+class XmlCommentChecker {
+	/** ƒRƒƒ“ƒgˆ—’†‚Ì—L–³ */
+	private boolean isComment;
 
-import org.F11.scada.server.register.HolderString;
-
-class BadHolder {
-	private final File file;
-	private final HolderString holderString;
-
-	public BadHolder(File file, HolderString holderString) {
-		this.file = file;
-		this.holderString = holderString;
+	void checkComment(String line) {
+		String startStr = "<!--";
+		int start = line.lastIndexOf(startStr);
+		if (start >= 0) {
+			isComment = true;
+		}
+		String endStr = "-->";
+		int end = line.lastIndexOf(endStr, start + startStr.length());
+		if (end >= 0) {
+			isComment = false;
+		}
 	}
-
-	public File getFile() {
-		return file;
-	}
-
-	public HolderString getHolderString() {
-		return holderString;
+	
+	boolean isComment() {
+		return isComment;
 	}
 }
