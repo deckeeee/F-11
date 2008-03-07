@@ -29,7 +29,6 @@ import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -64,14 +63,14 @@ public class MainFrame extends SingleFrameApplication {
 
 	@Override
 	protected void startup() {
-		getCheckLogics();
+		setCheckLogics();
 		JFrame mainFrame = getMainFrame();
 		mainFrame.setJMenuBar(createMenuBar());
 		mainFrame.add(createMain(), BorderLayout.CENTER);
 		show(mainFrame);
 	}
 
-	private void getCheckLogics() {
+	private void setCheckLogics() {
 		// cat用のコンテナを生成
 		S2Container container = S2ContainerFactory.create("cat.dicon");
 		CheckLogicFactory factory =
@@ -101,7 +100,7 @@ public class MainFrame extends SingleFrameApplication {
 		return getContext().getActionMap();
 	}
 
-	private JComponent createMain() {
+	private Component createMain() {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(createCenter(), BorderLayout.CENTER);
 		panel.add(createSouth(), BorderLayout.SOUTH);

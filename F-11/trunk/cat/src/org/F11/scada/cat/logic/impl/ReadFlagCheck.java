@@ -48,9 +48,15 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.Resource;
 import org.xml.sax.SAXException;
 
+/**
+ * 読み込みフラグチェックロジック
+ * 
+ * @author maekawa
+ *
+ */
 public class ReadFlagCheck extends AbstractCheckLogic {
 	private static final ExtFileFilter FILTER = new ExtFileFilter(".xml");
-	private final Log log = LogFactory.getLog(ImagePathCheck.class);
+	private final Log log = LogFactory.getLog(ReadFlagCheck.class);
 	private ItemDao itemDao;
 	/** エラーホルダを出力するヘルパークラス */
 	private final ErrorHolderWriter writer;

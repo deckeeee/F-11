@@ -20,10 +20,21 @@
 
 package org.F11.scada.cat.logic.impl;
 
+/**
+ * XMLのコメント状態を保持するヘルパークラス
+ * 
+ * @author maekawa
+ *
+ */
 class XmlCommentChecker {
 	/** コメント処理中の有無 */
 	private boolean isComment;
 
+	/**
+	 * 行を読み込んでコメント内かどうかを判定します。
+	 * 
+	 * @param line 処理する行
+	 */
 	void checkComment(String line) {
 		String startStr = "<!--";
 		int start = line.lastIndexOf(startStr);
@@ -37,6 +48,11 @@ class XmlCommentChecker {
 		}
 	}
 	
+	/**
+	 * コメント内であれば true を 無ければ false を返します。
+	 * 
+	 * @return コメント内であれば true を 無ければ false を返します。
+	 */
 	boolean isComment() {
 		return isComment;
 	}
