@@ -28,6 +28,12 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Resource;
 
+/**
+ * ホルダのタイプをチェックするロジック
+ * 
+ * @author maekawa
+ *
+ */
 public class HolderTypeCheck extends AbstractCheckLogic {
 	private final Log log = LogFactory.getLog(HolderTypeCheck.class);
 	@Resource

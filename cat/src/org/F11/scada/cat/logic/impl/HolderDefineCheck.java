@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 
 /**
  * ページに使われているホルダが、item_tableに定義されているかチェックするロジック。
- * もれているホルダが存在した場合に、check/holder_define.logに書き出す。
+ * もれているホルダが存在した場合に、check/checklogに書き出す。
  * 
  * @author maekawa
  * 

@@ -24,6 +24,12 @@ import java.io.File;
 
 import org.F11.scada.server.register.HolderString;
 
+/**
+ * エラーの発生したホルダと、そのホルダを記述しているファイルを保持するヘルパークラス
+ * 
+ * @author maekawa
+ *
+ */
 class ErrorHolder {
 	private final File file;
 	private final HolderString holderString;
