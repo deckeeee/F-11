@@ -23,14 +23,14 @@ package org.F11.scada.cat.logic.impl;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.List;
 
 /**
  * エラーの発生したホルダーの状況をログファイルにTAGS形式で出力するヘルパークラスです。
  * 
  * @author maekawa
- *
+ * 
  */
 class ErrorHolderWriter {
 	private static final int INCLUDE_DEFINE_LINE = 2;
@@ -42,7 +42,7 @@ class ErrorHolderWriter {
 		this.logFormatInc = logFormatInc;
 	}
 
-	void writeBadholder(ArrayList<ErrorHolder> badHolders, Formatter out)
+	void writeBadholder(List<ErrorHolder> badHolders, Formatter out)
 			throws IOException {
 		for (ErrorHolder badHolder : badHolders) {
 			LineNumberReader in = null;

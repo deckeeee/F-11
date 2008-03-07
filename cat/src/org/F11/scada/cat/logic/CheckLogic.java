@@ -38,6 +38,5 @@ public interface CheckLogic extends CheckableItem {
 	 * @param task Taskオブジェクトの参照
 	 * @throws IOException ファイル処理での例外
 	 */
-	void execute(String path, ExecuteTask task)
-			throws IOException;
+	void execute(String path, ExecuteTask task) throws IOException;
 }

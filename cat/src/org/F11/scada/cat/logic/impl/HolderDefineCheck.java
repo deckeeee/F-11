@@ -20,15 +20,16 @@
 
 package org.F11.scada.cat.logic.impl;
 
+import static org.F11.scada.cat.util.CollectionUtil.list;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -135,12 +136,9 @@ public class HolderDefineCheck extends AbstractCheckLogic {
 
 	private void checkMap(Map<String, PageDefine> map, Formatter out, File file)
 			throws IOException {
-		for (Iterator<Map.Entry<String, PageDefine>> it =
-			map.entrySet().iterator(); it.hasNext();) {
-			Map.Entry<String, PageDefine> entry = it.next();
+		for (Map.Entry<String, PageDefine> entry : map.entrySet()) {
 			Set<HolderString> set = entry.getValue().getDataHolders();
-			ArrayList<ErrorHolder> badHolders =
-				new ArrayList<ErrorHolder>(set.size());
+			List<ErrorHolder> badHolders = list(set.size());
 			for (HolderString hs : set) {
 				Item item = itemDao.getItem(hs);
 				if (null == item) {

@@ -66,7 +66,7 @@ public class CheckList extends JList {
 		init();
 	}
 
-	public CheckList(final List<?> listData) {
+	public <T> CheckList(final List<T> listData) {
 		this(new AbstractListModel() {
 			private static final long serialVersionUID = -7667811338375234737L;
 

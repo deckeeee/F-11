@@ -50,7 +50,7 @@ import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.S2ContainerFactory;
 
 /**
- * 定義ファイルチェックプログラム
+ * 定義ファイルチェックプログラム・メインクラス
  * 
  * @author maekawa
  * 
@@ -136,6 +136,11 @@ public class MainFrame extends SingleFrameApplication {
 		return box;
 	}
 
+	/**
+	 * チェック実行アクションです。
+	 * 
+	 * @return チェック実行タスク
+	 */
 	@Action(block = BlockingScope.APPLICATION)
 	public Task<Void, Void> executeCheckLogic() {
 		return new ExecuteTask(this, checkLogics, new File("")

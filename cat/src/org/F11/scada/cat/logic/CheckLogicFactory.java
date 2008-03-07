@@ -26,7 +26,7 @@ import java.util.List;
  * チェックロジックのファクトリーインターフェイス
  * 
  * @author maekawa
- *
+ * 
  */
 public interface CheckLogicFactory {
 	/**
@@ -35,7 +35,7 @@ public interface CheckLogicFactory {
 	 * @return チェックロジックを生成して、Listで返します。
 	 */
 	List<CheckLogic> getCheckLogics();
-	
+
 	/**
 	 * チェックロジックを追加します
 	 * 

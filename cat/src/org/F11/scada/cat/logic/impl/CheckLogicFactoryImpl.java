@@ -20,7 +20,8 @@
 
 package org.F11.scada.cat.logic.impl;
 
-import java.util.ArrayList;
+import static org.F11.scada.cat.util.CollectionUtil.list;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class CheckLogicFactoryImpl implements CheckLogicFactory {
 	private final List<CheckLogic> checkLogics;
 
 	public CheckLogicFactoryImpl() {
-		checkLogics = new ArrayList<CheckLogic>();
+		checkLogics = list();
 	}
 
 	public List<CheckLogic> getCheckLogics() {
