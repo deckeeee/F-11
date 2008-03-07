@@ -20,6 +20,8 @@
 
 package org.F11.scada.cat.logic.impl;
 
+import static org.F11.scada.cat.util.CollectionUtil.map;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +32,6 @@ import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.F11.scada.cat.logic.ExecuteTask;
@@ -100,7 +101,7 @@ public class TreePageCheck extends AbstractCheckLogic {
 	private Map<String, PageDefine> createPageMap(
 			Collection<File> files,
 			ExecuteTask task) throws IOException {
-		HashMap<String, PageDefine> map = new HashMap<String, PageDefine>();
+		Map<String, PageDefine> map = map();
 		int value = 0;
 		for (File file : files) {
 			if (task.isCancelled()) {

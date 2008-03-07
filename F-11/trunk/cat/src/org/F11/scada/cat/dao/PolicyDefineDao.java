@@ -24,8 +24,20 @@ import java.util.List;
 
 import org.F11.scada.cat.entity.PolicyDefineTable;
 
+/**
+ * ポリシーテーブルをアクセスするDaoインターフェイス
+ * 
+ * @author maekawa
+ *
+ */
 public interface PolicyDefineDao {
 	public static final Class BEAN = PolicyDefineTable.class;
 
+	/**
+	 * 指定された条件のポリシーをリストで返します。
+	 * 
+	 * @param dto 検索条件
+	 * @return 指定された条件のポリシーをリストで返します。
+	 */
 	List<PolicyDefineTable> getPolicyDefines(PolicyDefineTable dto);
 }

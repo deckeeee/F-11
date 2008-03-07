@@ -20,10 +20,10 @@
 
 package org.F11.scada.cat.util;
 
+import static org.F11.scada.cat.util.CollectionUtil.set;
+
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -42,7 +42,7 @@ public class ExtFileFilter implements FileFilter {
 	 * @param ext íäèoÇ∑ÇÈägí£éq
 	 */
 	public ExtFileFilter(String... ext) {
-		extSet = new HashSet<String>(Arrays.asList(ext));
+		extSet = set(ext);
 	}
 
 	public boolean accept(File pathname) {

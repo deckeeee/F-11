@@ -20,12 +20,13 @@
 
 package org.F11.scada.cat.logic.impl;
 
+import static org.F11.scada.cat.util.CollectionUtil.list;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 	}
 
 	private void createExtentions(ResourceMap resourceMap) {
-		extentions = new ArrayList<String>();
+		extentions = list();
 		for (int i = 0;; i++) {
 			String extention = resourceMap.getString("extentions[" + i + "]");
 			if ("//END".equalsIgnoreCase(extention)) {

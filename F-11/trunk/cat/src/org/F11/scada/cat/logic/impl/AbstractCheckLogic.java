@@ -28,7 +28,7 @@ import org.F11.scada.cat.logic.CheckLogic;
  * チェックロジックの基底クラス
  * 
  * @author maekawa
- *
+ * 
  */
 public abstract class AbstractCheckLogic implements CheckLogic {
 	protected static final String CHECK_LOG_FOLDER = "check";
