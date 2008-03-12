@@ -28,8 +28,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Collections;
@@ -53,8 +51,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.GraphicManager;
@@ -81,11 +77,13 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	private static final Set forward;
 	private static final Set backward;
 	static {
-		KeyboardFocusManager kfm = KeyboardFocusManager
-				.getCurrentKeyboardFocusManager();
-		forward = kfm
+		KeyboardFocusManager kfm =
+			KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		forward =
+			kfm
 				.getDefaultFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
-		backward = kfm
+		backward =
+			kfm
 				.getDefaultFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
 	};
 
@@ -132,8 +130,8 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 
 	public void selectAll() {
 		logger.info("selectAll開始");
-		JSpinner.NumberEditor editer = (JSpinner.NumberEditor) spinner
-				.getEditor();
+		JSpinner.NumberEditor editer =
+			(JSpinner.NumberEditor) spinner.getEditor();
 		JFormattedTextField text = editer.getTextField();
 		text.requestFocusInWindow();
 		text.selectAll();
@@ -146,14 +144,14 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 */
 	public void dispose() {
 		logger.info("dispose開始");
-		KeyboardFocusManager kfm = KeyboardFocusManager
-				.getCurrentKeyboardFocusManager();
+		KeyboardFocusManager kfm =
+			KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		kfm.setDefaultFocusTraversalKeys(
-				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
-				forward);
+			KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+			forward);
 		kfm.setDefaultFocusTraversalKeys(
-				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
-				backward);
+			KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+			backward);
 
 		super.dispose();
 	}
@@ -175,39 +173,26 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 */
 	public void setDialogValue() {
 		logger.info("setDialogValue開始");
-		double initialValue = Double
-				.parseDouble(symbol.getValue().substring(2));
-		double minValue = Math.min(Math.abs(symbol.getConvertMax()), Math
-				.abs(symbol.getConvertMin()));
-		double maxValue = Math.max(Math.abs(symbol.getConvertMax()), Math
-				.abs(symbol.getConvertMin()));
+		double initialValue =
+			Double.parseDouble(symbol.getValue().substring(2));
+		double minValue =
+			Math.min(Math.abs(symbol.getConvertMax()), Math.abs(symbol
+				.getConvertMin()));
+		double maxValue =
+			Math.max(Math.abs(symbol.getConvertMax()), Math.abs(symbol
+				.getConvertMin()));
 		String formatString = symbol.getFormatString().trim();
 		DecimalFormat format = new DecimalFormat(formatString);
 		int max = format.getMaximumFractionDigits();
 		double stepSize = Math.pow(0.1, max);
 		spinner.setModel(new SpinnerNumberModel(
-				initialValue,
-				minValue,
-				maxValue,
-				stepSize));
-		SelectedFieldNumberEditor editer = new SelectedFieldNumberEditor(
-				spinner,
-				formatString);
+			initialValue,
+			minValue,
+			maxValue,
+			stepSize));
+		SelectedFieldNumberEditor editer =
+			new SelectedFieldNumberEditor(spinner, formatString);
 		spinner.setEditor(editer);
-		JFormattedTextField text = editer.getTextField();
-		text.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				if (e.getSource() instanceof JTextComponent) {
-					final JTextComponent textComp = ((JTextComponent) e
-							.getSource());
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							textComp.selectAll();
-						}
-					});
-				}
-			}
-		});
 
 		maxLabel.setText("MAX :  " + format.format(maxValue));
 		minLabel.setText("MIN :  " + format.format(minValue));
@@ -250,28 +235,61 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 
 		JPanel tenKey = new JPanel(new GridLayout(4, 3));
 
-		TenkeyButton VK_0 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/0.png"), "0");
-		TenkeyButton VK_1 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/1.png"), "1");
-		TenkeyButton VK_2 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/2.png"), "2");
-		TenkeyButton VK_3 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/3.png"), "3");
-		TenkeyButton VK_4 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/4.png"), "4");
-		TenkeyButton VK_5 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/5.png"), "5");
-		TenkeyButton VK_6 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/6.png"), "6");
-		TenkeyButton VK_7 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/7.png"), "7");
-		TenkeyButton VK_8 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/8.png"), "8");
-		TenkeyButton VK_9 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/9.png"), "9");
-		TenkeyButton VK_PERIOD = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/f.png"), ".");
+		TenkeyButton VK_0 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/0.png"),
+				"0");
+		TenkeyButton VK_1 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/1.png"),
+				"1");
+		TenkeyButton VK_2 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/2.png"),
+				"2");
+		TenkeyButton VK_3 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/3.png"),
+				"3");
+		TenkeyButton VK_4 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/4.png"),
+				"4");
+		TenkeyButton VK_5 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/5.png"),
+				"5");
+		TenkeyButton VK_6 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/6.png"),
+				"6");
+		TenkeyButton VK_7 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/7.png"),
+				"7");
+		TenkeyButton VK_8 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/8.png"),
+				"8");
+		TenkeyButton VK_9 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/9.png"),
+				"9");
+		TenkeyButton VK_PERIOD =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/f.png"),
+				".");
 		tenKey.add(VK_7);
 		tenKey.add(VK_8);
 		tenKey.add(VK_9);
@@ -301,14 +319,14 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 
 		// タブキーの入力イベントをキーボードフォーカスマネージャーに横取りされる為、
 		// キーボードフォーカスマネージャーより、タブキーの割り当てを削除します。
-		KeyboardFocusManager kfm = KeyboardFocusManager
-				.getCurrentKeyboardFocusManager();
+		KeyboardFocusManager kfm =
+			KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		kfm.setDefaultFocusTraversalKeys(
-				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
-				Collections.EMPTY_SET);
+			KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+			Collections.EMPTY_SET);
 		kfm.setDefaultFocusTraversalKeys(
-				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
-				Collections.EMPTY_SET);
+			KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+			Collections.EMPTY_SET);
 	}
 
 	/**
@@ -368,7 +386,8 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 
 			// define action
 			Action key = new AbstractAction(textValue) {
-				private static final long serialVersionUID = -8762041381820697344L;
+				private static final long serialVersionUID =
+					-8762041381820697344L;
 
 				public void actionPerformed(ActionEvent e) {
 					pushButton();
@@ -430,20 +449,19 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		 */
 		public void pushButton() {
 			logger.info("pushButton開始");
-			JSpinner.NumberEditor editer = (JSpinner.NumberEditor) dialog.spinner
-					.getEditor();
+			JSpinner.NumberEditor editer =
+				(JSpinner.NumberEditor) dialog.spinner.getEditor();
 			JFormattedTextField field = editer.getTextField();
 			try {
 				if (field.getSelectedText() != null) {
 					field.getDocument().remove(
-							field.getSelectionStart(),
-							(field.getSelectionEnd() - field
-									.getSelectionStart()));
+						field.getSelectionStart(),
+						(field.getSelectionEnd() - field.getSelectionStart()));
 				}
 				field.getDocument().insertString(
-						field.getCaretPosition(),
-						textValue,
-						null);
+					field.getCaretPosition(),
+					textValue,
+					null);
 			} catch (javax.swing.text.BadLocationException ex) {
 				ex.printStackTrace();
 			}
@@ -480,10 +498,10 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 					action.doAction();
 				} catch (ParseException e) {
 					JOptionPane.showMessageDialog(
-							this,
-							"入力値がMIN未満又はMAXより上です。",
-							this.getClass().getName(),
-							JOptionPane.ERROR_MESSAGE);
+						this,
+						"入力値がMIN未満又はMAXより上です。",
+						this.getClass().getName(),
+						JOptionPane.ERROR_MESSAGE);
 					// e.printStackTrace();
 					return;
 				}
@@ -533,10 +551,10 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 					action.doAction();
 				} catch (ParseException e) {
 					JOptionPane.showMessageDialog(
-							this,
-							"入力値がMIN未満又はMAXより上です。",
-							this.getClass().getName(),
-							JOptionPane.ERROR_MESSAGE);
+						this,
+						"入力値がMIN未満又はMAXより上です。",
+						this.getClass().getName(),
+						JOptionPane.ERROR_MESSAGE);
 					// e.printStackTrace();
 					return;
 				}
@@ -570,10 +588,10 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 					action.doAction();
 				} catch (ParseException e) {
 					JOptionPane.showMessageDialog(
-							this,
-							"入力値がMIN未満又はMAXより上です。",
-							this.getClass().getName(),
-							JOptionPane.ERROR_MESSAGE);
+						this,
+						"入力値がMIN未満又はMAXより上です。",
+						this.getClass().getName(),
+						JOptionPane.ERROR_MESSAGE);
 					// e.printStackTrace();
 					return;
 				}
@@ -594,8 +612,8 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 
 		void doAction() throws ParseException {
 			logger.info("doAction開始");
-			JSpinner.NumberEditor editer = (JSpinner.NumberEditor) dialog.spinner
-					.getEditor();
+			JSpinner.NumberEditor editer =
+				(JSpinner.NumberEditor) dialog.spinner.getEditor();
 			JFormattedTextField field = editer.getTextField();
 			field.commitEdit();
 

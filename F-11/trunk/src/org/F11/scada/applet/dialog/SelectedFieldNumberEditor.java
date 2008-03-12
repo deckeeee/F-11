@@ -20,11 +20,17 @@
 
 package org.F11.scada.applet.dialog;
 
-import java.beans.PropertyChangeEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.text.ParseException;
 
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 
 /**
  * 常にテキストフィールドが選択済みの NumberEditor クラスです。
@@ -39,30 +45,55 @@ public class SelectedFieldNumberEditor extends JSpinner.NumberEditor {
 			JSpinner spinner,
 			String decimalFormatPattern) {
 		super(spinner, decimalFormatPattern);
+		addListeners();
 	}
 
 	public SelectedFieldNumberEditor(JSpinner spinner) {
 		super(spinner);
+		addListeners();
 	}
 
-	public void propertyChange(PropertyChangeEvent e) {
-		super.propertyChange(e);
-		final Object source = e.getSource();
-		if (source instanceof JFormattedTextField) {
-			if (SwingUtilities.isEventDispatchThread()) {
-				selectAll(source);
-			} else {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						selectAll(source);
-					}
-				});
+	private void addListeners() {
+		JFormattedTextField text = getTextField();
+		addFocusListener(text);
+		addKeyListener(text);
+	}
+
+	private void addFocusListener(JFormattedTextField text) {
+		text.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if (e.getSource() instanceof JTextComponent) {
+					final JTextComponent textComp =
+						(JTextComponent) e.getSource();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							textComp.selectAll();
+						}
+					});
+				}
 			}
-		}
+		});
+		text.setFocusLostBehavior(JFormattedTextField.COMMIT);
 	}
 
-	private void selectAll(Object source) {
-		JFormattedTextField field = (JFormattedTextField) source;
-		field.selectAll();
+	private void addKeyListener(final JFormattedTextField text) {
+		text.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					JFormattedTextField field = getTextField();
+					try {
+						field.commitEdit();
+					} catch (ParseException e1) {
+						JOptionPane.showMessageDialog(
+							text,
+							"入力値がMIN未満又はMAXより上です。",
+							this.getClass().getName(),
+							JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
 	}
 }

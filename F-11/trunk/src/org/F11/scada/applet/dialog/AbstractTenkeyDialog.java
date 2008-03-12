@@ -32,8 +32,6 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
@@ -52,8 +50,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.GraphicManager;
@@ -139,24 +135,8 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	}
 
 	private void setSpinnerEditor(String formatString) {
-		SelectedFieldNumberEditor editer = new SelectedFieldNumberEditor(
-				spinner,
-				formatString);
-		JFormattedTextField text = editer.getTextField();
-		text.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				if (e.getSource() instanceof JTextComponent) {
-					final JTextComponent textComp = (JTextComponent) e
-							.getSource();
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							textComp.selectAll();
-						}
-					});
-				}
-			}
-		});
-		text.setFocusLostBehavior(JFormattedTextField.COMMIT);
+		SelectedFieldNumberEditor editer =
+			new SelectedFieldNumberEditor(spinner, formatString);
 		spinner.setEditor(editer);
 	}
 
@@ -174,16 +154,16 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		double stepSize = Math.pow(0.1, max);
 		if (minValue > maxValue) {
 			spinner.setModel(new SpinnerNumberModel(
-					initialValue,
-					maxValue,
-					minValue,
-					stepSize));
+				initialValue,
+				maxValue,
+				minValue,
+				stepSize));
 		} else {
 			spinner.setModel(new SpinnerNumberModel(
-					initialValue,
-					minValue,
-					maxValue,
-					stepSize));
+				initialValue,
+				minValue,
+				maxValue,
+				stepSize));
 		}
 		maxLabel.setText("MAX :  " + format.format(maxValue));
 		minLabel.setText("MIN :  " + format.format(minValue));
@@ -230,30 +210,66 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		JPanel keyPanel = new JPanel(new BorderLayout());
 		JPanel tenKey = new JPanel(new GridLayout(4, 3));
 
-		TenkeyButton VK_0 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/0.png"), "0");
-		TenkeyButton VK_1 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/1.png"), "1");
-		TenkeyButton VK_2 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/2.png"), "2");
-		TenkeyButton VK_3 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/3.png"), "3");
-		TenkeyButton VK_4 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/4.png"), "4");
-		TenkeyButton VK_5 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/5.png"), "5");
-		TenkeyButton VK_6 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/6.png"), "6");
-		TenkeyButton VK_7 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/7.png"), "7");
-		TenkeyButton VK_8 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/8.png"), "8");
-		TenkeyButton VK_9 = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/9.png"), "9");
-		TenkeyButton VK_MINUS = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/-.png"), "-");
-		TenkeyButton VK_PERIOD = new TenkeyButton(this, GraphicManager
-				.get("/images/tenkey/f.png"), ".");
+		TenkeyButton VK_0 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/0.png"),
+				"0");
+		TenkeyButton VK_1 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/1.png"),
+				"1");
+		TenkeyButton VK_2 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/2.png"),
+				"2");
+		TenkeyButton VK_3 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/3.png"),
+				"3");
+		TenkeyButton VK_4 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/4.png"),
+				"4");
+		TenkeyButton VK_5 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/5.png"),
+				"5");
+		TenkeyButton VK_6 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/6.png"),
+				"6");
+		TenkeyButton VK_7 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/7.png"),
+				"7");
+		TenkeyButton VK_8 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/8.png"),
+				"8");
+		TenkeyButton VK_9 =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/9.png"),
+				"9");
+		TenkeyButton VK_MINUS =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/-.png"),
+				"-");
+		TenkeyButton VK_PERIOD =
+			new TenkeyButton(
+				this,
+				GraphicManager.get("/images/tenkey/f.png"),
+				".");
 		tenKey.add(VK_7);
 		tenKey.add(VK_8);
 		tenKey.add(VK_9);
@@ -357,7 +373,8 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 			logger.info("setInoutKeyMap開始");
 
 			Action key = new AbstractAction(textValue) {
-				private static final long serialVersionUID = 998365883073322803L;
+				private static final long serialVersionUID =
+					998365883073322803L;
 
 				public void actionPerformed(ActionEvent e) {
 					pushButton();
@@ -424,14 +441,13 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 			try {
 				if (field.getSelectedText() != null) {
 					field.getDocument().remove(
-							field.getSelectionStart(),
-							(field.getSelectionEnd() - field
-									.getSelectionStart()));
+						field.getSelectionStart(),
+						(field.getSelectionEnd() - field.getSelectionStart()));
 				}
 				field.getDocument().insertString(
-						field.getCaretPosition(),
-						textValue,
-						null);
+					field.getCaretPosition(),
+					textValue,
+					null);
 			} catch (javax.swing.text.BadLocationException ex) {
 				ex.printStackTrace();
 			}
@@ -470,10 +486,10 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 					action.doAction();
 				} catch (ParseException e) {
 					JOptionPane.showMessageDialog(
-							this,
-							"入力値がMIN未満又はMAXより上です。",
-							this.getClass().getName(),
-							JOptionPane.ERROR_MESSAGE);
+						this,
+						"入力値がMIN未満又はMAXより上です。",
+						this.getClass().getName(),
+						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				dialog.dispose();
@@ -521,17 +537,18 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 					action.doAction();
 				} catch (ParseException e) {
 					JOptionPane.showMessageDialog(
-							this,
-							"入力値がMIN未満又はMAXより上です。",
-							this.getClass().getName(),
-							JOptionPane.ERROR_MESSAGE);
+						this,
+						"入力値がMIN未満又はMAXより上です。",
+						this.getClass().getName(),
+						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
-				for (int index = dialog.listIterator().previousIndex(), current = Integer.MAX_VALUE; index != current; current = dialog
-						.listIterator().previousIndex()) {
-					TenkeyEditable te = (TenkeyEditable) dialog.listIterator()
-							.previous();
+				for (int index = dialog.listIterator().previousIndex(), current =
+					Integer.MAX_VALUE; index != current; current =
+					dialog.listIterator().previousIndex()) {
+					TenkeyEditable te =
+						(TenkeyEditable) dialog.listIterator().previous();
 					if (!te.isTabkeyMove()) {
 						continue;
 					} else {
@@ -570,17 +587,18 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 					action.doAction();
 				} catch (ParseException e) {
 					JOptionPane.showMessageDialog(
-							this,
-							"入力値がMIN未満又はMAXより上です。",
-							this.getClass().getName(),
-							JOptionPane.ERROR_MESSAGE);
+						this,
+						"入力値がMIN未満又はMAXより上です。",
+						this.getClass().getName(),
+						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
-				for (int index = dialog.listIterator().nextIndex(), current = Integer.MIN_VALUE; index != current; current = dialog
-						.listIterator().nextIndex()) {
-					TenkeyEditable te = (TenkeyEditable) dialog.listIterator()
-							.next();
+				for (int index = dialog.listIterator().nextIndex(), current =
+					Integer.MIN_VALUE; index != current; current =
+					dialog.listIterator().nextIndex()) {
+					TenkeyEditable te =
+						(TenkeyEditable) dialog.listIterator().next();
 					if (!te.isTabkeyMove()) {
 						continue;
 					} else {
