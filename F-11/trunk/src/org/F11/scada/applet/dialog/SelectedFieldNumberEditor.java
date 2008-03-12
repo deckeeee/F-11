@@ -33,7 +33,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 /**
- * 常にテキストフィールドが選択済みの NumberEditor クラスです。
+ * 常にテキストフィールドが選択済みの NumberEditor クラスです。また、テキストフィールドの編集中にEnterキーが押された場合コミットします。
  * 
  * @author maekawa
  * 
@@ -41,6 +41,15 @@ import javax.swing.text.JTextComponent;
 public class SelectedFieldNumberEditor extends JSpinner.NumberEditor {
 	private static final long serialVersionUID = 1628926888808404680L;
 
+	/**
+	 * JFormattedTextField での SpinnerNumberModel の値の表示、編集をサポートする JSpinner
+	 * エディタを構築します。この NumberEditor は、スピナーの ChangeListener および新しい
+	 * JFormattedTextField の PropertyChangeListener の両方になります。
+	 * 
+	 * @param spinner このエディタが監視するスピナーモデル
+	 * @param decimalFormatPattern テキストフィールドの値を表示し、構文解析するために使用する DecimalFormat
+	 *            オブジェクトの初期パターン
+	 */
 	public SelectedFieldNumberEditor(
 			JSpinner spinner,
 			String decimalFormatPattern) {
@@ -48,6 +57,13 @@ public class SelectedFieldNumberEditor extends JSpinner.NumberEditor {
 		addListeners();
 	}
 
+	/**
+	 * JFormattedTextField での SpinnerNumberModel の値の表示、編集をサポートする JSpinner
+	 * エディタを構築します。この NumberEditor は、スピナーの ChangeListener および新しい
+	 * JFormattedTextField の PropertyChangeListener の両方になります。
+	 * 
+	 * @param spinner このエディタが監視するスピナーモデル
+	 */
 	public SelectedFieldNumberEditor(JSpinner spinner) {
 		super(spinner);
 		addListeners();
