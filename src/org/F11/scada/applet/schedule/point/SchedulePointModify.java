@@ -64,6 +64,7 @@ public class SchedulePointModify extends JDialog {
 	private final SchedulePointTableModel model;
 	private final int row;
 	private final SchedulePointRowDto dto;
+	private SchedulePointRowDto dtoOld;
 
 	public SchedulePointModify(
 			JDialog dialog,
@@ -162,10 +163,10 @@ public class SchedulePointModify extends JDialog {
 		JButton selectButton = new JButton("‘I‘ð...");
 		selectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ScheduleGroupSelect select = new ScheduleGroupSelect(
-						dialog,
-						getScheduleGroupDto(scheNoLabel, scheName),
-						pageId);
+				ScheduleGroupSelect select =
+					new ScheduleGroupSelect(dialog, getScheduleGroupDto(
+						scheNoLabel,
+						scheName), pageId);
 				select.setVisible(true);
 				setScheduleGroup(select, scheNoLabel, scheName);
 			}
@@ -177,8 +178,17 @@ public class SchedulePointModify extends JDialog {
 				ScheduleGroupDto scheDto = select.getScheduleGroupDto();
 				scheNoLabel.setText("" + scheDto.getGroupNo());
 				scheName.setText(scheDto.getGroupName());
+				copyDto();
 				dto.setGroupNo(scheDto.getGroupNo());
 				dto.setGroupName(scheDto.getGroupName());
+			}
+
+			private void copyDto() {
+				if (null == dtoOld) {
+					dtoOld = new SchedulePointRowDto();
+				}
+				dtoOld.setGroupNo(dto.getGroupNo());
+				dtoOld.setGroupName(dto.getGroupName());
 			}
 
 			private ScheduleGroupDto getScheduleGroupDto(
@@ -222,7 +232,15 @@ public class SchedulePointModify extends JDialog {
 		JButton cancelButton = new JButton("CANCEL");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				copyDto();
 				dispose();
+			}
+
+			private void copyDto() {
+				if (null != dtoOld) {
+					dto.setGroupNo(dtoOld.getGroupNo());
+					dto.setGroupName(dtoOld.getGroupName());
+				}
 			}
 		});
 		buttonBox.add(modifyButton);
@@ -247,9 +265,8 @@ public class SchedulePointModify extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				if (util.checkPermission(rowDto)) {
-					SeparateScheduleDialog schedule = new SeparateScheduleDialog(
-							dialog,
-							rowDto);
+					SeparateScheduleDialog schedule =
+						new SeparateScheduleDialog(dialog, rowDto);
 					schedule.setVisible(true);
 				}
 			} catch (RemoteException ex) {
@@ -266,8 +283,8 @@ public class SchedulePointModify extends JDialog {
 				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				Container container = getContentPane();
 				container.add(
-						getScheduleComp(dialog, rowDto),
-						BorderLayout.CENTER);
+					getScheduleComp(dialog, rowDto),
+					BorderLayout.CENTER);
 				container.add(getCloseButton(), BorderLayout.SOUTH);
 				pack();
 				WifeUtilities.setCenter(this);
@@ -277,15 +294,11 @@ public class SchedulePointModify extends JDialog {
 					JDialog dialog,
 					SchedulePointRowDto rowDto) throws RemoteException {
 				ScheduleModel model = new SeparateScheduleModel(rowDto, dialog);
-				GraphicScheduleViewDialog view = new GraphicScheduleViewDialog(
-						dialog,
-						false,
-						model.getTopSize(),
-						true);
-				GraphicScheduleViewCreator creator = view.createView(
-						model,
-						false,
-						true);
+				GraphicScheduleViewDialog view =
+					new GraphicScheduleViewDialog(dialog, false, model
+						.getTopSize(), true);
+				GraphicScheduleViewCreator creator =
+					view.createView(model, false, true);
 				JComponent comp = creator.createView();
 				comp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 				return comp;
@@ -308,15 +321,16 @@ public class SchedulePointModify extends JDialog {
 	}
 
 	private static class CheckPermissionUtil {
-		private final Logger logger = Logger
-				.getLogger(CheckPermissionUtil.class);
+		private final Logger logger =
+			Logger.getLogger(CheckPermissionUtil.class);
 		private AccessControlable controlable;
 		private final JDialog dialog;
 
 		public CheckPermissionUtil(JDialog dialog) {
 			this.dialog = dialog;
 			try {
-				controlable = (AccessControlable) Naming.lookup(WifeUtilities
+				controlable =
+					(AccessControlable) Naming.lookup(WifeUtilities
 						.createRmiActionControl());
 			} catch (MalformedURLException e) {
 				RmiErrorUtil.error(logger, e, dialog);
@@ -329,11 +343,13 @@ public class SchedulePointModify extends JDialog {
 
 		boolean checkPermission(SchedulePointRowDto rowDto) {
 			Manager manager = Manager.getInstance();
-			WifeDataProviderProxy proxy = (WifeDataProviderProxy) manager
-					.getDataProvider(rowDto.getSeparateProvider());
+			WifeDataProviderProxy proxy =
+				(WifeDataProviderProxy) manager.getDataProvider(rowDto
+					.getSeparateProvider());
 			Subject subject = proxy.getSubject();
 			try {
-				List ret = controlable.checkPermission(
+				List ret =
+					controlable.checkPermission(
 						subject,
 						new String[][] { { getHolderId(rowDto) } });
 				Boolean[] b = (Boolean[]) ret.get(0);
