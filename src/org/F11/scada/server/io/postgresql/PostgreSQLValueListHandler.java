@@ -91,7 +91,7 @@ public class PostgreSQLValueListHandler
 	private final ItemUtil util;
 
 	/** ロギングAPI */
-	private static Logger logger;
+	private final Logger logger = Logger.getLogger(PostgreSQLValueListHandler.class);;
 
 	/** 内部保持するロギングデータの最大レコード数 */	
 	public static final int MAX_MAP_SIZE;
@@ -125,8 +125,6 @@ public class PostgreSQLValueListHandler
 		util = (ItemUtil) container.getComponent("itemutil");
 		dao_ = (MultiRecordDefineDao)container.getComponent(MultiRecordDefineDao.class);
 
-		logger = Logger.getLogger(getClass().getName());
-		
 		try {
 			createMasterSortedMap();
 		} catch (SQLException e) {
@@ -134,7 +132,7 @@ public class PostgreSQLValueListHandler
 			if (msg != null && msg.equals(SelectHandler.TABLE_NOT_FOUND)) {
 				masterSortedMap = new TreeMap();
 			} else {
-				e.printStackTrace();
+	        	logger.error("", e);
 			}
 		}
 		start();
@@ -348,7 +346,7 @@ public class PostgreSQLValueListHandler
 				multiRecord = dao_.getMultiRecordDefine(loggingTableName);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+        	logger.error("", e);
 		} finally {
 			if (rs != null) {
 				try {

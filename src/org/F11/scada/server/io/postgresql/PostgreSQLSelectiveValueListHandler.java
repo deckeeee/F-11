@@ -36,63 +36,67 @@ import java.util.TreeMap;
 import org.F11.scada.data.LoggingRowData;
 import org.F11.scada.server.io.SelectHandler;
 import org.F11.scada.server.io.SelectiveValueListHandlerElement;
+import org.apache.log4j.Logger;
 
 /**
- * ロギングデータのハンドラクラスです。
- * 定義されたロギングデータをデータストレージより読みとります。
+ * ロギングデータのハンドラクラスです。 定義されたロギングデータをデータストレージより読みとります。
  * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class PostgreSQLSelectiveValueListHandler
-		implements SelectiveValueListHandlerElement {
+public class PostgreSQLSelectiveValueListHandler implements
+		SelectiveValueListHandlerElement {
 
-    private final String name;
-    private final SelectHandler handler;
+	private final Logger logger =
+		Logger.getLogger(PostgreSQLSelectiveValueListHandler.class);
+	private final String name;
+	private final SelectHandler handler;
 
-    public PostgreSQLSelectiveValueListHandler(String name, SelectHandler handler) {
-        this.name = name;
-        this.handler = handler;
-    }
-    
-    public SortedMap getInitialData(List holderStrings) {
-        TreeMap map = new TreeMap();
-        try {
-            List list = handler.select(name, holderStrings);
-    		for (Iterator it = list.iterator(); it.hasNext(); ) {
-    			LoggingRowData data = (LoggingRowData) it.next();
-    			map.put(data.getTimestamp(), data.getList());
-    		}
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
+	public PostgreSQLSelectiveValueListHandler(
+			String name,
+			SelectHandler handler) {
+		this.name = name;
+		this.handler = handler;
+	}
 
-    public SortedMap getInitialData(List holderStrings, int limit) {
-        TreeMap map = new TreeMap();
-        try {
-            List list = handler.select(name, holderStrings, limit);
-    		for (Iterator it = list.iterator(); it.hasNext(); ) {
-    			LoggingRowData data = (LoggingRowData) it.next();
-    			map.put(data.getTimestamp(), data.getList());
-    		}
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
+	public SortedMap getInitialData(List holderStrings) {
+		TreeMap map = new TreeMap();
+		try {
+			List list = handler.select(name, holderStrings);
+			for (Iterator it = list.iterator(); it.hasNext();) {
+				LoggingRowData data = (LoggingRowData) it.next();
+				map.put(data.getTimestamp(), data.getList());
+			}
+		} catch (Exception e) {
+        	logger.error("", e);
+		}
+		return map;
+	}
 
-    public Map getUpdateLoggingData(Timestamp key, List holderStrings) {
-        Map map = new HashMap();
-        try {
-            List list = handler.select(name, holderStrings, key);
-    		for (Iterator it = list.iterator(); it.hasNext(); ) {
-    			LoggingRowData data = (LoggingRowData) it.next();
-    			map.put(data.getTimestamp(), data.getList());
-    		}
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
+	public SortedMap getInitialData(List holderStrings, int limit) {
+		TreeMap map = new TreeMap();
+		try {
+			List list = handler.select(name, holderStrings, limit);
+			for (Iterator it = list.iterator(); it.hasNext();) {
+				LoggingRowData data = (LoggingRowData) it.next();
+				map.put(data.getTimestamp(), data.getList());
+			}
+		} catch (Exception e) {
+        	logger.error("", e);
+		}
+		return map;
+	}
+
+	public Map getUpdateLoggingData(Timestamp key, List holderStrings) {
+		Map map = new HashMap();
+		try {
+			List list = handler.select(name, holderStrings, key);
+			for (Iterator it = list.iterator(); it.hasNext();) {
+				LoggingRowData data = (LoggingRowData) it.next();
+				map.put(data.getTimestamp(), data.getList());
+			}
+		} catch (Exception e) {
+        	logger.error("", e);
+		}
+		return map;
+	}
 }

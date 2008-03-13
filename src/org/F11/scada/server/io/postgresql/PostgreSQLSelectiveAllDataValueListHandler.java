@@ -64,7 +64,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler
             List list = handler.select(name, holderStrings);
     		createSortedMap(map, list);
         } catch (Exception e) {
-            e.printStackTrace();
+        	log.error("", e);
         }
         return map;
     }
@@ -75,7 +75,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler
             List list = handler.select(name, holderStrings, limit);
     		createSortedMap(map, list);
         } catch (Exception e) {
-            e.printStackTrace();
+        	log.error("", e);
         }
         return map;
     }
@@ -89,7 +89,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler
     			map.put(data.getTimestamp(), data.getList());
     		}
         } catch (Exception e) {
-            e.printStackTrace();
+        	log.error("", e);
         }
         return map;
     }
@@ -98,6 +98,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler
         try {
             return handler.first(name, holderStrings).getTimestamp();
         } catch (SQLException e) {
+        	log.error("", e);
             throw new SQLRuntimeException(e);
         }
     }
@@ -106,6 +107,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler
         try {
             return handler.last(name, holderStrings).getTimestamp();
         } catch (SQLException e) {
+        	log.error("", e);
             throw new SQLRuntimeException(e);
         }
     }
@@ -116,7 +118,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler
             List list = handler.selectBeforeAfter(name, holderStrings, start, limit);
     		createSortedMap(map, list);
         } catch (Exception e) {
-            e.printStackTrace();
+        	log.error("", e);
         }
         if (log.isDebugEnabled()) {
         	log.debug(map.firstKey() + "Å`" + map.lastKey());
