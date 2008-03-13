@@ -241,6 +241,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		testMode(mainPanel);
 		communicateWaitTime(mainPanel);
 		useFormula(mainPanel);
+		soundAttributeMode(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -475,6 +476,36 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 						manager.setPreferences(
 								"/server/systemtime/testMode",
 								"true");
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void soundAttributeMode(JPanel mainPanel) {
+		mainPanel.add(new JLabel("警報音発信モード："));
+		JComboBox cb = new JComboBox();
+		cb.addItem("属性優先");
+		cb.addItem("ポイント優先");
+		String prefix = manager.getPreferences(
+				"/server/alarm/sound/attributemode",
+				"true");
+		if ("true".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("属性優先".equals(e.getItem()))
+						manager.setPreferences(
+								"/server/alarm/sound/attributemode",
+								"true");
+					else
+						manager.setPreferences(
+								"/server/alarm/sound/attributemode",
+								"false");
 				}
 			}
 		});

@@ -21,27 +21,44 @@
 
 package org.F11.scada.server.alarm.table.postgresql;
 
+import org.F11.scada.EnvironmentManager;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
 import org.F11.scada.server.alarm.table.AlarmIndividualSettingDao;
 import org.F11.scada.server.alarm.table.AlarmIndividualSettingDto;
 import org.F11.scada.server.alarm.table.SoundStrategy;
+import org.apache.log4j.Logger;
 
 public class SoundStrategyImpl implements SoundStrategy {
+	private final Logger logger = Logger.getLogger(SoundStrategyImpl.class);
 	private AlarmIndividualSettingDao dao;
+	private final boolean isAttributeMode;
+
+	public SoundStrategyImpl() {
+		isAttributeMode =
+			Boolean.valueOf(EnvironmentManager.get(
+				"/server/alarm/sound/attributemode",
+				"true"));
+		logger.info("åxïÒâπìÆçÏÉÇÅ[Éh = " + (isAttributeMode ? "ëÆê´óDêÊ" : "É|ÉCÉìÉgóDêÊ"));
+	}
 
 	public void setDao(AlarmIndividualSettingDao dao) {
 		this.dao = dao;
 	}
 
-	public Integer getSoundType(int attributeSoundType,
+	public Integer getSoundType(
+			int attributeSoundType,
 			DataValueChangeEventKey key) {
 		return getSoundType(attributeSoundType, getSoundTypeFromDao(key));
 	}
-	
+
 	private Integer getSoundType(int attributeSoundType, int soundTypeFromDao) {
-		return (soundTypeFromDao != 0)
+		if (isAttributeMode) {
+			return (soundTypeFromDao != 0)
 				? new Integer(soundTypeFromDao)
 				: new Integer(attributeSoundType);
+		} else {
+			return soundTypeFromDao;
+		}
 	}
 
 	private int getSoundTypeFromDao(DataValueChangeEventKey key) {
