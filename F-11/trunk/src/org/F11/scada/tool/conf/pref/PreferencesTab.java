@@ -485,7 +485,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void soundAttributeMode(JPanel mainPanel) {
 		mainPanel.add(new JLabel("Œx•ñ‰¹”­Mƒ‚[ƒhF"));
 		JComboBox cb = new JComboBox();
-		cb.addItem("‘®«—Dæ");
+		cb.addItem("‘®«—Dæ(‰Šú’l)");
 		cb.addItem("ƒ|ƒCƒ“ƒg—Dæ");
 		String prefix = manager.getPreferences(
 				"/server/alarm/sound/attributemode",
@@ -498,7 +498,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("‘®«—Dæ".equals(e.getItem()))
+					if ("‘®«—Dæ(‰Šú’l)".equals(e.getItem()))
 						manager.setPreferences(
 								"/server/alarm/sound/attributemode",
 								"true");
