@@ -349,12 +349,16 @@ public abstract class LoggingSchedule {
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.SECOND, 0);
-			if (offset < cal.get(Calendar.MINUTE)) {
+			if (toMinute(offset) < cal.get(Calendar.MINUTE)) {
 				cal.add(Calendar.HOUR_OF_DAY, 1);
 			}
 			cal.set(Calendar.MINUTE, 1);
 			cal.set(Calendar.MILLISECOND, offset);
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
+		}
+		
+		private int toMinute(int offset) {
+			return offset / 60000;
 		}
 	}
 
