@@ -21,6 +21,7 @@
 package org.F11.scada.cat.logic.impl;
 
 import static org.F11.scada.cat.util.CollectionUtil.list;
+import static org.F11.scada.cat.util.CollectionUtil.set;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -30,6 +31,7 @@ import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Set;
 
 import org.F11.scada.cat.logic.ExecuteTask;
 import org.F11.scada.cat.util.ExtFileFilter;
@@ -44,7 +46,7 @@ import org.jdesktop.application.ResourceMap;
  * ページ定義内のイメージファイルが、実在しているかチェックするロジック
  * 
  * @author maekawa
- *
+ * 
  */
 public class ImagePathCheck extends AbstractCheckLogic {
 	private static final int EXTENTION_LENGTH = 4;
@@ -84,14 +86,44 @@ public class ImagePathCheck extends AbstractCheckLogic {
 		}
 	}
 
+	/**
+	 * /image/以降のファイルパスのセットを作ります
+	 * 
+	 * @param path 物件フォルダ
+	 * 
+	 * @return /image/以降のファイルパスのセットを作ります
+	 */
+	private Set<String> getImageFileNameSet(String path) {
+		FileLister lister = new FileLister();
+		Collection<File> files =
+			lister.listFiles(new File(path, IMAGES_FOLDER), new FileFilter() {
+				public boolean accept(File pathname) {
+					return true;
+				}
+			});
+		return getImageFileNameSet(files);
+	}
+
+	private Set<String> getImageFileNameSet(Collection<File> files) {
+		Set<String> set = set(files.size());
+		for (File file : files) {
+			String imagePath = file.getAbsolutePath().replace('\\', '/');
+			int start = imagePath.indexOf(IMAGES_FOLDER);
+			if (0 <= start) {
+				set.add(imagePath.substring(start));
+			}
+		}
+		return set;
+	}
+
 	@Override
 	public String toString() {
 		return text;
 	}
 
-	public void execute(String path, ExecuteTask task)
-			throws IOException {
+	public void execute(String path, ExecuteTask task) throws IOException {
 		if (isSelected) {
+			Set<String> imageFileNameSet = getImageFileNameSet(path);
 			Formatter out = null;
 			try {
 				out = new Formatter(outFile);
@@ -103,7 +135,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 					if (task.isCancelled()) {
 						break;
 					}
-					checkFile(file, out, path);
+					checkFile(file, out, path, imageFileNameSet);
 					task.setMsg(toString() + "実行中...");
 					task.setProgress(value++, files.size());
 				}
@@ -115,14 +147,23 @@ public class ImagePathCheck extends AbstractCheckLogic {
 		}
 	}
 
-	private void checkFile(File file, Formatter out, String path)
-			throws IOException {
+	private void checkFile(
+			File file,
+			Formatter out,
+			String path,
+			Set<String> imageFileNameSet) throws IOException {
 		LineNumberReader in = null;
 		try {
 			in = new LineNumberReader(new FileReader(file));
 			for (String line = in.readLine(); null != line; line =
 				in.readLine()) {
-				checkLine(line, out, in.getLineNumber(), file, path);
+				checkLine(
+					line,
+					out,
+					in.getLineNumber(),
+					file,
+					path,
+					imageFileNameSet);
 			}
 		} finally {
 			if (null != in) {
@@ -136,13 +177,13 @@ public class ImagePathCheck extends AbstractCheckLogic {
 			Formatter out,
 			int i,
 			File file,
-			String path) {
+			String path,
+			Set<String> imageFileNameSet) {
 		checker.checkComment(line);
 		if (!checker.isComment()) {
 			String imagePath = getImagePath(line);
 			if (null != imagePath) {
-				File image = new File(path, imagePath);
-				if (!image.exists()) {
+				if (!imageFileNameSet.contains(imagePath)) {
 					write(imagePath, out, i, file);
 				}
 			}

@@ -86,6 +86,17 @@ public abstract class CollectionUtil {
 	}
 
 	/**
+	 * 指定したクラスのHashSetを初期容量サイズで生成します
+	 * 
+	 * @param <T> クラス
+	 * @param size 初期容量サイズ
+	 * @return 指定したクラスのHashSetを生成します
+	 */
+	public static <T> Set<T> set(int size) {
+		return new HashSet<T>(size);
+	}
+
+	/**
 	 * 指定した内容でセットを生成します。
 	 * 
 	 * @param <T> クラス
