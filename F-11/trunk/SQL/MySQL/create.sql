@@ -426,6 +426,7 @@ CREATE TABLE priority_table (
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
+INSERT INTO priority_table VALUES(0, '');
 
 --
 -- Table structure for table `schedule_group_table`

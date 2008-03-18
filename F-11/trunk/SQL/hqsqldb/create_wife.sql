@@ -358,6 +358,7 @@ CREATE TABLE priority_table (
 	name VARCHAR(255) NOT NULL,
 	PRIMARY KEY (id)
 );
+INSERT INTO priority_table VALUES(0, '');
 
 -- 機器一覧対象ポイント
 CREATE TABLE schedule_point_table (
