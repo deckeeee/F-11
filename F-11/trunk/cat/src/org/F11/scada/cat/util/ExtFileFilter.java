@@ -52,4 +52,17 @@ public class ExtFileFilter implements FileFilter {
 			|| (periodIndex >= 0 && extSet
 				.contains(name.substring(periodIndex))) ? true : false;
 	}
+	
+	/**
+	 * フィルタリングをしないダミーフィルターを返します。
+	 * 
+	 * @return フィルタリングをしないダミーフィルターを返します。
+	 */
+	public static FileFilter getDummy() {
+		return new FileFilter() {
+			public boolean accept(File pathname) {
+				return true;
+			}
+		};
+	}
 }
