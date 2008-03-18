@@ -86,36 +86,6 @@ public class ImagePathCheck extends AbstractCheckLogic {
 		}
 	}
 
-	/**
-	 * /image/以降のファイルパスのセットを作ります
-	 * 
-	 * @param path 物件フォルダ
-	 * 
-	 * @return /image/以降のファイルパスのセットを作ります
-	 */
-	private Set<String> getImageFileNameSet(String path) {
-		FileLister lister = new FileLister();
-		Collection<File> files =
-			lister.listFiles(new File(path, IMAGES_FOLDER), new FileFilter() {
-				public boolean accept(File pathname) {
-					return true;
-				}
-			});
-		return getImageFileNameSet(files);
-	}
-
-	private Set<String> getImageFileNameSet(Collection<File> files) {
-		Set<String> set = set(files.size());
-		for (File file : files) {
-			String imagePath = file.getAbsolutePath().replace('\\', '/');
-			int start = imagePath.indexOf(IMAGES_FOLDER);
-			if (0 <= start) {
-				set.add(imagePath.substring(start));
-			}
-		}
-		return set;
-	}
-
 	@Override
 	public String toString() {
 		return text;
@@ -145,6 +115,33 @@ public class ImagePathCheck extends AbstractCheckLogic {
 				}
 			}
 		}
+	}
+
+	/**
+	 * /image/以降のファイルパスのセットを作ります
+	 * 
+	 * @param path 物件フォルダ
+	 * 
+	 * @return /image/以降のファイルパスのセットを作ります
+	 */
+	private Set<String> getImageFileNameSet(String path) {
+		FileLister lister = new FileLister();
+		Collection<File> files =
+			lister.listFiles(new File(path, IMAGES_FOLDER), ExtFileFilter
+				.getDummy());
+		return getImageFileNameSet(files);
+	}
+
+	private Set<String> getImageFileNameSet(Collection<File> files) {
+		Set<String> set = set(files.size());
+		for (File file : files) {
+			String imagePath = file.getAbsolutePath().replace('\\', '/');
+			int start = imagePath.indexOf(IMAGES_FOLDER);
+			if (0 <= start) {
+				set.add(imagePath.substring(start));
+			}
+		}
+		return set;
 	}
 
 	private void checkFile(
