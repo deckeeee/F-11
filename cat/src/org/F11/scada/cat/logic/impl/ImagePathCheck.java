@@ -93,6 +93,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 
 	public void execute(String path, ExecuteTask task) throws IOException {
 		if (isSelected) {
+			Set<String> imageFileNameSet = getImageFileNameSet(path);
 			Formatter out = null;
 			try {
 				out = new Formatter(outFile);
@@ -104,7 +105,7 @@ public class ImagePathCheck extends AbstractCheckLogic {
 					if (task.isCancelled()) {
 						break;
 					}
-					checkFile(file, out, path, getImageFileNameSet(path));
+					checkFile(file, out, path, imageFileNameSet);
 					task.setMsg(toString() + "é¿çsíÜ...");
 					task.setProgress(value++, files.size());
 				}
