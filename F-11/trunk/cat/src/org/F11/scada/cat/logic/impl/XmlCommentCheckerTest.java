@@ -20,40 +20,27 @@
 
 package org.F11.scada.cat.logic.impl;
 
-/**
- * XMLのコメント状態を保持するヘルパークラス
- * 
- * @author maekawa
- *
- */
-class XmlCommentChecker {
-	/** コメント処理中の有無 */
-	private boolean isComment;
+import junit.framework.TestCase;
 
-	/**
-	 * 行を読み込んでコメント内かどうかを判定します。
-	 * 
-	 * @param line 処理する行
-	 */
-	void checkComment(String line) {
-		String startStr = "<!--";
-		int start = line.lastIndexOf(startStr);
-		if (start >= 0) {
-			isComment = true;
-		}
-		String endStr = "-->";
-		int end = line.indexOf(endStr, start + startStr.length());
-		if (end >= 0) {
-			isComment = false;
-		}
+public class XmlCommentCheckerTest extends TestCase {
+
+	protected void setUp() throws Exception {
+		super.setUp();
 	}
-	
-	/**
-	 * コメント内であれば true を 無ければ false を返します。
-	 * 
-	 * @return コメント内であれば true を 無ければ false を返します。
-	 */
-	boolean isComment() {
-		return isComment;
+
+	protected void tearDown() throws Exception {
+		super.tearDown();
+	}
+
+	public void testIsComment() {
+		XmlCommentChecker c = new XmlCommentChecker();
+		c.checkComment("aaa<!-- aaaa -->");
+		assertFalse(c.isComment());
+		c.checkComment("<!-- aaa");
+		assertTrue(c.isComment());
+		c.checkComment("aaa");
+		assertTrue(c.isComment());
+		c.checkComment("aaa -->");
+		assertFalse(c.isComment());
 	}
 }
