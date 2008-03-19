@@ -424,11 +424,18 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 				cutwdata = wdata.valueOf(readData);
 				if (WifeQualityFlag.INITIAL == flag || !wdata.equals(cutwdata)) {
 					if (WifeQualityFlag.INITIAL == flag) {
-						dh.setValue(
+						if (!wdata.equals(cutwdata)) {
+							dh.setValue(
 								cutwdata,
 								new Date(entryTime),
-								WifeQualityFlag.GOOD,
-								true);
+								WifeQualityFlag.GOOD);
+						} else {
+							dh.setValue(
+									cutwdata,
+									new Date(entryTime),
+									WifeQualityFlag.GOOD,
+									true);
+						}
 					} else {
 						dh.setValue(
 								cutwdata,
