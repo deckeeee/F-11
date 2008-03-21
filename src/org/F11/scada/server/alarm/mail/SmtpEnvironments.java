@@ -21,8 +21,10 @@
 package org.F11.scada.server.alarm.mail;
 
 import org.F11.scada.EnvironmentManager;
+import org.apache.log4j.Logger;
 
 public class SmtpEnvironments {
+	private final Logger logger = Logger.getLogger(SmtpEnvironments.class);
 	private String servername;
 	private int serverPort;
 	private String user;
@@ -36,17 +38,22 @@ public class SmtpEnvironments {
 		servername = EnvironmentManager.get("/server/mail/smtp/servername", "");
 		from = EnvironmentManager.get("/server/mail/message/from", "");
 		subject = EnvironmentManager.get("/server/mail/message/subject", "");
-		String name = EnvironmentManager.get(
-				"/server/mail/smtp/disableHolder",
-				"");
+		String name =
+			EnvironmentManager.get("/server/mail/smtp/disableHolder", "");
 		int p = name.indexOf('_');
 		if (0 < p) {
 			disableProvider = name.substring(0, p);
 			disableHolder = name.substring(p + 1);
 		}
-		serverPort = Integer.parseInt(EnvironmentManager.get(
-				"/server/mail/smtp/port",
-				"25"));
+		String portStr = EnvironmentManager.get("/server/mail/smtp/port", "25");
+		try {
+			serverPort = Integer.parseInt(portStr);
+		} catch (Exception e) {
+			serverPort = 25;
+			logger.error(String.format(
+				"/server/mail/smtp/portで指定された\"%s\"を数値変換できません。初期値の25を設定します。",
+				portStr));
+		}
 		user = EnvironmentManager.get("/server/mail/smtp/user", "");
 		password = EnvironmentManager.get("/server/mail/smtp/password", "");
 	}
@@ -85,9 +92,21 @@ public class SmtpEnvironments {
 
 	@Override
 	public String toString() {
-		return "servername=" + servername + ", serverPort=" + serverPort
-				+ ", user=" + user + ", password=" + password + ", user="
-				+ from + ", subject=" + subject + ", disableProvider="
-				+ disableProvider + ", disableHolder=" + disableHolder;
+		return "servername="
+			+ servername
+			+ ", serverPort="
+			+ serverPort
+			+ ", user="
+			+ user
+			+ ", password="
+			+ password
+			+ ", user="
+			+ from
+			+ ", subject="
+			+ subject
+			+ ", disableProvider="
+			+ disableProvider
+			+ ", disableHolder="
+			+ disableHolder;
 	}
 }
