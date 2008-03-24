@@ -1,0 +1,34 @@
+#set( $head_title = "メンテナンス管理" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("maintenance") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+グループリスト
+<table border="0" cellpadding="5">
+  <tr>
+    <td bgcolor="Skyblue">グループ名</td>
+    <td bgcolor="Skyblue"></td>
+  </tr>
+  #foreach ($group in $groupList)
+  <tr>
+    <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($group)</td>
+    <td align="left"><a href="$link.setForward('editMaintePolicy').addQueryData('name', "$group")">変更</a></td>
+  </tr>
+  #end
+</table>
+ユーザーリスト
+<table border="0" cellpadding="5">
+  <tr>
+    <td bgcolor="Skyblue">ユーザー名</td>
+    <td bgcolor="Skyblue"></td>
+  </tr>
+  #foreach ($user in $userList)
+  <tr>
+    <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($user)</td>
+    <td align="left"><a href="$link.setForward('editMaintePolicy').addQueryData('name', "$user")">変更</a></td>
+  </tr>
+  #end
+</table>
+#end

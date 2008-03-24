@@ -1,0 +1,65 @@
+2005/11/11 hori <hori@users.sourceforge.jp>
+
+  * BugFix The month specification shifted.
+  * Update download file name.
+
+2005/11/01 hori <hori@users.sourceforge.jp>
+
+  * BugFix summary,history,career list cannot be displayed. 
+
+2005/10/28 hori <hori@users.sourceforge.jp>
+
+  * Add Database download function.
+
+2005/10/18 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * BugFix #0000071
+
+2005/10/07 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * BugFix #0000067
+
+2005/9/22 hori <hori@users.sourceforge.jp>
+
+  * Add E-mail transmission group setting. 
+  
+2005/4/20 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * BugFix #0000024
+
+2005/3/16 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * BugFix #0000017
+
+2005/3/9 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * The displayname property is added to AutoPrintForm class. 
+
+2005/2/8 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * Update PageListDao class.
+
+2004/11/29 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * Add Version 2 logic.
+
+2004/8/4 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * The annual report is added to an automatic printing function.
+
+2004/7/30 hori <hori@users.sourceforge.jp>
+
+  * Delete ./lib/ folder.
+
+2004/7/13 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * Bugfix AlarmListStore#setHistoryCondition.
+
+2004/7/12 hori <hori@users.sourceforge.jp>
+
+  * Update org.F11.scada.tool.autoprint packege.
+
+2004/6/29 Hideaki Maekawa <frdm@users.sourceforge.jp>
+
+  * Add JasperAutoPrint.
+  * Refactoring *Print*Actions. 

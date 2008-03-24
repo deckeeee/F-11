@@ -1,0 +1,18 @@
+<p>
+#if ($viewHelper.prev)
+  <a href="$link.setForward('soundIndividualList').addQueryData('offset', $viewHelper.prevOffset)">&lt; ‘O‚Ì$viewHelper.limitŒ</a>
+#end
+#foreach( $index in [0..${viewHelper.lastPageIndex}] )
+  #set ($offset = $index * $viewHelper.limit)
+  #set ($count = $index + 1)
+  #if($index != $viewHelper.pageIndex)
+    &nbsp;<a href="$link.setForward('soundIndividualList').addQueryData('offset', ${offset})">${count}</a>
+  #end
+  #if($index == $viewHelper.pageIndex)
+    &nbsp;[${count}]
+  #end
+#end
+#if ($viewHelper.next)
+  <a href="$link.setForward('soundIndividualList').addQueryData('offset', $viewHelper.nextOffset)">Ÿ‚Ì$viewHelper.limitŒ &gt;</a>
+#end
+</p>

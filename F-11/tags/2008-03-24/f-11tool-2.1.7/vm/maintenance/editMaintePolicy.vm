@@ -1,0 +1,49 @@
+#set( $head_title = "メンテナンス管理 変更" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("maintenance") )
+
+<script type="text/javascript">
+<!--
+function func() {
+    var i;
+    if (document.assigns.select.length) {
+        for (i = 0; i < document.assigns.select.length; i++) {
+            document.assigns.select[i].checked = true;
+        }
+    } else {
+        document.assigns.select.checked = true;
+    }
+}
+// -->
+</script>
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+<h3>許可する機能をチェックしてください。</h3>
+<form method="POST" name="assigns" action="$link.setAction('/setMaintePolicy')" >
+  <input type="hidden" name="name" value="$!mainteForm.name" />
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">名称</td>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($mainteForm.name)</td>
+    </tr>
+  </table>
+  <br>
+  メンテナンス機能リスト
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">許可</td>
+      <td bgcolor="Skyblue">メンテナンス機能</td>
+    </tr>
+    #foreach ($assign in $assignList)
+    <tr>
+      <td bgcolor="Khaki" align="center"><input type="checkbox" name="select" value="$assign.key" #if ($assign.assign) checked #end /></td>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($assign.name)</td>
+    </tr>
+    #end
+  </table>
+  <input type="submit" name="submit" value="送信"/>
+  <input type="reset" name="reset" value="リセット"/>
+  <input type="button" value="全選択" onclick="func()">
+#end

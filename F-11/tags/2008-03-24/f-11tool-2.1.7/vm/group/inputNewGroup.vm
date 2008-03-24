@@ -1,0 +1,32 @@
+#set( $head_title = "グループ追加" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("group") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+<form method="POST" action="$link.setAction('/addGroup')" >
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">グループ名</td>
+      <td bgcolor="Khaki" align="left"><input type="text" name="name" value="$!groupForm.name" /></td>
+    </tr>
+  </table>
+  <br>
+  ユーザーリスト
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">所属</td>
+      <td bgcolor="Skyblue">ユーザー名</td>
+    </tr>
+    #foreach ($user in $groupForm.users)
+    <tr>
+      <td bgcolor="Khaki" align="center"><input type="checkbox" name="select" value="$user" #if ($assignList.contains($user)) checked #end /></td>
+      <td bgcolor="Khaki" align="left"><input type="hidden" name="users" value="$!user" />$user</td>
+    </tr>
+    #end
+  </table>
+  <input type="submit" name="submit" value="送信"/>
+  <input type="reset" name="reset" value="リセット"/>
+</form>
+#end

@@ -1,0 +1,24 @@
+#set( $head_title = "電子メール送信先変更" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("email") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+<form method="POST" action="$link.setAction('/setEmail')" >
+  <input type="hidden" name="old_group_id" value="$!emailForm.old_group_id" />
+  <input type="hidden" name="old_address" value="$!emailForm.old_address" />
+  <table border="0" cellpadding="5" width="400">
+    <tr>
+      <td bgcolor="Skyblue">ID</td>
+      <td bgcolor="Khaki" align="left"><input type="text" size="5" name="group_id" value="$!emailForm.group_id" /></td>
+    </tr>
+    <tr>
+      <td bgcolor="Skyblue">メールアドレス</td>
+      <td bgcolor="Khaki" align="left"><input type="text" size="50" name="address" value="$!emailForm.address" /></td>
+    </tr>
+  </table>
+  <input type="submit" name="submit" value="送信"/>
+  <input type="reset" name="reset" value="リセット"/>
+</form>
+#end

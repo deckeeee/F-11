@@ -1,0 +1,37 @@
+#set( $head_title = "自動印字設定" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("autoprint") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+自動印字リスト
+<table border="0" cellpadding="4">
+  <tr>
+    <td bgcolor="Skyblue">ID</td>
+    <td bgcolor="Skyblue">自動印字</td>
+    <td bgcolor="Skyblue">時刻</td>
+    <td bgcolor="Skyblue" colspan="1" ></td>
+  </tr>
+  #foreach ($autoPrint in $autoPrintList)
+    <tr>
+      <td bgcolor="Khaki">$!autoPrint.displayname</td>
+      <td bgcolor="Khaki">#if ($autoPrint.autoflag == true) する #else しない #end</td>
+      <td bgcolor="Khaki" align="right">
+      #if ($autoPrint.schedule == 'YEARLY')
+        $autoPrint.month 月
+        $autoPrint.day 日
+      #end
+      #if ($autoPrint.schedule == 'MONTHLY')
+        $autoPrint.day 日
+      #end
+      $autoPrint.hour 時 $autoPrint.minute 分 </td>
+      <td><a href="$link.setForward('editAutoPrint').addQueryData('name',"$autoPrint.name")">変更</a></td>
+    </tr>
+  #end
+</table>
+	#if ($autoPrintList.size() > 1)
+		<h4><font color="red">同一時刻を設定しないでください。</font></h4>
+	#end
+#end
+

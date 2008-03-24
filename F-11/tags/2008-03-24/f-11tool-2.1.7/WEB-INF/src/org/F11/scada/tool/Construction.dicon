@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN"
+	"http://www.seasar.org/dtd/components23.dtd">
+<components namespace="const" >
+	<component name="regport" >
+		<description>RMIレジストリ・ポート</description>
+		@java.lang.Integer@valueOf("1099")
+	</component>
+	<component name="objport" >
+		<description>RMIオブジェクト転送ポート</description>
+		@java.lang.Integer@valueOf("51000")
+	</component>
+</components>

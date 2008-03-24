@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcatProjectProperties>
+    <rootDir>/</rootDir>
+    <exportSource>false</exportSource>
+    <reloadable>true</reloadable>
+    <redirectLogger>true</redirectLogger>
+    <updateXml>true</updateXml>
+    <warLocation>C:\Documents and Settings\maekawa\My Documents\eclipse31\workspace\f-11tool\f-11tool.war</warLocation>
+    <extraInfo></extraInfo>
+    <webPath>/F-11tool</webPath>
+</tomcatProjectProperties>

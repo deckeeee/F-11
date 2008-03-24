@@ -1,0 +1,10 @@
+/*
+  クラスの意味
+  詳細は"docs/about_stylesheet.txt"を参照してください。
+
+  data データを表示するエリア
+  menu メニューを表示するエリア 
+*/
+
+th.data {background:Skyblue}
+tr.data {background:Khaki; vertical-align:top}

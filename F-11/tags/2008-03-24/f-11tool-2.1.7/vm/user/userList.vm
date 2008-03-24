@@ -1,0 +1,27 @@
+#set( $head_title = "ユーザー管理" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("user") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+ユーザーリスト
+<a href="$link.setForward('inputNewUser')">追加</a>
+<table border="0" cellpadding="5">
+  <tr>
+    <td bgcolor="Skyblue">ユーザー名</td>
+    <td bgcolor="Skyblue" colspan="2" ></td>
+  </tr>
+  #foreach ($name in $userList)
+  <tr>
+    <td bgcolor="Khaki">$!F11util.htmlEscape($name)</td>
+    <td><a href="$link.setForward('editUser').addQueryData('name',"$name")">パスワード</a></td>
+    #if ($name == $user.name)
+    <td></td>
+    #else
+    <td><a href="$link.setForward('asksUserDelete').addQueryData('name',"$name")">削除</a></td>
+    #end
+  </tr>
+  #end
+</table>
+#end
