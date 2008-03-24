@@ -87,8 +87,8 @@ public class ExplanatoryNotes extends JPanel implements PropertyChangeListener {
 		this.graphPropertyModel = graphPropertyModel;
 		this.graphPropertyModel.addPropertyChangeListener(this);
 		this.graphPropertyModel.addPropertyChangeListener(
-				GraphPropertyModel.GROUP_CHANGE_EVENT,
-				this);
+			GraphPropertyModel.GROUP_CHANGE_EVENT,
+			this);
 		logger = Logger.getLogger(getClass().getName());
 
 		init();
@@ -208,26 +208,30 @@ public class ExplanatoryNotes extends JPanel implements PropertyChangeListener {
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		resetComponents();
+		resetComponents(evt);
 		revalidate();
 		repaint();
 	}
 
-	private void resetComponents() {
+	private void resetComponents(PropertyChangeEvent evt) {
 		colorBar.setBackground(graphPropertyModel.getColors()[seriseId]);
 		dataName.setText(graphPropertyModel.getPointName(seriseId));
 		mark.setText(graphPropertyModel.getPointMark(seriseId));
 
 		String pName = graphPropertyModel.getDataProviderName(seriseId);
-		if (pName != null && !"".equals(pName)) {
-			DataProvider provider = Manager.getInstance()
-					.getDataProvider(pName);
-			DataHolder holder = provider.getDataHolder(graphPropertyModel
+
+		if (isChangeReference(evt, pName)) {
+			DataProvider provider =
+				Manager.getInstance().getDataProvider(pName);
+			DataHolder holder =
+				provider.getDataHolder(graphPropertyModel
 					.getDataHolderName(seriseId));
 
-			ConvertValue converter = (ConvertValue) holder
+			ConvertValue converter =
+				(ConvertValue) holder
 					.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-			double ref = converter.convertInputValue(graphPropertyModel
+			double ref =
+				converter.convertInputValue(graphPropertyModel
 					.getReferenceValue(seriseId));
 
 			logdata.setText(converter.convertStringValue(ref));
@@ -248,6 +252,13 @@ public class ExplanatoryNotes extends JPanel implements PropertyChangeListener {
 			setTextProperty(cullentData);
 			add(cullentData, c);
 		}
+	}
+
+	private boolean isChangeReference(PropertyChangeEvent evt, String pName) {
+		return !GraphPropertyModel.GROUP_CHANGE_EVENT.equals(evt
+			.getPropertyName())
+			&& pName != null
+			&& !"".equals(pName);
 	}
 
 	private void setTextProperty(Component c) {

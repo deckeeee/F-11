@@ -110,19 +110,18 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 	}
 
 	private void createRowComponent() {
-		ScheduleRowModel scheduleRowModel = getScheduleRowModel(DefaultSchedulePattern.TODAY);
-		bars[scheduleModel.getDayIndex(DefaultSchedulePattern.TODAY)] = new BarMatrix(
-				scheduleRowModel);
-		buttons[scheduleModel.getDayIndex(DefaultSchedulePattern.TODAY)] = new MatrixBarButton(
-				scheduleModel.getDayIndexName(DefaultSchedulePattern.TODAY),
-				scheduleRowModel);
+		ScheduleRowModel scheduleRowModel =
+			getScheduleRowModel(DefaultSchedulePattern.TODAY);
+		bars[scheduleModel.getDayIndex(DefaultSchedulePattern.TODAY)] =
+			new BarMatrix(scheduleRowModel);
+		buttons[scheduleModel.getDayIndex(DefaultSchedulePattern.TODAY)] =
+			new MatrixBarButton(scheduleModel, DefaultSchedulePattern.TODAY);
 
 		scheduleRowModel = getScheduleRowModel(DefaultSchedulePattern.TOMORROW);
-		bars[scheduleModel.getDayIndex(DefaultSchedulePattern.TOMORROW)] = new BarMatrix(
-				scheduleRowModel);
-		buttons[scheduleModel.getDayIndex(DefaultSchedulePattern.TOMORROW)] = new MatrixBarButton(
-				scheduleModel.getDayIndexName(DefaultSchedulePattern.TOMORROW),
-				scheduleRowModel);
+		bars[scheduleModel.getDayIndex(DefaultSchedulePattern.TOMORROW)] =
+			new BarMatrix(scheduleRowModel);
+		buttons[scheduleModel.getDayIndex(DefaultSchedulePattern.TOMORROW)] =
+			new MatrixBarButton(scheduleModel, DefaultSchedulePattern.TOMORROW);
 
 		for (int i = 0; i < buttons.length; i++) {
 			if (buttons[i] == null) {
@@ -151,7 +150,8 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 		c.gridheight = 1;
 
 		GridBagConstraints bc = (GridBagConstraints) c.clone();
-		bc.insets = new Insets(
+		bc.insets =
+			new Insets(
 				BarMatrix.SCALE_HEIGHT - 3,
 				0,
 				BarMatrix.MARGIN_BOTTOM,
@@ -193,7 +193,8 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 				dialog.dispose();
 			}
 
-			dialog = new DefaultScheduleDialog(frame, matrixBarButton
+			dialog =
+				new DefaultScheduleDialog(frame, matrixBarButton
 					.getScheduleRowModel(), isSort, isLenient);
 			dialog.pack();
 
@@ -203,8 +204,8 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 			dialogBounds.x += matrixBarButton.getWidth();
 			dialogBounds.y += matrixBarButton.getHeight();
 			dialog.setLocation(WifeUtilities.getInScreenPoint(
-					screenSize,
-					dialogBounds));
+				screenSize,
+				dialogBounds));
 			dialog.show();
 		}
 	}

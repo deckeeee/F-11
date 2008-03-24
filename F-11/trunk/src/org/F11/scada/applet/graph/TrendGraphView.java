@@ -792,6 +792,7 @@ public class TrendGraphView extends Box implements PropertyChangeListener,
 			if (GraphPropertyModel.GROUP_CHANGE_EVENT.equals(evt
 					.getPropertyName())) {
 				updateGraphModel();
+				referenceValueFlag = false;
 			}
 			changeDisplayData();
 			rescale();

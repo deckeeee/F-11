@@ -118,37 +118,37 @@ public class GraphicScheduleView implements ActionListener,
 
 	private JComponent createPanel() {
 		createRowComponent();
-		ScheduleBox mainBox = new ScheduleBox(
-				BoxLayout.Y_AXIS,
-				scheduleModel,
-				buttons);
+		ScheduleBox mainBox =
+			new ScheduleBox(BoxLayout.Y_AXIS, scheduleModel, buttons);
 		if (!isNonTandT) {
 			mainBox.add(createRowPanel(0, scheduleModel.getTopSize() - 1));
 		}
 		mainBox.add(createRowPanel(scheduleModel.getTopSize(), scheduleModel
-				.getTopSize() + 6));
+			.getTopSize() + 6));
 		mainBox.add(createRowPanel(
-				scheduleModel.getTopSize() + 7,
-				scheduleModel.getPatternSize() - 1));
+			scheduleModel.getTopSize() + 7,
+			scheduleModel.getPatternSize() - 1));
 		return mainBox;
 	}
 
 	private void createRowComponent() {
 		for (int i = 0; i < scheduleModel.getTopSize() + 8; i++) {
 			ScheduleRowModel scheduleRowModel = getScheduleRowModel(i);
-			bars[scheduleModel.getDayIndex(i)] = factory
-					.getBarMatrix(scheduleRowModel);
-			MatrixBarButton button = new MatrixBarButton(scheduleRowModel);
+			bars[scheduleModel.getDayIndex(i)] =
+				factory.getBarMatrix(scheduleRowModel);
+			MatrixBarButton button =
+				new MatrixBarButton(scheduleRowModel, scheduleModel);
 			buttons[scheduleModel.getDayIndex(i)] = button;
 		}
 
 		for (int i = 0; i < scheduleModel.getPatternSize()
-				- scheduleModel.getSpecialDayOfIndex(0); i++) {
-			ScheduleRowModel scheduleRowModel = getScheduleRowModel(scheduleModel
-					.getSpecialDayOfIndex(i));
-			bars[scheduleModel.getSpecialDayOfIndex(i)] = factory
-					.getBarMatrix(scheduleRowModel);
-			MatrixBarButton button = new MatrixBarButton(scheduleRowModel);
+			- scheduleModel.getSpecialDayOfIndex(0); i++) {
+			ScheduleRowModel scheduleRowModel =
+				getScheduleRowModel(scheduleModel.getSpecialDayOfIndex(i));
+			bars[scheduleModel.getSpecialDayOfIndex(i)] =
+				factory.getBarMatrix(scheduleRowModel);
+			MatrixBarButton button =
+				new MatrixBarButton(scheduleRowModel, scheduleModel);
 			buttons[scheduleModel.getSpecialDayOfIndex(i)] = button;
 		}
 
@@ -179,7 +179,8 @@ public class GraphicScheduleView implements ActionListener,
 		c.gridheight = 1;
 
 		GridBagConstraints bc = (GridBagConstraints) c.clone();
-		bc.insets = new Insets(
+		bc.insets =
+			new Insets(
 				BarMatrix.SCALE_HEIGHT - 3,
 				0,
 				BarMatrix.MARGIN_BOTTOM,
@@ -221,7 +222,8 @@ public class GraphicScheduleView implements ActionListener,
 				dialog.dispose();
 			}
 
-			dialog = dialogFactory.getScheduleDialog(frame, matrixBarButton
+			dialog =
+				dialogFactory.getScheduleDialog(frame, matrixBarButton
 					.getScheduleRowModel());
 			dialog.pack();
 
@@ -231,8 +233,8 @@ public class GraphicScheduleView implements ActionListener,
 			dialogBounds.x += matrixBarButton.getWidth();
 			dialogBounds.y += matrixBarButton.getHeight();
 			dialog.setLocation(WifeUtilities.getInScreenPoint(
-					screenSize,
-					dialogBounds));
+				screenSize,
+				dialogBounds));
 			dialog.show();
 		}
 	}
@@ -250,10 +252,10 @@ public class GraphicScheduleView implements ActionListener,
 		private ScheduleRowModel model;
 		private final Timer timer;
 
-		MatrixBarButton(ScheduleRowModel model) {
+		MatrixBarButton(ScheduleRowModel model, ScheduleModel scheduleModel) {
 			super(model.getDayIndexName());
 			this.model = model;
-			addMouseListener(new HandCursorListener());
+			addMouseListener(new HandCursorListener(scheduleModel));
 			timer = new Timer(1000, this);
 			timer.start();
 		}
@@ -262,7 +264,7 @@ public class GraphicScheduleView implements ActionListener,
 			return model;
 		}
 
-		//日付変更時にボタンのテキストを変更する為、タイマーにて毎秒書き換える。
+		// 日付変更時にボタンのテキストを変更する為、タイマーにて毎秒書き換える。
 		public void actionPerformed(ActionEvent e) {
 			if (SwingUtilities.isEventDispatchThread()) {
 				setText(model.getDayIndexName());

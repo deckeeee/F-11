@@ -23,16 +23,19 @@ package org.F11.scada.applet.schedule;
 
 import javax.swing.JButton;
 
+import org.F11.scada.applet.symbol.HandCursorListener;
+
 class MatrixBarButton extends JButton {
 	private static final long serialVersionUID = 93040895090462708L;
-	private ScheduleRowModel model;
+	private ScheduleRowModel rowModel;
 
-	MatrixBarButton(String text, ScheduleRowModel model) {
-		super(text);
-		this.model = model;
+	MatrixBarButton(ScheduleModel scheduleModel, int index) {
+		super(scheduleModel.getDayIndexName(index));
+		this.rowModel = scheduleModel.getScheduleRowModel(index);
+		addMouseListener(new HandCursorListener(scheduleModel));
 	}
 
 	ScheduleRowModel getScheduleRowModel() {
-		return model;
+		return rowModel;
 	}
 }

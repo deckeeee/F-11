@@ -543,7 +543,7 @@ public class WifeCalendar {
 			}
 			JPanel p = new JPanel(new GridLayout(MONTH_ROW_COUNT, WEEK_COUNT));
 			JLabel[] weekLabels = createWeekLabels();
-			JButton[][] dayButtons = createDayButtons(monthPanel);
+			JButton[][] dayButtons = createDayButtons(monthPanel, monthPanel);
 
 			for (int i = 0; i < MONTH_ROW_COUNT; i++) {
 				for (int j = 0; j < WEEK_COUNT; j++) {
@@ -584,13 +584,14 @@ public class WifeCalendar {
 
 		/**
 		 * デフォルトのロケールを使用して、当月のボタン配列を作成します。
+		 * @param monthPanel 
 		 */
-		private JButton[][] createDayButtons(ActionListener l) {
+		private JButton[][] createDayButtons(ActionListener l, MonthPanel monthPanel) {
 			int row = MONTH_ROW_COUNT - 1;
 			DayButton[][] dayButtons = new DayButton[row][WEEK_COUNT];
 			for (int i = 0; i < row; i++) {
 				for (int j = 0; j < WEEK_COUNT; j++) {
-					dayButtons[i][j] = new DayButton();
+					dayButtons[i][j] = new DayButton(monthPanel);
 					dayButtons[i][j].setMargin(new Insets(0, 0, 0, 0));
 					dayButtons[i][j].setEnabled(false);
 				}
@@ -880,9 +881,9 @@ public class WifeCalendar {
 		    private static final long serialVersionUID = -4266480488017783674L;
 			private int dayOfWeek;
 
-			DayButton() {
+			DayButton(MonthPanel monthPanel) {
 				super();
-				addMouseListener(new HandCursorListener());
+				addMouseListener(new HandCursorListener(monthPanel));
 			}
 
 			void setDayOfWeek(int dayOfWeek) {

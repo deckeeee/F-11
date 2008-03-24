@@ -28,14 +28,37 @@ import java.awt.event.MouseEvent;
 
 import org.F11.scada.applet.ClientConfiguration;
 
+/**
+ * 変更可能なシンボル上で手のひらカーソルにするマウスリスナー。
+ * 
+ * @author maekawa
+ * 
+ */
 public class HandCursorListener extends MouseAdapter {
-	public static final boolean handcursor = new ClientConfiguration()
-			.getBoolean("xwife.applet.Applet.symbol.handcursor", false);
+	public static final boolean handcursor =
+		new ClientConfiguration().getBoolean(
+			"xwife.applet.Applet.symbol.handcursor",
+			false);
+	private final Editable editable;
+
+	public HandCursorListener() {
+		this(null);
+	}
+
+	public HandCursorListener(Editable editable) {
+		this.editable = editable;
+	}
 
 	public void mouseEntered(MouseEvent e) {
 		if (handcursor) {
 			Component comp = (Component) e.getSource();
-			comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			if (null == editable) {
+				comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			} else if (editable.isEditable()) {
+				comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			} else {
+				comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
 		}
 	}
 }
