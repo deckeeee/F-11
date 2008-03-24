@@ -62,7 +62,8 @@ public class ListTable extends JTable implements SymbolCollection,
 	private static boolean isCustomTipLocation;
 	static {
 		ClientConfiguration configuration = new ClientConfiguration();
-		isCustomTipLocation = configuration.getBoolean(
+		isCustomTipLocation =
+			configuration.getBoolean(
 				"xwife.applet.Applet.customTipLocation",
 				false);
 	}
@@ -84,7 +85,7 @@ public class ListTable extends JTable implements SymbolCollection,
 
 			public void mouseReleased(MouseEvent e) {
 				if (row == rowAtPoint(e.getPoint())
-						&& column == columnAtPoint(e.getPoint())) {
+					&& column == columnAtPoint(e.getPoint())) {
 					this_mouseClicked(e);
 				}
 			}
@@ -124,7 +125,7 @@ public class ListTable extends JTable implements SymbolCollection,
 				para.add(new Integer(row));
 				para.add(new Integer(column));
 				dialog = edit.getDialog(frame, collec, para);
-//				dialog.selectAll();
+				// dialog.selectAll();
 				dialog.show();
 			}
 		} else if (TrendJumpButton.class.isInstance(o)) {
@@ -136,7 +137,7 @@ public class ListTable extends JTable implements SymbolCollection,
 
 	public ListIterator listIterator(List para) {
 		return new TableListIterator(this, (Class) para.get(0), (Integer) para
-				.get(1), (Integer) para.get(2));
+			.get(1), (Integer) para.get(2));
 	}
 
 	/**
@@ -167,12 +168,12 @@ public class ListTable extends JTable implements SymbolCollection,
 			} else {
 				setIcon(null);
 				return super.getTableCellRendererComponent(
-						table,
-						value,
-						isSelected,
-						hasFocus,
-						row,
-						column);
+					table,
+					value,
+					isSelected,
+					hasFocus,
+					row,
+					column);
 			}
 		}
 	}
@@ -187,21 +188,21 @@ public class ListTable extends JTable implements SymbolCollection,
 				Class symbolClass,
 				Integer row,
 				Integer column) {
-			symbols = new ArrayList(table.getRowCount()
-					* table.getColumnCount());
+			symbols =
+				new ArrayList(table.getRowCount() * table.getColumnCount());
 
-			for (int i = 0, currentRow = row.intValue(), currentColumn = column
-					.intValue(); i < table.getRowCount()
-					* table.getColumnCount(); i++) {
+			for (int i = 0, currentRow = row.intValue(), currentColumn =
+				column.intValue(); i < table.getRowCount()
+				* table.getColumnCount(); i++) {
 				Object o = table.getValueAt(currentRow, currentColumn);
 				if (symbolClass.isInstance(o) && o instanceof Editable) {
 					Editable edit = (Editable) o;
 					Symbol s = (Symbol) edit;
 					if (edit.isEditable() && (s.isVisible() || s.isBlink())) {
 						edit.setPoint(TableUtil.getDialogPoint(
-								table,
-								currentRow,
-								currentColumn));
+							table,
+							currentRow,
+							currentColumn));
 						symbols.add(edit);
 					}
 				}
@@ -315,7 +316,7 @@ public class ListTable extends JTable implements SymbolCollection,
 		if (obj instanceof Symbol) {
 			Symbol symbol = (Symbol) obj;
 			if (null == symbol.getToolTipText()
-					|| "".equals(symbol.getToolTipText())) {
+				|| "".equals(symbol.getToolTipText())) {
 				return null;
 			}
 		}
@@ -368,7 +369,16 @@ public class ListTable extends JTable implements SymbolCollection,
 				Object obj = getTableObject(e);
 				Component comp = (Component) e.getSource();
 				if (obj instanceof Editable || obj instanceof TrendJumpButton) {
-					comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+					if (obj instanceof Editable) {
+						Editable editable = (Editable) obj;
+						if (editable.isEditable()) {
+							comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+						} else {
+							comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						}
+					} else {
+						comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+					}
 				} else {
 					comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}

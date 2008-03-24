@@ -21,7 +21,6 @@
 package org.F11.scada.applet.symbol;
 
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
@@ -102,15 +101,10 @@ public class ImageSymbolEditable extends ImageSymbol implements DigitalEditable 
 					this_mouseClicked(e);
 				}
 			}
-
-			public void mouseEntered(MouseEvent e) {
-				if (HandCursorListener.handcursor) {
-					Component comp = (Component) e.getSource();
-					comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				}
-			}
 		});
 
+		addMouseListener(new HandCursorListener(this));
+		
 		buttonTexts = new ArrayList();
 		actions = new ArrayList();
 	}

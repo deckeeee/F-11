@@ -109,7 +109,7 @@ public class TableScheduleView {
 			TableColumn column = dc.getColumn(i);
 			column.setCellRenderer(renderer);
 		}
-		table.addMouseMotionListener(new TableHandCursorListener());
+		table.addMouseMotionListener(new TableHandCursorListener(scheduleModel));
 	}
 
 	/**
@@ -351,13 +351,23 @@ public class TableScheduleView {
 	}
 
 	private static class TableHandCursorListener extends MouseMotionAdapter {
+		private final ScheduleModel scheduleModel;
+
+		public TableHandCursorListener(ScheduleModel scheduleModel) {
+			this.scheduleModel = scheduleModel;
+		}
+
 		public void mouseMoved(MouseEvent e) {
 			if (HandCursorListener.handcursor) {
 				JTable table = (JTable) e.getComponent();
 				final int column = table.columnAtPoint(e.getPoint());
 				final Component comp = (Component) e.getSource();
 				if (0 == column) {
-					comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+					if (scheduleModel.isEditable()) {
+						comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+					} else {
+						comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					}
 				} else {
 					comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}

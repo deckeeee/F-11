@@ -107,9 +107,9 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 	private void createRowComponent() {
 		for (int i = 0; i < bars.length; i++) {
 			ScheduleRowModel scheduleRowModel = getScheduleRowModel(i);
-			bars[scheduleModel.getDayIndex(i)] = new BarMatrix(scheduleRowModel);
-			MatrixBarButton button = new MatrixBarButton(scheduleModel
-					.getDayIndexName(i), scheduleRowModel);
+			bars[scheduleModel.getDayIndex(i)] =
+				new BarMatrix(scheduleRowModel);
+			MatrixBarButton button = new MatrixBarButton(scheduleModel, i);
 			button.addActionListener(this);
 			button.setPreferredSize(new Dimension(120, BarMatrix.BAR_HEIGHT));
 			buttons[scheduleModel.getDayIndex(i)] = button;
@@ -132,7 +132,8 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 		c.gridheight = 1;
 
 		GridBagConstraints bc = (GridBagConstraints) c.clone();
-		bc.insets = new Insets(
+		bc.insets =
+			new Insets(
 				BarMatrix.SCALE_HEIGHT - 3,
 				0,
 				BarMatrix.MARGIN_BOTTOM,
@@ -174,7 +175,8 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 				dialog.dispose();
 			}
 
-			dialog = new DefaultScheduleDialog(frame, matrixBarButton
+			dialog =
+				new DefaultScheduleDialog(frame, matrixBarButton
 					.getScheduleRowModel(), isSort, isLenient);
 			dialog.pack();
 
@@ -184,8 +186,8 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 			dialogBounds.x += matrixBarButton.getWidth();
 			dialogBounds.y += matrixBarButton.getHeight();
 			dialog.setLocation(WifeUtilities.getInScreenPoint(
-					screenSize,
-					dialogBounds));
+				screenSize,
+				dialogBounds));
 			dialog.setModal(true);
 			dialog.show();
 		}

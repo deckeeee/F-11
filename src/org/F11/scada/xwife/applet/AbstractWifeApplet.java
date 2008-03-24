@@ -490,6 +490,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		synchronized (tree) {
 			tree.setSelectionPath(path);
 			tree.expandPath(path);
+			tree.scrollPathToVisible(path);
 			tree.requestFocusInWindow();
 		}
 	}
@@ -551,6 +552,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		synchronized (tree) {
 			tree.setSelectionPath(path, pageChange);
 			tree.expandPath(path);
+			tree.scrollPathToVisible(path);
 			tree.requestFocusInWindow();
 		}
 	}
@@ -833,6 +835,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 						synchronized (applet.tree) {
 							applet.tree.setSelectionPath(path);
 							applet.tree.expandPath(path);
+							applet.tree.scrollPathToVisible(path);
 							applet.tree.requestFocusInWindow();
 						}
 					}
