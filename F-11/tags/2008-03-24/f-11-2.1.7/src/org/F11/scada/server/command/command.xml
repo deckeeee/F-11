@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE command-provider PUBLIC "-//F-11 2.0//DTD F11 Command Configuration//EN" 
+	"http://f-11.sourceforge.jp/dtds/command20.dtd">
+
+<!--
+	コマンドプロバイダ定義
+-->
+
+<command-provider>
+	<command provider="P1" holder="D_1900000_Digital">
+		<class className="org.F11.scada.server.command.FileWriteCommand">
+			<property name="path" value="c:/temp/D1900000.txt" />
+		</class>
+	</command>
+
+	<command provider="P1" holder="D_1900001_Digital">
+		<class className="org.F11.scada.server.command.TestCommandClass">
+			<property name="key" value="value" />
+			<property name="name" value="name" />
+			<property name="none" value="none" />
+		</class>
+		<class className="org.F11.scada.server.command.TestCommandClass">
+			<property name="key" value="value2" />
+			<property name="name" value="name2" />
+			<property name="none" value="none2" />
+		</class>
+	</command>
+
+	<expression value="P1_D_1900003_Digital || P1_D_1900004_Digital">
+		<class className="org.F11.scada.server.command.WriteTermCommand">
+			<property name="provider" value="P1"/>
+			<property name="holder" value="D_500_BcdSingle"/>
+			<property name="value" value="50"/>
+		</class>
+	</expression>
+</command-provider>
