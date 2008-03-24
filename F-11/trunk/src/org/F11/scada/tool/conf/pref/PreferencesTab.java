@@ -31,6 +31,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -71,8 +72,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("データプロバイダーサーバー名(IP)："));
 		Box box = new Box(BoxLayout.X_AXIS);
 		serverIp.setText(manager.getPreferences(
-				"/server/rmi/managerdelegator/name",
-				""));
+			"/server/rmi/managerdelegator/name",
+			""));
 		serverIp.getDocument().addDocumentListener(this);
 		box.add(serverIp);
 		JButton but = new JButton("詳細");
@@ -87,8 +88,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("コレクションサーバー名(IP)："));
 		box = new Box(BoxLayout.X_AXIS);
 		collectorIp.setText(manager.getPreferences(
-				"/server/rmi/collectorserver/name",
-				""));
+			"/server/rmi/collectorserver/name",
+			""));
 		collectorIp.getDocument().addDocumentListener(this);
 		box.add(collectorIp);
 		but = new JButton("詳細");
@@ -117,8 +118,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("メールサーバー名（空白でメール無し）："));
 		box = new Box(BoxLayout.X_AXIS);
 		mailIp.setText(manager.getPreferences(
-				"/server/mail/smtp/servername",
-				""));
+			"/server/mail/smtp/servername",
+			""));
 		mailIp.getDocument().addDocumentListener(this);
 		box.add(mailIp);
 		but = new JButton("詳細");
@@ -133,8 +134,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報一覧プリンタ名（空白で印字無し）："));
 		box = new Box(BoxLayout.X_AXIS);
 		prnName.setText(manager.getPreferences(
-				"/server/alarm/print/printservice",
-				""));
+			"/server/alarm/print/printservice",
+			""));
 		prnName.getDocument().addDocumentListener(this);
 		box.add(prnName);
 		but = new JButton("詳細");
@@ -170,27 +171,27 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		// サーバータイトル
 		mainPanel.add(new JLabel("サーバータイトル："));
 		serverTitle.setText(manager.getPreferences(
-				"/server/title",
-				"F-11 Server"));
+			"/server/title",
+			"F-11 Server"));
 		serverTitle.getDocument().addDocumentListener(this);
 		mainPanel.add(serverTitle);
 		// サーバー起動待機時間(秒)
 		mainPanel.add(new JLabel("サーバー起動待機時間(秒)："));
 		startupWait
-				.setText(manager.getPreferences("/server/startup/wait", "0"));
+			.setText(manager.getPreferences("/server/startup/wait", "0"));
 		startupWait.getDocument().addDocumentListener(this);
 		mainPanel.add(startupWait);
 		// 最大レコード数
 		mainPanel.add(new JLabel("最大レコード数(トレンド表示)："));
 		maxrecord.setText(manager.getPreferences(
-				"/server/logging/maxrecord",
-				"4096"));
+			"/server/logging/maxrecord",
+			"4096"));
 		maxrecord.getDocument().addDocumentListener(this);
 		mainPanel.add(maxrecord);
 		// 警報履歴の最大保持件数(ヒストリ・履歴 共用)
 		mainPanel.add(new JLabel("最大保持件数(ヒストリ・履歴)："));
 		maxalarm
-				.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
+			.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
 		maxalarm.getDocument().addDocumentListener(this);
 		mainPanel.add(maxalarm);
 		// 操作ログ検索一覧でポイント名称のプレフィックス
@@ -198,9 +199,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb = new JComboBox();
 		cb.addItem("false");
 		cb.addItem("true");
-		String prefix = manager.getPreferences(
-				"/server/operationlog/prefix",
-				"false");
+		String prefix =
+			manager.getPreferences("/server/operationlog/prefix", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -211,12 +211,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("false".equals(e.getItem()))
 						manager.setPreferences(
-								"/server/operationlog/prefix",
-								"false");
+							"/server/operationlog/prefix",
+							"false");
 					else
 						manager.setPreferences(
-								"/server/operationlog/prefix",
-								"true");
+							"/server/operationlog/prefix",
+							"true");
 				}
 			}
 		});
@@ -254,8 +254,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("false");
 		cb.addItem("true");
-		String prefix = manager
-				.getPreferences("/server/schedulepoint", "false");
+		String prefix =
+			manager.getPreferences("/server/schedulepoint", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -266,9 +266,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("false".equals(e.getItem()))
 						manager
-								.setPreferences(
-										"/server/schedulepoint",
-										"false");
+							.setPreferences("/server/schedulepoint", "false");
 					else
 						manager.setPreferences("/server/schedulepoint", "true");
 				}
@@ -305,8 +303,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void pageDeployPeriod(JPanel mainPanel) {
 		mainPanel.add(new JLabel("ページ定義ファイル チェック間隔(ミリ秒)："));
 		deployPeriod.setText(manager.getPreferences(
-				"/server/deploy/period",
-				"69896"));
+			"/server/deploy/period",
+			"69896"));
 		deployPeriod.getDocument().addDocumentListener(this);
 		mainPanel.add(deployPeriod);
 	}
@@ -316,9 +314,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("有り");
 		cb.addItem("無し");
-		String prefix = manager.getPreferences(
-				"/server/logging/noRevision",
-				"false");
+		String prefix =
+			manager.getPreferences("/server/logging/noRevision", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -329,12 +326,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("有り".equals(e.getItem()))
 						manager.setPreferences(
-								"/server/logging/noRevision",
-								"false");
+							"/server/logging/noRevision",
+							"false");
 					else
 						manager.setPreferences(
-								"/server/logging/noRevision",
-								"true");
+							"/server/logging/noRevision",
+							"true");
 				}
 			}
 		});
@@ -344,8 +341,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void operationLoggingUtil(JPanel mainPanel) {
 		mainPanel.add(new JLabel("スケジュール操作ログのフッタ："));
 		operationLoggingUtil.setText(manager.getPreferences(
-				"/server/operationlog/impl/OperationLoggingUtilImpl",
-				""));
+			"/server/operationlog/impl/OperationLoggingUtilImpl",
+			""));
 		operationLoggingUtil.getDocument().addDocumentListener(this);
 		mainPanel.add(operationLoggingUtil);
 	}
@@ -355,10 +352,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("配列添字");
 		cb.addItem("回数記録");
-		String prefix = manager
+		String prefix =
+			manager
 				.getPreferences(
-						"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
-						"false");
+					"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+					"false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -369,14 +367,14 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("配列添字".equals(e.getItem()))
 						manager
-								.setPreferences(
-										"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
-										"false");
+							.setPreferences(
+								"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+								"false");
 					else
 						manager
-								.setPreferences(
-										"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
-										"true");
+							.setPreferences(
+								"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+								"true");
 				}
 			}
 		});
@@ -388,9 +386,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("レコード追加時");
 		cb.addItem("毎正時");
-		String prefix = manager.getPreferences(
-				"/server/logging/report/outputMode",
-				"false");
+		String prefix =
+			manager
+				.getPreferences("/server/logging/report/outputMode", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -401,12 +399,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("レコード追加時".equals(e.getItem()))
 						manager.setPreferences(
-								"/server/logging/report/outputMode",
-								"false");
+							"/server/logging/report/outputMode",
+							"false");
 					else
 						manager.setPreferences(
-								"/server/logging/report/outputMode",
-								"true");
+							"/server/logging/report/outputMode",
+							"true");
 				}
 			}
 		});
@@ -418,9 +416,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("本番(制約有り)");
 		cb.addItem("テスト(無制限に変更可能)");
-		String prefix = manager.getPreferences(
-				"/server/systemtime/testMode",
-				"false");
+		String prefix =
+			manager.getPreferences("/server/systemtime/testMode", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -431,12 +428,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("本番".equals(e.getItem()))
 						manager.setPreferences(
-								"/server/systemtime/testMode",
-								"false");
+							"/server/systemtime/testMode",
+							"false");
 					else
 						manager.setPreferences(
-								"/server/systemtime/testMode",
-								"true");
+							"/server/systemtime/testMode",
+							"true");
 				}
 			}
 		});
@@ -446,8 +443,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void communicateWaitTime(JPanel mainPanel) {
 		mainPanel.add(new JLabel("サーバーPLC間 通信間隔(ミリ秒)："));
 		communicateWaitTime.setText(manager.getPreferences(
-				"/server/communicateWaitTime",
-				"100"));
+			"/server/communicateWaitTime",
+			"100"));
 		communicateWaitTime.getDocument().addDocumentListener(this);
 		mainPanel.add(communicateWaitTime);
 	}
@@ -457,9 +454,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("使用しない");
 		cb.addItem("使用する");
-		String prefix = manager.getPreferences(
-				"/server/formula/isUseFormula",
-				"false");
+		String prefix =
+			manager.getPreferences("/server/formula/isUseFormula", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -470,12 +466,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("使用しない".equals(e.getItem()))
 						manager.setPreferences(
-								"/server/systemtime/testMode",
-								"false");
+							"/server/systemtime/testMode",
+							"false");
 					else
 						manager.setPreferences(
-								"/server/systemtime/testMode",
-								"true");
+							"/server/systemtime/testMode",
+							"true");
 				}
 			}
 		});
@@ -484,12 +480,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 
 	private void soundAttributeMode(JPanel mainPanel) {
 		mainPanel.add(new JLabel("警報音発信モード："));
-		JComboBox cb = new JComboBox();
+		final JComboBox cb = new JComboBox();
 		cb.addItem("属性優先(初期値)");
 		cb.addItem("ポイント優先");
-		String prefix = manager.getPreferences(
-				"/server/alarm/sound/attributemode",
-				"true");
+		String prefix =
+			manager.getPreferences("/server/alarm/sound/attributemode", "true");
 		if ("true".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -498,14 +493,20 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("属性優先(初期値)".equals(e.getItem()))
+					if ("属性優先(初期値)".equals(e.getItem())) {
 						manager.setPreferences(
-								"/server/alarm/sound/attributemode",
-								"true");
-					else
+							"/server/alarm/sound/attributemode",
+							"true");
+					} else {
 						manager.setPreferences(
-								"/server/alarm/sound/attributemode",
-								"false");
+							"/server/alarm/sound/attributemode",
+							"false");
+					}
+					JOptionPane.showMessageDialog(
+						cb,
+						"モード変更した後は必ずrejarしてサーバーの再起動をして下さい",
+						"警報音発信モード変更",
+						JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -527,41 +528,41 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void eventPaformed(DocumentEvent e) {
 		if (e.getDocument() == serverIp.getDocument()) {
 			manager.setPreferences(
-					"/server/rmi/managerdelegator/name",
-					serverIp.getText());
+				"/server/rmi/managerdelegator/name",
+				serverIp.getText());
 		} else if (e.getDocument() == collectorIp.getDocument()) {
 			manager.setPreferences(
-					"/server/rmi/collectorserver/name",
-					collectorIp.getText());
+				"/server/rmi/collectorserver/name",
+				collectorIp.getText());
 		} else if (e.getDocument() == dbmsIp.getDocument()) {
 			manager.setPreferences("/server/jdbc/servername", dbmsIp.getText());
 		} else if (e.getDocument() == mailIp.getDocument()) {
 			manager.setPreferences("/server/mail/smtp/servername", mailIp
-					.getText());
+				.getText());
 		} else if (e.getDocument() == prnName.getDocument()) {
 			manager.setPreferences("/server/alarm/print/printservice", prnName
-					.getText());
+				.getText());
 		} else if (e.getDocument() == serverTitle.getDocument()) {
 			manager.setPreferences("/server/title", serverTitle.getText());
 		} else if (e.getDocument() == startupWait.getDocument()) {
 			manager.setPreferences("/server/startup/wait", startupWait
-					.getText());
+				.getText());
 		} else if (e.getDocument() == maxrecord.getDocument()) {
 			manager.setPreferences("/server/logging/maxrecord", maxrecord
-					.getText());
+				.getText());
 		} else if (e.getDocument() == maxalarm.getDocument()) {
 			manager.setPreferences("/server/alarm/maxrow", maxalarm.getText());
 		} else if (e.getDocument() == deployPeriod.getDocument()) {
 			manager.setPreferences("/server/deploy/period", deployPeriod
-					.getText());
+				.getText());
 		} else if (e.getDocument() == operationLoggingUtil.getDocument()) {
 			manager.setPreferences(
-					"/server/operationlog/impl/OperationLoggingUtilImpl",
-					operationLoggingUtil.getText());
+				"/server/operationlog/impl/OperationLoggingUtilImpl",
+				operationLoggingUtil.getText());
 		} else if (e.getDocument() == communicateWaitTime.getDocument()) {
 			manager.setPreferences(
-					"/server/communicateWaitTime",
-					communicateWaitTime.getText());
+				"/server/communicateWaitTime",
+				communicateWaitTime.getText());
 		}
 	}
 }
