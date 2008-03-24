@@ -1,0 +1,76 @@
+#set( $head_title = "ポイント名称" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("name") )
+#parse("/vm/point/name/attribute.vm")
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+ポイント名称リスト
+
+<form method="POST" action="$link.setAction('/getNameList')" >
+  <table border="0" cellpadding="5" width="400">
+  <caption style="text-align: left">ポイント検索</caption>
+    <tr class="data">
+      <th class="data">記号</th>
+      <td><input type="text" name="searchunit" value="$!nameForm.searchunit" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">名称</th>
+      <td><input type="text" size="50" name="searchname" value="$!nameForm.searchname" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">単位</th>
+      <td><input type="text" size="50" name="searchunit_mark" value="$!nameForm.searchunit_mark" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">$attributename1</th>
+      <td><input type="text" size="50" name="searchattribute1" value="$!nameForm.searchattribute1" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">$attributename2</th>
+      <td><input type="text" size="50" name="searchattribute2" value="$!nameForm.searchattribute2" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">$attributename3</th>
+      <td><input type="text" size="50" name="searchattribute3" value="$!nameForm.searchattribute3" /></td>
+    </tr>
+  </table>
+  <input type="submit" name="submit" value="送信"/>
+  <input type="reset" name="reset" value="リセット"/>
+  <p style="color:red">全件表示は空の条件をセットして送信してください</p>
+</form>
+
+#parse("/vm/point/name/pager.vm")
+<a href="$link.setForward('inputNewName')">追加</a>
+<table border="0" cellpadding="5">
+  <tr>
+    <th class="data">ID</th>
+    <th class="data">記号</th>
+    <th class="data">名称</th>
+    <th class="data">単位</th>
+    <th class="data">$attributename1</th>
+    <th class="data">$attributename2</th>
+    <th class="data">$attributename3</th>
+    <th class="data" colspan="2"></th>
+  </tr>
+  #foreach ($point in $pointList)
+  <tr class="data">
+    <td align="right">$!point.point</td>
+    <td>$!F11util.htmlEscape($point.unit)</td>
+    <td>$!F11util.htmlEscape($point.name)</td>
+    <td>$!F11util.htmlEscape($point.unit_mark)</td>
+    <td>$!F11util.htmlEscape($point.attribute1)</td>
+    <td>$!F11util.htmlEscape($point.attribute2)</td>
+    <td>$!F11util.htmlEscape($point.attribute3)</td>
+    <td><a href="$link.setForward('editName').addQueryData('point',"$point.point")">変更</a></td>
+    #if ($point.used)
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    #else
+    <td><a href="$link.setForward('asksNameDelete').addQueryData('point',"$point.point")">削除</a></td>
+    #end
+  </tr>
+  #end
+</table>
+#parse("/vm/point/name/pager.vm")
+#end

@@ -1,0 +1,35 @@
+#set( $head_title = "画面管理" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("page") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+画面リスト
+<!--
+<a href="$link.setForward('inputNewPage')">追加</a>
+-->
+<table border="0" cellpadding="5">
+  <tr>
+    <td bgcolor="Skyblue">画面名</td>
+    <td bgcolor="Skyblue" colspan="2" ></td>
+  </tr>
+  #foreach ($name in $pageList)
+  <tr>
+    <td bgcolor="Khaki">$!F11util.htmlEscape($name.getPageName())</td>
+    <td><a href="$link.setForward('editPage')?name=$name.getPageXmlPath()">変更</a></td>
+
+	<!--
+    <td bgcolor="Khaki">$!F11util.htmlEscape($name)</td>
+    <td><a href="$link.setForward('editPage')?name=$name">変更</a></td>
+    -->
+
+    <!--
+    <td><a href="$link.setForward('editPage').addQueryData('name',"$name")">変更</a></td>
+    <td><a href="$link.setForward('asksPageDelete').addQueryData('name',"$name")">削除</a></td>
+    -->
+
+  </tr>
+  #end
+</table>
+#end

@@ -1,0 +1,10 @@
+#set( $head_title = "" )
+#set( $layout = "Default.vm" )
+
+#errorMarkup()
+
+#if ( $user )
+  メニューを選択してください。
+#else
+  ログインしてください。
+#end

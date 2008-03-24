@@ -1,0 +1,80 @@
+#set( $head_title = "警報音 個別設定" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission('sound_individual_setting') )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+<form method="POST" action="$link.setAction('/getSoundIndividualList')" >
+  <table border="0" cellpadding="5" width="400">
+  <caption style="text-align: left">ポイント検索</caption>
+    <tr class="data">
+      <th class="data">記号</th>
+      <td><input type="text" name="searchunit" value="$!soundIndividualForm.searchunit" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">ポイント名</th>
+      <td><input type="text" size="50" name="searchname" value="$!soundIndividualForm.searchname" /></td>
+    </tr>
+    <tr class="data">
+      <th class="data">属性名</th>
+      <td><input type="text" size="50" name="searchattribute" value="$!soundIndividualForm.searchattribute" /></td>
+    </tr>
+    <!--
+    <tr class="data">
+      <th class="data">属性警報音</th>
+      <td>
+        <input type="radio" name="searchattributetype" value="all" #if ( $soundIndividualForm.searchattributetype == 'all' ) checked #end />指定なし
+        <input type="radio" name="searchattributetype" value="true" #if ( $soundIndividualForm.searchattributetype == 'true' ) checked #end />有
+        <input type="radio" name="searchattributetype" value="false" #if ( $soundIndividualForm.searchattributetype == 'false' ) checked #end />無
+      </td>
+    </tr>
+    <tr class="data">
+      <th class="data">個別警報音</th>
+      <td>
+        <input type="radio" name="searchindividualtype" value="all" #if ( $soundIndividualForm.searchindividualtype == 'all' ) checked #end />指定なし
+        <input type="radio" name="searchindividualtype" value="true" #if ( $soundIndividualForm.searchindividualtype == 'true' ) checked #end />有
+        <input type="radio" name="searchindividualtype" value="false" #if ( $soundIndividualForm.searchindividualtype == 'false' ) checked #end />無
+      </td>
+    </tr>
+    -->
+  </table>
+  <input type="submit" name="submit" value="送信"/>
+  <input type="reset" name="reset" value="リセット"/>
+  <p style="color:red">全件表示は空の条件をセットして送信してください</p>
+</form>
+
+#parse("/vm/sound/pager.vm")
+個別リスト
+<table border="0" cellpadding="5">
+  <tr>
+    <td bgcolor="Skyblue">管理番号</td>
+    <td bgcolor="Skyblue">記号</td>
+    <td bgcolor="Skyblue">ポイント名</td>
+    <td bgcolor="Skyblue">属性名</td>
+    <td bgcolor="Skyblue">属性警報音</td>
+    <td bgcolor="Skyblue">個別警報音</td>
+    <td bgcolor="Skyblue"></td>
+  </tr>
+  #foreach ($individual in $individuallist)
+  <tr>
+    <td bgcolor="Khaki" align="right">$!individual.point</td>
+    <td bgcolor="Khaki">$!F11util.htmlEscape($individual.unit)</td>
+    <td bgcolor="Khaki">$!F11util.htmlEscape($individual.name)</td>
+    <td bgcolor="Khaki">$!F11util.htmlEscape($individual.attribute)</td>
+    #if ($individual.attributetype == 1)
+	    <td style="color:crimson; background:Khaki; text-align: center">有</td>
+    #else
+	    <td style="background:Khaki; text-align: center">無</td>
+    #end
+    #if ($individual.type == 1)
+	    <td style="color:crimson; background:Khaki; text-align: center">有</td>
+    #else
+	    <td style="background:Khaki; text-align: center">無</td>
+    #end
+    <td><a href="$link.setForward('editSoundIndividual').addQueryData('provider',"$individual.provider").addQueryData('holder',"$individual.holder")">変更</a></td>
+  </tr>
+  #end
+</table>
+#parse("/vm/sound/pager.vm")
+#end

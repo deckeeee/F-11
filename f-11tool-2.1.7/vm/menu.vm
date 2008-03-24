@@ -1,0 +1,101 @@
+<a href="$link.setForward('login')">ログイン</a><br>
+#if ( $user )
+  <a href="$link.setForward('logout')">ログアウト</a><br>
+  <br>
+  <i>ユーザー管理</i>
+  <ul>
+  #if ( $user.hasPermission('user') )
+    <li><a href="$link.setForward('userList')">ユーザー管理</a></li>
+  #else
+    <li><a href="$link.setForward('editPassword')">パスワード変更</a></li>
+  #end
+  #if ( $user.hasPermission('group') )
+    <li><a href="$link.setForward('groupList')">グループ管理</a></li>
+  #end
+  </ul>
+  #if ( $user.hasPermission('autoprint') )
+    <p><a href="$link.setForward('autoPrintList')">自動印字設定</a></p>
+  #end
+  #if ( $user.hasPermission('name') || $user.hasPermission('policy') || $user.hasPermission('item') || $user.hasPermission('email'))
+    <i>ポイント管理</i>
+    <ul>
+    #if ( $user.hasPermission('name') )
+      <li><a href="$link.setForward('nameList')">名称</a></li>
+    #end
+    #if ( $user.hasPermission('policy') )
+      <li><a href="$link.setForward('construction')">認証</a><br></li>
+    #end
+    #if ( $user.hasPermission('item') )
+      <li><a href="$link.setForward('construction')">アイテム</a></li>
+      <li><a href="$link.setForward('construction')">アナログタイプ</a></li>
+      <li><a href="$link.setForward('construction')">表示メッセージ</a></li>
+      <li><a href="$link.setForward('construction')">表示属性</a></li>
+    #end
+    #if ( $user.hasPermission('email') )
+      <li><a href="$link.setForward('emailList')">電子メール送信先</a></li>
+    #end
+    </ul>
+  #end
+  #if ( $user.hasPermission('career') )
+    <i>ポイント履歴管理</i>
+    <ul>
+    <li><a href="$link.setForward('summaryInitList')">サマリ</a></li>
+    <li><a href="$link.setForward('historyInitList')">ヒストリ</a></li>
+    <li><a href="$link.setForward('carrerInitList')">履歴</a></li>
+    </ul>
+  #end
+  #if ( $user.hasPermission('device') )
+    <p><a href="$link.setForward('construction')">デバイス管理</a></p>
+  #end
+  #if ( $user.hasPermission('menu') || $user.hasPermission('page') )
+    <i>画面管理</i>
+    <ul>
+    #if ( $user.hasPermission('menu') )
+      <li><a href="$link.setForward('construction')">メニュー</a></li>
+    #end
+    #if ( $user.hasPermission('page') )
+      <li><a href="$link.setForward('pageList')">画面</a></li>
+    #end
+    </ul>
+  #end
+  #if ( $user.hasPermission('maintenance') )
+  	<p><a href="$link.setForward('mainteGroupList')">メンテナンス管理</a></p>
+  #end
+  #if ( $user.hasPermission('ffugroupname') )
+    <p><a href="$link.setForward('ffugroupnameList')">FFUグループ名称管理</a></p>
+  #end
+  #if ( $user.hasPermission('email_group_master') || $user.hasPermission('email_attribute_setting') || $user.hasPermission('email_individual_setting') )
+    <i>電子メール送信グループ</i>
+    <ul>
+    #if ( $user.hasPermission('email_group_master') )
+      <li><a href="$link.setForward('emailgroupMasterList')">マスター管理</a></li>
+    #end
+    #if ( $user.hasPermission('email_attribute_setting') )
+      <li><a href="$link.setForward('emailgroupAttributeList')">属性別管理</a></li>
+    #end
+    #if ( $user.hasPermission('email_individual_setting') )
+      <li><a href="$link.setForward('emailgroupIndividualList')">個別管理</a></li>
+    #end
+    </ul>
+  #end
+  #if ( $user.hasPermission('logdata') )
+    <p><a href="$link.setForward('editLogdataConditions')">ロギングデータダウンロード</a></p>
+  #end
+  #if ( $user.hasPermission('sound_attribute_setting') || $user.hasPermission('sound_individual_setting') )
+    <i>警報音On/Off設定</i>
+    <ul>
+    #if ( $user.hasPermission('sound_attribute_setting') )
+      <li><a href="$link.setForward('soundAttributeList')">属性別管理</a></li>
+    #end
+    #if ( $user.hasPermission('sound_individual_setting') )
+      <li><a href="$link.setForward('soundIndividualList')">個別管理</a></li>
+    #end
+    </ul>
+  #end
+  #if ( $user.hasPermission('sentmail') )
+    <p><a href="$link.setForward('sentmail')">警報メール　送信一覧</a></p>
+  #end
+    #if ( $user.hasPermission('opelog') )
+    <p><a href="$link.setForward('opelog')">操作履歴　ダウンロード</a></p>
+  #end
+#end

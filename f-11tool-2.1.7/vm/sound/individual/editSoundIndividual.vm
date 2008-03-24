@@ -1,0 +1,42 @@
+#set( $head_title = "警報音 個別設定変更" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("sound_individual_setting") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+<form method="POST" action="$link.setAction('/setSoundIndividual')" >
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">記号</td>
+      <td bgcolor="Skyblue">ポイント名</td>
+      <td bgcolor="Skyblue">属性名</td>
+      <td bgcolor="Skyblue">属性警報音</td>
+      <td bgcolor="Skyblue">警報音の有無</td>
+    </tr>
+    <tr>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($soundIndividualForm.unit)</td>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($soundIndividualForm.name)</td>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($soundIndividualForm.attribute)</td>
+      #if ($soundIndividualForm.attributetype == 1)
+	      <td style="color:crimson; background:Khaki; text-align: center">有</td>
+      #else
+	      <td style="background:Khaki; text-align: center">無</td>
+      #end
+      <td bgcolor="Khaki" align="left">
+        <input type="radio" name="type" value="1"#if ($soundIndividualForm.type == 1) checked="checked" #end/>有
+        <input type="radio" name="type" value="0"#if ($soundIndividualForm.type != 1) checked="checked" #end/>無
+      </td>
+    </tr>
+  </table>
+  <input type="hidden" name="provider" value="$!soundIndividualForm.provider" />
+  <input type="hidden" name="holder" value="$!soundIndividualForm.holder" />
+  <input type="hidden" name="unit" value="$!soundIndividualForm.unit" />
+  <input type="hidden" name="name" value="$!soundIndividualForm.name" />
+  <input type="hidden" name="attribute" value="$!soundIndividualForm.attribute" />
+  <input type="hidden" name="attributetype" value="$!soundIndividualForm.attributetype" />
+  <input type="submit" name="submit" value="送信"/>
+  <input type="reset" name="reset" value="リセット"/>
+</form>
+<a href="$link.setForward('soundIndividualList')">戻る</a>
+#end

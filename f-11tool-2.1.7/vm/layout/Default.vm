@@ -1,0 +1,25 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<title>F-11 メンテナンス $!head_title</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<table border="0" width="100%">
+  <tr>
+    <td colspan="2">
+      <h1>F-11 メンテナンス</h1>
+    </td>
+  </tr>
+  <tr>
+    <td width="200" align="left" valign="top">
+      #parse('vm/menu.vm')
+    </td>
+    <td align="left" valign="top">
+      $screen_content
+    </td>
+  </tr>
+</table>
+</body>
+</html>

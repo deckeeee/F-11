@@ -1,0 +1,68 @@
+#set( $head_title = "警報ヒストリ一覧" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("career") )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+<a href="$link.setForward('editHistoryConditions')">検索条件入力</a>
+<center>
+<table border="0" cellspacing="0" cellpadding="2" width="100%">
+<tr bgcolor="Silver">
+<td>
+<small>
+#if ( $startPos )
+<b>$!allCount</b>件中 <b>$!startPos</b>～<b>$!endPos</b>件
+<div align="right">
+<a href="$link.setForward('getHistoryCsv')" >CSVダウンロード</a>
+</div>
+#else
+<b>0</b>件
+#end
+</small>
+</td>
+</tr>
+</table>
+
+</center>
+<table border="0" cellpadding="3">
+  <tr>
+    <td colspan="5">
+      <table border="0" cellpadding="1" width="100%">
+        <tr>
+<td align="right" width="50%" >#if ( $forward ) <a href="$link.setForward('historyList').addQueryData('c',"$forward")">前のページ</a> #end</td>
+<td align="left" width="50%" >#if ( $next ) <a href="$link.setForward('historyList').addQueryData('c',"$next")">次のページ</a> #end</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="Silver">発生・運転</td>
+    <td bgcolor="Silver">復旧・停止</td>
+    <td bgcolor="Silver">記号</td>
+    <td bgcolor="Silver">名称</td>
+    <td bgcolor="Silver">種別</td>
+    <td bgcolor="Silver">確認</td>
+  </tr>
+  #foreach ($history in $historyList)
+  <tr>
+    <td><font color="$history.alarm_color">$!history.ondate</font></td>
+    <td><font color="$history.alarm_color">$!history.offdate</font></td>
+    <td><font color="$history.alarm_color">$!F11util.htmlEscape($history.unit)</font></td>
+    <td><font color="$history.alarm_color">$!F11util.htmlEscape($history.p_name)</font></td>
+    <td><font color="$history.alarm_color">$!F11util.htmlEscape($history.att_name)</font></td>
+    <td><font color="$history.alarm_color">$!F11util.htmlEscape($history.histry_check)</font></td>
+  </tr>
+  #end
+  <tr>
+    <td colspan="5">
+      <table border="0" cellpadding="1" width="100%">
+        <tr>
+<td align="right" width="50%" >#if ( $forward ) <a href="$link.setForward('historyList').addQueryData('c',"$forward")">前のページ</a> #end</td>
+<td align="left" width="50%" >#if ( $next ) <a href="$link.setForward('historyList').addQueryData('c',"$next")">次のページ</a> #end</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+#end

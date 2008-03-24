@@ -1,0 +1,32 @@
+#set( $head_title = "警報メール　送信一覧" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission('sentmail') )
+
+#errorMarkup()
+
+<h3>$head_title</h3>
+#parse("/vm/sentmail/pager.vm")
+<table border="0" cellpadding="5">
+  <tr>
+    <th class="data">日付</th>
+    <th class="data">記号</th>
+    <th class="data">名称</th>
+    <th class="data">警報・状態</th>
+    <th class="data">送信先</th>
+  </tr>
+  #foreach ($sentmail in $sentmaillist)
+  <tr class="data">
+    <td>$!F11util.format($sentmail.sentdate)</td>
+    <td>$!sentmail.unit</td>
+    <td>$!sentmail.name</td>
+    <td>$!sentmail.message</td>
+    <td>
+    #foreach ($addressdto in $sentmail.addresses)
+	    $!addressdto.address<br />
+	#end
+	</td>
+  </tr>
+  #end
+</table>
+#parse("/vm/sentmail/pager.vm")
+#end

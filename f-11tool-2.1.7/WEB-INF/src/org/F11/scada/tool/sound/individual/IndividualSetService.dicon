@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components>
+	<include path="org/F11/scada/tool/sound/individual/IndividualDao.dicon"/>
+	<include path="org/F11/scada/tool/Construction.dicon"/>
+
+	<component class="org.F11.scada.tool.sound.individual.IndividualSetServiceImpl">
+		<arg>const.regport</arg>
+		<arg>const.objport</arg>
+	</component>
+</components>

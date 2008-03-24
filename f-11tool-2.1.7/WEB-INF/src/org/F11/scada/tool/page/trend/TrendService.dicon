@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN"
+	"http://www.seasar.org/dtd/components23.dtd">
+<components>
+	<include path="dao.dicon"/>
+	<include path="org/F11/scada/tool/Construction.dicon"/>
+
+	<component class="org.F11.scada.tool.page.trend.TrendServiceImpl" >
+		<arg>const.regport</arg>
+		<arg>const.objport</arg>
+	</component>	
+</components>

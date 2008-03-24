@@ -1,0 +1,18 @@
+#set( $head_title = "ユーザー削除" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("user") )
+
+#errorMarkup()
+
+<h3>このユーザーを削除してもよろしいですか？</h3>
+<form method="POST" action="$link.setAction('/removeUser')" >
+  <input type="hidden" name="name" value="$!passwordForm.name" />
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">ユーザー名</td>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($passwordForm.name)</td>
+    </tr>
+  </table>
+  <input type="submit" name="submit" value="削除"/>
+</form>
+#end

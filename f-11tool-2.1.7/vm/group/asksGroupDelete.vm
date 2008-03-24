@@ -1,0 +1,18 @@
+#set( $head_title = "グループ削除" )
+#set( $layout = "Default.vm" )
+#if ( $user.hasPermission("group") )
+
+#errorMarkup()
+
+<h3>このグループを削除してもよろしいですか？</h3>
+<form method="POST" action="$link.setAction('/removeGroup')" >
+  <input type="hidden" name="name" value="$!groupForm.name" />
+  <table border="0" cellpadding="5">
+    <tr>
+      <td bgcolor="Skyblue">グループ名</td>
+      <td bgcolor="Khaki" align="left">$!F11util.htmlEscape($groupForm.name)</td>
+    </tr>
+  </table>
+  <input type="submit" name="submit" value="削除"/>
+</form>
+#end
