@@ -42,6 +42,14 @@ public abstract class TableUtil {
 		tableColumn.setMaxWidth(width);
 	}
 
+	public static void setPreferredWidth(
+			int width,
+			int column,
+			TableColumnModel columnModel) {
+		TableColumn tableColumn = columnModel.getColumn(column);
+		tableColumn.setPreferredWidth(width);
+	}
+
 	public static void setColumnWidth(JTable table, int column, String s) {
 		TableColumn tc = table.getColumn(table.getColumnName(column));
 		FontMetrics metrics = table.getFontMetrics(table.getFont());
