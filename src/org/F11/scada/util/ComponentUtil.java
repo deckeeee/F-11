@@ -25,6 +25,8 @@ import java.awt.Container;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.swing.SwingUtilities;
+
 public abstract class ComponentUtil {
 	/**
 	 * コンポーネント内にマウスポイントがあるか判定します。
@@ -34,8 +36,10 @@ public abstract class ComponentUtil {
 	 * @return コンポーネント内にマウスポイントがある場合 true、無い場合 false を返します。
 	 */
 	public static boolean contains(Rectangle rectangle, Point point) {
-		return point.x >= 0 && point.y >= 0 && rectangle.width >= point.x
-				&& rectangle.height >= point.y;
+		return point.x >= 0
+			&& point.y >= 0
+			&& rectangle.width >= point.x
+			&& rectangle.height >= point.y;
 	}
 
 	/**
@@ -58,5 +62,21 @@ public abstract class ComponentUtil {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * {@link SwingUtilities#getAncestorOfClass}の型推論版。 コンポーネント階層で comp
+	 * の上位を検索するための簡易メソッドであり、見つかった c クラスの最初のオブジェクトを返します。c クラスが見つからない場合は null
+	 * を返します。
+	 * 
+	 * @param <C> 検索するクラス
+	 * @param c 検索するクラスリテラル
+	 * @param comp 検索対象コンポーネント
+	 * @return 上位に検索対象のクラスがあればそのオブジェクトを無い場合は null を返します
+	 */
+	public static <C extends Container> C getAncestorOfClass(
+			Class<C> c,
+			Component comp) {
+		return (C) SwingUtilities.getAncestorOfClass(c, comp);
 	}
 }
