@@ -119,22 +119,21 @@ public class SchedulePointFinder {
 	private int getLimit() {
 		ClientConfiguration configuration = new ClientConfiguration();
 		return configuration.getInt(
-				"org.F11.scada.applet.schedule.point.limit",
-				25);
+			"org.F11.scada.applet.schedule.point.limit",
+			25);
 	}
 
 	private void init(Frame frame, SchedulePointTableModel model)
 			throws RemoteException {
 		dialog = new JDialog(frame, "スケジュール操作", true);
 		dialog.addWindowListener(new WindowListenerImpl());
-		JTabbedPane tab = new JTabbedPane(
-				JTabbedPane.TOP,
-				JTabbedPane.SCROLL_TAB_LAYOUT);
+		JTabbedPane tab =
+			new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 		tab.addTab("スケジュール機器一覧", getMainPanel(model));
 		if (isSeparateSchedule()) {
 			tab.addTab(
-					"マスタ→個別転送",
-					new DuplicateMasterToSeparate(dialog, pageId));
+				"マスタ→個別転送",
+				new DuplicateMasterToSeparate(dialog, pageId));
 		}
 		dialog.getContentPane().add(tab);
 		dialog.setSize(1030, 800);
@@ -198,10 +197,8 @@ public class SchedulePointFinder {
 		groupSelect = new JButton("選択...");
 		groupSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ScheduleGroupSelect select = new ScheduleGroupSelect(
-						dialog,
-						null,
-						pageId);
+				ScheduleGroupSelect select =
+					new ScheduleGroupSelect(dialog, null, pageId);
 				select.setVisible(true);
 				setScheduleGroup(select);
 			}
@@ -249,9 +246,8 @@ public class SchedulePointFinder {
 		group.add(groupNonConnect);
 		panel.add(groupNonConnect);
 
-		ActionListener listner = new ConnectChangeListener(
-				groupField,
-				groupSelect);
+		ActionListener listner =
+			new ConnectChangeListener(groupField, groupSelect);
 		groupConnect.addActionListener(listner);
 		groupNonConnect.addActionListener(listner);
 
@@ -259,7 +255,8 @@ public class SchedulePointFinder {
 	}
 
 	private Component getSearchButton(SchedulePointTableModel model) {
-		JButton searchButton = new JButton("検索", GraphicManager
+		JButton searchButton =
+			new JButton("検索", GraphicManager
 				.get("/toolbarButtonGraphics/general/Find24.gif"));
 		searchButton.addActionListener(new FindAction(model, dialog));
 		JPanel panel = new JPanel(new BorderLayout());
@@ -274,10 +271,10 @@ public class SchedulePointFinder {
 		JTable table = getTable(model);
 		JScrollPane pane = new JScrollPane(table);
 		pane.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(
-				0,
-				15,
-				10,
-				15), BorderFactory.createTitledBorder("スケジュール機器一覧")));
+			0,
+			15,
+			10,
+			15), BorderFactory.createTitledBorder("スケジュール機器一覧")));
 		tablePanel.add(pane, BorderLayout.CENTER);
 		tablePanel.add(getSelectButton(table), BorderLayout.SOUTH);
 		return tablePanel;
@@ -297,31 +294,39 @@ public class SchedulePointFinder {
 		table.removeColumn(table.getColumn(titles[8]));
 		table.removeColumn(table.getColumn(titles[9]));
 
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableColumnModel columnModel = table.getColumnModel();
-		TableUtil.setWidth(40, 0, columnModel);
-		TableUtil.setWidth(150, 1, columnModel);
-		TableUtil.setWidth(150, 2, columnModel);
+		TableUtil.setPreferredWidth(40, 0, columnModel);
+		TableUtil.setPreferredWidth(150, 1, columnModel);
+		TableUtil.setPreferredWidth(150, 2, columnModel);
+		int nameWidth = 557;
+		int kobetuWidth = 80;
 		if (isSeparateSchedule()) {
-			TableUtil.setWidth(80, 4, columnModel);
+			TableUtil.setPreferredWidth(nameWidth, 3, columnModel);
+			TableUtil.setPreferredWidth(kobetuWidth, 4, columnModel);
+		} else {
+			TableUtil
+				.setPreferredWidth(nameWidth + kobetuWidth, 3, columnModel);
 		}
 
 		table.addMouseListener(new TableListener(
-				dialog,
-				isSeparateSchedule(),
-				pageId));
+			dialog,
+			isSeparateSchedule(),
+			pageId));
 		return table;
 	}
 
 	private boolean isSeparateSchedule() {
 		ClientConfiguration configuration = new ClientConfiguration();
 		return configuration.getBoolean(
-				"org.F11.scada.applet.schedule.point.SeparateSchedule",
-				false);
+			"org.F11.scada.applet.schedule.point.SeparateSchedule",
+			false);
 	}
 
 	private Component getButtonPanel(SchedulePointTableModel model) {
 		JPanel panel = new JPanel();
-		JButton prev = new JButton(GraphicManager
+		JButton prev =
+			new JButton(GraphicManager
 				.get("/toolbarButtonGraphics/navigation/Back24.gif"));
 		prev.setToolTipText("前ページ");
 		prev.addActionListener(new PrevAction(model, dialog));
@@ -329,7 +334,8 @@ public class SchedulePointFinder {
 		PageLabel pageLabel = new PageLabel();
 		model.addTableModelListener(pageLabel);
 		panel.add(pageLabel);
-		JButton next = new JButton(GraphicManager
+		JButton next =
+			new JButton(GraphicManager
 				.get("/toolbarButtonGraphics/navigation/Forward24.gif"));
 		next.setToolTipText("次ページ");
 		next.addActionListener(new NextAction(model));
@@ -343,10 +349,10 @@ public class SchedulePointFinder {
 		box.add(Box.createHorizontalGlue());
 		JButton modifyButton = new JButton("変更");
 		modifyButton.addActionListener(new ModifyAction(
-				table,
-				dialog,
-				isSeparateSchedule(),
-				pageId));
+			table,
+			dialog,
+			isSeparateSchedule(),
+			pageId));
 		box.add(modifyButton);
 		box.add(Box.createHorizontalStrut(5));
 		JButton closeButton = new JButton("閉じる");
@@ -413,14 +419,13 @@ public class SchedulePointFinder {
 		}
 
 		private void setPageText() {
-			MessageFormat format = new MessageFormat(
-					"{0, number, integer} / {1, number, integer}");
-			PagerViewHelper helper = new PagerViewHelper(
-					searchDto,
-					Integer.MAX_VALUE);
+			MessageFormat format =
+				new MessageFormat("{0, number, integer} / {1, number, integer}");
+			PagerViewHelper helper =
+				new PagerViewHelper(searchDto, Integer.MAX_VALUE);
 			setText(format.format(new Object[] {
-					new Integer(getCurrentPageCount(helper)),
-					new Integer(getPageCount(helper)) }));
+				new Integer(getCurrentPageCount(helper)),
+				new Integer(getPageCount(helper)) }));
 		}
 
 		private int getCurrentPageCount(PagerViewHelper helper) {
@@ -447,11 +452,11 @@ public class SchedulePointFinder {
 
 		public void actionPerformed(ActionEvent e) {
 			searchDto.setUnit(AttributesUtil.getNonNullString(unitField
-					.getText()));
+				.getText()));
 			searchDto.setName(AttributesUtil.getNonNullString(nameField
-					.getText()));
+				.getText()));
 			searchDto.setGroupName(AttributesUtil.getNonNullString(groupField
-					.getText()));
+				.getText()));
 			if (groupNonConnect.isSelected()) {
 				searchDto.setGroupNo(null);
 			} else {
@@ -484,10 +489,11 @@ public class SchedulePointFinder {
 			if (e.getClickCount() == 2) {
 				JTable table = (JTable) e.getSource();
 				int row = table.rowAtPoint(e.getPoint());
-				SchedulePointTableModel model = (SchedulePointTableModel) table
-						.getModel();
+				SchedulePointTableModel model =
+					(SchedulePointTableModel) table.getModel();
 				if (util.checkPermission(model, row)) {
-					SchedulePointModify modify = new SchedulePointModify(
+					SchedulePointModify modify =
+						new SchedulePointModify(
 							dialog,
 							model,
 							row,
@@ -521,10 +527,11 @@ public class SchedulePointFinder {
 		public void actionPerformed(ActionEvent e) {
 			int row = table.getSelectedRow();
 			if (row >= 0) {
-				SchedulePointTableModel model = (SchedulePointTableModel) table
-						.getModel();
+				SchedulePointTableModel model =
+					(SchedulePointTableModel) table.getModel();
 				if (util.checkPermission(model, row)) {
-					SchedulePointModify modify = new SchedulePointModify(
+					SchedulePointModify modify =
+						new SchedulePointModify(
 							dialog,
 							model,
 							row,
@@ -572,15 +579,16 @@ public class SchedulePointFinder {
 	}
 
 	private static class CheckPermissionUtil {
-		private final Logger logger = Logger
-				.getLogger(CheckPermissionUtil.class);
+		private final Logger logger =
+			Logger.getLogger(CheckPermissionUtil.class);
 		private AccessControlable controlable;
 		private final JDialog dialog;
 
 		public CheckPermissionUtil(JDialog dialog) {
 			this.dialog = dialog;
 			try {
-				controlable = (AccessControlable) Naming.lookup(WifeUtilities
+				controlable =
+					(AccessControlable) Naming.lookup(WifeUtilities
 						.createRmiActionControl());
 			} catch (MalformedURLException e) {
 				RmiErrorUtil.error(logger, e, dialog);
@@ -594,11 +602,13 @@ public class SchedulePointFinder {
 		boolean checkPermission(SchedulePointTableModel model, int row) {
 			Manager manager = Manager.getInstance();
 			SchedulePointRowDto dto = model.getSchedulePointRowDto(row);
-			WifeDataProviderProxy proxy = (WifeDataProviderProxy) manager
-					.getDataProvider(dto.getGroupNoProvider());
+			WifeDataProviderProxy proxy =
+				(WifeDataProviderProxy) manager.getDataProvider(dto
+					.getGroupNoProvider());
 			Subject subject = proxy.getSubject();
 			try {
-				List ret = controlable.checkPermission(
+				List ret =
+					controlable.checkPermission(
 						subject,
 						new String[][] { { getHolderId(dto) } });
 				Boolean[] b = (Boolean[]) ret.get(0);
