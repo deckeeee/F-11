@@ -20,6 +20,7 @@
 
 package org.F11.scada.cat.logic.impl;
 
+import static org.F11.scada.Globals.ERR_HOLDER;
 import static org.F11.scada.cat.util.CollectionUtil.list;
 
 import java.io.BufferedInputStream;
@@ -141,9 +142,11 @@ public class ReadFlagCheck extends AbstractCheckLogic {
 			Set<HolderString> set = entry.getValue().getDataHolders();
 			List<ErrorHolder> badHolders = list(set.size());
 			for (HolderString hs : set) {
-				Item item = itemDao.getItem(hs);
-				if (isReadMode(item)) {
-					badHolders.add(new ErrorHolder(file, hs));
+				if (!ERR_HOLDER.equalsIgnoreCase(hs.getHolder())) {
+					Item item = itemDao.getItem(hs);
+					if (isReadMode(item)) {
+						badHolders.add(new ErrorHolder(file, hs));
+					}
 				}
 			}
 			writer.writeBadholder(badHolders, out);
