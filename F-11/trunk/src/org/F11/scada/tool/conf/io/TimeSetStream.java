@@ -13,6 +13,9 @@
  */
 package org.F11.scada.tool.conf.io;
 
+import static org.F11.scada.cat.util.CollectionUtil.$;
+import static org.F11.scada.cat.util.CollectionUtil.map;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,8 +24,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,33 +40,82 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class TimeSetStream {
-	private static final Logger log = Logger.getLogger(TimeSetStream.class);
-	private final Map dataMap = new HashMap();
-	private final List beansList = new ArrayList();
-	private boolean edited = false;
+	private final Logger log = Logger.getLogger(TimeSetStream.class);
+	private boolean edited;
 
-	public String getValue(String key, String def) {
-		String ret = (String) dataMap.get(key);
-		if (ret == null)
-			return def;
-		return ret;
-	}
-	public List getBeansList() {
-		return new ArrayList(beansList);
+	private final Map<String, TimeSetTaskBean> timeSetTaskMap =
+		new LinkedHashMap<String, TimeSetTaskBean>();
+	private final Map<String, String> scheduleMap;
+	private final Map<String, String> milliOffsetModeMap;
+
+	public TimeSetStream() {
+		scheduleMap = createScheduleMap();
+		milliOffsetModeMap = createMilliOffsetModeMap();
 	}
 
-	public void setValue(String key, String value) {
-		dataMap.put(key, value);
+	private Map<String, String> createScheduleMap() {
+		return map(
+			$("MINUTE", "ï™ä‘äu"),
+			$("TENMINUTE", "10ï™ä‘äu"),
+			$("HOUR", "éûä‘äu"),
+			$("MONTH", "ì˙ä‘äu"),
+			$("MONTH", "åéä‘äu"),
+			$("YEARLY", "îNä‘äu"),
+			$("ï™ä‘äu", "MINUTE"),
+			$("10ï™ä‘äu", "TENMINUTE"),
+			$("éûä‘äu", "HOUR"),
+			$("ì˙ä‘äu", "MONTH"),
+			$("åéä‘äu", "MONTH"),
+			$("îNä‘äu", "YEARLY"));
+	}
+
+	private Map<String, String> createMilliOffsetModeMap() {
+		return map($("false", "í èÌ"), $("true", "É~ÉäïbÉÇÅ[Éh"), $("í èÌ", "false"), $(
+			"É~ÉäïbÉÇÅ[Éh",
+			"true"));
+	}
+
+	public String getValue(String name, String key, String def) {
+		return timeSetTaskMap.get(name).containsKey(key) ? timeSetTaskMap.get(
+			name).get(key) : def;
+	}
+
+	public List<TimeSetBean> getBeansList(String name) {
+		return timeSetTaskMap.containsKey(name)
+			? new ArrayList<TimeSetBean>(timeSetTaskMap.get(name).getTimeList())
+			: new ArrayList<TimeSetBean>();
+	}
+
+	public void setValue(String name, String key, String value) {
+		timeSetTaskMap.get(name).put(key, value);
 		edited = true;
 	}
-	public void setBeansList(List list) {
-		this.beansList.clear();
-		this.beansList.addAll(list);
+
+	public void setBeansList(String name, List<TimeSetBean> list) {
+		timeSetTaskMap.get(name).getTimeList().clear();
+		timeSetTaskMap.get(name).getTimeList().addAll(list);
 		edited = true;
 	}
 
-	public void load(String path) throws ParserConfigurationException,
-			IOException, SAXException {
+	public void setTimeSetTask(TimeSetTaskBean bean) {
+		timeSetTaskMap.put(bean.get("name"), bean);
+		edited = true;
+	}
+
+	public TimeSetTaskBean removeTimeSetTask(TimeSetTaskBean bean) {
+		TimeSetTaskBean remove = timeSetTaskMap.remove(bean.get("name"));
+		edited = true;
+		return remove;
+	}
+
+	public List<TimeSetTaskBean> getTimeSetTask() {
+		return new ArrayList<TimeSetTaskBean>(timeSetTaskMap.values());
+	}
+
+	public void load(String path)
+			throws ParserConfigurationException,
+			IOException,
+			SAXException {
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbfactory.newDocumentBuilder();
 		Document document = builder.parse(new File(path));
@@ -72,10 +123,18 @@ public class TimeSetStream {
 		NodeList childs = root.getElementsByTagName("f11:timesettask");
 		for (int i = 0; i < childs.getLength(); i++) {
 			Element el = (Element) childs.item(i);
-			dataMap.put("schedule", el.getAttribute("schedule"));
-			dataMap.put("offset", el.getAttribute("offset"));
-			dataMap.put("milliOffsetMode", el.getAttribute("milliOffsetMode"));
+			TimeSetTaskBean timeSetTaskBean = new TimeSetTaskBean();
+			String name = el.getAttribute("name");
+			timeSetTaskBean.put("name", name);
+			timeSetTaskBean.put("schedule", getSchedule(el
+				.getAttribute("schedule")));
+			timeSetTaskBean.put("offset", el.getAttribute("offset"));
+			timeSetTaskBean.put("milliOffsetMode", getMilliOffSetMode(el
+				.getAttribute("milliOffsetMode")));
+
 			NodeList props = el.getChildNodes();
+			ArrayList<TimeSetBean> timeSetBean =
+				new ArrayList<TimeSetBean>(props.getLength());
 			for (int j = 0; j < props.getLength(); j++) {
 				if (props.item(j).getNodeType() == Node.ELEMENT_NODE) {
 					Element prop = (Element) props.item(j);
@@ -83,11 +142,21 @@ public class TimeSetStream {
 					bean.setKind(prop.getNodeName().substring(4));
 					bean.setProvider(prop.getAttribute("provider"));
 					bean.setHolder(prop.getAttribute("holder"));
-					beansList.add(bean);
+					timeSetBean.add(bean);
 				}
 			}
+			timeSetTaskBean.setTimeList(timeSetBean);
+			timeSetTaskMap.put(name, timeSetTaskBean);
 		}
 		log.debug("load[" + path + "]");
+	}
+
+	private String getSchedule(String key) {
+		return scheduleMap.get(key);
+	}
+
+	private String getMilliOffSetMode(String key) {
+		return milliOffsetModeMap.get(key);
 	}
 
 	public void save(String path) throws IOException {
@@ -96,30 +165,37 @@ public class TimeSetStream {
 		log.debug("save[" + path + "]");
 		// ï€ë∂èàóù
 		Charset cs = Charset.forName("Windows-31J");
-		PrintWriter pw = new PrintWriter(new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(path), cs)));
+		PrintWriter pw =
+			new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(path),
+				cs)));
 		pw.print("<?xml version=\"1.0\" encoding=\"");
 		pw.print(cs.name());
 		pw.println("\"?>");
 		pw.println("<f11:timeset xmlns:f11=\"http://www.F-11.org/scada\">");
-		pw.print("\t<f11:timesettask schedule=\"");
-		pw.print((String) dataMap.get("schedule"));
-		pw.print("\" offset=\"");
-		pw.print((String) dataMap.get("offset"));
-		pw.print("\" milliOffsetMode=\"");
-		pw.print((String) dataMap.get("milliOffsetMode"));
-		pw.println("\">");
-		for (Iterator it = beansList.iterator(); it.hasNext();) {
-			TimeSetBean bean = (TimeSetBean) it.next();
-			pw.print("\t\t<f11:");
-			pw.print(bean.getKind());
-			pw.print(" provider=\"");
-			pw.print(bean.getProvider());
-			pw.print("\" holder=\"");
-			pw.print(bean.getHolder());
-			pw.println("\"/>");
+		for (TimeSetTaskBean timeSetTaskBean : timeSetTaskMap.values()) {
+			pw.print("\t<f11:timesettask name=\"");
+			pw.print(timeSetTaskBean.get("name"));
+			pw.print("\" schedule=\"");
+			pw.print(getSchedule(timeSetTaskBean.get("schedule")));
+			pw.print("\" offset=\"");
+			pw.print(timeSetTaskBean.get("offset"));
+			pw.print("\" milliOffsetMode=\"");
+			pw
+				.print(getMilliOffSetMode(timeSetTaskBean
+					.get("milliOffsetMode")));
+			pw.println("\">");
+			for (TimeSetBean bean : timeSetTaskBean.getTimeList()) {
+				pw.print("\t\t<f11:");
+				pw.print(bean.getKind());
+				pw.print(" provider=\"");
+				pw.print(bean.getProvider());
+				pw.print("\" holder=\"");
+				pw.print(bean.getHolder());
+				pw.println("\"/>");
+			}
+			pw.println("\t</f11:timesettask>");
 		}
-		pw.println("\t</f11:timesettask>");
 		pw.println("</f11:timeset>");
 		pw.close();
 		edited = false;

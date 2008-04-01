@@ -24,15 +24,18 @@ import org.F11.scada.tool.conf.io.ClientConfigurationStream;
 import org.F11.scada.tool.conf.io.ClientsDefineStream;
 import org.F11.scada.tool.conf.io.PreferencesStream;
 import org.F11.scada.tool.conf.io.RemoveDefineStream;
+import org.F11.scada.tool.conf.io.TimeSetBean;
 import org.F11.scada.tool.conf.io.TimeSetStream;
+import org.F11.scada.tool.conf.io.TimeSetTaskBean;
 import org.apache.log4j.Logger;
 
-public class StreamManager {
+public class StreamManager implements TimeSetManager {
 	private static final Logger log = Logger.getLogger(StreamManager.class);
 
 	private final PreferencesStream preferences = new PreferencesStream();
 	private final AlarmDefineStream alarmdefine = new AlarmDefineStream();
-	private final ClientConfigurationStream clientConf = new ClientConfigurationStream();
+	private final ClientConfigurationStream clientConf =
+		new ClientConfigurationStream();
 	private final ClientsDefineStream clientsDef = new ClientsDefineStream();
 	private final TimeSetStream timeSet = new TimeSetStream();
 	private final RemoveDefineStream removeDef = new RemoveDefineStream();
@@ -83,26 +86,43 @@ public class StreamManager {
 	}
 
 	// TimeSet
-	public String getTimeSet(String key, String def) {
-		return timeSet.getValue(key, def);
-	}
-	public List getTimeSetBeansList() {
-		return timeSet.getBeansList();
+	public String getTimeSet(String name, String key, String def) {
+		return timeSet.getValue(name, key, def);
 	}
 
-	public void setTimeSet(String key, String value) {
-		timeSet.setValue(key, value);
+	public List<TimeSetBean> getTimeSetBeansList(String name) {
+		return timeSet.getBeansList(name);
+	}
+
+	public void setTimeSet(String name, String key, String value) {
+		timeSet.setValue(name, key, value);
 		compo.setEnabled(true);
 	}
-	public void setTimeSetBeansList(List list) {
-		timeSet.setBeansList(list);
+
+	public void setTimeSetBeansList(String name, List list) {
+		timeSet.setBeansList(name, list);
 		compo.setEnabled(true);
+	}
+
+	public void setTimeSetTask(TimeSetTaskBean bean) {
+		timeSet.setTimeSetTask(bean);
+		compo.setEnabled(true);
+	}
+
+	public TimeSetTaskBean removeTimeSetTask(TimeSetTaskBean bean) {
+		compo.setEnabled(true);
+		return timeSet.removeTimeSetTask(bean);
+	}
+
+	public List<TimeSetTaskBean> getTimeSetTask() {
+		return timeSet.getTimeSetTask();
 	}
 
 	// RemoveDefine
 	public List getCountRemoveList() {
 		return removeDef.getCountRemove();
 	}
+
 	public List getSecondRemoveList() {
 		return removeDef.getSecondRemove();
 	}
@@ -111,6 +131,7 @@ public class StreamManager {
 		removeDef.setCountRemove(list);
 		compo.setEnabled(true);
 	}
+
 	public void setSecondRemoveList(List list) {
 		removeDef.setSecondRemove(list);
 		compo.setEnabled(true);
