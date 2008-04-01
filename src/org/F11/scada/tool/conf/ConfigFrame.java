@@ -33,7 +33,7 @@ import org.F11.scada.tool.conf.client.ClientConfTab;
 import org.F11.scada.tool.conf.individual.IndividualTab;
 import org.F11.scada.tool.conf.pref.PreferencesTab;
 import org.F11.scada.tool.conf.remove.RemoveTab;
-import org.F11.scada.tool.conf.timeset.TimeSetTab;
+import org.F11.scada.tool.conf.timeset.TimeSetTaskPanel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -59,20 +59,41 @@ public class ConfigFrame extends JFrame {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JTabbedPane tabbed = new JTabbedPane();
 
-		tabbed.addTab("基本機能", null, new PreferencesTab(this, manager),
-				"「Preferences.xml」の内容を設定します。");
-		tabbed.addTab("警報履歴", null, new AlarmDefineTab(this, manager),
-				"「AlarmDefine.xml」の内容を設定します。");
-		tabbed.addTab("クライアント設定", null, new ClientConfTab(this, manager),
-				"「ClientConfiguration.xml」の内容を設定します。");
-		tabbed.addTab("クライアント履歴", null, new ClientConf2Tab(this, manager),
-				"「ClientConfiguration.xml」の履歴関連を設定します。");
-		tabbed.addTab("クライアントIP別", null, new IndividualTab(this, manager),
-				"「ClientsDefine.xml」の内容を設定します。");
-		tabbed.addTab("時計設定", null, new TimeSetTab(this, manager),
-				"「TimeSet.xml」の内容を設定します。");
-		tabbed.addTab("自動削除設定", null, new RemoveTab(this, manager),
-				"「RemoveDefine.dicon」の内容を設定します。");
+		tabbed.addTab(
+			"基本機能",
+			null,
+			new PreferencesTab(this, manager),
+			"「Preferences.xml」の内容を設定します。");
+		tabbed.addTab(
+			"警報履歴",
+			null,
+			new AlarmDefineTab(this, manager),
+			"「AlarmDefine.xml」の内容を設定します。");
+		tabbed.addTab(
+			"クライアント設定",
+			null,
+			new ClientConfTab(this, manager),
+			"「ClientConfiguration.xml」の内容を設定します。");
+		tabbed.addTab(
+			"クライアント履歴",
+			null,
+			new ClientConf2Tab(this, manager),
+			"「ClientConfiguration.xml」の履歴関連を設定します。");
+		tabbed.addTab(
+			"クライアントIP別",
+			null,
+			new IndividualTab(this, manager),
+			"「ClientsDefine.xml」の内容を設定します。");
+		tabbed.addTab(
+			"時計設定",
+			null,
+			new TimeSetTaskPanel(manager),
+			"「TimeSet.xml」の内容を設定します。");
+		tabbed.addTab(
+			"自動削除設定",
+			null,
+			new RemoveTab(this, manager),
+			"「RemoveDefine.dicon」の内容を設定します。");
 
 		mainPanel.add(tabbed, BorderLayout.CENTER);
 
@@ -135,7 +156,8 @@ public class ConfigFrame extends JFrame {
 		if (url != null) {
 			DOMConfigurator.configure(url);
 		} else {
-			url = clazz
+			url =
+				clazz
 					.getResource("/resources/xwife_server_main_log4j.properties");
 			PropertyConfigurator.configure(url);
 		}
@@ -148,7 +170,8 @@ public class ConfigFrame extends JFrame {
 		try {
 			createLog();
 
-			ConfigFrame frame = new ConfigFrame("cur (Configfile Update Routine)");
+			ConfigFrame frame =
+				new ConfigFrame("cur (Configfile Update Routine)");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.init();
 			frame.setLocationRelativeTo(null);
