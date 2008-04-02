@@ -20,8 +20,8 @@
 package org.F11.scada.scheduling;
 
 /**
- * スケジュールを表すクラスです。
- * スケジュールは実行タスクとイテレーターを保持するオブジェクトです
+ * スケジュールを表すクラスです。 スケジュールは実行タスクとイテレーターを保持するオブジェクトです
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class Schedule {
@@ -31,7 +31,24 @@ public class Schedule {
 	private ScheduleIterator scheduleIterator;
 
 	/**
+	 * デフォルトコンストラクタ
+	 */
+	public Schedule() {	}
+
+	/**
+	 * タスクとイテレータを指定してスケジュールオブジェクトを生成するコンストラクタです。
+	 * 
+	 * @param task タスク
+	 * @param scheduleIterator イテレータ
+	 */
+	public Schedule(SchedulerTask task, ScheduleIterator scheduleIterator) {
+		this.task = task;
+		this.scheduleIterator = scheduleIterator;
+	}
+
+	/**
 	 * タスクを実行する間隔を提供するイテレータを返します
+	 * 
 	 * @return タスクを実行する間隔を提供するイテレータ
 	 */
 	public ScheduleIterator getScheduleIterator() {
@@ -40,6 +57,7 @@ public class Schedule {
 
 	/**
 	 * 実行タスクオブジェクトを返します
+	 * 
 	 * @return 実行タスクオブジェクト
 	 */
 	public SchedulerTask getTask() {
@@ -48,6 +66,7 @@ public class Schedule {
 
 	/**
 	 * タスクを実行する間隔を提供するイテレータを設定します
+	 * 
 	 * @param iterator タスクを実行する間隔を提供するイテレータ
 	 */
 	public void setScheduleIterator(ScheduleIterator iterator) {
@@ -56,6 +75,7 @@ public class Schedule {
 
 	/**
 	 * 実行タスクオブジェクトを設定します
+	 * 
 	 * @param task 実行タスクオブジェクト
 	 */
 	public void setTask(SchedulerTask task) {

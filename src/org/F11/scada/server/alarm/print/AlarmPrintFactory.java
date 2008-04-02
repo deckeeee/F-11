@@ -48,6 +48,14 @@ public class AlarmPrintFactory {
 					"org/F11/scada/server/alarm/print/AlarmPrintService.dicon");
 			container.init();
 			store = (AlarmDataStore) container.getComponent("alarmPrintService");
+		} else if (
+				"org.F11.scada.server.alarm.print.AlarmDailyPrintService".equals(
+					clazz)) {
+				S2Container container =
+					S2ContainerFactory.create(
+						"org/F11/scada/server/alarm/print/AlarmPrintService.dicon");
+				container.init();
+				store = (AlarmDataStore) container.getComponent("alarmDailyPrintService");
 		} else {
 			store = new AlarmPrintPage();
 		}

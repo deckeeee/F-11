@@ -74,31 +74,33 @@ public class PreferencesStream {
 		log.debug("save[" + path + "]");
 		// ï€ë∂èàóù
 		Charset cs = Charset.forName("Windows-31J");
-		PrintWriter pw = new PrintWriter(new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(path), cs)));
+		PrintWriter pw =
+			new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(path),
+				cs)));
 		pw.print("<?xml version=\"1.0\" encoding=\"");
 		pw.print(cs.name());
 		pw.println("\"?>");
 		pw.println("<environment>");
 		pw.println(getXmlProp("/server/rmi/managerdelegator/name", ""));
 		pw.println(getXmlProp("/server/rmi/managerdelegator/port", String
-				.valueOf(Registry.REGISTRY_PORT)));
+			.valueOf(Registry.REGISTRY_PORT)));
 		pw.println(getXmlProp(
-				"/server/rmi/managerdelegator/rmiReceivePort",
-				"50001"));
+			"/server/rmi/managerdelegator/rmiReceivePort",
+			"50001"));
 		pw.println(getXmlProp("/server/rmi/collectorserver/name", ""));
 		pw.println(getXmlProp("/server/rmi/collectorserver/port", String
-				.valueOf(Registry.REGISTRY_PORT)));
+			.valueOf(Registry.REGISTRY_PORT)));
 		pw.println(getXmlProp(
-				"/server/rmi/collectorserver/rmiReceivePort",
-				"50000"));
+			"/server/rmi/collectorserver/rmiReceivePort",
+			"50000"));
 		pw.println(getXmlProp("/server/rmi/collectorserver/retry/count", "-1"));
 		pw.println(getXmlProp(
-				"/server/policy/policyMap",
-				"org.F11.scada.security.postgreSQL.PostgreSQLPolicyMap"));
+			"/server/policy/policyMap",
+			"org.F11.scada.security.postgreSQL.PostgreSQLPolicyMap"));
 		pw.println(getXmlProp(
-				"/server/policy/authentication",
-				"org.F11.scada.security.postgreSQL.PostgreSQLAuthentication"));
+			"/server/policy/authentication",
+			"org.F11.scada.security.postgreSQL.PostgreSQLAuthentication"));
 		pw.println(getXmlProp("/server/jdbc/servername", "localhost"));
 		pw.println(getXmlProp("/server/jdbc/dbmsname", "postgresql"));
 		pw.println(getXmlProp("/server/jdbc/driver", "org.postgresql.Driver"));
@@ -120,16 +122,18 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/alarm/print/size", "ISO_A4"));
 		pw.println(getXmlProp("/server/alarm/print/orientation", "PORTRAIT"));
 		pw
-				.println(getXmlProp(
-						"/server/alarm/print/font",
-						"Monospaced,PLAIN,10"));
+			.println(getXmlProp(
+				"/server/alarm/print/font",
+				"Monospaced,PLAIN,10"));
 		pw.println(getXmlProp("/server/alarm/print/pagelines", "10"));
-		pw.println(getXmlProp("/server/alarm/print/className", ""));
+		pw.println(getXmlProp(
+			"/server/alarm/print/className",
+			"org.F11.scada.server.alarm.print.AlarmPrintService"));
 		pw.println(getXmlProp("/server/device", ""));
 		pw.println(getXmlProp("/server/FrameEditHandler", ""));
 		pw.println(getXmlProp(
-				"/server/autoprint",
-				"org.F11.scada.xwife.server.AutoPrintPanel"));
+			"/server/autoprint",
+			"org.F11.scada.xwife.server.AutoPrintPanel"));
 		pw.println(getXmlProp("/server/title", "F-11 Server"));
 		pw.println(getXmlProp("/server/startup/wait", "0"));
 		pw.println(getXmlProp("/server/logging/maxrecord", "4096"));
@@ -139,8 +143,12 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/graphcache", "true"));
 		pw.println(getXmlProp("/server/deploy/period", "69896"));
 		pw.println(getXmlProp("/server/logging/noRevision", "false"));
-		pw.println(getXmlProp("/server/operationlog/impl/OperationLoggingUtilImpl", ""));
-		pw.println(getXmlProp("/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount", "false"));
+		pw.println(getXmlProp(
+			"/server/operationlog/impl/OperationLoggingUtilImpl",
+			""));
+		pw.println(getXmlProp(
+			"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+			"false"));
 		pw.println(getXmlProp("/server/logging/report/outputMode", "false"));
 		pw.println(getXmlProp("/server/systemtime/testMode", "false"));
 		pw.println(getXmlProp("/server/communicateWaitTime", "100"));
@@ -150,6 +158,7 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/mail/smtp/password", ""));
 		pw.println(getXmlProp("/server/formula/isUseFormula", "false"));
 		pw.println(getXmlProp("/server/alarm/sound/attributemode", "true"));
+		pw.println(getXmlProp("/server/alarm/print/printdate", "00:00:00"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

@@ -21,4 +21,11 @@
 		<arg>alarmPrinter</arg>
 		<aspect pointcut="insertEvent">j2ee.requiredTx</aspect>
 	</component>
+
+	<component name="alarmDailyPrintService"
+		class="org.F11.scada.server.alarm.print.AlarmDailyPrintService">
+		<arg>alarmPrintDAO</arg>
+		<arg>alarmPrinter</arg>
+		<aspect pointcut="insertEvent">j2ee.requiredTx</aspect>
+	</component>
 </components>
