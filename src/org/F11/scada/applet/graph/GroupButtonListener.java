@@ -17,6 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 
 import org.F11.scada.WifeUtilities;
@@ -26,7 +27,7 @@ import org.F11.scada.applet.ClientConfiguration;
  * グループ操作ボタンのリスナークラスです。 フォワード、バック、一覧選択の3つのアクションリスナーを生成します。 new
  * でインスタンス生成できないので、3通りのファクトリメソッドでインタンス生成して下さい。
  */
-class GroupButtonListener implements ActionListener {
+public class GroupButtonListener implements ActionListener {
 	/** グラフプロパティモデル */
 	private GraphPropertyModel graphPropertyModel;
 
@@ -62,7 +63,7 @@ class GroupButtonListener implements ActionListener {
 	 * @param graphPropertyModel グラフプロパティモデル
 	 * @return GroupButtonListener
 	 */
-	static GroupButtonListener createForwardListener(
+	public static GroupButtonListener createForwardListener(
 			GraphPropertyModel graphPropertyModel) {
 		return new GroupButtonListener(graphPropertyModel, GroupAction.FORWARD);
 	}
@@ -73,7 +74,7 @@ class GroupButtonListener implements ActionListener {
 	 * @param graphPropertyModel グラフプロパティモデル
 	 * @return GroupButtonListener
 	 */
-	static GroupButtonListener createBackListener(
+	public static GroupButtonListener createBackListener(
 			GraphPropertyModel graphPropertyModel) {
 		return new GroupButtonListener(graphPropertyModel, GroupAction.BACK);
 	}
@@ -84,7 +85,7 @@ class GroupButtonListener implements ActionListener {
 	 * @param graphPropertyModel グラフプロパティモデル
 	 * @return GroupButtonListener
 	 */
-	static GroupButtonListener createDialogListener(
+	public static GroupButtonListener createDialogListener(
 			GraphPropertyModel graphPropertyModel) {
 		return new GroupButtonListener(graphPropertyModel, GroupAction.DIALOG);
 	}
@@ -168,8 +169,11 @@ class GroupButtonListener implements ActionListener {
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			list = new JList(graphPropertyModel.getGroupNames().toArray());
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list.setSelectedIndex(graphPropertyModel.getGroup());
 			JScrollPane scpane = new JScrollPane(list);
-
+			JViewport p = scpane.getViewport();
+			p.setViewPosition(new Point(0, graphPropertyModel.getGroup()
+				* scpane.getVerticalScrollBar().getBlockIncrement(1)));
 			okButton = new JButton("OK");
 			cancelButton = new JButton("CANCEL");
 
@@ -192,8 +196,8 @@ class GroupButtonListener implements ActionListener {
 			Dimension dDimension = getSize();
 			Point location = window.getLocation();
 			location.translate(
-					(fDimension.width - dDimension.width) / 2,
-					(fDimension.height - dDimension.height) / 2);
+				(fDimension.width - dDimension.width) / 2,
+				(fDimension.height - dDimension.height) / 2);
 			setLocation(location);
 
 			show();
@@ -202,10 +206,10 @@ class GroupButtonListener implements ActionListener {
 		private void setSize() {
 			ClientConfiguration configuration = new ClientConfiguration();
 			setSize(configuration.getInt(
-					"xwife.applet.Applet.trend.dialog.width",
-					157), configuration.getInt(
-					"xwife.applet.Applet.trend.dialog.height",
-					217));
+				"xwife.applet.Applet.trend.dialog.width",
+				157), configuration.getInt(
+				"xwife.applet.Applet.trend.dialog.height",
+				217));
 		}
 
 		private static class OkButtonListener implements ActionListener {
@@ -245,8 +249,8 @@ class GroupButtonListener implements ActionListener {
 
 			public void mouseReleased(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					int group = groupSelectDialog.list.locationToIndex(e
-							.getPoint());
+					int group =
+						groupSelectDialog.list.locationToIndex(e.getPoint());
 					groupSelectDialog.graphPropertyModel.setGroup(group);
 					groupSelectDialog.dispose();
 				}

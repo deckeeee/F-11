@@ -95,15 +95,24 @@ public class AlarmDailyPrintService implements AlarmDataStore, Runnable,
 		String time =
 			EnvironmentManager.get("/server/alarm/print/printdate", "00:00:00");
 		SimpleDateFormat f = new SimpleDateFormat("HH:mm:ss");
+		String clazz =
+			EnvironmentManager.get("/server/alarm/print/className", "");
 		try {
 			Date d = f.parse(time);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(d);
-			log.info("毎時" + time + "に警報メッセージを印刷します");
+			if ("org.F11.scada.server.alarm.print.AlarmDailyPrintService"
+				.equals(clazz)) {
+				log.info("毎時" + time + "に警報メッセージを印刷します");
+			}
 			return new DailyIterator(cal.get(Calendar.HOUR_OF_DAY), cal
 				.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
 		} catch (ParseException e) {
-			log.warn("/server/alarm/print/printdateが不正です。00:00:00印刷で起動します。");
+			if ("org.F11.scada.server.alarm.print.AlarmDailyPrintService"
+				.equals(clazz)) {
+				log
+					.warn("/server/alarm/print/printdateが不正です。00:00:00印刷で起動します。");
+			}
 			return new DailyIterator(0, 0, 0);
 		}
 	}

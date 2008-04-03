@@ -74,7 +74,7 @@ public class WifeApplet extends AbstractWifeApplet {
 		JPanel treePanel = new JPanel(new BorderLayout());
 		treePanel.setMinimumSize(Globals.ZERO_DIMENSION);
 		TreeDefine treeDefine = frameDef.getMenuTreeRoot(subject.getUserName());
-		tree = new PageTree(treeDefine.getRootNode(), history);
+		tree = new PageTree(treeDefine.getRootNode(), history, configuration);
 		JScrollPane treePane = new JScrollPane(tree);
 		treePanel.add(treePane, BorderLayout.CENTER);
 		Box treeBox = createBandFButton();
