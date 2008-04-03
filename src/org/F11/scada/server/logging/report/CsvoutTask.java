@@ -170,22 +170,25 @@ public class CsvoutTask extends AbstractCsvoutTask {
 			out.write("“ú•t,");
 			for (Iterator it = hl.iterator(); it.hasNext();) {
 				Map rec = (Map) it.next();
-				out.write(",");
+				out.write(",\"");
 				out.write((String) rec.get("unit"));
+				out.write("\"");
 			}
 			out.newLine();
 			out.write("“ú•t,");
 			for (Iterator it = hl.iterator(); it.hasNext();) {
 				Map rec = (Map) it.next();
-				out.write(",");
+				out.write(",\"");
 				out.write((String) rec.get("name"));
+				out.write("\"");
 			}
 			out.newLine();
 			out.write("“ú•t,");
 			for (Iterator it = hl.iterator(); it.hasNext();) {
 				Map rec = (Map) it.next();
-				out.write(",");
+				out.write(",\"");
 				out.write((String) rec.get("unit_mark"));
+				out.write("\"");
 			}
 			out.newLine();
 		}
