@@ -615,9 +615,10 @@ public class DefaultGraphPropertyModel extends AbstractGraphPropertyModel {
 	
     public Collection getGroupNames() {
         ArrayList groupNames = new ArrayList(seriesPropertyList.size());
-        for (Iterator i = seriesPropertyList.iterator(); i.hasNext();) {
+        int index = 0;
+        for (Iterator i = seriesPropertyList.iterator(); i.hasNext(); index++) {
             GraphSeriesProperty gp = (GraphSeriesProperty) i.next();
-            groupNames.add(gp.getSeriesName());
+            groupNames.add(String.format("%03d : %s", index, gp.getSeriesName()));
         }
         return groupNames;
     }
