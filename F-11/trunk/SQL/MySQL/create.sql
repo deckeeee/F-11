@@ -127,8 +127,8 @@ CREATE TABLE autoprint_property_table (
 DROP TABLE IF EXISTS career_print_temp_table;
 CREATE TABLE career_print_temp_table (
   point int(11) NOT NULL default '0',
-  provider varchar(50) NOT NULL default '',
-  holder varchar(50) NOT NULL default '',
+  provider varchar(100) NOT NULL default '',
+  holder varchar(100) NOT NULL default '',
   entrydate datetime NOT NULL default '0000-00-00 00:00:00',
   bit_value tinyint(1) default NULL,
   KEY career_print_temp_table_date_idx (entrydate)
@@ -150,8 +150,8 @@ CREATE TABLE career_printed_table (
 DROP TABLE IF EXISTS career_table;
 CREATE TABLE career_table (
   point int(11) NOT NULL default '0',
-  provider varchar(50) NOT NULL default '',
-  holder varchar(50) NOT NULL default '',
+  provider varchar(100) NOT NULL default '',
+  holder varchar(100) NOT NULL default '',
   entrydate datetime NOT NULL default '0000-00-00 00:00:00',
   bit_value tinyint(1) default NULL,
   KEY career_date_idx (entrydate)
@@ -163,7 +163,7 @@ CREATE TABLE career_table (
 
 DROP TABLE IF EXISTS device_properties_table;
 CREATE TABLE device_properties_table (
-  id varchar(50) NOT NULL default '',
+  id varchar(100) NOT NULL default '',
   kind text,
   ip text,
   port int(11) default NULL,
@@ -267,8 +267,8 @@ CREATE TABLE group_define_table (
 DROP TABLE IF EXISTS history_table;
 CREATE TABLE history_table (
   point int(11) NOT NULL default '0',
-  provider varchar(50) NOT NULL default '',
-  holder varchar(50) NOT NULL default '',
+  provider varchar(100) NOT NULL default '',
+  holder varchar(100) NOT NULL default '',
   on_date datetime default NULL,
   off_date datetime default NULL,
   check_flag tinyint(1) default NULL,
@@ -283,8 +283,8 @@ CREATE TABLE history_table (
 DROP TABLE IF EXISTS item_table;
 CREATE TABLE item_table (
   point int(11) NOT NULL default '0',
-  provider varchar(50) NOT NULL default '',
-  holder varchar(50) NOT NULL default '',
+  provider varchar(100) NOT NULL default '',
+  holder varchar(100) NOT NULL default '',
   com_cycle int(11) default NULL,
   com_cycle_mode tinyint(1) default NULL,
   com_memory_kinds int(11) default NULL,
@@ -407,7 +407,7 @@ CREATE TABLE point_table (
 
 DROP TABLE IF EXISTS policy_define_table;
 CREATE TABLE policy_define_table (
-  principal varchar(50) NOT NULL default '',
+  principal varchar(100) NOT NULL default '',
   name varchar(50) NOT NULL default '',
   permission varchar(50) NOT NULL default '',
   entrydate datetime default NULL,
@@ -476,8 +476,8 @@ CREATE TABLE schedule_point_table (
 DROP TABLE IF EXISTS summary_table;
 CREATE TABLE summary_table (
   point int(11) NOT NULL default '0',
-  provider varchar(50) NOT NULL default '',
-  holder varchar(50) NOT NULL default '',
+  provider varchar(100) NOT NULL default '',
+  holder varchar(100) NOT NULL default '',
   on_date datetime default NULL,
   off_date datetime default NULL,
   bit_value tinyint(1) default NULL,
@@ -491,7 +491,7 @@ CREATE TABLE summary_table (
 
 DROP TABLE IF EXISTS tool_policy_define_table;
 CREATE TABLE tool_policy_define_table (
-  principal varchar(50) NOT NULL default '',
+  principal varchar(100) NOT NULL default '',
   name varchar(50) NOT NULL default '',
   permission varchar(50) NOT NULL default '',
   entrydate datetime default NULL,
