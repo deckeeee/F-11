@@ -26,4 +26,5 @@
 	<include path="org/F11/scada/server/autoprint/AutoPrintDataServiceFactory.dicon"/>
 	<include path="org/F11/scada/server/schedule/SchedulePointService.dicon"/>
 	<include path="org/F11/scada/server/formula/ItemFormulaService.dicon"/>
+	<include path="org/F11/scada/server/dao/HistoryTableDao.dicon"/>
 </components>

@@ -79,7 +79,7 @@ public class WifeAppletD extends AbstractNewApplet {
 		protected void setPanelNewAlarm() {
 			panelNewAlarm = getAlarmNewLine(wifeApplet);
 			// 表示切替ボタン
-			Box panelBut = getButton();
+			Component panelBut = getButton();
 			panelNewAlarm.add(panelBut, BorderLayout.EAST);
 		}
 
@@ -114,14 +114,16 @@ public class WifeAppletD extends AbstractNewApplet {
 
 		private void setTabSync(JComponent alarm) {
 			if (wifeApplet.configuration.getBoolean(
-					"org.F11.scada.xwife.applet.AppletD.tabsync",
-					false)) {
-				AlarmTabbedPane tab1 = (AlarmTabbedPane) ComponentUtil
-						.getChildrenComponent(
-								AlarmTabbedPane.class,
-								panelNewAlarm);
-				AlarmTabbedPane tab2 = (AlarmTabbedPane) ComponentUtil
-						.getChildrenComponent(AlarmTabbedPane.class, alarm);
+				"org.F11.scada.xwife.applet.AppletD.tabsync",
+				false)) {
+				AlarmTabbedPane tab1 =
+					(AlarmTabbedPane) ComponentUtil.getChildrenComponent(
+						AlarmTabbedPane.class,
+						panelNewAlarm);
+				AlarmTabbedPane tab2 =
+					(AlarmTabbedPane) ComponentUtil.getChildrenComponent(
+						AlarmTabbedPane.class,
+						alarm);
 				tab1.addChangeListener(new TabSyncListener(tab2));
 				tab2.addChangeListener(new TabSyncListener(tab1));
 			}
@@ -130,11 +132,12 @@ public class WifeAppletD extends AbstractNewApplet {
 		protected void createOperationFinder(JTabbedPane tabbedPane) {
 			ClientConfiguration configuration = new ClientConfiguration();
 			if (configuration.getBoolean("operationlogging.addalarm", true)) {
-				DefaultOperationLoggingTableModel loggingTableModel = new DefaultOperationLoggingTableModel();
-				final Component loggingFinder = new OperationLoggingFinder(
-						loggingTableModel);
+				DefaultOperationLoggingTableModel loggingTableModel =
+					new DefaultOperationLoggingTableModel();
+				final Component loggingFinder =
+					new OperationLoggingFinder(loggingTableModel);
 				tabbedPane.addTab("操作ログ", null, new OperationLoggingTable(
-						loggingTableModel), "操作ログ");
+					loggingTableModel), "操作ログ");
 
 				tabbedPane.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent e) {
@@ -161,8 +164,12 @@ public class WifeAppletD extends AbstractNewApplet {
 					changeAlarmPanel(e);
 				}
 			});
+			JButton all = new AllCheckedButton();
 			box.add(Box.createHorizontalGlue());
-			box.add(button);
+			Box box2 = Box.createVerticalBox();
+			box2.add(button);
+			box2.add(all);
+			box.add(box2);
 			return box;
 		}
 
@@ -174,7 +181,7 @@ public class WifeAppletD extends AbstractNewApplet {
 				panelNewAlarm.setMinimumSize(dimension);
 				panelNewAlarm.setVisible(true);
 				wifeApplet.mainSplit.setDividerLocation(wifeApplet.mainSplit
-						.getMaximumDividerLocation());
+					.getMaximumDividerLocation());
 				panelNewAlarm.setMinimumSize(Globals.ZERO_DIMENSION);
 			} else {
 				if (null == dimension) {
@@ -183,8 +190,8 @@ public class WifeAppletD extends AbstractNewApplet {
 				panelAlarmList.setVisible(true);
 				panelNewAlarm.setVisible(false);
 				if (wifeApplet.configuration.getBoolean(
-						"org.F11.scada.xwife.applet.typeDmode",
-						false)) {
+					"org.F11.scada.xwife.applet.typeDmode",
+					false)) {
 					tab.setSelectedIndex(0);
 				}
 
@@ -237,10 +244,10 @@ public class WifeAppletD extends AbstractNewApplet {
 			applet = new WifeAppletD(true);
 		} catch (RemoteException e) {
 			JOptionPane.showInternalMessageDialog(
-					frame,
-					ServerErrorUtil.ERROR_MESSAGE,
-					ServerErrorUtil.ERROR_MESSAGE,
-					JOptionPane.ERROR_MESSAGE);
+				frame,
+				ServerErrorUtil.ERROR_MESSAGE,
+				ServerErrorUtil.ERROR_MESSAGE,
+				JOptionPane.ERROR_MESSAGE);
 		}
 		setCloseAction(frame, applet);
 		frame.setTitle(getTitle());
@@ -253,8 +260,8 @@ public class WifeAppletD extends AbstractNewApplet {
 		applet.start();
 		applet.setFrameBounds(frame);
 		if (applet.configuration.getBoolean(
-				"xwife.applet.Applet.maximized",
-				false)) {
+			"xwife.applet.Applet.maximized",
+			false)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 		frame.setVisible(true);
