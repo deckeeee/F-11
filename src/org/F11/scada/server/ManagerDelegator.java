@@ -70,6 +70,7 @@ import org.F11.scada.server.demand.DemandDataReferencer;
 import org.F11.scada.server.frame.FramePageEditTimeSupport;
 import org.F11.scada.server.invoke.AddCheckJournal;
 import org.F11.scada.server.invoke.GetCheckEventJournal;
+import org.F11.scada.server.invoke.HistoryAllCheck;
 import org.F11.scada.server.invoke.InvokeHandler;
 import org.F11.scada.server.invoke.SetNoncheckTable;
 import org.F11.scada.server.io.postgresql.PostgreSQLAlarmDataStore;
@@ -90,8 +91,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	private static final long serialVersionUID = -2373449482456797261L;
 	/** ManagerDelegator 登録名 */
-	private static final String mainServer = WifeUtilities
-			.createRmiManagerDelegator();
+	private static final String mainServer =
+		WifeUtilities.createRmiManagerDelegator();
 	/** ヒストリチェックオブジェクト */
 	private HistoryCheck historyCheck;
 	/** Logging API */
@@ -105,7 +106,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	/** ポイントID, スケジュールデータのデータホルダのマップです。 */
 	private Map schedules;
 	/** サーバーコマンドのマップです */
-	private final Map commands;
+	private final Map<String, InvokeHandler> commands;
 
 	/**
 	 * このオブジェクトを初期化します。
@@ -128,11 +129,13 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		commands = createCommand();
 	}
 
-	private Map createCommand() {
-		HashMap map = new HashMap();
+	private Map<String, InvokeHandler> createCommand() {
+		HashMap<String, InvokeHandler> map =
+			new HashMap<String, InvokeHandler>();
 		map.put("SetNoncheckTable", new SetNoncheckTable(historyCheck));
 		map.put("GetCheckEventJournal", new GetCheckEventJournal());
 		map.put("AddCheckJournal", new AddCheckJournal());
+		map.put("HistoryAllCheck", new HistoryAllCheck());
 		return map;
 	}
 
@@ -179,7 +182,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		// 操作ログ処理
 		if (isSetValue(dh, dataValue)) {
 			service.logging(dh, dataValue, user, ip, new Timestamp(System
-					.currentTimeMillis()));
+				.currentTimeMillis()));
 			setValue(dataValue, dh);
 		}
 	}
@@ -193,7 +196,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		DataProvider dp = Manager.getInstance().getDataProvider(dpname);
 		if (dp == null) {
 			throw new NullPointerException("DataProvider Not Found. : "
-					+ dpname);
+				+ dpname);
 		}
 		DataHolder dh = dp.getDataHolder(dhname);
 		if (dh == null) {
@@ -218,7 +221,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 			Timestamp date,
 			Integer row) {
 
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.HISTORY);
 		dh.setParameter("row", row);
@@ -231,17 +235,22 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		if (logger.isDebugEnabled()) {
 			logger.debug("rows:" + Arrays.asList(rows));
 		}
-		DataValueChangeEventKey key = new DataValueChangeEventKey(point
-				.intValue(), provider, holder, Boolean.TRUE, date);
+		DataValueChangeEventKey key =
+			new DataValueChangeEventKey(
+				point.intValue(),
+				provider,
+				holder,
+				Boolean.TRUE,
+				date);
 		model.setValueAt(rows, row.intValue(), columnCount - 1, key);
 		dh.setValue(model, date, WifeQualityFlag.GOOD);
 		setNoncheck(row, model, key, date);
 		try {
 			historyCheck.doHistoryCheck(
-					point,
-					provider,
-					holder,
-					(Timestamp) rows[7]);
+				point,
+				provider,
+				holder,
+				(Timestamp) rows[7]);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -261,14 +270,15 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 			AlarmTableModel model,
 			DataValueChangeEventKey key,
 			Timestamp date) {
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.NONCHECK);
 		AlarmTableModel noncheckModel = (AlarmTableModel) dh.getValue();
 		Object[] rows = getRows(model, row);
 		noncheckModel.setJournal(AlarmTableJournal.createRowDataRemoveOpe(
-				key,
-				rows));
+			key,
+			rows));
 		dh.setValue(noncheckModel, date, WifeQualityFlag.GOOD);
 	}
 
@@ -289,8 +299,12 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		if (dh != null) {
 			return dh.getParameter(paraName);
 		}
-		logger.warn("Parameta Not Found : DP-" + dpname + " DH-" + dhname
-				+ " Para-" + paraName);
+		logger.warn("Parameta Not Found : DP-"
+			+ dpname
+			+ " DH-"
+			+ dhname
+			+ " Para-"
+			+ paraName);
 		return null;
 	}
 
@@ -309,19 +323,10 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 			if (obj instanceof WifeData) {
 				WifeData wd = (WifeData) obj;
 				retData.add(new HolderData(dh.getDataHolderName(), wd
-						.toByteArray(), dh.getTimeStamp().getTime(), (Map) dh
-						.getParameter(DemandDataReferencer.GRAPH_DATA)));
+					.toByteArray(), dh.getTimeStamp().getTime(), (Map) dh
+					.getParameter(DemandDataReferencer.GRAPH_DATA)));
 			}
 		}
-		/*
-		 * DataHolder[] dhs = dp.getDataHolders(); ArrayList retData = new
-		 * ArrayList(dhs.length); for (int i = 0; i < dhs.length; i++) { Object
-		 * obj = dhs[i].getValue(); if (obj instanceof WifeData) { WifeData wd =
-		 * (WifeData) obj; retData .add(new HolderData(
-		 * dhs[i].getDataHolderName(), wd.toByteArray(),
-		 * dhs[i].getTimeStamp().getTime(), (Map) dhs[i]
-		 * .getParameter(DemandDataReferencer.GRAPH_DATA))); } }
-		 */
 		return retData;
 	}
 
@@ -348,8 +353,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		ArrayList retData = new ArrayList(dps.length);
 		for (int i = 0; i < dps.length; i++) {
 			DataProvider dp = dps[i];
-			DataProviderDesc desc = new DataProviderDesc(dp
-					.getDataProviderName(), getClass(dp));
+			DataProviderDesc desc =
+				new DataProviderDesc(dp.getDataProviderName(), getClass(dp));
 			retData.add(desc);
 		}
 		return retData;
@@ -357,8 +362,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	private Class getClass(DataProvider dp) {
 		return WifeDataProvider.class.isAssignableFrom(dp.getClass())
-				? WifeDataProvider.class
-				: dp.getClass();
+			? WifeDataProvider.class
+			: dp.getClass();
 	}
 
 	/**
@@ -380,15 +385,17 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 				ConvertValue cv = null;
 				Map demand = null;
 				if (wd instanceof WifeDataAnalog
-						|| wd instanceof WifeDataAnalog4) {
-					cv = (ConvertValue) dh
+					|| wd instanceof WifeDataAnalog4) {
+					cv =
+						(ConvertValue) dh
 							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-					demand = (Map) dh
-							.getParameter(DemandDataReferencer.GRAPH_DATA);
+					demand =
+						(Map) dh.getParameter(DemandDataReferencer.GRAPH_DATA);
 				}
 				Date date = dh.getTimeStamp();
 				QualityFlag qualityFlag = dh.getQualityFlag();
-				CreateHolderData data = new CreateHolderData(
+				CreateHolderData data =
+					new CreateHolderData(
 						s,
 						wd,
 						cv,
@@ -402,21 +409,6 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 				datas.add(data);
 			}
 		}
-		/*
-		 * DataHolder[] dhs = dp.getDataHolders(); for (int i = 0; i <
-		 * dhs.length; i++) { String s = dhs[i].getDataHolderName(); Object obj =
-		 * dhs[i].getValue(); if (obj instanceof WifeData) { WifeData wd =
-		 * (WifeData) dhs[i].getValue(); ConvertValue cv = null; Map demand =
-		 * null; if (wd instanceof WifeDataAnalog || wd instanceof
-		 * WifeDataAnalog4) { cv = (ConvertValue) dhs[i]
-		 * .getParameter(WifeDataProvider.PARA_NAME_CONVERT); demand = (Map)
-		 * dhs[i] .getParameter(DemandDataReferencer.GRAPH_DATA); } Date date =
-		 * dhs[i].getTimeStamp(); QualityFlag qualityFlag =
-		 * dhs[i].getQualityFlag(); CreateHolderData data = new
-		 * CreateHolderData( s, wd, cv, demand, date, qualityFlag,
-		 * dataProvider); if (logger.isDebugEnabled()) {
-		 * logger.debug("CreateHolderData:" + data); } datas.add(data); } }
-		 */
 		return datas;
 	}
 
@@ -446,19 +438,22 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		addPoint(nb, ob);
 		setSchedule(nb);
 
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.CAREER);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 		TableUtil.setPoint(model, nb, ob);
 
-		dh = Manager.getInstance().findDataHolder(
+		dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.HISTORY);
 		model = (AlarmTableModel) dh.getValue();
 		TableUtil.setPoint(model, nb, ob);
 
-		dh = Manager.getInstance().findDataHolder(
+		dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.SUMMARY);
 		model = (AlarmTableModel) dh.getValue();
@@ -471,9 +466,9 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 			DataHolder dh = (DataHolder) schedules.get(key);
 			WifeDataSchedule data = (WifeDataSchedule) dh.getValue();
 			dh.setValue(
-					data.setGroupName(nb.getName()),
-					new Date(),
-					WifeQualityFlag.GOOD);
+				data.setGroupName(nb.getName()),
+				new Date(),
+				WifeQualityFlag.GOOD);
 		}
 	}
 
@@ -526,8 +521,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		Manager manager = Manager.getInstance();
 		for (Iterator i = holderStrings.iterator(); i.hasNext();) {
 			HolderString holderString = (HolderString) i.next();
-			DataProvider dp = manager.getDataProvider(holderString
-					.getProvider());
+			DataProvider dp =
+				manager.getDataProvider(holderString.getProvider());
 			if (dp == null) {
 				logger.error("null provider : " + holderString.getProvider());
 			}
@@ -547,15 +542,17 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 				ConvertValue cv = null;
 				Map demand = null;
 				if (wd instanceof WifeDataAnalog
-						|| wd instanceof WifeDataAnalog4) {
-					cv = (ConvertValue) dh
+					|| wd instanceof WifeDataAnalog4) {
+					cv =
+						(ConvertValue) dh
 							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-					demand = (Map) dh
-							.getParameter(DemandDataReferencer.GRAPH_DATA);
+					demand =
+						(Map) dh.getParameter(DemandDataReferencer.GRAPH_DATA);
 				}
 				Date date = dh.getTimeStamp();
 				QualityFlag qualityFlag = dh.getQualityFlag();
-				CreateHolderData data = new CreateHolderData(
+				CreateHolderData data =
+					new CreateHolderData(
 						dh.getDataHolderName(),
 						wd,
 						cv,
@@ -611,7 +608,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	 */
 	public synchronized Object invoke(String command, Object[] args) {
 		if (commands.containsKey(command)) {
-			InvokeHandler handler = (InvokeHandler) commands.get(command);
+			InvokeHandler handler = commands.get(command);
 			return handler.invoke(args);
 		} else {
 			throw new IllegalArgumentException("コマンドがサーバーに存在しません : " + command);

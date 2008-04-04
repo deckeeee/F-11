@@ -41,7 +41,6 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -152,7 +151,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	protected void setPanelNewAlarm() {
 		panelNewAlarm = getAlarmNewLine(wifeApplet);
 		// ï\é¶êÿë÷É{É^Éì
-		Box panelBut = getButton();
+		Component panelBut = getButton();
 		panelNewAlarm.add(panelBut, BorderLayout.EAST);
 		add(panelNewAlarm, BorderLayout.NORTH);
 	}
@@ -355,15 +354,17 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		return tabbedPane;
 	}
 
-	protected Box getButton() {
-		Box panelBut = new Box(BoxLayout.Y_AXIS);
+	protected Component getButton() {
+		Box panelBut = Box.createVerticalBox();
 		JButton button = new JButton(VIEWMODE_UP);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				changeAlarmPanel(e);
 			}
 		});
+		JButton all = new AllCheckedButton();
 		panelBut.add(button);
+		panelBut.add(all);
 		return panelBut;
 	}
 

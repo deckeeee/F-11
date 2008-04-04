@@ -79,7 +79,6 @@ public class ExplanatoryNotes extends JPanel implements PropertyChangeListener {
 	 * 
 	 * @param seriseId シリーズ
 	 * @param graphPropertyModel グラフプロパティ
-	 * @param alarmRef リモートオブジェクトの参照
 	 */
 	public ExplanatoryNotes(int seriseId, GraphPropertyModel graphPropertyModel) {
 		super(new LatticeLayout(20, 2));
