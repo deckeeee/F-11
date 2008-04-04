@@ -81,6 +81,7 @@ CREATE TABLE item_table (
 );
 
 CREATE INDEX item_table_finder_idx ON item_table (provider, holder);
+CREATE INDEX item_attribute_id_idx ON item_table (attribute_id);
 
 /* 表示メッセージ定義 */
 CREATE TABLE message_table (
