@@ -37,6 +37,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import org.F11.scada.EnvironmentManager;
+
 public class ShutdownAuthDialog extends JDialog {
 	private static final long serialVersionUID = -5610588934824601751L;
 	/** ユーザーフィールド */
@@ -54,6 +56,7 @@ public class ShutdownAuthDialog extends JDialog {
 
 	/**
 	 * 認証ダイアログを初期化してインスタンスを生成します。
+	 * 
 	 * @param frame 親フレームの参照
 	 */
 	public ShutdownAuthDialog(Frame frame) {
@@ -69,8 +72,12 @@ public class ShutdownAuthDialog extends JDialog {
 		location.translate(
 			(frameDim.width - dialogDim.width) / 2,
 			(frameDim.height - dialogDim.height) / 2);
-		location.x = Math.max(0, Math.min(location.x, screenSize.width - getSize().width));
-		location.y = Math.max(0, Math.min(location.y, screenSize.height - getSize().height));
+		location.x =
+			Math.max(0, Math
+				.min(location.x, screenSize.width - getSize().width));
+		location.y =
+			Math.max(0, Math.min(location.y, screenSize.height
+				- getSize().height));
 		setLocation(location.x, location.y);
 		show();
 	}
@@ -104,15 +111,16 @@ public class ShutdownAuthDialog extends JDialog {
 	void addActionListener(JButton ok, ActionListener listener) {
 		ok.addActionListener(listener);
 	}
-	
+
 	private ActionListener getOkActionListener() {
 		return new OkActionListener(this);
 	}
 
 	/**
-	 * <p>OK ボタンが押下された時に実行されるリスナークラスです。
-	 * <p>認証ロジックの checkAuthentication メソッドに、ユーザー名とパスワードを
-	 * 引数で渡します。
+	 * <p>
+	 * OK ボタンが押下された時に実行されるリスナークラスです。
+	 * <p>
+	 * 認証ロジックの checkAuthentication メソッドに、ユーザー名とパスワードを 引数で渡します。
 	 */
 	private class OkActionListener implements ActionListener {
 		ShutdownAuthDialog dlg;
@@ -122,8 +130,11 @@ public class ShutdownAuthDialog extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			char[] pass = new char[] { 'o', 'k', 'u', 's', 'a', 'm', 'a' };
-			if (dlg.getUserField().getText().equals("root")
+			String userStr = EnvironmentManager.get("/server/user", "root");
+			String passStr =
+				EnvironmentManager.get("/server/password", "okusama");
+			char[] pass = passStr.toCharArray();
+			if (dlg.getUserField().getText().equals(userStr)
 				&& Arrays.equals(dlg.getPassField().getPassword(), pass)) {
 				System.exit(0);
 			} else {
