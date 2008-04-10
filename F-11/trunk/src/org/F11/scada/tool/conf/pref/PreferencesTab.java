@@ -58,6 +58,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private final JTextField deployPeriod = new JTextField();
 	private final JTextField operationLoggingUtil = new JTextField();
 	private final JTextField communicateWaitTime = new JTextField();
+	private final JTextField serverUser = new JTextField();
+	private final JTextField serverPass = new JTextField();
 
 	public PreferencesTab(Frame parent, StreamManager manager) {
 		super();
@@ -242,6 +244,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		communicateWaitTime(mainPanel);
 		useFormula(mainPanel);
 		soundAttributeMode(mainPanel);
+		serverUser(mainPanel);
+		serverPass(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -513,6 +517,21 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(cb);
 	}
 
+	private void serverUser(JPanel mainPanel) {
+		mainPanel.add(new JLabel("サーバー終了用ユーザー："));
+		serverUser.setText(manager.getPreferences("/server/user", "root"));
+		serverUser.getDocument().addDocumentListener(this);
+		mainPanel.add(serverUser);
+	}
+
+	private void serverPass(JPanel mainPanel) {
+		mainPanel.add(new JLabel("サーバー終了用パスワード："));
+		serverPass.setText(manager
+			.getPreferences("/server/password", "okusama"));
+		serverPass.getDocument().addDocumentListener(this);
+		mainPanel.add(serverPass);
+	}
+
 	public void changedUpdate(DocumentEvent e) {
 		eventPaformed(e);
 	}
@@ -563,6 +582,10 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			manager.setPreferences(
 				"/server/communicateWaitTime",
 				communicateWaitTime.getText());
+		} else if (e.getDocument() == serverUser.getDocument()) {
+			manager.setPreferences("/server/user", serverUser.getText());
+		} else if (e.getDocument() == serverPass.getDocument()) {
+			manager.setPreferences("/server/password", serverPass.getText());
 		}
 	}
 }
