@@ -62,7 +62,7 @@ public class AlarmStats extends JLabel implements TableModelListener {
 		if (isSetText(model)) {
 			final StringBuffer sb = new StringBuffer();
 			sb.append(format.format(model.getValueAt(0, 12)) + "Å@");
-			for (int i = 13; i < model.getColumnCount() - 1; i++) {
+			for (int i = 13; i < model.getColumnCount() - 2; i++) {
 				sb.append(model.getValueAt(0, i) + "Å@");
 			}
 			setText(sb.toString());
