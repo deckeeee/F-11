@@ -42,6 +42,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.server.deploy.PageDefineUtil;
 import org.F11.scada.server.frame.editor.FrameEditHandler;
+import org.F11.scada.server.register.HolderString;
 import org.apache.log4j.Logger;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -147,6 +148,11 @@ public class XmlFrameEditManager
 	 */
 	public List getLoggingHolders(String loggingName) {
 		return taskManager.getLoggingHolders(loggingName);
+	}
+
+	public List<HolderString> getHolders(
+			String loggingName) throws RemoteException {
+		return taskManager.getHolders(loggingName);
 	}
 
 	/**

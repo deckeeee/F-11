@@ -40,6 +40,7 @@ import org.F11.scada.EnvironmentManager;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.server.frame.editor.FrameEditHandler;
 import org.F11.scada.server.frame.editor.TabInsertHandler;
+import org.F11.scada.server.register.HolderString;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -180,4 +181,8 @@ public class FrameEditManager
 		}
 	}
 
+	public List<HolderString> getHolders(
+			String loggingName) throws RemoteException {
+		throw new UnsupportedOperationException();
+	}
 }

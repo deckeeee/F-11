@@ -24,6 +24,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import org.F11.scada.server.register.HolderString;
+
 /**
  * @author hori
  */
@@ -31,13 +33,15 @@ public interface FrameEditHandler extends Remote {
 
 	/**
 	 * nameで指定されたページ定義をXMLで返します。
+	 * 
 	 * @param name ページ名
 	 * @return String ページ定義のXML表現。ページ名無しの場合null
 	 */
-	public String getPageXml(String name) throws RemoteException; 
+	public String getPageXml(String name) throws RemoteException;
 
 	/**
 	 * nameで指定したページ定義を設定します。
+	 * 
 	 * @param name ページ名
 	 * @param xml ページ定義
 	 */
@@ -45,8 +49,18 @@ public interface FrameEditHandler extends Remote {
 
 	/**
 	 * loggingNameで指定したロギングファイルに保存される項目の属性リストを返します。
+	 * 
 	 * @param loggingName ロギングファイル名
 	 * @return 項目の属性リスト
 	 */
 	public List getLoggingHolders(String loggingName) throws RemoteException;
+
+	/**
+	 * loggingNameで指定したロギングファイルに保存される項目の属性リストを返します。
+	 * 
+	 * @param loggingName ロギングファイル名
+	 * @return 項目の属性リスト
+	 */
+	public List<HolderString> getHolders(
+			String loggingName) throws RemoteException;
 }

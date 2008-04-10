@@ -28,6 +28,7 @@ import java.io.Serializable;
  */
 public class TaskItemDefine implements Serializable {
 	private static final long serialVersionUID = -6423247209064704437L;
+	public static final String TABLE = "item_table";
 	/** 縦スケールの最小値 */
 	private double verticalMinimum;
 	/** 縦スケールの最大値 */
@@ -36,8 +37,6 @@ public class TaskItemDefine implements Serializable {
 	private double verticalInputMinimum;
 	/** 縦スケールの最大入力値 */
 	private double verticalInputMaximum;
-	/** データプロバイダ名 */
-//	private String dataProviderName;
 	/** データホルダ名 */
 	private String dataHolderName;
 	/** ポイント番号 */
@@ -49,25 +48,26 @@ public class TaskItemDefine implements Serializable {
 	/** ポイント単位 */
 	private String pointUnitMark;
 
+	public TaskItemDefine() {
+	}
+
 	/**
 	 * 
 	 */
 	public TaskItemDefine(
-		double verticalMinimum,
-		double verticalMaximum,
-		double verticalInputMinimum,
-		double verticalInputMaximum,
-//		String dataProviderName,
-		String dataHolderName,
-		int pointNo,
-		String pointUnit,
-		String pointName,
-		String pointUnitMark) {
+			double verticalMinimum,
+			double verticalMaximum,
+			double verticalInputMinimum,
+			double verticalInputMaximum,
+			String dataHolderName,
+			int pointNo,
+			String pointUnit,
+			String pointName,
+			String pointUnitMark) {
 		this.verticalMinimum = verticalMinimum;
 		this.verticalMaximum = verticalMaximum;
 		this.verticalInputMinimum = verticalInputMinimum;
 		this.verticalInputMaximum = verticalInputMaximum;
-//		this.dataProviderName = dataProviderName;
 		this.dataHolderName = dataHolderName;
 		this.pointNo = pointNo;
 		this.pointUnit = pointUnit;
@@ -81,13 +81,6 @@ public class TaskItemDefine implements Serializable {
 	public String getDataHolderName() {
 		return dataHolderName;
 	}
-
-	/**
-	 * @return
-	 */
-//	public String getDataProviderName() {
-//		return dataProviderName;
-//	}
 
 	/**
 	 * @return
@@ -145,8 +138,45 @@ public class TaskItemDefine implements Serializable {
 		return pointNo;
 	}
 
+	public void setVerticalMinimum(double verticalMinimum) {
+		this.verticalMinimum = verticalMinimum;
+	}
+
+	public void setVerticalMaximum(double verticalMaximum) {
+		this.verticalMaximum = verticalMaximum;
+	}
+
+	public void setVerticalInputMinimum(double verticalInputMinimum) {
+		this.verticalInputMinimum = verticalInputMinimum;
+	}
+
+	public void setVerticalInputMaximum(double verticalInputMaximum) {
+		this.verticalInputMaximum = verticalInputMaximum;
+	}
+
+	public void setDataHolderName(String dataHolderName) {
+		this.dataHolderName = dataHolderName;
+	}
+
+	public void setPointNo(int pointNo) {
+		this.pointNo = pointNo;
+	}
+
+	public void setPointUnit(String pointUnit) {
+		this.pointUnit = pointUnit;
+	}
+
+	public void setPointName(String pointName) {
+		this.pointName = pointName;
+	}
+
+	public void setPointUnitMark(String pointUnitMark) {
+		this.pointUnitMark = pointUnitMark;
+	}
+
 	/**
 	 * このオブジェクトの文字列表現を返します。
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -155,7 +185,6 @@ public class TaskItemDefine implements Serializable {
 		sb.append(",verMax=").append(verticalMaximum);
 		sb.append(",inpMin=").append(verticalInputMinimum);
 		sb.append(",inpMax=").append(verticalInputMaximum);
-//		sb.append(",dataProviderName=").append(dataProviderName);
 		sb.append(",dataHolderName=").append(dataHolderName);
 		sb.append(",pointNo=").append(pointNo);
 		sb.append(",pointUnit=").append(pointUnit);
@@ -167,6 +196,7 @@ public class TaskItemDefine implements Serializable {
 
 	/**
 	 * このオブジェクトの値を比べ、同じならば true を返します。
+	 * 
 	 * @param obj 比較対象のオブジェクト
 	 * @return このオブジェクトの値を比べ、同じならば true を返します。
 	 */
@@ -184,7 +214,6 @@ public class TaskItemDefine implements Serializable {
 			&& verticalMaximum == td.verticalMaximum
 			&& verticalInputMinimum == td.verticalInputMinimum
 			&& verticalInputMaximum == td.verticalInputMaximum
-//			&& dataProviderName.equals(td.dataProviderName)
 			&& dataHolderName.equals(td.dataHolderName)
 			&& pointNo == td.pointNo
 			&& pointUnit.equals(td.pointUnit)
@@ -194,6 +223,7 @@ public class TaskItemDefine implements Serializable {
 
 	/**
 	 * このオブジェクトのハッシュを返します
+	 * 
 	 * @return このオブジェクトのハッシュ
 	 */
 	public int hashCode() {
@@ -202,7 +232,6 @@ public class TaskItemDefine implements Serializable {
 		result = (int) (37 * result + verticalMaximum);
 		result = (int) (37 * result + verticalInputMinimum);
 		result = (int) (37 * result + verticalInputMaximum);
-//		result = 37 * result + dataProviderName.hashCode();
 		result = 37 * result + dataHolderName.hashCode();
 		result = 37 * result + pointNo;
 		result = 37 * result + pointUnit.hashCode();
@@ -212,8 +241,8 @@ public class TaskItemDefine implements Serializable {
 	}
 
 	/**
-	 * 防御的readResolveメソッド。
-	 * 不正にデシリアライズされるのを防止します。
+	 * 防御的readResolveメソッド。 不正にデシリアライズされるのを防止します。
+	 * 
 	 * @return Object デシリアライズされたインスタンス
 	 * @throws ObjectStreamException デシリアライズに失敗した時
 	 */
@@ -223,7 +252,6 @@ public class TaskItemDefine implements Serializable {
 			verticalMaximum,
 			verticalInputMinimum,
 			verticalInputMaximum,
-//			dataProviderName,
 			dataHolderName,
 			pointNo,
 			pointUnit,

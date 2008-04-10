@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.F11.scada.server.io.PointNameDataStore;
 import org.F11.scada.server.logging.LoggingTask;
+import org.F11.scada.server.register.HolderString;
 
 /**
  * 
@@ -37,6 +38,7 @@ class LoggingTaskManager {
 
 	/**
 	 * ロギングタスクマネージャーを初期化します
+	 * 
 	 * @param taskMap ロギングタスクマップ
 	 */
 	LoggingTaskManager(Map taskMap) {
@@ -45,6 +47,7 @@ class LoggingTaskManager {
 
 	/**
 	 * loggingNameで指定したロギングファイルに保存される項目の属性リストを返します。
+	 * 
 	 * @param loggingName ロギングファイル名
 	 * @return 項目の属性リスト
 	 */
@@ -53,21 +56,17 @@ class LoggingTaskManager {
 		try {
 			PointNameDataStore dataStore = new PointNameDataStore();
 			LoggingTask task = (LoggingTask) taskMap.get(loggingName);
-			taskItems.addAll(
-				dataStore.getAnalogNameList(task.getDataHolders()));
-			/*
-			for (Iterator it = task.getDataHolders().iterator(); it.hasNext();) {
-				DataHolder dh = (DataHolder) it.next();
-				taskItems.add(
-					dataStore.getAnalogName(
-						dh.getDataProvider().getDataProviderName(),
-						dh.getDataHolderName()));
-			} // ここでデータベースを検索し、ポイント名称、アナログプロパティを得る。
-			*/
+			taskItems
+				.addAll(dataStore.getAnalogNameList(task.getDataHolders()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return taskItems;
 	}
 
+	public List<HolderString> getHolders(
+			String loggingName) {
+		LoggingTask task = (LoggingTask) taskMap.get(loggingName);
+		return task.getDataHolders();
+	}
 }

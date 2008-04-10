@@ -84,4 +84,14 @@ public abstract class AttributesUtil {
 			}
 		}
 	}
+	
+	/**
+	 * 文字列が null か空白なら null を以外の場合は"%"で囲んだ文字列を返します。
+	 * 
+	 * @param s 文字列
+	 * @return 文字列が null か空白なら null を以外の場合は"%"で囲んだ文字列を返します。
+	 */
+	public static String getLikeString(String s) {
+		return isSpaceOrNull(s) ? null : "%" + s + "%";
+	}
 }

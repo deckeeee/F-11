@@ -19,7 +19,7 @@
 	</appender>
 
 <!--
-	<category name="org.F11.scada.server.io.postgresql.PostgreSQLSelectHandler">
+	<category name="org.seasar">
 		<level value="debug" />
 		<appender-ref ref="STDOUT1" />
 	</category>
