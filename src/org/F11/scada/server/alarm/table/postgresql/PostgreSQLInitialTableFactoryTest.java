@@ -60,7 +60,7 @@ public class PostgreSQLInitialTableFactoryTest extends TestCase {
 
 	public void testCreateCareerInitial() throws Exception {
 		AlarmTableModel model = factory.createCareer();
-		assertEquals(17, model.getColumnCount());
+		assertEquals(18, model.getColumnCount());
 		String[] title = {
 			"ジャンプパス", "自動ジャンプ", "優先順位", "表示色"
 			,"point", "provider", "holder", "サウンドタイプ", "サウンドパス", "Emailグループ", "Emailモード"

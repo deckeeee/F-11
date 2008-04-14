@@ -136,9 +136,9 @@ public class PortSelectorTest extends TestCase {
 		Thread.sleep(100);
 		assertEquals(1, listener1.readCnt);
 		assertEquals(2, listener1.writeCnt);
-		assertEquals(2, listener2.readCnt);
+		assertEquals(1, listener2.readCnt);
 		assertEquals(1, listener2.writeCnt);
-		assertEquals("0102030405", WifeUtilities.toString(listener2.recvdata));
+		assertEquals("010203040506", WifeUtilities.toString(listener2.recvdata));
 
 		// listener2 ‚©‚ç listener2 ‚Ö‘—M
 		listener2.target =
@@ -148,7 +148,7 @@ public class PortSelectorTest extends TestCase {
 		Thread.sleep(100);
 		assertEquals(1, listener1.readCnt);
 		assertEquals(2, listener1.writeCnt);
-		assertEquals(3, listener2.readCnt);
+		assertEquals(2, listener2.readCnt);
 		assertEquals(2, listener2.writeCnt);
 		assertEquals("0504030201", WifeUtilities.toString(listener2.recvdata));
 

@@ -54,4 +54,9 @@ public interface PageChanger {
 	 * @param soundPath 音源ファイル
 	 */
 	void playAlarm(String soundPath);
+	
+	/**
+	 * 警報音を停止します。
+	 */
+	void stopAlarm();
 }

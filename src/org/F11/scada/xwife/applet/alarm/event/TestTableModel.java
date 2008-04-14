@@ -214,4 +214,6 @@ public class TestTableModel implements AlarmTableModel {
 
 	public void removeCheckTableListener(CheckTableListener listener) {
 	}
+	public void removeRow(int row) {
+	}
 }

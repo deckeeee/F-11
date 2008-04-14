@@ -34,7 +34,9 @@ import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
 /**
- * ヒストリ確認欄を全てチェック済みに更新するハンドラです。負荷の影響を考えてクライアント間通信はせず、サーバー内テーブルとヒストリテーブル(DB)を更新するのみです。この処理の結果を反映するには、クライアントの再起動が必要になります。
+ * ヒストリ確認欄を全てチェック済みに更新するハンドラです。
+ * 負荷の影響を考えてクライアント間通信はせず、サーバー内テーブルとヒストリテーブル(DB)を更新するのみです。
+ * この処理の結果を反映するには、クライアントの再起動が必要になります。
  * 
  * @author maekawa
  * 
@@ -42,12 +44,21 @@ import org.seasar.framework.container.S2Container;
 public class HistoryAllCheck implements InvokeHandler {
 	private final Logger logger = Logger.getLogger(HistoryAllCheck.class);
 	/** スレッド実行サービス */
-	private ExecutorService service = Executors.newCachedThreadPool();
+	private final ExecutorService service;
+	/** ヒストリテーブルのDao */
+	private final HistoryTableDao dao;
+
+	public HistoryAllCheck() {
+		service = Executors.newCachedThreadPool();
+		S2Container container = (S2Container) S2ContainerUtil.getS2Container();
+		dao = (HistoryTableDao) container.getComponent(HistoryTableDao.class);
+	}
 
 	public Object invoke(Object[] args) {
 		service.execute(new Runnable() {
 			public void run() {
 				checkedTableModel();
+				removeTableModel();
 				updateHistoryTable();
 				logger.info("全確認処理終了");
 			}
@@ -58,7 +69,7 @@ public class HistoryAllCheck implements InvokeHandler {
 						AlarmDataProvider.PROVIDER_NAME,
 						AlarmDataProvider.HISTORY);
 				AlarmTableModel model = (AlarmTableModel) dh.getValue();
-				for (int i = 0; i < model.getRowCount(); i++) {
+				for (int i = 0, count = model.getRowCount(); i < count; i++) {
 					Object b = model.getValueAt(i, model.getColumnCount() - 1);
 					if (null == b) {
 						model.setValueAt("＊＊＊＊", i, model.getColumnCount() - 1);
@@ -66,12 +77,18 @@ public class HistoryAllCheck implements InvokeHandler {
 				}
 			}
 
+			private void removeTableModel() {
+				DataHolder dh =
+					Manager.getInstance().findDataHolder(
+						AlarmDataProvider.PROVIDER_NAME,
+						AlarmDataProvider.NONCHECK);
+				AlarmTableModel model = (AlarmTableModel) dh.getValue();
+				for (int i = 0, count = model.getRowCount(); i < count; i++) {
+					model.removeRow(0);
+				}
+			}
+
 			private void updateHistoryTable() {
-				S2Container container =
-					(S2Container) S2ContainerUtil.getS2Container();
-				HistoryTableDao dao =
-					(HistoryTableDao) container
-						.getComponent(HistoryTableDao.class);
 				dao.updateAllCheck();
 			}
 		});

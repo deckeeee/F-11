@@ -230,6 +230,8 @@ public class AppletFrameDefineTest extends TestCase {
 
 		public void pressShiftKey() {
 		}
+		public void stopAlarm() {
+		}
 	}
 
 	static class TestDataProviderProxyDefineable implements

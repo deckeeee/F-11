@@ -44,29 +44,33 @@ public class PriorityControllerTest extends TestCase {
 		TestPageChanger changer = new TestPageChanger();
 		PriorityController pc = new PriorityController(changer);
 		Integer priority = new Integer(3);
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H1", ts, priority)));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, priority)));
 		assertEquals("カレントモデルはP1_H1", "P1_H1", pc.getTableRowModel().getHolderId());
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, priority)));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, priority)));
 		assertEquals("カレントモデルはP1_H2", "P1_H2", pc.getTableRowModel().getHolderId());
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel(Boolean.FALSE, "P1", "H1", ts, priority)));
+		pc.tableChanged(getEvent(new TestTableModel(Boolean.FALSE, "P1", "H1", ts, priority)));
 		assertEquals("カレントモデルはP1_H2", "P1_H2", pc.getTableRowModel().getHolderId());
 		assertFalse("じゃんぷ無し", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel(Boolean.FALSE, "P1", "H2", ts, priority)));
+		pc.tableChanged(getEvent(new TestTableModel(Boolean.FALSE, "P1", "H2", ts, priority)));
 		assertEquals("カレントモデルは_", "_", pc.getTableRowModel().getHolderId());
 		assertFalse("じゃんぷ無し", changer.isPageChange);
 		changer.resetPageChange();
+	}
+
+	private TableModelEvent getEvent(TestTableModel model) {
+		return new TableModelEvent(model, 0, 0, 0, TableModelEvent.INSERT);
 	}
 
 	public void testCheckedEvent() throws Exception {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		PriorityController pc = new PriorityController(new TestPageChanger());
 		Integer priority = new Integer(3);
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H1", ts, priority)));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, priority)));
 		assertEquals("カレントモデルはP1_H1", "P1_H1", pc.getTableRowModel().getHolderId());
 		pc.checkedEvent(new CheckEvent(
 				getClass().getName(),
@@ -85,21 +89,21 @@ public class PriorityControllerTest extends TestCase {
 						"/org/F11/scada/xwife/applet/alarm/PriorityControllerTest.xml"));
 
 		//復旧パターン
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
 		assertFalse("じゃんぷ無し", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel(Boolean.FALSE, "P1", "H1", ts, new Integer(3))));
+		pc.tableChanged(getEvent(new TestTableModel(Boolean.FALSE, "P1", "H1", ts, new Integer(3))));
 		assertFalse("じゃんぷ無し", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
 
 		//確認パターン
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
 		pc.checkedEvent(new CheckEvent(
@@ -107,7 +111,7 @@ public class PriorityControllerTest extends TestCase {
 				new TestTableModel("P1", "H1", ts, new Integer(3)),
 				0,
 				new Timestamp(System.currentTimeMillis())));
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, new Integer(2))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, new Integer(2))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
 	}
@@ -118,21 +122,21 @@ public class PriorityControllerTest extends TestCase {
 		PriorityController pc = new PriorityController(changer);
 
 		//復旧パターン
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel(Boolean.FALSE, "P1", "H1", ts, new Integer(3))));
+		pc.tableChanged(getEvent(new TestTableModel(Boolean.FALSE, "P1", "H1", ts, new Integer(3))));
 		assertFalse("じゃんぷ無し", changer.isPageChange);
 		changer.resetPageChange();
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, new Integer(1))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
 
 		//確認パターン
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
 		pc.checkedEvent(new CheckEvent(
@@ -140,7 +144,7 @@ public class PriorityControllerTest extends TestCase {
 				new TestTableModel("P1", "H1", ts, new Integer(3)),
 				0,
 				new Timestamp(System.currentTimeMillis())));
-		pc.tableChanged(new TableModelEvent(new TestTableModel("P1", "H2", ts, new Integer(2))));
+		pc.tableChanged(getEvent(new TestTableModel("P1", "H2", ts, new Integer(2))));
 		assertTrue("じゃんぷ", changer.isPageChange);
 		changer.resetPageChange();
 	}
@@ -172,6 +176,8 @@ public class PriorityControllerTest extends TestCase {
 		
 		void resetPageChange() {
 			isPageChange = false;
+		}
+		public void stopAlarm() {
 		}
 	}
 }
