@@ -245,32 +245,32 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000d01019700640003e6",
+			"8000020304050607000c01019700640003e6",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000e01019700640003e6",
+			"8000020304050607000c01019700640003e6",
 			WifeUtilities.toString(sendBuffer));
 		assertTrue(Fixture.hasCommand());
 		sendBuffer.clear();
 		Fixture.nextCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000f010197044a000002",
+			"8000020304050607000d010197044a000002",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"80000203040506070010010197044a000002",
+			"8000020304050607000d010197044a000002",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"80000203040506070011010197044a000002",
+			"8000020304050607000d010197044a000002",
 			WifeUtilities.toString(sendBuffer));
 		assertFalse(Fixture.hasCommand());
 	}
@@ -433,13 +433,13 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000d010297ffff000002fffff00f",
+			"8000020304050607000c010297ffff000002fffff00f",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000e010297ffff000002fffff00f",
+			"8000020304050607000c010297ffff000002fffff00f",
 			WifeUtilities.toString(sendBuffer));
 		assertFalse(Fixture.hasCommand());
 
@@ -450,7 +450,7 @@ public class FINS_CVTest extends TestCase {
 		Fixture.nextCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000f0102820000000028"
+			"8000020304050607000d0102820000000028"
 				+ "11102222333344445555666677778888999900001111222233334444555566667777888899990000"
 				+ "11012222333344445555666677778888999900001111222233334444555566667777888899990000",
 		//					 "101122223333444455556666777788889999000011112222333344445555666677778888",
@@ -459,7 +459,7 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700100102820000000028"
+			"8000020304050607000d0102820000000028"
 				+ "11102222333344445555666677778888999900001111222233334444555566667777888899990000"
 				+ "11012222333344445555666677778888999900001111222233334444555566667777888899990000",
 		//					 "101122223333444455556666777788889999000011112222333344445555666677778888",
@@ -482,13 +482,13 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700020601",
+			"800002030405060700010601",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700030601",
+			"800002030405060700010601",
 			WifeUtilities.toString(sendBuffer));
 		assertFalse(Fixture.hasCommand());
 
@@ -499,7 +499,7 @@ public class FINS_CVTest extends TestCase {
 					"c000020607000304050306010000"
 						+ "1110222233334444555566667777888899990000111122223333"))
 			.flip();
-		assertNull(Fixture.checkCommandResponce(recvBuffer));
+		assertNotNull(Fixture.checkCommandResponce(recvBuffer));
 		recvData.clear();
 		Fixture.getResponceData(recvBuffer, recvData);
 		recvData.flip();
@@ -514,19 +514,19 @@ public class FINS_CVTest extends TestCase {
 		Fixture.nextCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700040601",
+			"800002030405060700020601",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700050601",
+			"800002030405060700020601",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700060601",
+			"800002030405060700020601",
 			WifeUtilities.toString(sendBuffer));
 		assertFalse(Fixture.hasCommand());
 
@@ -537,7 +537,7 @@ public class FINS_CVTest extends TestCase {
 					"c000020607000304050606010000"
 						+ "1110222233334444555566667777888899990000111122223333"))
 			.flip();
-		assertNull(Fixture.checkCommandResponce(recvBuffer));
+		assertNotNull(Fixture.checkCommandResponce(recvBuffer));
 		recvData.clear();
 		Fixture.getResponceData(recvBuffer, recvData);
 		recvData.flip();
@@ -561,13 +561,13 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700020701",
+			"800002030405060700010701",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"800002030405060700030701",
+			"800002030405060700010701",
 			WifeUtilities.toString(sendBuffer));
 		assertFalse(Fixture.hasCommand());
 
@@ -577,7 +577,7 @@ public class FINS_CVTest extends TestCase {
 				WifeUtilities.toByteArray(
 					"c00002060700030405030701000003071018283504"))
 			.flip();
-		assertNull(Fixture.checkCommandResponce(recvBuffer));
+		assertNotNull(Fixture.checkCommandResponce(recvBuffer));
 		recvData.clear();
 		Fixture.getResponceData(recvBuffer, recvData);
 		recvData.flip();
@@ -594,19 +594,19 @@ public class FINS_CVTest extends TestCase {
 		Fixture.nextCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"80000203040506070004070203071018283504",
+			"80000203040506070002070203071018283504",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"80000203040506070005070203071018283504",
+			"80000203040506070002070203071018283504",
 			WifeUtilities.toString(sendBuffer));
 		sendBuffer.clear();
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"80000203040506070006070203071018283504",
+			"80000203040506070002070203071018283504",
 			WifeUtilities.toString(sendBuffer));
 		assertFalse(Fixture.hasCommand());
 	}
@@ -634,7 +634,7 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000201028200000003e1",
+			"8000020304050607000101028200000003e1",
 			WifeUtilities.toString(sendBuffer, 0, 18));
 		for (int i = 0; i < 1986; i += 2) {
 			assertEquals((byte) (i / 100), sendBuffer.get(18 + i));
@@ -644,14 +644,14 @@ public class FINS_CVTest extends TestCase {
 		recvBuffer
 			.put(WifeUtilities.toByteArray("c000020607000304050201020000"))
 			.flip();
-		assertNull(Fixture.checkCommandResponce(recvBuffer));
+		assertNotNull(Fixture.checkCommandResponce(recvBuffer));
 
 		assertTrue(Fixture.hasCommand());
 		sendBuffer.clear();
 		Fixture.nextCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000301028203e10003e1",
+			"8000020304050607000201028203e10003e1",
 			WifeUtilities.toString(sendBuffer, 0, 18));
 		for (int i = 0; i < 1986; i += 2) {
 			assertEquals((byte) ((i + 1986) / 100), sendBuffer.get(18 + i));
@@ -661,7 +661,7 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000401028203e10003e1",
+			"8000020304050607000201028203e10003e1",
 			WifeUtilities.toString(sendBuffer, 0, 18));
 		for (int i = 0; i < 1986; i += 2) {
 			assertEquals((byte) ((i + 1986) / 100), sendBuffer.get(18 + i));
@@ -671,14 +671,14 @@ public class FINS_CVTest extends TestCase {
 		recvBuffer
 			.put(WifeUtilities.toByteArray("c000020607000304050401020000"))
 			.flip();
-		assertNull(Fixture.checkCommandResponce(recvBuffer));
+		assertNotNull(Fixture.checkCommandResponce(recvBuffer));
 
 		assertTrue(Fixture.hasCommand());
 		sendBuffer.clear();
 		Fixture.nextCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000501028207c200000e",
+			"8000020304050607000301028207c200000e",
 			WifeUtilities.toString(sendBuffer, 0, 18));
 		for (int i = 0; i < 28; i += 2) {
 			assertEquals((byte) ((i + 3972) / 100), sendBuffer.get(18 + i));
@@ -688,7 +688,7 @@ public class FINS_CVTest extends TestCase {
 		Fixture.retryCommand(sendBuffer);
 		sendBuffer.flip();
 		assertEquals(
-			"8000020304050607000601028207c200000e",
+			"8000020304050607000301028207c200000e",
 			WifeUtilities.toString(sendBuffer, 0, 18));
 		for (int i = 0; i < 28; i += 2) {
 			assertEquals((byte) ((i + 3972) / 100), sendBuffer.get(18 + i));
@@ -698,7 +698,7 @@ public class FINS_CVTest extends TestCase {
 		recvBuffer
 			.put(WifeUtilities.toByteArray("c000020607000304050601020000"))
 			.flip();
-		assertNull(Fixture.checkCommandResponce(recvBuffer));
+		assertNotNull(Fixture.checkCommandResponce(recvBuffer));
 
 		assertFalse(Fixture.hasCommand());
 	}

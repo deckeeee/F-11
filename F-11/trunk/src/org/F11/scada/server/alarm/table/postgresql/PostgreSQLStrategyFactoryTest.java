@@ -68,7 +68,7 @@ public class PostgreSQLStrategyFactoryTest extends DatabaseTestCase {
 	private static final String[] careerTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色" 
 		,"point", "provider", "holder", "サウンドタイプ", "サウンドパス", "Emailグループ", "Emailモード"
-		,"onoff", "日時", "記号", "名称", "警報・状態","種別"
+		,"onoff", "日時", "記号", "名称", "警報・状態","種別","最新警報モード"
 	};
 	private static final String[] historyTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色",

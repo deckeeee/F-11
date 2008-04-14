@@ -132,4 +132,11 @@ public interface AlarmTableModel extends TableModel, CheckTable {
 	 * @return 列数
 	 */
 	int getColumn(String columnName);
+
+	
+	/**
+	 * 指定した行のデータを削除します。
+	 * @param row 削除する行
+	 */
+	void removeRow(int row);
 }

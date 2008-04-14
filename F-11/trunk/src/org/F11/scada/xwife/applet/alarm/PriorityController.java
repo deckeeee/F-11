@@ -21,6 +21,9 @@
 
 package org.F11.scada.xwife.applet.alarm;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -35,10 +38,12 @@ import org.apache.log4j.Logger;
 
 /**
  * 優先順位による自動ジャンプを制御するクラスです。
+ * 
  * @author maekawa
- *
+ * 
  */
-public class PriorityController implements TableModelListener, CheckTableListener {
+public class PriorityController implements TableModelListener,
+		CheckTableListener {
 	private final Logger logger = Logger.getLogger(PriorityController.class);
 	/** ページ制御されるオブジェクト */
 	private final PageChanger pageChanger;
@@ -46,19 +51,25 @@ public class PriorityController implements TableModelListener, CheckTableListene
 	private final boolean isPriorityControl;
 	/** 現在最高優先順位のページ情報 */
 	private TableRowModel currentAlarm;
+	/** 警報音停止タイマー */
+	private AlarmTimer timer = new AlarmTimer();
 
 	public PriorityController(PageChanger pageChanger) {
 		this(pageChanger, new ClientConfiguration());
 	}
 
-	PriorityController(PageChanger pageChanger, ClientConfiguration configuration) {
+	PriorityController(
+			PageChanger pageChanger,
+			ClientConfiguration configuration) {
 		this.pageChanger = pageChanger;
 		currentAlarm = TableRowModel.INIT_ROW_MODEL;
 		isPriorityControl = getPriorityControl(configuration);
 	}
 
 	private boolean getPriorityControl(ClientConfiguration configuration) {
-		return configuration.getBoolean("org.F11.scada.xwife.applet.alarm.PriorityController", false);
+		return configuration.getBoolean(
+			"org.F11.scada.xwife.applet.alarm.PriorityController",
+			false);
 	}
 
 	public void tableChanged(TableModelEvent e) {
@@ -90,9 +101,9 @@ public class PriorityController implements TableModelListener, CheckTableListene
 
 	private boolean isChangePage(TableModel model) {
 		return isPriorityControl
-				? WifeUtilities.isTrue(model.getValueAt(0, 1))
-						&& currentAlarm.comparePriority(new TableRowModel(model))
-				: WifeUtilities.isTrue(model.getValueAt(0, 1));
+			? WifeUtilities.isTrue(model.getValueAt(0, 1))
+				&& currentAlarm.comparePriority(new TableRowModel(model))
+			: WifeUtilities.isTrue(model.getValueAt(0, 1));
 	}
 
 	private void clearPriority(TableModel model) {
@@ -108,7 +119,8 @@ public class PriorityController implements TableModelListener, CheckTableListene
 			logger.debug("            row=" + row);
 		}
 		return TableRowModel.INIT_ROW_MODEL != currentAlarm
-			&& currentAlarm.equalsKey(row) && !row.isOnoff();
+			&& currentAlarm.equalsKey(row)
+			&& !row.isOnoff();
 	}
 
 	private void playSound(TableModel model) {
@@ -116,6 +128,10 @@ public class PriorityController implements TableModelListener, CheckTableListene
 		if (sound_type != 0) {
 			String sound_path = (String) model.getValueAt(0, 8);
 			pageChanger.playAlarm(sound_path);
+			//TODO 停止タイマーの切り替えと、停止までの時間のリソース化
+			if (false) {
+				timer.playAlarm(pageChanger, 5000L);
+			}
 		}
 	}
 
@@ -132,11 +148,54 @@ public class PriorityController implements TableModelListener, CheckTableListene
 
 	/**
 	 * テスト用メソッド
+	 * 
 	 * @return カレントのテーブルモデルを返します。
 	 */
 	TableRowModel getTableRowModel() {
 		synchronized (currentAlarm) {
 			return currentAlarm;
+		}
+	}
+
+	/**
+	 * 指定されたミリ秒で警報音停止するタイマークラスです。
+	 * 
+	 * @author maekawa
+	 * 
+	 */
+	private static class AlarmTimer {
+		private Timer timer;
+		private StopTask currentTask;
+
+		public AlarmTimer() {
+			timer = new Timer(true);
+		}
+
+		void playAlarm(PageChanger pageChanger, long period) {
+			if (null != currentTask) {
+				currentTask.cancel();
+			}
+			currentTask = new StopTask(pageChanger);
+			timer.schedule(currentTask, period);
+		}
+
+		/**
+		 * 指定されたミリ秒で警報音停止するタイマータスクです。
+		 * 
+		 * @author maekawa
+		 * 
+		 */
+		private static class StopTask extends TimerTask {
+			private final PageChanger pageChanger;
+
+			public StopTask(PageChanger pageChanger) {
+				this.pageChanger = pageChanger;
+			}
+
+			@Override
+			public void run() {
+				pageChanger.stopAlarm();
+			}
 		}
 	}
 }
