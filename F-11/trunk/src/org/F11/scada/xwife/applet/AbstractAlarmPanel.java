@@ -362,9 +362,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				changeAlarmPanel(e);
 			}
 		});
-		JButton all = new AllCheckedButton();
 		panelBut.add(button);
-		panelBut.add(all);
 		return panelBut;
 	}
 
