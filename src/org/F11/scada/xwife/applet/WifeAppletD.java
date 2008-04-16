@@ -164,11 +164,9 @@ public class WifeAppletD extends AbstractNewApplet {
 					changeAlarmPanel(e);
 				}
 			});
-			JButton all = new AllCheckedButton();
 			box.add(Box.createHorizontalGlue());
 			Box box2 = Box.createVerticalBox();
 			box2.add(button);
-			box2.add(all);
 			box.add(box2);
 			return box;
 		}

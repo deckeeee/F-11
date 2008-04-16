@@ -20,9 +20,6 @@
 
 package org.F11.scada.server.invoke;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.Manager;
 
@@ -43,55 +40,48 @@ import org.seasar.framework.container.S2Container;
  */
 public class HistoryAllCheck implements InvokeHandler {
 	private final Logger logger = Logger.getLogger(HistoryAllCheck.class);
-	/** スレッド実行サービス */
-	private final ExecutorService service;
 	/** ヒストリテーブルのDao */
 	private final HistoryTableDao dao;
 
 	public HistoryAllCheck() {
-		service = Executors.newCachedThreadPool();
 		S2Container container = (S2Container) S2ContainerUtil.getS2Container();
 		dao = (HistoryTableDao) container.getComponent(HistoryTableDao.class);
 	}
 
 	public Object invoke(Object[] args) {
-		service.execute(new Runnable() {
-			public void run() {
-				checkedTableModel();
-				removeTableModel();
-				updateHistoryTable();
-				logger.info("全確認処理終了");
-			}
-
-			private void checkedTableModel() {
-				DataHolder dh =
-					Manager.getInstance().findDataHolder(
-						AlarmDataProvider.PROVIDER_NAME,
-						AlarmDataProvider.HISTORY);
-				AlarmTableModel model = (AlarmTableModel) dh.getValue();
-				for (int i = 0, count = model.getRowCount(); i < count; i++) {
-					Object b = model.getValueAt(i, model.getColumnCount() - 1);
-					if (null == b) {
-						model.setValueAt("＊＊＊＊", i, model.getColumnCount() - 1);
-					}
-				}
-			}
-
-			private void removeTableModel() {
-				DataHolder dh =
-					Manager.getInstance().findDataHolder(
-						AlarmDataProvider.PROVIDER_NAME,
-						AlarmDataProvider.NONCHECK);
-				AlarmTableModel model = (AlarmTableModel) dh.getValue();
-				for (int i = 0, count = model.getRowCount(); i < count; i++) {
-					model.removeRow(0);
-				}
-			}
-
-			private void updateHistoryTable() {
-				dao.updateAllCheck();
-			}
-		});
+		checkedTableModel();
+		removeTableModel();
+		updateHistoryTable();
+		logger.info("全確認処理終了");
 		return null;
+	}
+
+	private void checkedTableModel() {
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
+				AlarmDataProvider.PROVIDER_NAME,
+				AlarmDataProvider.HISTORY);
+		AlarmTableModel model = (AlarmTableModel) dh.getValue();
+		for (int i = 0, count = model.getRowCount(); i < count; i++) {
+			Object b = model.getValueAt(i, model.getColumnCount() - 1);
+			if (null == b) {
+				model.setValueAt("＊＊＊＊", i, model.getColumnCount() - 1);
+			}
+		}
+	}
+
+	private void removeTableModel() {
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
+				AlarmDataProvider.PROVIDER_NAME,
+				AlarmDataProvider.NONCHECK);
+		AlarmTableModel model = (AlarmTableModel) dh.getValue();
+		for (int i = 0, count = model.getRowCount(); i < count; i++) {
+			model.removeRow(0);
+		}
+	}
+
+	private void updateHistoryTable() {
+		dao.updateAllCheck();
 	}
 }
