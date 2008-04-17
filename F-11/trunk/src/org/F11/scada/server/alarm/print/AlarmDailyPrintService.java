@@ -103,7 +103,7 @@ public class AlarmDailyPrintService implements AlarmDataStore, Runnable,
 			cal.setTime(d);
 			if ("org.F11.scada.server.alarm.print.AlarmDailyPrintService"
 				.equals(clazz)) {
-				log.info("毎時" + time + "に警報メッセージを印刷します");
+				log.info("毎日" + time + "に警報メッセージを印刷します");
 			}
 			return new DailyIterator(cal.get(Calendar.HOUR_OF_DAY), cal
 				.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
