@@ -53,7 +53,7 @@ public class AlarmPrintFactory {
 					clazz)) {
 				S2Container container =
 					S2ContainerFactory.create(
-						"org/F11/scada/server/alarm/print/AlarmPrintService.dicon");
+						"org/F11/scada/server/alarm/print/AlarmDailyPrintService.dicon");
 				container.init();
 				store = (AlarmDataStore) container.getComponent("alarmDailyPrintService");
 		} else {

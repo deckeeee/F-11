@@ -14,9 +14,9 @@
 	<component name="alarmPrinter"
 		class="org.F11.scada.server.alarm.print.AlarmPrinterImpl">
 	</component>
-	
-	<component name="alarmPrintService"
-		class="org.F11.scada.server.alarm.print.AlarmPrintService">
+
+	<component name="alarmDailyPrintService"
+		class="org.F11.scada.server.alarm.print.AlarmDailyPrintService">
 		<arg>alarmPrintDAO</arg>
 		<arg>alarmPrinter</arg>
 		<aspect pointcut="insertEvent">j2ee.requiredTx</aspect>
