@@ -26,6 +26,7 @@ CREATE TABLE history_table (
 /* ヒストリインデックス定義 */
 CREATE INDEX history_on_date_idx ON history_table (point, provider, holder, on_date);
 CREATE INDEX history_off_date_idx ON history_table (point, provider, holder, off_date);
+CREATE INDEX history_pri_idx ON history_table (point, provider, holder, on_date, off_date, check_flag);
 
 /* 履歴定義 */
 CREATE TABLE career_table (

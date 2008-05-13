@@ -273,7 +273,8 @@ CREATE TABLE history_table (
   off_date datetime default NULL,
   check_flag tinyint(1) default NULL,
   KEY history_on_date_idx (point,provider,holder,on_date),
-  KEY history_off_date_idx (point,provider,holder,off_date)
+  KEY history_off_date_idx (point,provider,holder,off_date),
+  KEY history_pri_idx (point,provider,holder,on_date,off_date,check_flag)
 ) TYPE=MyISAM;
 
 --
