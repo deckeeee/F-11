@@ -163,12 +163,13 @@ class TimeSetTaskDialog extends JDialog {
 			TimeSetTaskTableModel model,
 			int row) {
 		GridBagConstraints c = new GridBagConstraints();
-		JLabel label = new JLabel("ミリ秒モード　：　");
+		JLabel label = new JLabel("オフセット単位　：　");
+		label.setToolTipText("スケジュールによる場合、分間隔は秒、時間隔は分...等");
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 0;
 		c.gridy = 3;
 		panel.add(label, c);
-		millibox = new JComboBox(new String[] { "通常", "ミリ秒モード" });
+		millibox = new JComboBox(new String[] { "スケジュールによる", "ミリ秒" });
 		initComboBox(millibox, model, row, "milliOffsetMode");
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;

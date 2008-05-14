@@ -87,7 +87,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		box.add(but);
 		mainPanel.add(box);
 		// コレクションサーバー設定
-		mainPanel.add(new JLabel("コレクションサーバー名(IP)："));
+		JLabel label = new JLabel("コレクションサーバー名(IP)：");
+		label.setToolTipText("Ver.2.1.1以降では使用していません。");
+		mainPanel.add(label);
 		box = new Box(BoxLayout.X_AXIS);
 		collectorIp.setText(manager.getPreferences(
 			"/server/rmi/collectorserver/name",
@@ -178,31 +180,34 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		serverTitle.getDocument().addDocumentListener(this);
 		mainPanel.add(serverTitle);
 		// サーバー起動待機時間(秒)
-		mainPanel.add(new JLabel("サーバー起動待機時間(秒)："));
-		startupWait
-			.setText(manager.getPreferences("/server/startup/wait", "0"));
+		label = new JLabel("サーバー起動待機時間(秒)：");
+		label.setToolTipText("データプロバイダーサーバーが起動されてからデータベースにアクセスし始めるまでの待機時間。");
+		mainPanel.add(label);
+		startupWait.setText(manager.getPreferences("/server/startup/wait", "0"));
 		startupWait.getDocument().addDocumentListener(this);
 		mainPanel.add(startupWait);
 		// 最大レコード数
-		mainPanel.add(new JLabel("最大レコード数(トレンド表示)："));
-		maxrecord.setText(manager.getPreferences(
-			"/server/logging/maxrecord",
-			"4096"));
+		label = new JLabel("最大レコード数(トレンド表示)：");
+		label.setToolTipText("トレンドグラフ表示の自動更新モード時に表示するデータ数。");
+		mainPanel.add(label);
+		maxrecord.setText(manager.getPreferences("/server/logging/maxrecord",
+				"4096"));
 		maxrecord.getDocument().addDocumentListener(this);
 		mainPanel.add(maxrecord);
 		// 警報履歴の最大保持件数(ヒストリ・履歴 共用)
-		mainPanel.add(new JLabel("最大保持件数(ヒストリ・履歴)："));
-		maxalarm
-			.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
+		label = new JLabel("最大保持件数(ヒストリ・履歴)：");
+		label.setToolTipText("クライアントのヒストリ・履歴でスクロール可能な件数。");
+		mainPanel.add(label);
+		maxalarm.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
 		maxalarm.getDocument().addDocumentListener(this);
 		mainPanel.add(maxalarm);
 		// 操作ログ検索一覧でポイント名称のプレフィックス
-		mainPanel.add(new JLabel("操作ログポイント名称プレフィックス："));
+		mainPanel.add(new JLabel("操作ログ ポイント詳細機能："));
 		cb = new JComboBox();
-		cb.addItem("false");
-		cb.addItem("true");
-		String prefix =
-			manager.getPreferences("/server/operationlog/prefix", "false");
+		cb.addItem("使わない");
+		cb.addItem("使う");
+		String prefix = manager.getPreferences("/server/operationlog/prefix",
+				"false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -211,10 +216,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("false".equals(e.getItem()))
-						manager.setPreferences(
-							"/server/operationlog/prefix",
-							"false");
+					if ("使わない".equals(e.getItem()))
+						manager.setPreferences("/server/operationlog/prefix",
+								"false");
 					else
 						manager.setPreferences(
 							"/server/operationlog/prefix",
@@ -224,19 +228,10 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		});
 		mainPanel.add(cb);
 
-		mainPanel.add(new JLabel("その他："));
-		but = new JButton("詳細");
-		but.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new EtcDialog(manager, frameParent).setVisible(true);
-			}
-		});
-		mainPanel.add(but);
-
 		scheduleOpe(mainPanel);
 		graphCache(mainPanel);
 		pageDeployPeriod(mainPanel);
-		noRevision(mainPanel);
+		//noRevision(mainPanel);
 		operationLoggingUtil(mainPanel);
 		scheduleCount(mainPanel);
 		outputMode(mainPanel);
@@ -254,12 +249,13 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 
 	private void scheduleOpe(JPanel mainPanel) {
 		// スケジュール操作
-		mainPanel.add(new JLabel("スケジュール操作："));
+		JLabel label = new JLabel("スケジュール操作：");
+		label.setToolTipText("スケジュール機器一覧、マスター=>個別転送などの機能。");
+		mainPanel.add(label);
 		JComboBox cb = new JComboBox();
-		cb.addItem("false");
-		cb.addItem("true");
-		String prefix =
-			manager.getPreferences("/server/schedulepoint", "false");
+		cb.addItem("使わない");
+		cb.addItem("使う");
+		String prefix = manager.getPreferences("/server/schedulepoint", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -268,9 +264,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("false".equals(e.getItem()))
-						manager
-							.setPreferences("/server/schedulepoint", "false");
+					if ("使わない".equals(e.getItem()))
+						manager.setPreferences("/server/schedulepoint", "false");
 					else
 						manager.setPreferences("/server/schedulepoint", "true");
 				}
@@ -281,10 +276,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 
 	private void graphCache(JPanel mainPanel) {
 		// グラフページキャッシュ
-		mainPanel.add(new JLabel("グラフページキャッシュ："));
+		JLabel label = new JLabel("グラフページキャッシュ：");
+		label.setToolTipText("トレンドグラフ・バーグラフの無条件キャッシュ。");
+		mainPanel.add(label);
 		JComboBox cb = new JComboBox();
-		cb.addItem("false");
-		cb.addItem("true");
+		cb.addItem("しない");
+		cb.addItem("する");
 		String prefix = manager.getPreferences("/server/graphcache", "true");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
@@ -294,7 +291,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("false".equals(e.getItem()))
+					if ("しない".equals(e.getItem()))
 						manager.setPreferences("/server/graphcache", "false");
 					else
 						manager.setPreferences("/server/graphcache", "true");
@@ -314,7 +311,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	}
 
 	private void noRevision(JPanel mainPanel) {
-		mainPanel.add(new JLabel("ロギングリビジョン："));
+		JLabel label = new JLabel("ロギングリビジョン：");
+		label.setToolTipText("同一日時のロギングデータのリビジョン管理機能");
+		mainPanel.add(label);
 		JComboBox cb = new JComboBox();
 		cb.addItem("有り");
 		cb.addItem("無し");
@@ -352,7 +351,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	}
 
 	private void scheduleCount(JPanel mainPanel) {
-		mainPanel.add(new JLabel("スケジュール操作ログ回数記録モード："));
+		JLabel label = new JLabel("スケジュール操作ログ回数記録モード：");
+		label.setToolTipText("操作ログで、編集したON/OFF時刻の位置を表現する形式。[回数記録]は上記フッタを付加する。");
+		mainPanel.add(label);
 		JComboBox cb = new JComboBox();
 		cb.addItem("配列添字");
 		cb.addItem("回数記録");
@@ -430,7 +431,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("本番".equals(e.getItem()))
+					if ("本番(制約有り)".equals(e.getItem()))
 						manager.setPreferences(
 							"/server/systemtime/testMode",
 							"false");
@@ -445,7 +446,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	}
 
 	private void communicateWaitTime(JPanel mainPanel) {
-		mainPanel.add(new JLabel("サーバーPLC間 通信間隔(ミリ秒)："));
+		JLabel label = new JLabel("サーバーPLC間 通信間隔(ミリ秒)：");
+		label.setToolTipText("次の通信文を送信するまでの待機時間。");
+		mainPanel.add(label);
 		communicateWaitTime.setText(manager.getPreferences(
 			"/server/communicateWaitTime",
 			"100"));

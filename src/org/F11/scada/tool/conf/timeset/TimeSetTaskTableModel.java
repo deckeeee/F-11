@@ -30,7 +30,7 @@ import org.F11.scada.tool.conf.io.TimeSetTaskBean;
 public class TimeSetTaskTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = -5081424581509230856L;
 	private static final String[] title =
-		{ "タスク名", "スケジュール", "オフセット", "ミリ秒モード" };
+		{ "タスク名", "スケジュール", "オフセット", "オフセット単位" };
 	private final List<TimeSetTaskBean> data;
 	private final TimeSetManager manager;
 

@@ -296,7 +296,9 @@ public class AlarmDefineTab extends JScrollPane implements DocumentListener {
 		});
 		mainPanel.add(cb);
 		// 初期表示ページ名
-		mainPanel.add(new JLabel("初期表示ページ名："));
+		JLabel label = new JLabel("初期表示ページ名：");
+		label.setToolTipText("treeに指定がない場合。");
+		mainPanel.add(label);
 		initPage.setText(manager.getAlarmDefine("/alarm/init/initPage", ""));
 		initPage.getDocument().addDocumentListener(this);
 		mainPanel.add(initPage);
