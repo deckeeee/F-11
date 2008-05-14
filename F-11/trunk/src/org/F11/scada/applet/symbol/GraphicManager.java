@@ -20,21 +20,15 @@ package org.F11.scada.applet.symbol;
  *
  */
 
-import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.F11.scada.applet.ClientConfiguration;
-import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
 /**
@@ -45,19 +39,7 @@ import org.apache.log4j.Logger;
 public abstract class GraphicManager {
 	private static Logger logger = Logger.getLogger(GraphicManager.class);
 	private static final String IMAGES_BASE_PATH = "/images";
-	private static ImageLoader imageLoader;
-	static {
-		Configuration configuration = new ClientConfiguration();
-		if (configuration.getBoolean(
-				"org.F11.scada.applet.symbol.GraphicManager",
-				true)) {
-			imageLoader = new DefaultImageLoader();
-			logger.info("DefaultImageLoader");
-		} else {
-			imageLoader = new IconImageLoader();
-			logger.info("IconImageLoader");
-		}
-	}
+	private static ImageLoader imageLoader = new IconImageLoader();
 
 	/**
 	 * Iconのインスタンス生成
@@ -111,7 +93,8 @@ public abstract class GraphicManager {
 	}
 
 	private abstract static class AbstractImageLoader implements ImageLoader {
-		protected Map<String, SoftReference<Icon>> iconMap = new HashMap<String, SoftReference<Icon>>();
+		protected Map<String, SoftReference<Icon>> iconMap =
+			new HashMap<String, SoftReference<Icon>>();
 
 		public Icon getIcon(String path) {
 			if (iconMap.containsKey(path)) {
@@ -126,51 +109,6 @@ public abstract class GraphicManager {
 		abstract protected Icon createIcon(String path);
 	}
 
-	/**
-	 * デフォルトのイメージローダークラス。ImageIOを使用して画像をロードします。アニメシンボルを使用すると動作に支障が出る為、その時はIconImageLoaderを使用してください。
-	 * 
-	 * @author maekawa
-	 * 
-	 */
-	private static class DefaultImageLoader extends AbstractImageLoader {
-		@Override
-		protected Icon createIcon(String path) {
-			if (path != null) {
-				Image image = loadImage(path);
-				if (null != image) {
-					Icon ic = new ImageIcon(image);
-					iconMap.put(path, new SoftReference<Icon>(ic));
-					return ic;
-				} else {
-					return null;
-				}
-			} else {
-				return null;
-			}
-		}
-
-		private Image loadImage(String path) {
-			InputStream is = null;
-			URL url = GraphicManager.class.getResource(path);
-			if (null == url) {
-				return null;
-			}
-			try {
-				is = url.openStream();
-				return ImageIO.read(is);
-			} catch (Exception e) {
-				return null;
-			} finally {
-				if (null != is) {
-					try {
-						is.close();
-					} catch (IOException e) {
-					}
-				}
-			}
-		}
-	}
-
 	private static class IconImageLoader extends AbstractImageLoader {
 		@Override
 		protected Icon createIcon(String path) {
@@ -178,7 +116,11 @@ public abstract class GraphicManager {
 				URL url = GraphicManager.class.getResource(path);
 				if (url != null) {
 					Icon ic = new ImageIcon(url);
-					iconMap.put(path, new SoftReference<Icon>(ic));
+					if (isNotSupportImage(ic)) {
+						logger.error("読込めない画像ファイル形式です = " + path);
+					} else {
+						iconMap.put(path, new SoftReference<Icon>(ic));
+					}
 					return ic;
 				} else {
 					return null;
@@ -186,6 +128,10 @@ public abstract class GraphicManager {
 			} else {
 				return null;
 			}
+		}
+
+		private boolean isNotSupportImage(Icon ic) {
+			return ic.getIconHeight() < 0 || ic.getIconWidth() < 0;
 		}
 	}
 }
