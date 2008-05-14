@@ -70,9 +70,8 @@ public class TimeSetStream {
 	}
 
 	private Map<String, String> createMilliOffsetModeMap() {
-		return map($("false", "通常"), $("true", "ミリ秒モード"), $("通常", "false"), $(
-			"ミリ秒モード",
-			"true"));
+		return map($("false", "スケジュールによる"), $("true", "ミリ秒"),
+			$("スケジュールによる", "false"), $("ミリ秒", "true"));
 	}
 
 	public String getValue(String name, String key, String def) {
