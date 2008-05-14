@@ -63,7 +63,7 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 		mainPanel.add(operLimit);
 		// 操作ログを警報一覧に含めるかどうか
 		mainPanel.add(new JLabel("操作ログを警報一覧に含める："));
-		JComboBox cb = new JComboBox(new String[]{"する", "しない"});
+		JComboBox cb = new JComboBox(new String[]{"含める", "含めない"});
 		if ("true".equals(manager.getClientConf("operationlogging.addalarm",
 				"true"))) {
 			cb.setSelectedIndex(0);
@@ -73,7 +73,7 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("する".equals(e.getItem())) {
+					if ("含める".equals(e.getItem())) {
 						manager.setClientConf("operationlogging.addalarm",
 								"true");
 					} else {
@@ -210,7 +210,7 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 
 	private void setNewAlarmCondition(JPanel mainPanel) {
 		mainPanel.add(new JLabel("警報一覧検索条件表示："));
-		JComboBox cb = new JComboBox(new String[]{"旧", "新"});
+		JComboBox cb = new JComboBox(new String[]{"旧レイアウト", "新レイアウト"});
 		if ("false".equals(manager.getClientConf(
 				"org.F11.scada.xwife.applet.newalarm", "false"))) {
 			cb.setSelectedIndex(0);
@@ -220,7 +220,7 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("旧".equals(e.getItem())) {
+					if ("旧レイアウト".equals(e.getItem())) {
 						manager.setClientConf(
 								"org.F11.scada.xwife.applet.newalarm",
 								"false");
@@ -236,8 +236,10 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 	}
 
 	private void setUseNewInfoMode(JPanel mainPanel) {
-		mainPanel.add(new JLabel("最新警報表示モード："));
-		JComboBox cb = new JComboBox(new String[]{"常に表示(旧)", "モード有効"});
+		JLabel label = new JLabel("最新警報欄表示モード：");
+		label.setToolTipText("attribute_table で指定する最新情報欄表示モードの指定");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[]{"無効", "有効"});
 		if ("false".equals(manager.getClientConf(
 				"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode", "false"))) {
 			cb.setSelectedIndex(0);
@@ -247,7 +249,7 @@ public class ClientConf2Tab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("常に表示(旧)".equals(e.getItem())) {
+					if ("無効".equals(e.getItem())) {
 						manager.setClientConf(
 								"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode",
 								"false");

@@ -238,8 +238,10 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		dismissDelay.getDocument().addDocumentListener(this);
 		panel.add(dismissDelay);
 		// ツールチップのカスタム表示方法
-		panel.add(new JLabel("表示方法：", JLabel.RIGHT));
-		cb = new JComboBox(new String[] { "カスタム", "標準" });
+		JLabel label = new JLabel("表示方法：", JLabel.RIGHT);
+		label.setToolTipText("[標準]ではツールチップが消えない事がある。");
+		panel.add(label);
+		cb = new JComboBox(new String[]{"カスタム", "標準"});
 		if ("false".equals(manager.getClientConf(
 			"xwife.applet.Applet.customTipLocation",
 			"false"))) {
@@ -385,8 +387,10 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		});
 		mainPanel.add(but);
 		// 確認ダイアログの有無
-		mainPanel.add(new JLabel("確認ダイアログの有無："));
-		cb = new JComboBox(new String[] { "する", "しない" });
+		label = new JLabel("確認ダイアログの有無：");
+		label.setText("PLC書込みに関する全操作について。");
+		mainPanel.add(label);
+		cb = new JComboBox(new String[]{"する", "しない"});
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.applet.dialog.isConfirm",
 			"false"))) {
@@ -415,7 +419,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		showSortColumn(mainPanel);
 		typeDmode(mainPanel);
 		typeDTabSync(mainPanel);
-		imageLoader(mainPanel);
+		// imageLoader(mainPanel);
 		treeFontSize(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
@@ -495,9 +499,10 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 	}
 
 	private void typeDmode(JPanel mainPanel) {
-		mainPanel.add(new JLabel("TypeDモード："));
-		JComboBox cb = new JComboBox(new String[] { "前の状態を保持", "警報一覧を表示" });
-		cb.setToolTipText("TypeDで▲ボタンを押下したときの表示方法を選択。");
+		JLabel label = new JLabel("TypeDモード：");
+		label.setToolTipText("TypeDで▲ボタンを押下したときの表示方法。");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[]{"前の状態を保持", "警報一覧を表示"});
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.xwife.applet.typeDmode",
 			"false"))) {
@@ -524,9 +529,10 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 	}
 
 	private void typeDTabSync(JPanel mainPanel) {
-		mainPanel.add(new JLabel("TypeDタブ同期："));
-		JComboBox cb = new JComboBox(new String[] { "無し", "有り" });
-		cb.setToolTipText("TypeD警報一覧の表示方法を選択。");
+		JLabel label = new JLabel("TypeDタブ同期：");
+		label.setToolTipText("TypeD警報一覧の選択タブを同期させるか。");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[]{"しない", "する"});
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.xwife.applet.AppletD.tabsync",
 			"false"))) {
@@ -537,42 +543,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		cb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("無し".equals(e.getItem())) {
+					if ("しない".equals(e.getItem())) {
 						manager.setClientConf(
 							"org.F11.scada.xwife.applet.AppletD.tabsync",
 							"false");
 					} else {
 						manager.setClientConf(
 							"org.F11.scada.xwife.applet.AppletD.tabsync",
-							"true");
-					}
-				}
-			}
-		});
-		mainPanel.add(cb);
-	}
-
-	private void imageLoader(JPanel mainPanel) {
-		mainPanel.add(new JLabel("画像読込："));
-		JComboBox cb = new JComboBox(new String[] { "新形式(BMP可)", "旧形式" });
-		cb.setToolTipText("画像ファイル読込方法を選択。");
-		if ("true".equals(manager.getClientConf(
-			"org.F11.scada.applet.symbol.GraphicManager",
-			"true"))) {
-			cb.setSelectedIndex(0);
-		} else {
-			cb.setSelectedIndex(1);
-		}
-		cb.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("旧形式".equals(e.getItem())) {
-						manager.setClientConf(
-							"org.F11.scada.applet.symbol.GraphicManager",
-							"false");
-					} else {
-						manager.setClientConf(
-							"org.F11.scada.applet.symbol.GraphicManager",
 							"true");
 					}
 				}

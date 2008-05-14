@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.ToolTipManager;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.F11.scada.tool.conf.alarm.AlarmDefineTab;
@@ -56,44 +57,28 @@ public class ConfigFrame extends JFrame {
 	}
 
 	private void init() {
+		// ツールチップの表示時間
+		ToolTipManager tp = ToolTipManager.sharedInstance();
+		tp.setInitialDelay(0);
+		tp.setDismissDelay(10000);
+
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JTabbedPane tabbed = new JTabbedPane();
 
-		tabbed.addTab(
-			"基本機能",
-			null,
-			new PreferencesTab(this, manager),
-			"「Preferences.xml」の内容を設定します。");
-		tabbed.addTab(
-			"警報履歴",
-			null,
-			new AlarmDefineTab(this, manager),
-			"「AlarmDefine.xml」の内容を設定します。");
-		tabbed.addTab(
-			"クライアント設定",
-			null,
-			new ClientConfTab(this, manager),
-			"「ClientConfiguration.xml」の内容を設定します。");
-		tabbed.addTab(
-			"クライアント履歴",
-			null,
-			new ClientConf2Tab(this, manager),
-			"「ClientConfiguration.xml」の履歴関連を設定します。");
-		tabbed.addTab(
-			"クライアントIP別",
-			null,
-			new IndividualTab(this, manager),
-			"「ClientsDefine.xml」の内容を設定します。");
-		tabbed.addTab(
-			"時計設定",
-			null,
-			new TimeSetTaskPanel(manager),
-			"「TimeSet.xml」の内容を設定します。");
-		tabbed.addTab(
-			"自動削除設定",
-			null,
-			new RemoveTab(this, manager),
-			"「RemoveDefine.dicon」の内容を設定します。");
+		tabbed.addTab("基本機能", null, new PreferencesTab(this, manager),
+				"「Preferences.xml」の内容を設定します。");
+		tabbed.addTab("警報履歴", null, new AlarmDefineTab(this, manager),
+				"「AlarmDefine.xml」の内容を設定します。");
+		tabbed.addTab("クライアント設定", null, new ClientConfTab(this, manager),
+				"「ClientConfiguration.xml」の内容を設定します。");
+		tabbed.addTab("クライアント履歴", null, new ClientConf2Tab(this, manager),
+				"「ClientConfiguration.xml」の履歴関連を設定します。");
+		tabbed.addTab("クライアントIP別", null, new IndividualTab(this, manager),
+				"「ClientsDefine.xml」の内容を設定します。");
+		tabbed.addTab("時計設定", null, new TimeSetTaskPanel(manager),
+				"「TimeSet.xml」の内容を設定します。");
+		tabbed.addTab("自動削除設定", null, new RemoveTab(this, manager),
+				"「RemoveDefine.dicon」の内容を設定します。");
 
 		mainPanel.add(tabbed, BorderLayout.CENTER);
 
