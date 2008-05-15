@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN"
+	"http://www.seasar.org/dtd/components23.dtd">
+<components namespace="ItemFormulaService">
+	<include path="dao.dicon"/>
+	<include path="org/F11/scada/server/formula/dao/ItemFormulaDao.dicon"/>
+	
+	<component class="org.F11.scada.server.formula.impl.ItemFormulaServiceImpl">
+		<arg>ItemFormulaDao.itemFormulaDao</arg>
+	</component>
+</components>

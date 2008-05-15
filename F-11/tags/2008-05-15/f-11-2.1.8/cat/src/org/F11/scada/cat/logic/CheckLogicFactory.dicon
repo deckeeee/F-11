@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components>
+	<description>チェックロジックを生成しファクトリーに追加します</description>
+	<include path="org/F11/scada/server/dao/ItemDao.dicon"/>
+	<include path="org/F11/scada/cat/dao/CatDao.dicon"/>
+
+	<component class="org.F11.scada.cat.logic.impl.CheckLogicFactoryImpl" >
+		<initMethod name="addCheckLogic" >
+			<arg>
+				<component class="org.F11.scada.cat.logic.impl.ImagePathCheck" />
+			</arg>
+		</initMethod>
+		<initMethod name="addCheckLogic" >
+			<arg>
+				<component class="org.F11.scada.cat.logic.impl.HolderDefineCheck" />
+			</arg>
+		</initMethod>
+		<initMethod name="addCheckLogic" >
+			<arg>
+				<component class="org.F11.scada.cat.logic.impl.TreePageCheck" />
+			</arg>
+		</initMethod>
+		<initMethod name="addCheckLogic" >
+			<arg>
+				<component class="org.F11.scada.cat.logic.impl.WriteFlagCheck" />
+			</arg>
+		</initMethod>
+		<initMethod name="addCheckLogic" >
+			<arg>
+				<component class="org.F11.scada.cat.logic.impl.ReadFlagCheck" />
+			</arg>
+		</initMethod>
+		<initMethod name="addCheckLogic" >
+			<arg>
+				<component class="org.F11.scada.cat.logic.impl.HolderTypeCheck" />
+			</arg>
+		</initMethod>
+	</component>
+</components>
