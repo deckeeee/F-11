@@ -145,4 +145,20 @@ public class PrintLineData {
 		unit = string;
 	}
 
+	public String getAlarmname() {
+		return alarmname;
+	}
+
+	public String getKikiname() {
+		return kikiname;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
 }

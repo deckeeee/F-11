@@ -43,12 +43,15 @@ import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
 
 import org.F11.scada.EnvironmentManager;
+import org.apache.log4j.Logger;
 
 /**
  * 警報データをプリンタに印刷するクラスです
  * @author hori
  */
 public class AlarmPrinterImpl implements AlarmPrinter {
+	/** ロギングAPI */
+	private static Logger logger = Logger.getLogger(AlarmPrinterImpl.class);
 
 	/**
 	 * PrintLineData のリストをプリンタに印刷します
@@ -102,7 +105,18 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 		String printService =
 			EnvironmentManager.get("/server/alarm/print/printservice", "lp");
 
-		new Print2DGraphics(printService, aset, data, font);
+		String clazz = EnvironmentManager.get(
+				"/server/alarm/print/formatter/className", "");
+		if (clazz == null || "".equals(clazz)) {
+			new Print2DGraphics(printService, aset, data, font);
+		} else if ("org.F11.scada.server.alarm.print.AlarmPrinterImpl.Print2DGraphics".equals(clazz)) {
+			new Print2DGraphics(printService, aset, data, font);
+		} else if ("org.F11.scada.server.alarm.print.AlarmListDrawer".equals(clazz)) {
+			new AlarmListDrawer(printService, aset, data, font);
+		} else {
+			new Print2DGraphics(printService, aset, data, font);
+		}
+
 	}
 
 
@@ -138,7 +152,7 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 					Doc doc = new SimpleDoc(this, flavor, null);
 					pj.print(doc, aset);
 				} catch (PrintException e) {
-					System.err.println(e);
+					logger.error("印字異常", e);
 				}
 			}
 		}
