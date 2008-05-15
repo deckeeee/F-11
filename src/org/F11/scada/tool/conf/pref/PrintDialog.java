@@ -55,6 +55,7 @@ public class PrintDialog extends JDialog {
 	private String printMode;
 	private final JFormattedTextField printModeDate =
 		new JFormattedTextField(new SimpleDateFormat("HH:mm:ss"));
+	private String printFormatterClazz;
 
 	public PrintDialog(StreamManager manager, Frame parent) {
 		super(parent, "警報一覧印字設定", true);
@@ -72,6 +73,7 @@ public class PrintDialog extends JDialog {
 		setPageLine(manager, gridbag, c, panel);
 		setPrintMode(manager, gridbag, c, panel);
 		setPrintDate(manager, gridbag, c, panel);
+		setPrintEntryDateMode(manager, gridbag, c, panel);
 
 		mainPanel.add(panel, BorderLayout.CENTER);
 
@@ -221,7 +223,7 @@ public class PrintDialog extends JDialog {
 		c.weightx = 1.0;
 		c.gridwidth = 1;
 		gridbag.setConstraints(label, c);
-		JComboBox cb = new JComboBox(new String[] { "通常", "日毎" });
+		JComboBox cb = new JComboBox(new String[] { "ページ毎", "日毎" });
 		printMode =
 			manager.getPreferences(
 				"/server/alarm/print/className",
@@ -242,7 +244,7 @@ public class PrintDialog extends JDialog {
 
 	private String getPrintMode() {
 		return "org.F11.scada.server.alarm.print.AlarmDailyPrintService"
-			.equals(printMode) ? "日毎" : "通常";
+			.equals(printMode) ? "日毎" : "ページ毎";
 	}
 
 	private String getPrintMode(String s) {
@@ -298,6 +300,47 @@ public class PrintDialog extends JDialog {
 		gridbag.setConstraints(printModeDate, c);
 	}
 
+	private void setPrintEntryDateMode(
+			StreamManager manager,
+			GridBagLayout gridbag,
+			GridBagConstraints c,
+			JPanel panel) {
+		// 日時印字モード
+		JLabel label = new JLabel("状態警報日時の形式：");
+		panel.add(label);
+		c.weightx = 1.0;
+		c.gridwidth = 1;
+		gridbag.setConstraints(label, c);
+		JComboBox cb = new JComboBox(new String[] { "ミリ秒有り", "ミリ秒無し" });
+		printFormatterClazz =
+			manager.getPreferences(
+				"/server/alarm/print/formatter/className",
+				"org.F11.scada.server.alarm.print.AlarmPrinterImpl.Print2DGraphics");
+		cb.setSelectedItem(getPrintFormatterClazz());
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					printFormatterClazz = getPrintEntryDateMode((String) e.getItem());
+				}
+			}
+		});
+		panel.add(cb);
+		c.weightx = 1.0;
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		gridbag.setConstraints(cb, c);
+	}
+
+	private String getPrintFormatterClazz() {
+		return "org.F11.scada.server.alarm.print.AlarmPrinterImpl.Print2DGraphics"
+			.equals(printFormatterClazz) ? "ミリ秒有り" : "ミリ秒無し";
+	}
+
+	private String getPrintEntryDateMode(String s) {
+		return "ミリ秒有り".equals(s)
+			? "org.F11.scada.server.alarm.print.AlarmPrinterImpl.Print2DGraphics"
+			: "org.F11.scada.server.alarm.print.AlarmListDrawer";
+	}
+
 	private void setOk(JPanel panel) {
 		JButton but = new JButton("ＯＫ");
 		but.addActionListener(new ActionListener() {
@@ -328,6 +371,7 @@ public class PrintDialog extends JDialog {
 		manager.setPreferences("/server/alarm/print/className", printMode);
 		manager.setPreferences("/server/alarm/print/printdate", printModeDate
 			.getText());
+		manager.setPreferences("/server/alarm/print/formatter/className", printFormatterClazz);
 		dispose();
 	}
 
