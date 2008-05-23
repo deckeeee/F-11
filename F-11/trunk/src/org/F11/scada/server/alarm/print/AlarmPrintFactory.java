@@ -28,36 +28,46 @@ import org.seasar.framework.container.factory.S2ContainerFactory;
 
 /**
  * 警報印刷サービスオブジェクトを生成するファクトリーです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class AlarmPrintFactory {
+	private static AlarmDataStore store;
 
-	public static AlarmDataStore getAlarmDataStore()
-			throws IOException {
+	public static AlarmDataStore getAlarmDataStore() throws IOException {
 
-		AlarmDataStore store = null;
 		String clazz =
 			EnvironmentManager.get("/server/alarm/print/className", "");
 		if (clazz == null || "".equals(clazz)) {
-			store = new AlarmPrintPage();
-		} else if (
-			"org.F11.scada.server.alarm.print.AlarmPrintService".equals(
-				clazz)) {
-			S2Container container =
-				S2ContainerFactory.create(
-					"org/F11/scada/server/alarm/print/AlarmPrintService.dicon");
-			container.init();
-			store = (AlarmDataStore) container.getComponent("alarmPrintService");
-		} else if (
-				"org.F11.scada.server.alarm.print.AlarmDailyPrintService".equals(
-					clazz)) {
+			if (null == store) {
+				store = new AlarmPrintPage();
+			}
+		} else if ("org.F11.scada.server.alarm.print.AlarmPrintService"
+			.equals(clazz)) {
+			if (null == store) {
 				S2Container container =
-					S2ContainerFactory.create(
-						"org/F11/scada/server/alarm/print/AlarmDailyPrintService.dicon");
+					S2ContainerFactory
+						.create("org/F11/scada/server/alarm/print/AlarmPrintService.dicon");
 				container.init();
-				store = (AlarmDataStore) container.getComponent("alarmDailyPrintService");
+				store =
+					(AlarmDataStore) container
+						.getComponent("alarmPrintService");
+			}
+		} else if ("org.F11.scada.server.alarm.print.AlarmDailyPrintService"
+			.equals(clazz)) {
+			if (null == store) {
+				S2Container container =
+					S2ContainerFactory
+						.create("org/F11/scada/server/alarm/print/AlarmDailyPrintService.dicon");
+				container.init();
+				store =
+					(AlarmDataStore) container
+						.getComponent("alarmDailyPrintService");
+			}
 		} else {
-			store = new AlarmPrintPage();
+			if (null == store) {
+				store = new AlarmPrintPage();
+			}
 		}
 
 		return store;
