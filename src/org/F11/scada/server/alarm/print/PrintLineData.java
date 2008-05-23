@@ -96,8 +96,10 @@ public class PrintLineData {
 		st.append(unit);
 		st.append("  ");
 		st.append(kikiname);
-		st.append("  ");
-		st.append(alarmname);
+		if (null != alarmname && !"".equals(alarmname)) {
+			st.append("  ");
+			st.append(alarmname);
+		}
 		st.append("  ");
 		st.append(message);
 		st.append("  ");

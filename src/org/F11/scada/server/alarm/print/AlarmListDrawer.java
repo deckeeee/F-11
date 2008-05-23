@@ -38,29 +38,40 @@ import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.print.attribute.PrintRequestAttributeSet;
 
+import org.F11.scada.EnvironmentManager;
 import org.apache.log4j.Logger;
 
 /**
  * ページ印刷を実装します。日付書式指定版
+ * 
  * @author hori
  */
 public class AlarmListDrawer implements Printable {
 	/** ロギングAPI */
 	private static Logger logger = Logger.getLogger(AlarmListDrawer.class);
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private static final SimpleDateFormat sdf =
+		new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private final DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
 	private final List msgs;
 	private final Font font;
+	private final int maxLine;
 
-	public AlarmListDrawer(String printerName, PrintRequestAttributeSet aset,
-			List msgs, Font font) {
+	public AlarmListDrawer(
+			String printerName,
+			PrintRequestAttributeSet aset,
+			List msgs,
+			Font font) {
 		this.msgs = msgs;
 		this.font = font;
+		this.maxLine =
+			Integer.parseInt(EnvironmentManager.get(
+				"/server/alarm/print/pagelines",
+				"46"));
 
 		PrintService srv = null;
-		PrintService[] services = PrintServiceLookup.lookupPrintServices(
-				flavor, aset);
+		PrintService[] services =
+			PrintServiceLookup.lookupPrintServices(flavor, aset);
 		for (int i = 0; i < services.length; i++) {
 			if (services[i].getName().equals(printerName)) {
 				srv = services[i];
@@ -85,22 +96,27 @@ public class AlarmListDrawer implements Printable {
 		g.setFont(font);
 		int stepY = g2d.getFontMetrics().getHeight();
 		int dataCont = (int) (pp.getImageableHeight() / stepY);
-		if (pageIndex * dataCont < msgs.size()) {
+		int line = Math.min(dataCont, maxLine);
+		if (pageIndex * line < msgs.size()) {
 			g2d.translate(pf.getImageableX(), pf.getImageableY());
 			int posY = stepY;
-			for (int i = pageIndex * dataCont; i < msgs.size()
-					&& i < ((pageIndex + 1) * dataCont); i++, posY += stepY) {
+			for (int i = pageIndex * line; i < msgs.size()
+				&& i < ((pageIndex + 1) * line); i++, posY += stepY) {
 
 				PrintLineData lineData = (PrintLineData) msgs.get(i);
 				g2d.setColor(lineData.getColor());
 				StringBuilder sb = new StringBuilder();
-				sb.append(sdf.format(new Date(lineData.getEntryDate().getTime())));
+				sb.append(sdf
+					.format(new Date(lineData.getEntryDate().getTime())));
 				sb.append("  ");
 				sb.append(lineData.getUnit());
 				sb.append("  ");
 				sb.append(lineData.getKikiname());
-				sb.append("  ");
-				sb.append(lineData.getAlarmname());
+				String alarmname = lineData.getAlarmname();
+				if (null != alarmname && !"".equals(alarmname)) {
+					sb.append("  ");
+					sb.append(alarmname);
+				}
 				sb.append("  ");
 				sb.append(lineData.getMessage());
 				sb.append("  ");
