@@ -60,33 +60,33 @@ public class PostgreSQLInitialTableFactoryTest extends TestCase {
 
 	public void testCreateCareerInitial() throws Exception {
 		AlarmTableModel model = factory.createCareer();
-		assertEquals(18, model.getColumnCount());
+		assertEquals(19, model.getColumnCount());
 		String[] title = {
 			"ジャンプパス", "自動ジャンプ", "優先順位", "表示色"
 			,"point", "provider", "holder", "サウンドタイプ", "サウンドパス", "Emailグループ", "Emailモード"
-			,"onoff", "日時",	"記号", "名称", "警報・状態"
+			,"onoff", "日時",	"記号", "名称", "属性", "警報・状態"
 		};
 		columnName(title, model);
 	}
 
 	public void testCreateHistoryInitial() throws Exception {
 		AlarmTableModel model = factory.createHistory();
-		assertEquals(13, model.getColumnCount());
+		assertEquals(14, model.getColumnCount());
 
 		String[] title = {
 			"ジャンプパス", "自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-			"発生・運転", "復旧・停止", "記号", "名称", "種別", "確認"
+			"発生・運転", "復旧・停止", "記号", "名称", "属性", "種別", "確認"
 		};
 		columnName(title, model);
 	}
 
 	public void testCreateSummaryInitial() throws Exception {
 		AlarmTableModel model = factory.createSummary();
-		assertEquals(13, model.getColumnCount());
+		assertEquals(14, model.getColumnCount());
 
 		String[] title = {
 			"ジャンプパス", "自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-			"発生・運転", "復旧・停止", "記号", "名称", "警報・状態"
+			"発生・運転", "復旧・停止", "記号", "名称", "属性", "警報・状態"
 		};
 		columnName(title, model);
 	}

@@ -21,6 +21,10 @@
 
 package org.F11.scada.xwife.applet.alarm;
 
+import static org.F11.scada.util.TableUtil.removeColumns;
+import static org.F11.scada.util.TableUtil.setColumnWidth;
+import static org.F11.scada.xwife.applet.SortColumnUtil.removeSortColumn;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
@@ -36,9 +40,7 @@ import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmTableConfig;
-import org.F11.scada.util.TableUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
-import org.F11.scada.xwife.applet.SortColumnUtil;
 import org.F11.scada.xwife.server.AlarmDataProvider;
 
 public class CareerPanel extends JPanel {
@@ -46,52 +48,38 @@ public class CareerPanel extends JPanel {
 	private AlarmTable career;
 	/** メインアプレットの参照です */
 	private AbstractWifeApplet wifeApplet;
-	private static final String STATUS_FIELD_STRING = "警報・状態";
-	private static final String DATE_FIELD_STRING = "8888/88/88 88:88:88";
-	private int UNIT_FIELD_WIDTH = 150;
+	private final AlarmColumn alarmColumn;
 
 	public CareerPanel(AbstractWifeApplet wifeApplet) {
 		super(new BorderLayout());
 		this.wifeApplet = wifeApplet;
+		alarmColumn = new AlarmColumn(wifeApplet.getConfiguration());
 		addCareer(new AlarmDefine().getAlarmConfig().getAlarmTableConfig());
 		setAlarmTableCellRenderer(career);
 	}
 
 	private void addCareer(AlarmTableConfig alarmTableConfig) {
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.CAREER);
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
 		removeColumns(career, 12);
-		career.removeColumn(career.getColumn(career.getColumnName(5)));
+		career.removeColumn(career.getColumn(career.getColumnName(6)));
 		career.setBackground(alarmTableConfig.getBackGroundColor());
 		JTableHeader tableHeader = career.getTableHeader();
 		tableHeader.setBackground(alarmTableConfig.getHeaderBackGroundColor());
 		tableHeader.setForeground(alarmTableConfig.getHeaderForeGroundColor());
 
-		TableUtil.setColumnWidth(career, 0, DATE_FIELD_STRING);
-		TableUtil.setColumnWidth(career, 1, UNIT_FIELD_WIDTH);
-		TableUtil.setColumnWidth(career, 3, STATUS_FIELD_STRING);
-		SortColumnUtil.removeSortColumn(
-				career,
-				4,
-				wifeApplet,
-				STATUS_FIELD_STRING);
+		setColumnWidth(career, 0, alarmColumn.getDateSize());
+		setColumnWidth(career, 1, alarmColumn.getUnitSize());
+		setColumnWidth(career, 3, alarmColumn.getAttributeSize());
+		setColumnWidth(career, 4, alarmColumn.getStatusSize());
+		removeSortColumn(career, 5, wifeApplet, alarmColumn
+			.getSortSize());
 		JScrollPane sp = new JScrollPane(career);
 		add(sp, BorderLayout.CENTER);
-	}
-
-	/**
-	 * 先頭カラムから n カラムを削除します。
-	 * 
-	 * @param table 対象のテーブル
-	 * @param removeColumnCount 削除するカラム数
-	 */
-	private void removeColumns(JTable table, int removeColumnCount) {
-		for (int i = removeColumnCount - 1; i >= 0; i--) {
-			table.removeColumn(table.getColumn(table.getColumnName(0)));
-		}
 	}
 
 	/**
@@ -102,8 +90,8 @@ public class CareerPanel extends JPanel {
 	private void setAlarmTableCellRenderer(JTable table) {
 		AlarmTableCellRenderer cellRecderer = new AlarmTableCellRenderer();
 		for (int i = table.getColumnCount(); i > 0; i--) {
-			DefaultTableColumnModel cmodel = (DefaultTableColumnModel) table
-					.getColumnModel();
+			DefaultTableColumnModel cmodel =
+				(DefaultTableColumnModel) table.getColumnModel();
 			TableColumn column = cmodel.getColumn(i - 1);
 			column.setCellRenderer(cellRecderer);
 		}

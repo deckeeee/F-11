@@ -257,6 +257,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("日時")] = key.getTimeStamp();
 			insRow[model.getColumn("記号")] = rs.getString("unit");
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
+			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
 			insRow[model.getColumn("最新警報モード")] = new Integer(rs.getInt("new_info_mode"));
@@ -416,6 +417,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("holder")] = key.getHolder();
 			insRow[model.getColumn("記号")] = rs.getString("unit");
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
+			insRow[model.getColumn("属性")] = rs.getString("attname");
 			if (rs.getBoolean("check_type")) {
 				insRow[model.getColumn("確認")] = null;
 			} else {
@@ -632,6 +634,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("holder")] = key.getHolder();
 			insRow[model.getColumn("記号")] = rs.getString("unit");
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
+			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
 		}
@@ -799,6 +802,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("holder")] = key.getHolder();
 			insRow[model.getColumn("記号")] = rs.getString("unit");
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
+			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
 		}
@@ -950,6 +954,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("holder")] = key.getHolder();
 			insRow[model.getColumn("記号")] = rs.getString("unit");
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
+			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
 			if (rs.getBoolean("check_type")) {
 				insRow[model.getColumn("確認")] = null;

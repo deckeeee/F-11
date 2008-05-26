@@ -397,6 +397,7 @@ public class WifeUtilities {
 	 * <li>String で "1" なら true を以外なら false を返す。
 	 * <li>String で "true" なら true を以外なら false を返す。
 	 * <li>String で "yes" なら true を以外なら false を返す。
+	 * <li>String で "t" なら true を以外なら false を返す。
 	 * <li>Number で 1 なら true を以外なら false を返す。
 	 * </ol>
 	 * 
@@ -411,11 +412,12 @@ public class WifeUtilities {
 		if (obj instanceof Boolean) {
 			return ((Boolean) obj).booleanValue();
 		} else if (obj instanceof Number) {
-			return ((Number) obj).intValue() == 1 ? true : false;
+			return ((Number) obj).intValue() == 1;
 		} else if (obj instanceof String) {
 			String str = (String) obj;
-			return ("yes".equalsIgnoreCase(str) || "true".equalsIgnoreCase(str) || "1"
-				.equalsIgnoreCase(str))
+			return "yes".equalsIgnoreCase(str)
+				|| "true".equalsIgnoreCase(str)
+				|| "1".equalsIgnoreCase(str)
 				|| "t".equalsIgnoreCase(str);
 		} else {
 			return false;

@@ -235,11 +235,13 @@ CREATE TABLE autoprint_property_table (
 
 /* メッセージ印刷一時テーブル */
 CREATE TABLE career_print_temp_table (
+	printid IDENTITY,
 	point INTEGER NOT NULL,
 	provider VARCHAR(100) NOT NULL,
 	holder VARCHAR(100) NOT NULL,
 	entrydate DATETIME NOT NULL,
-	bit_value boolean
+	bit_value boolean,
+	PRIMARY KEY (printid)
 );
 /* 履歴インデックス定義 */
 CREATE INDEX career_print_temp_table_date_idx ON career_print_temp_table (entrydate);

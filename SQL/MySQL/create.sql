@@ -126,11 +126,13 @@ CREATE TABLE autoprint_property_table (
 
 DROP TABLE IF EXISTS career_print_temp_table;
 CREATE TABLE career_print_temp_table (
+  printid int(11) NOT NULL auto_increment,
   point int(11) NOT NULL default '0',
   provider varchar(100) NOT NULL default '',
   holder varchar(100) NOT NULL default '',
   entrydate datetime NOT NULL default '0000-00-00 00:00:00',
   bit_value tinyint(1) default NULL,
+  PRIMARY KEY (printid),
   KEY career_print_temp_table_date_idx (entrydate)
 ) TYPE=MyISAM;
 

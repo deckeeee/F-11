@@ -21,6 +21,12 @@
 
 package org.F11.scada.xwife.applet;
 
+import static org.F11.scada.util.TableUtil.getModelColumn;
+import static org.F11.scada.util.TableUtil.removeColumns;
+import static org.F11.scada.util.TableUtil.setColumnWidth;
+import static org.F11.scada.xwife.applet.SortColumnUtil.getShowSortColumn;
+import static org.F11.scada.xwife.applet.SortColumnUtil.removeSortColumn;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -80,7 +86,7 @@ import org.F11.scada.server.alarm.table.FindAlarmPosition;
 import org.F11.scada.server.alarm.table.FindAlarmTable;
 import org.F11.scada.server.alarm.table.Priority;
 import org.F11.scada.server.alarm.table.FindAlarmCondition.RadioStat;
-import org.F11.scada.util.TableUtil;
+import org.F11.scada.xwife.applet.alarm.AlarmColumn;
 import org.F11.scada.xwife.applet.alarm.PageJump;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
@@ -133,6 +139,9 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	protected static final String VIEWMODE_DW = "   ▼   ";
 	protected JComponent panelNewAlarm;
 
+	/** 警報一覧列幅管理クラス */
+	private final AlarmColumn alarmColumn;
+
 	/**
 	 * プライベートなコンストラクタです。 createAlarmPanel を使用してインスタンスを生成してください。
 	 */
@@ -142,7 +151,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		super(new BorderLayout());
 		this.wifeApplet = wifeApplet;
 		this.alarmDefine = new AlarmDefine(configFile);
-		isShowSortColumn = SortColumnUtil.getShowSortColumn(wifeApplet);
+		isShowSortColumn = getShowSortColumn(wifeApplet);
+		alarmColumn = new AlarmColumn(wifeApplet.getConfiguration());
 
 		setPanelNewAlarm();
 		setPanelAlarmList();
@@ -585,7 +595,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		TableModel c_table = new DefaultTableModel(new String[] { "ジャンプパス",
 				"自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
 				"サウンドタイプ", "サウンドパス", "Emailグループ", "Emailモード", "日時", "記号", "名称",
-				"警報・状態", "種別" }, 0) {
+				"属性", "警報・状態", "種別" }, 0) {
 			private static final long serialVersionUID = -984023000372115422L;
 
 			public boolean isCellEditable(int row, int column) {
@@ -605,14 +615,15 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		JPanel tabBase = new JPanel(new BorderLayout());
 		tabBase.add(panel, BorderLayout.NORTH);
 
-		setTableWidth(career, 0, DATE_FIELD_WIDTH);
-		setTableWidth(career, 1, UNIT_FIELD_WIDTH);
-		setTableWidth(career, 3, STATS_FIELD_WIDTH);
-		SortColumnUtil.removeSortColumn(
+		setColumnWidth(career, 0, alarmColumn.getDateSize());
+		setColumnWidth(career, 1, alarmColumn.getUnitSize());
+		setColumnWidth(career, 3, alarmColumn.getAttributeSize());
+		setColumnWidth(career, 4, alarmColumn.getStatusSize());
+		removeSortColumn(
 				career,
-				4,
+				5,
 				wifeApplet,
-				STATS_FIELD_WIDTH);
+				alarmColumn.getSortSize());
 
 		JScrollPane sp = new JScrollPane(career);
 		tabBase.add(sp, BorderLayout.CENTER);
@@ -673,12 +684,6 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		});
 	}
 
-	private void setTableWidth(AlarmTable career, int column, int width) {
-		TableColumn tc = career.getColumn(career.getColumnName(column));
-		tc.setPreferredWidth(width);
-		tc.setMaxWidth(tc.getPreferredWidth());
-	}
-
 	private void setTableColor(
 			AlarmTable table,
 			AlarmTableConfig alarmTableConfig) {
@@ -693,7 +698,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			AlarmTableConfig alarmTableConfig) {
 		TableModel h_table = new DefaultTableModel(new String[] { "ジャンプパス",
 				"自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-				"発生・運転", "復旧・停止", "記号", "名称", "種別", "確認" }, 0) {
+				"発生・運転", "復旧・停止", "記号", "名称", "属性", "種別", "確認" }, 0) {
 			private static final long serialVersionUID = -46305358609411425L;
 
 			public boolean isCellEditable(int row, int column) {
@@ -722,15 +727,16 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		}
 		tabBase.add(panel, BorderLayout.NORTH);
 
-		setTableWidth(history, 0, DATE_FIELD_WIDTH);
-		setTableWidth(history, 1, DATE_FIELD_WIDTH);
-		setTableWidth(history, 2, UNIT_FIELD_WIDTH);
-		setTableWidth(history, 5, STATS_FIELD_WIDTH);
-		SortColumnUtil.removeSortColumn(
+		setColumnWidth(history, 0, alarmColumn.getDateSize());
+		setColumnWidth(history, 1, alarmColumn.getDateSize());
+		setColumnWidth(history, 2, alarmColumn.getUnitSize());
+		setColumnWidth(history, 4, alarmColumn.getAttributeSize());
+		setColumnWidth(history, 6, alarmColumn.getCheckSize());
+		removeSortColumn(
 				history,
-				4,
+				5,
 				wifeApplet,
-				STATS_FIELD_WIDTH);
+				alarmColumn.getSortSize());
 
 		JScrollPane sp = new JScrollPane(history);
 		tabBase.add(sp, BorderLayout.CENTER);
@@ -807,7 +813,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			AlarmTableConfig alarmTableConfig) {
 		TableModel s_table = new DefaultTableModel(new String[] { "ジャンプパス",
 				"自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-				"発生・運転", "復旧・停止", "記号", "名称", "警報・状態", "種別" }, 0) {
+				"発生・運転", "復旧・停止", "記号", "名称", "属性", "警報・状態", "種別" }, 0) {
 			private static final long serialVersionUID = 4104647228256893197L;
 
 			public boolean isCellEditable(int row, int column) {
@@ -819,10 +825,6 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		removeColumns(summary, 7);
 		setTableColor(summary, alarmTableConfig);
 
-		FontMetrics metrics = summary.getFontMetrics(summary.getFont());
-		DATE_FIELD_WIDTH = metrics.stringWidth("8888/88/88 88:88:88") + 8;
-		STATS_FIELD_WIDTH = metrics.stringWidth("警報・状態") + 8;
-
 		JPanel tabBase = new JPanel(new BorderLayout());
 		JPanel panel = createSummaryComboBox();
 
@@ -830,15 +832,16 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		panel.add(panel1);
 		tabBase.add(panel, BorderLayout.NORTH);
 
-		setTableWidth(summary, 0, DATE_FIELD_WIDTH);
-		setTableWidth(summary, 1, DATE_FIELD_WIDTH);
-		setTableWidth(summary, 2, UNIT_FIELD_WIDTH);
-		setTableWidth(summary, 4, STATS_FIELD_WIDTH);
-		SortColumnUtil.removeSortColumn(
+		setColumnWidth(summary, 0, alarmColumn.getDateSize());
+		setColumnWidth(summary, 1, alarmColumn.getDateSize());
+		setColumnWidth(summary, 2, alarmColumn.getUnitSize());
+		setColumnWidth(summary, 4, alarmColumn.getAttributeSize());
+		setColumnWidth(summary, 5, alarmColumn.getStatusSize());
+		removeSortColumn(
 				summary,
-				5,
+				6,
 				wifeApplet,
-				STATS_FIELD_WIDTH);
+				alarmColumn.getSortSize());
 
 		JScrollPane sp = new JScrollPane(summary);
 		tabBase.add(sp, BorderLayout.CENTER);
@@ -872,18 +875,6 @@ public abstract class AbstractAlarmPanel extends JPanel {
 						.createFindAlarmPosition(viewrec));
 			}
 		});
-	}
-
-	/**
-	 * 先頭カラムから n カラムを削除します。
-	 * 
-	 * @param table 対象のテーブル
-	 * @param removeColumnCount 削除するカラム数
-	 */
-	private void removeColumns(JTable table, int removeColumnCount) {
-		for (int i = removeColumnCount - 1; i >= 0; i--) {
-			table.removeColumn(table.getColumn(table.getColumnName(0)));
-		}
 	}
 
 	/**
@@ -1129,7 +1120,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			int column = table.columnAtPoint(e.getPoint());
 			logger.debug("row : " + row + " column : " + column);
 			Object o = table.getValueAt(row, column);
-			if (TableUtil.getModelColumn(e) == CHECK_COLUMN && o == null) {
+			if (getModelColumn(e) == CHECK_COLUMN && o == null) {
 				TableModel tm = table.getModel();
 				Integer point = (Integer) tm.getValueAt(row, 4);
 				String provider = (String) tm.getValueAt(row, 5);

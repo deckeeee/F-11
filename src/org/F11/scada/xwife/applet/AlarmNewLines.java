@@ -110,8 +110,11 @@ class AlarmNewLines extends Box implements TableModelListener,
 			if (i < model.getRowCount()) {
 				final StringBuffer sb = new StringBuffer();
 				sb.append(format.format(model.getValueAt(i, 12)) + "@");
-				for (int j = 13; j < model.getColumnCount() - 1; j++) {
-					sb.append(model.getValueAt(i, j) + "@");
+				for (int j = 13, column = model.getColumnCount(); j < column - 2; j++) {
+					Object value = model.getValueAt(i, j);
+					if (null != value) {
+						sb.append(value + "@");
+					}
 				}
 				final String colorStr = (String) model.getValueAt(i, 3);
 				SwingUtilities.invokeLater(new Runnable() {
