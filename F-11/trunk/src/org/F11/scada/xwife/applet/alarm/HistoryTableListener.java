@@ -40,7 +40,6 @@ import org.F11.scada.xwife.applet.alarm.event.CheckEvent;
 import org.F11.scada.xwife.server.AlarmDataProvider;
 
 public class HistoryTableListener extends MouseAdapter implements LimitedAction {
-	private static final int CHECK_COLUMN = 12;
 	/** 連続クリック防止タイム */
 	private static final long ACTION_WAIT_TIME = 500L;
 	private final AbstractWifeApplet wifeApplet;
@@ -69,7 +68,8 @@ public class HistoryTableListener extends MouseAdapter implements LimitedAction 
 			int row = table.rowAtPoint(e.getPoint());
 			int column = table.columnAtPoint(e.getPoint());
 			Object o = table.getValueAt(row, column);
-			if (TableUtil.getModelColumn(e) == CHECK_COLUMN && o == null) {
+			AlarmTableModel model = (AlarmTableModel) table.getModel();
+			if (TableUtil.getModelColumn(e) == model.getColumn("確認") && o == null) {
 				table.setValueAt("＊＊＊＊", row, column);
 				DataHolder dh = Manager.getInstance().findDataHolder(
 						AlarmDataProvider.PROVIDER_NAME,
@@ -81,7 +81,6 @@ public class HistoryTableListener extends MouseAdapter implements LimitedAction 
 				} catch (DataProviderDoesNotSupportException ex) {
 					ex.printStackTrace();
 				}
-				AlarmTableModel model = (AlarmTableModel) table.getModel();
 				CheckEvent checkEvent = new CheckEvent(
 						AlarmDataProvider.HISTORY,
 						model,

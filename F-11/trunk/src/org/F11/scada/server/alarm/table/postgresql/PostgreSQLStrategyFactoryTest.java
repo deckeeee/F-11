@@ -68,25 +68,25 @@ public class PostgreSQLStrategyFactoryTest extends DatabaseTestCase {
 	private static final String[] careerTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色" 
 		,"point", "provider", "holder", "サウンドタイプ", "サウンドパス", "Emailグループ", "Emailモード"
-		,"onoff", "日時", "記号", "名称", "警報・状態","種別","最新警報モード"
+		,"onoff", "日時", "記号", "名称", "属性", "警報・状態","種別","最新警報モード"
 	};
 	private static final String[] historyTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色",
-		"point", "provider", "holder", "発生・運転", "復旧・停止", "記号", "名称", "種別", "確認"
+		"point", "provider", "holder", "発生・運転", "復旧・停止", "記号", "名称", "属性", "種別", "確認"
 	};
 	private static final String[] summaryTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色",
 		"point", "provider", "holder", "発生・運転", "復旧・停止",
-		"記号", "名称", "警報・状態", "種別"
+		"記号", "名称", "属性", "警報・状態", "種別"
 	};
 	private static final String[] ocurrenceTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色",
 		"point", "provider", "holder", "発生・運転", "復旧・停止",
-		"記号", "名称", "警報・状態", "種別"
+		"記号", "名称", "属性", "警報・状態", "種別"
 	};
 	private static final String[] checkTitle = {
 		"ジャンプパス", "自動ジャンプ", "優先順位", "表示色",
-		"point", "provider", "holder", "発生・運転", "復旧・停止", "記号", "名称", "種別", "確認"
+		"point", "provider", "holder", "発生・運転", "復旧・停止", "記号", "名称", "属性", "種別", "確認"
 	};
 	private AlarmTableModel careerModel;
 	private AlarmTableModel historyModel;

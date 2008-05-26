@@ -421,6 +421,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		typeDTabSync(mainPanel);
 		// imageLoader(mainPanel);
 		treeFontSize(mainPanel);
+		alarmTableColumn(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -570,6 +571,17 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		treeFontSize.getDocument().addDocumentListener(this);
 		panel.add(treeFontSize);
 		mainPanel.add(panel);
+	}
+
+	private void alarmTableColumn(JPanel mainPanel) {
+		mainPanel.add(new JLabel("Œx•ñˆê——‚Ì—ñ•İ’è"));
+		JButton button = new JButton("Ú×");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new AlarmTableColumn(frameParent, manager).setVisible(true);
+			}
+		});
+		mainPanel.add(button);
 	}
 
 	public void changedUpdate(DocumentEvent e) {

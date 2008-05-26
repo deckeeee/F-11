@@ -93,4 +93,16 @@ public abstract class TableUtil {
 		r.translate(0, table.getRowHeight());
 		return r.getLocation();
 	}
+
+	/**
+	 * 先頭カラムから n カラムを削除します。
+	 * 
+	 * @param table 対象のテーブル
+	 * @param removeColumnCount 削除するカラム数
+	 */
+	public static void removeColumns(JTable table, int removeColumnCount) {
+		for (int i = removeColumnCount - 1; i >= 0; i--) {
+			table.removeColumn(table.getColumn(table.getColumnName(0)));
+		}
+	}
 }

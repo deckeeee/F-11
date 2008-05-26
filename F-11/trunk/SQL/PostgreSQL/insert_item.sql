@@ -204,6 +204,7 @@ INSERT INTO item_table VALUES(36, 'P1',  'D_547_BcdSingle', 0,  '1', 0,   547, '
 INSERT INTO item_table VALUES(36, 'P1',  'D_548_BcdSingle', 0,  '1', 0,   548, '0', 0, 2, 3, 0, '', '0', 0, '', '', 1, NULL, NULL, NULL, '0');
 INSERT INTO item_table VALUES(36, 'P1',  'D_549_BcdSingle', 0,  '1', 0,   549, '0', 0, 2, 3, 0, '', '0', 0, '', '', 1, NULL, NULL, NULL, '0');
 INSERT INTO item_table VALUES(36, 'P1',  'D_550_BcdSingle', 0,  '1', 0,   550, '0', 0, 2, 3, 0, '', '0', 0, '', '', 2, NULL, NULL, NULL, '0');
+INSERT INTO item_table VALUES(36, 'P2',  'D_500_BcdSingle', 0,  '1', 0,   500, '0', 0, 2, 3, 0, '', '0', 0, '', '', 1, NULL, NULL, NULL, '0');
 
 --                            P  DP DH       CY RW     M  ADD    DL WD    B      Ms At Dt Dag  Jump                            autoJ Pr Snd on/off
 INSERT INTO item_table VALUES(36, 'P1',  'D_600_BcdSingle', 0,  '1', 0,   600, '0', 0, 2, 3, 0, '', '0', 0, '', '', 1, NULL, NULL, NULL, '0');
@@ -485,3 +486,4 @@ INSERT INTO multi_record_define_table (logging_table_name, provider, com_memory_
 
 -- 無通信プロバイダ アイテム計算式テーブル 
 INSERT INTO item_formula_table (holder, formula) VALUES ('D_19000AA_Digital','P1_D_1900008_Digital || P1_D_1900009_Digital');
+

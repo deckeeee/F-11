@@ -48,8 +48,6 @@ import org.apache.log4j.Logger;
  */
 public class NoncheckTableListener extends MouseAdapter implements LimitedAction {
 	private Logger logger = Logger.getLogger(NoncheckTableListener.class);
-	/** 警報確認を実行する列 */
-	private static final int CHECK_COLUMN = 12;
 	/** 連続クリック防止タイム */
 	private static final long ACTION_WAIT_TIME = 500L;
 	/** アプレットの参照 */
@@ -79,7 +77,8 @@ public class NoncheckTableListener extends MouseAdapter implements LimitedAction
 			int row = table.rowAtPoint(e.getPoint());
 			int column = table.columnAtPoint(e.getPoint());
 			Object o = table.getValueAt(row, column);
-			if (TableUtil.getModelColumn(e) == CHECK_COLUMN && o == null) {
+			AlarmTableModel model = (AlarmTableModel) table.getModel();
+			if (TableUtil.getModelColumn(e) == model.getColumn("確認") && o == null) {
 				DataHolder dh = Manager.getInstance().findDataHolder(
 						AlarmDataProvider.PROVIDER_NAME,
 						AlarmDataProvider.NONCHECK);
@@ -95,7 +94,6 @@ public class NoncheckTableListener extends MouseAdapter implements LimitedAction
 				} catch (DataProviderDoesNotSupportException ex) {
 					ex.printStackTrace();
 				}
-				AlarmTableModel model = (AlarmTableModel) table.getModel();
 				model.fireCheckEvent(checkEvent);
 			}
 			isCheck = false;
@@ -107,9 +105,7 @@ public class NoncheckTableListener extends MouseAdapter implements LimitedAction
 		int columnCount = model.getColumnCount();
 		Object[] rows = new Object[columnCount];
 		for (int i = 0, j = 0; i < columnCount - 1; i++) {
-			if (i != columnCount - 2) {
 				rows[j++] = model.getValueAt(row, i);
-			}
 		}
 		rows[model.getColumnCount() - 1] = "＊＊＊＊";
 		return rows;
