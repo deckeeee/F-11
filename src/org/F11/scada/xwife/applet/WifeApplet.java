@@ -43,6 +43,7 @@ import org.F11.scada.theme.LogoFactory;
 import org.F11.scada.xwife.applet.alarm.AlarmStats;
 import org.F11.scada.xwife.applet.alarm.AlarmTabbedPane;
 import org.F11.scada.xwife.applet.alarm.PriorityController;
+import org.F11.scada.xwife.applet.comp.SystemToolBar;
 import org.xml.sax.SAXException;
 
 /**
@@ -50,6 +51,7 @@ import org.xml.sax.SAXException;
  */
 public class WifeApplet extends AbstractWifeApplet {
 	private static final long serialVersionUID = 9159543828998179769L;
+
 	/** Log4j Logging オブジェクトのインスタンスです */
 
 	/**
@@ -63,14 +65,17 @@ public class WifeApplet extends AbstractWifeApplet {
 		super(isStandalone);
 	}
 
-	protected void lookup() throws MalformedURLException, RemoteException,
+	protected void lookup()
+			throws MalformedURLException,
+			RemoteException,
 			NotBoundException {
-		accessControl = (AccessControlable) Naming.lookup(WifeUtilities
+		accessControl =
+			(AccessControlable) Naming.lookup(WifeUtilities
 				.createRmiActionControl());
 	}
 
 	protected void layoutContainer() throws IOException, SAXException {
-		//画面左のツリー
+		// 画面左のツリー
 		JPanel treePanel = new JPanel(new BorderLayout());
 		treePanel.setMinimumSize(Globals.ZERO_DIMENSION);
 		TreeDefine treeDefine = frameDef.getMenuTreeRoot(subject.getUserName());
@@ -83,13 +88,16 @@ public class WifeApplet extends AbstractWifeApplet {
 
 		mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		spane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-		spane.setDividerLocation(configuration.getInt("xwife.applet.Applet.treeWidth", 150));
+		spane.setDividerLocation(configuration.getInt(
+			"xwife.applet.Applet.treeWidth",
+			150));
 		spane.setDividerSize(10);
 		spane.setOneTouchExpandable(true);
 		spane.add(treePanel);
 		mainSplit.add(spane);
 
-		AlarmTabbedPane alarmTabPane = new AlarmTabbedPane(this, JTabbedPane.RIGHT);
+		AlarmTabbedPane alarmTabPane =
+			new AlarmTabbedPane(this, JTabbedPane.RIGHT);
 
 		// 最新情報
 		AlarmStats newMsg = new AlarmStats();
@@ -125,7 +133,9 @@ public class WifeApplet extends AbstractWifeApplet {
 		getContentPane().add(LogoAndToolBarsPanel, BorderLayout.NORTH);
 
 		mainSplit.setOneTouchExpandable(true);
-		mainSplit.setDividerLocation(configuration.getInt("xwife.applet.Applet.treeHeight", 775));
+		mainSplit.setDividerLocation(configuration.getInt(
+			"xwife.applet.Applet.treeHeight",
+			775));
 		mainSplit.setDividerSize(10);
 		getContentPane().add(mainSplit);
 
@@ -140,16 +150,18 @@ public class WifeApplet extends AbstractWifeApplet {
 		});
 	}
 
-	//Main メソッド
+	// Main メソッド
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		WifeApplet applet = null;
 		try {
 			applet = new WifeApplet(true);
 		} catch (RemoteException e) {
-			JOptionPane.showInternalMessageDialog(frame,
-					ServerErrorUtil.ERROR_MESSAGE,
-					ServerErrorUtil.ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showInternalMessageDialog(
+				frame,
+				ServerErrorUtil.ERROR_MESSAGE,
+				ServerErrorUtil.ERROR_MESSAGE,
+				JOptionPane.ERROR_MESSAGE);
 		}
 		setCloseAction(frame, applet);
 		frame.setTitle(getTitle());
@@ -161,7 +173,9 @@ public class WifeApplet extends AbstractWifeApplet {
 		}
 		applet.start();
 		applet.setFrameBounds(frame);
-		if (applet.configuration.getBoolean("xwife.applet.Applet.maximized", false)) {
+		if (applet.configuration.getBoolean(
+			"xwife.applet.Applet.maximized",
+			false)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 		frame.setVisible(true);

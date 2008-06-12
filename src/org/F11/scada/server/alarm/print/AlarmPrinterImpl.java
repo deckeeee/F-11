@@ -47,6 +47,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 警報データをプリンタに印刷するクラスです
+ * 
  * @author hori
  */
 public class AlarmPrinterImpl implements AlarmPrinter {
@@ -55,6 +56,7 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 
 	/**
 	 * PrintLineData のリストをプリンタに印刷します
+	 * 
 	 * @param data PrintLineData のリスト
 	 */
 	public void print(List data) {
@@ -85,11 +87,9 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 		}
 
 		StringTokenizer st =
-			new StringTokenizer(
-				EnvironmentManager.get(
-					"/server/alarm/print/font",
-					"Monospaced,PLAIN,10"),
-				",");
+			new StringTokenizer(EnvironmentManager.get(
+				"/server/alarm/print/font",
+				"Monospaced,PLAIN,10"), ",");
 		String fontName = st.nextToken();
 		String fontStyle = st.nextToken();
 		int style = Font.PLAIN;
@@ -105,23 +105,12 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 		String printService =
 			EnvironmentManager.get("/server/alarm/print/printservice", "lp");
 
-		String clazz = EnvironmentManager.get(
-				"/server/alarm/print/formatter/className", "");
-		if (clazz == null || "".equals(clazz)) {
-			new Print2DGraphics(printService, aset, data, font);
-		} else if ("org.F11.scada.server.alarm.print.AlarmPrinterImpl.Print2DGraphics".equals(clazz)) {
-			new Print2DGraphics(printService, aset, data, font);
-		} else if ("org.F11.scada.server.alarm.print.AlarmListDrawer".equals(clazz)) {
-			new AlarmListDrawer(printService, aset, data, font);
-		} else {
-			new Print2DGraphics(printService, aset, data, font);
-		}
-
+		new AlarmListDrawer(printService, aset, data, font);
 	}
 
-
 	/**
-	 * ページ印刷を実装します。 
+	 * ページ印刷を実装します。
+	 * 
 	 * @author hori
 	 */
 	private static class Print2DGraphics implements Printable {
@@ -130,10 +119,10 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 		private final Font font;
 
 		public Print2DGraphics(
-			String printerName,
-			PrintRequestAttributeSet aset,
-			List msgs,
-			Font font) {
+				String printerName,
+				PrintRequestAttributeSet aset,
+				List msgs,
+				Font font) {
 			this.msgs = msgs;
 			this.font = font;
 
@@ -167,9 +156,8 @@ public class AlarmPrinterImpl implements AlarmPrinter {
 			if (pageIndex * dataCont < msgs.size()) {
 				g2d.translate(pf.getImageableX(), pf.getImageableY());
 				int posY = stepY;
-				for (int i = pageIndex * dataCont;
-					i < msgs.size() && i < ((pageIndex + 1) * dataCont);
-					i++, posY += stepY) {
+				for (int i = pageIndex * dataCont; i < msgs.size()
+					&& i < ((pageIndex + 1) * dataCont); i++, posY += stepY) {
 
 					PrintLineData lineData = (PrintLineData) msgs.get(i);
 					g2d.setColor(lineData.getColor());

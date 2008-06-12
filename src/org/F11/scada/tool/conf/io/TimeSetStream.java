@@ -70,8 +70,9 @@ public class TimeSetStream {
 	}
 
 	private Map<String, String> createMilliOffsetModeMap() {
-		return map($("false", "スケジュールによる"), $("true", "ミリ秒"),
-			$("スケジュールによる", "false"), $("ミリ秒", "true"));
+		return map($("false", "スケジュールによる"), $("true", "ミリ秒"), $(
+			"スケジュールによる",
+			"false"), $("ミリ秒", "true"));
 	}
 
 	public String getValue(String name, String key, String def) {
@@ -99,10 +100,15 @@ public class TimeSetStream {
 	public void setTimeSetTask(TimeSetTaskBean bean) {
 		timeSetTaskMap.put(bean.get("name"), bean);
 		edited = true;
+		System.out.println(timeSetTaskMap);
 	}
 
 	public TimeSetTaskBean removeTimeSetTask(TimeSetTaskBean bean) {
-		TimeSetTaskBean remove = timeSetTaskMap.remove(bean.get("name"));
+		return removeTimeSetTask(bean.get("name"));
+	}
+
+	public TimeSetTaskBean removeTimeSetTask(String name) {
+		TimeSetTaskBean remove = timeSetTaskMap.remove(name);
 		edited = true;
 		return remove;
 	}

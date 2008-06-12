@@ -161,9 +161,6 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/alarm/print/printdate", "00:00:00"));
 		pw.println(getXmlProp("/server/user", "root"));
 		pw.println(getXmlProp("/server/password", "okusama"));
-		pw.println(getXmlProp(
-				"/server/alarm/print/formatter/className",
-				"org.F11.scada.server.alarm.print.AlarmPrinterImpl.Print2DGraphics"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

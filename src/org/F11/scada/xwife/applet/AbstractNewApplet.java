@@ -40,6 +40,7 @@ import org.F11.scada.parser.tree.TreeDefine;
 import org.F11.scada.security.AccessControlable;
 import org.F11.scada.server.alarm.table.AlarmListFinder;
 import org.F11.scada.theme.LogoFactory;
+import org.F11.scada.xwife.applet.comp.SystemToolBar;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -55,16 +56,20 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		logger = Logger.getLogger(getClass().getName());
 	}
 
-	protected void lookup() throws MalformedURLException, RemoteException,
+	protected void lookup()
+			throws MalformedURLException,
+			RemoteException,
 			NotBoundException {
-		accessControl = (AccessControlable) Naming.lookup(WifeUtilities
+		accessControl =
+			(AccessControlable) Naming.lookup(WifeUtilities
 				.createRmiActionControl());
-		alarmListFinder = (AlarmListFinder) Naming.lookup(WifeUtilities
+		alarmListFinder =
+			(AlarmListFinder) Naming.lookup(WifeUtilities
 				.createRmiAlarmListFinderManager());
 	}
 
 	protected void layoutContainer() throws IOException, SAXException {
-		//画面左のツリー
+		// 画面左のツリー
 		JPanel treePanel = new JPanel(new BorderLayout());
 		TreeDefine treeDefine = frameDef.getMenuTreeRoot(subject.getUserName());
 		tree = new PageTree(treeDefine.getRootNode(), history, configuration);
@@ -77,15 +82,18 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 
 		mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		spane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-		//ツリーの横幅
-		spane.setDividerLocation(configuration.getInt("xwife.applet.Applet.treeWidth", 150));
+		// ツリーの横幅
+		spane.setDividerLocation(configuration.getInt(
+			"xwife.applet.Applet.treeWidth",
+			150));
 		spane.setDividerSize(10);
 		spane.setOneTouchExpandable(true);
 		spane.add(treePanel);
 		mainSplit.add(spane);
 
 		// 最新情報及び警報検索
-		JComponent alarmComp = createAlarmComponent(this, "/resources/AlarmDefine.xml");
+		JComponent alarmComp =
+			createAlarmComponent(this, "/resources/AlarmDefine.xml");
 		mainSplit.add(alarmComp);
 
 		// 画面用ツールバー
@@ -104,23 +112,24 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		getContentPane().add(LogoAndToolBarsPanel, BorderLayout.NORTH);
 
 		mainSplit.setOneTouchExpandable(true);
-		//警報以外の縦幅
-		mainSplit.setDividerLocation(configuration.getInt("xwife.applet.Applet.treeHeight", 775));
+		// 警報以外の縦幅
+		mainSplit.setDividerLocation(configuration.getInt(
+			"xwife.applet.Applet.treeHeight",
+			775));
 		mainSplit.setDividerSize(10);
 		getContentPane().add(mainSplit);
 
 		// 初期画面を開きます
-/*		final TreePath path = searchTreePath(treeDefine.getInitPage());
-		logger.info("init page = " + treeDefine.getInitPage() + " ,path = " + path);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				tree.setSelectionPath(path);
-				tree.expandPath(path);
-				tree.requestFocusInWindow();
-			}
-		});
-*/		splashScreen.incrementValue();
+		/*
+		 * final TreePath path = searchTreePath(treeDefine.getInitPage());
+		 * logger.info("init page = " + treeDefine.getInitPage() + " ,path = " +
+		 * path); SwingUtilities.invokeLater(new Runnable() { public void run() {
+		 * tree.setSelectionPath(path); tree.expandPath(path);
+		 * tree.requestFocusInWindow(); } });
+		 */splashScreen.incrementValue();
 	}
 
-	protected abstract JComponent createAlarmComponent(AbstractNewApplet applet, String alarmDefPath);
+	protected abstract JComponent createAlarmComponent(
+			AbstractNewApplet applet,
+			String alarmDefPath);
 }

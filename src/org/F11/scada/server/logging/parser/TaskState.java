@@ -29,6 +29,7 @@ import java.util.Stack;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
 import org.F11.scada.server.event.LoggingDataListener;
+import org.F11.scada.server.logging.LoggingDefaultTask;
 import org.F11.scada.server.logging.LoggingSchedule;
 import org.F11.scada.server.logging.LoggingTask;
 import org.apache.log4j.Logger;
@@ -75,8 +76,8 @@ public class TaskState implements State, TaskStateble {
 		if (factoryName == null) {
 			throw new IllegalArgumentException("factoryName is null");
 		}
-		milliOffsetMode = Boolean.valueOf(atts.getValue("milliOffsetMode"))
-				.booleanValue();
+		milliOffsetMode =
+			Boolean.valueOf(atts.getValue("milliOffsetMode")).booleanValue();
 
 		dataHolders = new ArrayList();
 		loggingDataListeners = new ArrayList();
@@ -110,32 +111,50 @@ public class TaskState implements State, TaskStateble {
 		}
 
 		try {
-			LoggingTask task = new LoggingTask(
-					name,
-					dataHolders,
-					factoryName,
-					state.handlerManager,
-					schedule);
-			Field scheduleType = LoggingSchedule.class.getField(schedule);
-			LoggingSchedule loggingSchedule = (LoggingSchedule) scheduleType
-					.get(null);
-			if (milliOffsetMode) {
-				loggingSchedule.addMilliOffset(task, offset);
+			if ("REGULAR".equalsIgnoreCase(schedule)) {
+				LoggingTask task =
+					new LoggingTask(
+						name,
+						dataHolders,
+						factoryName,
+						state.handlerManager,
+						schedule);
+				setSchedule(task);
 			} else {
-				loggingSchedule.add(task, offset);
+				LoggingDefaultTask task =
+					new LoggingDefaultTask(
+						name,
+						dataHolders,
+						factoryName,
+						state.handlerManager,
+						schedule);
+				setSchedule(task);
 			}
-
-			for (Iterator it = loggingDataListeners.iterator(); it.hasNext();) {
-				task.addElementLoggingListener((LoggingDataListener) it.next());
-			}
-
-			state.putLoggingTask(name, task);
 		} catch (Exception e) {
 			// logger.error("スケジュールに無い種類が指定されています。 : " + schedule);
 			logger.error("Exception caught: ", e);
 		}
 
 		stack.pop();
+	}
+
+	private void setSchedule(LoggingTask task)
+			throws NoSuchFieldException,
+			IllegalAccessException {
+		Field scheduleType = LoggingSchedule.class.getField(schedule);
+		LoggingSchedule loggingSchedule =
+			(LoggingSchedule) scheduleType.get(null);
+		if (milliOffsetMode) {
+			loggingSchedule.addMilliOffset(task, offset);
+		} else {
+			loggingSchedule.add(task, offset);
+		}
+
+		for (Iterator it = loggingDataListeners.iterator(); it.hasNext();) {
+			task.addElementLoggingListener((LoggingDataListener) it.next());
+		}
+
+		state.putLoggingTask(name, task);
 	}
 
 	/*

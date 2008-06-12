@@ -76,11 +76,13 @@ public class TimeSetTaskPanel extends JPanel {
 					ComponentUtil.getAncestorOfClass(Frame.class, button);
 				int row = table.getSelectedRow();
 				if (0 <= row) {
+					String name = model.get(row).get("name");
 					TimeSetTaskDialog dialog =
 						new TimeSetTaskDialog(frame, model, row, manager);
 					TimeSetTaskBean bean = dialog.getBean();
 					if (null != bean) {
-						model.update(bean, row);
+						System.out.println(name + " " + bean.get("name"));
+						model.update(bean, row, name);
 					}
 				}
 			}
@@ -160,8 +162,10 @@ public class TimeSetTaskPanel extends JPanel {
 						log.info(name + " " + list);
 					}
 
-					public void setTimeSetTask(TimeSetTaskBean bean) {
-						log.info(bean);
+					public void setTimeSetTask(
+							TimeSetTaskBean bean,
+							String oldName) {
+						log.info(bean + " " + oldName);
 					}
 
 					public TimeSetTaskBean removeTimeSetTask(

@@ -104,7 +104,10 @@ public class StreamManager implements TimeSetManager {
 		compo.setEnabled(true);
 	}
 
-	public void setTimeSetTask(TimeSetTaskBean bean) {
+	public void setTimeSetTask(TimeSetTaskBean bean, String oldName) {
+		if (oldName != null) {
+			timeSet.removeTimeSetTask(oldName);
+		}
 		timeSet.setTimeSetTask(bean);
 		compo.setEnabled(true);
 	}
