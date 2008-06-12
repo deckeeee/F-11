@@ -22,12 +22,20 @@ package org.F11.scada.util;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.GridBagConstraints;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public abstract class ComponentUtil {
+	/** HTMLの開始文字列 */
+	public static final String HTML_START = "<html><body><p>";
+	/** HTMLの終了文字列 */
+	public static final String HTML_END = "</p></body></html>";
 	/**
 	 * コンポーネント内にマウスポイントがあるか判定します。
 	 * 
@@ -79,4 +87,23 @@ public abstract class ComponentUtil {
 			Component comp) {
 		return (C) SwingUtilities.getAncestorOfClass(c, comp);
 	}
+
+	public static void addLabel(GridBagConstraints c, JPanel panel, JLabel label) {
+		panel.add(label);
+		c.weightx = 1.0;
+		c.gridwidth = 1;
+		panel.add(label, c);
+	}
+
+	public static void addTextArea(
+			GridBagConstraints c,
+			JPanel panel,
+			JTextField text,
+			String string) {
+		c.weightx = 1.0;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		text.setText(string);
+		panel.add(text, c);
+	}
+
 }

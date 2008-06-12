@@ -20,6 +20,9 @@
 
 package org.F11.scada.tool.conf.client;
 
+import static org.F11.scada.util.ComponentUtil.addLabel;
+import static org.F11.scada.util.ComponentUtil.addTextArea;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
@@ -110,24 +113,6 @@ public class AlarmTableColumn extends JDialog {
 		addTextArea(c, panel, sort, manager.getClientConf(
 			"org.F11.scada.xwife.applet.alarm.sortSize",
 			"78"));
-	}
-
-	private void addLabel(GridBagConstraints c, JPanel panel, JLabel label) {
-		panel.add(label);
-		c.weightx = 1.0;
-		c.gridwidth = 1;
-		panel.add(label, c);
-	}
-
-	private void addTextArea(
-			GridBagConstraints c,
-			JPanel panel,
-			JTextField text,
-			String string) {
-		c.weightx = 1.0;
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		text.setText(string);
-		panel.add(text, c);
 	}
 
 	private Component getSouth() {

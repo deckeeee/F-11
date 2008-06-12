@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  */
 public class LoggingTask extends TimerTask {
 	/** データホルダのリストです */
-	private List dataHolders;
+	protected List dataHolders;
 	/** ロギングリスナーのリスト */
 	private List loggingListeners;
 	/** ロギングデータハンドラ */
@@ -124,7 +124,7 @@ public class LoggingTask extends TimerTask {
 	/**
 	 * ロギングデータ変更イベントをリスナーに発火します。
 	 */
-	private void fireChangeLoggingData(LoggingDataEvent event) {
+	protected void fireChangeLoggingData(LoggingDataEvent event) {
 		if (loggingListeners == null || loggingListeners.size() <= 0) {
 			return;
 		}

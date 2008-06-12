@@ -67,10 +67,12 @@ public interface TimeSetManager {
 
 	/**
 	 * タスクを設定します
+	 * 旧タスク名が null 以外なら旧タスク名を消去します
 	 * 
 	 * @param bean タスク
+	 * @param oldName 旧タスク名
 	 */
-	void setTimeSetTask(TimeSetTaskBean bean);
+	void setTimeSetTask(TimeSetTaskBean bean, String oldName);
 
 	/**
 	 * 対象タスクを削除します

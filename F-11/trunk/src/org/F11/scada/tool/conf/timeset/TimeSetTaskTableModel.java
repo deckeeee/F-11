@@ -71,7 +71,7 @@ public class TimeSetTaskTableModel extends AbstractTableModel {
 		data.add(bean);
 		int size = data.size();
 		fireTableRowsInserted(size, size);
-		manager.setTimeSetTask(bean);
+		manager.setTimeSetTask(bean, null);
 	}
 
 	void remove(int row) {
@@ -86,9 +86,9 @@ public class TimeSetTaskTableModel extends AbstractTableModel {
 		return data.get(row);
 	}
 
-	void update(TimeSetTaskBean bean, int row) {
+	void update(TimeSetTaskBean bean, int row, String oldName) {
 		data.set(row, bean);
 		fireTableRowsUpdated(row, row);
-		manager.setTimeSetTask(bean);
+		manager.setTimeSetTask(bean, oldName);
 	}
 }

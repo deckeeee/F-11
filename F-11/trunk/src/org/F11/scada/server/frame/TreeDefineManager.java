@@ -28,6 +28,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -37,13 +38,12 @@ import org.F11.scada.parser.tree.TreeDefine;
 import org.F11.scada.xwife.applet.PageTreeNode;
 import org.F11.scada.xwife.applet.WifeApplet;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * メニューツリー定義を管理するクラスです。
  */
 public class TreeDefineManager {
-//	private static final Logger logger = Logger.getLogger(TreeDefineManager.class);
+	// private static final Logger logger =
+	// Logger.getLogger(TreeDefineManager.class);
 	/** ユーザー名とツリー定義のマップです。 */
 	private final Map treeMap = new ConcurrentHashMap();
 	/** デフォルトのツリー定義です。 */
@@ -56,14 +56,15 @@ public class TreeDefineManager {
 		super();
 		defaultTreeDefine = new TreeDefine();
 		defaultTreeDefine.setRootNode((TreeNode) createNodeStack()
-				.firstElement());
-		String initPage = new AlarmDefine().getAlarmConfig().getInitConfig()
-				.getInitPage();
+			.firstElement());
+		String initPage =
+			new AlarmDefine().getAlarmConfig().getInitConfig().getInitPage();
 		defaultTreeDefine.setInitPage(initPage);
 	}
 
 	/**
 	 * 引数のマップオブジェクトを全てputします
+	 * 
 	 * @param map ページ名称とページ定義オブジェクトのマップ
 	 * @since 1.0.3
 	 */
@@ -73,6 +74,7 @@ public class TreeDefineManager {
 
 	/**
 	 * 指定したユーザー名称のメニューツリー定義を削除します
+	 * 
 	 * @param userName 削除するユーザー名称
 	 * @return 削除するメニューツリーオブジェクト
 	 * @since 1.0.3
@@ -83,6 +85,7 @@ public class TreeDefineManager {
 
 	/**
 	 * 引数のユーザー名称が既に登録されていれば true をそうでなければ false を返します
+	 * 
 	 * @param userName 判定するユーザー名称
 	 * @return 引数のユーザー名称が既に登録されていれば true をそうでなければ false を返します
 	 * @since 1.0.3
@@ -93,19 +96,24 @@ public class TreeDefineManager {
 
 	/**
 	 * ユーザー毎のメニューツリーを返します。 指定ユーザーにメニュー定義が無ければ、デフォルトのメニューツリーを返します。
+	 * 
 	 * @param userName ユーザー名
 	 * @return メニューツリーの定義
 	 * @throws RemoteException
 	 */
 	public TreeDefine getMenuTreeRoot(String userName) throws RemoteException {
-		TreeDefine tree = (TreeDefine) treeMap.get(userName);
-		if (tree != null)
-			return tree;
-		return defaultTreeDefine;
+		if (treeMap.containsKey(userName)) {
+			return (TreeDefine) treeMap.get(userName);
+		} else if (treeMap.containsKey("")) {
+			return (TreeDefine) treeMap.get("");
+		} else {
+			return defaultTreeDefine;
+		}
 	}
 
 	/**
 	 * 旧形式のメニューツリー定義を読み込みます。
+	 * 
 	 * @return
 	 */
 	private static Stack createNodeStack() {
@@ -134,15 +142,17 @@ public class TreeDefineManager {
 					String key = "";
 					if (st.hasMoreTokens())
 						key = st.nextToken();
-					DefaultMutableTreeNode n = new DefaultMutableTreeNode(
-							new PageTreeNode(nodeName, key));
+					DefaultMutableTreeNode n =
+						new DefaultMutableTreeNode(new PageTreeNode(
+							nodeName,
+							key));
 
 					while (no <= nodeStack.size())
 						nodeStack.pop();
 
 					if (!nodeStack.isEmpty()) {
-						DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) nodeStack
-								.peek();
+						DefaultMutableTreeNode parentNode =
+							(DefaultMutableTreeNode) nodeStack.peek();
 						parentNode.add(n);
 					}
 					nodeStack.push(n);

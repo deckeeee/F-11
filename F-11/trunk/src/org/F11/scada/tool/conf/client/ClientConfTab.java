@@ -422,6 +422,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		// imageLoader(mainPanel);
 		treeFontSize(mainPanel);
 		alarmTableColumn(mainPanel);
+		screenShot(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -579,6 +580,17 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new AlarmTableColumn(frameParent, manager).setVisible(true);
+			}
+		});
+		mainPanel.add(button);
+	}
+
+	private void screenShot(JPanel mainPanel) {
+		mainPanel.add(new JLabel("スクリーンショット設定"));
+		JButton button = new JButton("詳細");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ScreenShot(frameParent, manager).setVisible(true);
 			}
 		});
 		mainPanel.add(button);
