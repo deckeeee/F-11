@@ -122,10 +122,9 @@ public class ScreenShot extends JDialog {
 		addLabel(c, panel, label);
 		path.setToolTipText(HTML_START
 			+ "スクリーンショットのファイルを保存するフォルダを指定します。<br>"
-			+ "パスの区切り文字は\"/\"を使用してください。<br>"
-			+ "初期値の\".\"を指定すると、物件フォルダ(通常起動)又はデスクトップ(JWS起動)となります。"
+			+ "パスの区切り文字は\"/\"を使用してください。"
 			+ HTML_END);
-		addTextArea(c, panel, path, manager.getClientConf(PATH_NAME, "."));
+		addTextArea(c, panel, path, manager.getClientConf(PATH_NAME, "C:/"));
 	}
 
 	private Component getSouth() {

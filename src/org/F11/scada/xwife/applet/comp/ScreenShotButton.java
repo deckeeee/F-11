@@ -20,10 +20,12 @@
 
 package org.F11.scada.xwife.applet.comp;
 
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -82,6 +84,9 @@ public class ScreenShotButton extends JButton {
 	}
 
 	private static class ScreenShotAction extends AbstractAction {
+		private static final String IO_EXCPTION_MSG =
+			"スクリーンショットファイルの保存に失敗しました。";
+		private static final String AWT_EXCEPTION_MSG = "スクリーンショット機能が使えない環境です。";
 		private static final String DEFAULT_FILE_NAME =
 			"'ss'yyyyMMddHHmmss'.png'";
 		private static final long serialVersionUID = 878379803616641831L;
@@ -125,9 +130,19 @@ public class ScreenShotButton extends JButton {
 							ImageIO.write(image, "png", file);
 						}
 					} catch (AWTException e) {
-						logger.fatal("スクリーン機能が使えない環境です。", e);
+						logger.fatal(AWT_EXCEPTION_MSG, e);
+						showMessageDialog(
+							wifeApplet,
+							AWT_EXCEPTION_MSG,
+							AWT_EXCEPTION_MSG,
+							ERROR_MESSAGE);
 					} catch (IOException e) {
-						logger.error("スクリーンショットファイル生成時にエラーが発生しました。", e);
+						logger.error(IO_EXCPTION_MSG, e);
+						showMessageDialog(
+							wifeApplet,
+							IO_EXCPTION_MSG,
+							IO_EXCPTION_MSG,
+							ERROR_MESSAGE);
 					}
 				}
 

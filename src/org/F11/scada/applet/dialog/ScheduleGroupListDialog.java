@@ -85,6 +85,7 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 
 		list = new JList(o);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setSelectedIndex(currentGroup);
 		JScrollPane scpane = new JScrollPane(list);
 
 		okButton = new JButton("OK");
