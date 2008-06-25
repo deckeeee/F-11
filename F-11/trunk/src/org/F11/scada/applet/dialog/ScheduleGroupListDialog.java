@@ -37,6 +37,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
@@ -87,6 +88,9 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setSelectedIndex(currentGroup);
 		JScrollPane scpane = new JScrollPane(list);
+		JViewport p = scpane.getViewport();
+		p.setViewPosition(new Point(0, scheduleModel.getGroupNo()
+			* scpane.getVerticalScrollBar().getBlockIncrement(1)));
 
 		okButton = new JButton("OK");
 		cancelButton = new JButton("CANCEL");
@@ -108,15 +112,14 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 
 		setSize();
 
-		Window window = (Window) SwingUtilities.getAncestorOfClass(
-				Window.class,
-				this);
+		Window window =
+			(Window) SwingUtilities.getAncestorOfClass(Window.class, this);
 		Dimension fDimension = window.getSize();
 		Dimension dDimension = getSize();
 		Point location = window.getLocation();
 		location.translate(
-				(fDimension.width - dDimension.width) / 2,
-				(fDimension.height - dDimension.height) / 2);
+			(fDimension.width - dDimension.width) / 2,
+			(fDimension.height - dDimension.height) / 2);
 		setLocation(location);
 	}
 
@@ -124,10 +127,10 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 		log.info("setSizeŠJŽn");
 		ClientConfiguration configuration = new ClientConfiguration();
 		setSize(configuration.getInt(
-				"xwife.applet.Applet.schedule.dialog.width",
-				157), configuration.getInt(
-				"xwife.applet.Applet.schedule.dialog.height",
-				217));
+			"xwife.applet.Applet.schedule.dialog.width",
+			157), configuration.getInt(
+			"xwife.applet.Applet.schedule.dialog.height",
+			217));
 	}
 
 	public void actionPerformed(ActionEvent evt) {

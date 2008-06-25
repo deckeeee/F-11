@@ -304,32 +304,40 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			String name,
 			long key,
 			Session session) {
+		log.info("getPage 1");
 		PageDefine pd = getPage(name, key);
+		log.info("getPage 2");
 		List wdps = getWifeDataProviders(pd, session);
+		log.info("getPage 3");
 		providerLock(wdps);
+		log.info("getPage 4");
 		try {
 			checkUnregisterJim(session);
+			log.info("getPage 5");
 			sendRequestDateMap.put(new Long(key), session);
 			if (log.isDebugEnabled()) {
 				log.debug("key=" + getKeyString(key) + " value="
 						+ sendRequestDateMap.get(new Long(key)));
 			}
 			clientPageMap.put(session, name);
+			log.info("getPage 6");
 			registerJim(pd);
+			log.info("getPage 7");
 		} finally {
 			providerUnlock(wdps, pd);
+			log.info("getPage 8");
 		}
 		return pd;
 	}
 
-	private List getWifeDataProviders(PageDefine pd, Session session) {
-		HashSet set = new HashSet();
+	private List<DataProvider> getWifeDataProviders(PageDefine pd, Session session) {
+		HashSet<String> set = new HashSet<String>();
 		getRemoveProvider(session, set);
 		getNextProvider(pd, set);
-		ArrayList wdps = new ArrayList();
+		ArrayList<DataProvider> wdps = new ArrayList<DataProvider>();
 		Manager manager = Manager.getInstance();
-		for (Iterator i = set.iterator(); i.hasNext();) {
-			String dpname = (String) i.next();
+		for (Iterator<String> i = set.iterator(); i.hasNext();) {
+			String dpname = i.next();
 			DataProvider dataProvider = manager.getDataProvider(dpname);
 			if (null != dataProvider) {
 				wdps.add(dataProvider);
@@ -521,9 +529,13 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	public synchronized void addDataHolders(Set holderSet) {
 		// logger.info("Add holders : " + holderSet);
+		log.info("addDataHolders 1");
 		Item[] items = removeSystem(holderSet, false);
+		log.info("addDataHolders 2");
 		builder.register(items);
+		log.info("addDataHolders 3");
 		getInitialData(items);
+		log.info("addDataHolders 4");
 	}
 
 	private void getInitialData(Item[] items) {
