@@ -218,6 +218,11 @@ public final class PlcCommunicater implements Communicater {
 			}
 			// エラー発生なら試行を繰り返す
 			for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
+				if (ex != null) {
+					log.warn("ID[" + device.getDeviceID() + "] try["
+							+ String.valueOf(i) + "] error[" + ex.getMessage()
+							+ "]");
+				}
 				sendBuffer.clear();
 				converter.retryCommand(sendBuffer);
 				sendBuffer.flip();
@@ -234,11 +239,6 @@ public final class PlcCommunicater implements Communicater {
 						// タイムアウト以外のエラー発生ならば試行の前に待つ
 						Thread.sleep(device.getPlcTimeout());
 					}
-				}
-				if (ex != null) {
-					log.warn("ID[" + device.getDeviceID() + "] try["
-							+ String.valueOf(i) + "] error[" + ex.getMessage()
-							+ "]");
 				}
 			}
 			if (ex != null) {
