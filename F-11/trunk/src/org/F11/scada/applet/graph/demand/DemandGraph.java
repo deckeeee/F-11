@@ -58,25 +58,32 @@ import org.apache.log4j.Logger;
 
 /**
  * デマンド監視のグラフコンポーネントクラスです。
+ * 
  * @todo 既知のバグ、スケールの上限を現在値より小さくすると、予想電力の表示が乱れる。
  */
 public class DemandGraph extends JPanel {
 
 	private static final long serialVersionUID = 914253999773614129L;
-	
+
 	private DemandGraphView view;
 
 	/**
-	 * コンストラクタ
-	 * デマンド監視のグラフコンポーネントを生成します。
+	 * コンストラクタ デマンド監視のグラフコンポーネントを生成します。
+	 * 
 	 * @param gmodel グラフモデル
 	 * @param pmodel グラフプロパティモデル
 	 */
-	public DemandGraph(GraphModel gmodel, GraphPropertyModel pmodel, boolean alarmTimeMode, Color stringColor) {
+	public DemandGraph(
+			GraphModel gmodel,
+			GraphPropertyModel pmodel,
+			boolean alarmTimeMode,
+			Color stringColor,
+			boolean colorSetting) {
 		super(new BorderLayout());
-		view = new DemandGraphView(pmodel, gmodel, alarmTimeMode);
+		view = new DemandGraphView(pmodel, gmodel, alarmTimeMode, colorSetting);
 		add(view, BorderLayout.CENTER);
-		VerticallyScale vs = VerticallyScale.createRightStringScale(pmodel, 0, stringColor);
+		VerticallyScale vs =
+			VerticallyScale.createRightStringScale(pmodel, 0, stringColor);
 		vs.setMinEnabled(false);
 		add(vs, BorderLayout.EAST);
 	}
@@ -84,13 +91,12 @@ public class DemandGraph extends JPanel {
 	public void setExpectYCount(double expectYCount) {
 		view.setExpectYCount(expectYCount);
 	}
-	
+
 	/**
 	 * デマンドグラフ描画コンポーネントクラスです。
 	 */
-	private static class DemandGraphView
-			extends JComponent
-			implements PropertyChangeListener, ReferencerOwnerSymbol {
+	private static class DemandGraphView extends JComponent implements
+			PropertyChangeListener, ReferencerOwnerSymbol {
 		private static final long serialVersionUID = -8641438220997585758L;
 		/** グラフデータモデル */
 		private GraphModel graphModel;
@@ -111,17 +117,24 @@ public class DemandGraph extends JPanel {
 		private Rectangle graphViewBounds;
 		/** ロギングAPI */
 		private static Logger logger;
-		/** 予想電力のY軸係数 (60 count / 30sec) = 2, (60 count / 60 sec) = 1*/
+		/** 予想電力のY軸係数 (60 count / 30sec) = 2, (60 count / 60 sec) = 1 */
 		private double expectYCount;
-		
+
 		private final boolean alarmTimeMode;
+
+		private final boolean colorSetting;
 
 		/**
 		 * コンストラクタ
+		 * 
 		 * @param graphPropertyModel グラフプロパティ・モデルの参照
 		 * @param graphModel グラフモデルの参照
 		 */
-		DemandGraphView(GraphPropertyModel graphPropertyModel, GraphModel graphModel, boolean alarmTimeMode) {
+		DemandGraphView(
+				GraphPropertyModel graphPropertyModel,
+				GraphModel graphModel,
+				boolean alarmTimeMode,
+				boolean colorSetting) {
 			super();
 			logger = Logger.getLogger(getClass().getName());
 			this.graphModel = graphModel;
@@ -129,6 +142,7 @@ public class DemandGraph extends JPanel {
 			this.graphPropertyModel = graphPropertyModel;
 			this.graphPropertyModel.addPropertyChangeListener(this);
 			this.alarmTimeMode = alarmTimeMode;
+			this.colorSetting = colorSetting;
 			graphColors = graphPropertyModel.getColors();
 			setDoubleBuffered(true);
 			changeDisplayData();
@@ -151,7 +165,8 @@ public class DemandGraph extends JPanel {
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
 				Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
-				for (int i = 0; i <= graphPropertyModel.getHorizontalScaleCount(); i++) {
+				for (int i = 0; i <= graphPropertyModel
+					.getHorizontalScaleCount(); i++) {
 					currentAxisList.add(timestamp);
 					cal.add(Calendar.MINUTE, 5);
 					timestamp = new Timestamp(cal.getTimeInMillis());
@@ -161,11 +176,12 @@ public class DemandGraph extends JPanel {
 
 		/**
 		 * コンポーネントを描画します。
+		 * 
 		 * @param g グラフィックコンテキスト
 		 */
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D g2d = (Graphics2D)g.create();
+			Graphics2D g2d = (Graphics2D) g.create();
 
 			// スケールを描画
 			drawAxis(g2d);
@@ -189,10 +205,17 @@ public class DemandGraph extends JPanel {
 				yScale = new double[graphPropertyModel.getSeriesSize()];
 				origin = new Point[graphPropertyModel.getSeriesSize()];
 				for (int i = 0; i < graphPropertyModel.getSeriesSize(); i++) {
-					yScale[i] = (double)(scaleOneHeight * scaleCount) / (graphPropertyModel.getVerticalMaximum(i)
-							- graphPropertyModel.getVerticalMinimum(i));
-					origin[i] = new Point(scaleInsets.left, scaleInsets.top + scaleOneHeight * scaleCount
-										  + (int)Math.round(graphPropertyModel.getVerticalMinimum(i) * yScale[i]));
+					yScale[i] =
+						(double) (scaleOneHeight * scaleCount)
+							/ (graphPropertyModel.getVerticalMaximum(i) - graphPropertyModel
+								.getVerticalMinimum(i));
+					origin[i] =
+						new Point(scaleInsets.left, scaleInsets.top
+							+ scaleOneHeight
+							* scaleCount
+							+ (int) Math.round(graphPropertyModel
+								.getVerticalMinimum(i)
+								* yScale[i]));
 				}
 			}
 			repaint();
@@ -200,6 +223,7 @@ public class DemandGraph extends JPanel {
 
 		/**
 		 * スケール・グリッド・目盛り等を描画します。
+		 * 
 		 * @param g グラフィックコンテキスト
 		 */
 		private void drawAxis(Graphics2D g2d) {
@@ -208,75 +232,116 @@ public class DemandGraph extends JPanel {
 			int scaleCountWidth = graphPropertyModel.getHorizontalScaleCount();
 			Insets scaleInsets = graphPropertyModel.getGraphiViewInsets();
 			// X軸の位置を算出
-			Point baseOrigin = new Point(scaleInsets.left,
-					scaleInsets.top + scaleOneHeight * scaleCount);
+			Point baseOrigin =
+				new Point(scaleInsets.left, scaleInsets.top
+					+ scaleOneHeight
+					* scaleCount);
 			// 背景をネイビーに
 			g2d.setColor(ColorFactory.getColor("navy"));
 			graphViewBounds = new Rectangle(this.getSize());
 			graphViewBounds.y = scaleInsets.top / 2;
-			graphViewBounds.height = baseOrigin.y + graphPropertyModel.getScaleOneHeightPixel() - scaleInsets.top / 2;
+			graphViewBounds.height =
+				baseOrigin.y
+					+ graphPropertyModel.getScaleOneHeightPixel()
+					- scaleInsets.top
+					/ 2;
 			g2d.fill(graphViewBounds);
 			logger.debug("graphViewBounds : " + graphViewBounds);
 			// 色を白に
 			g2d.setColor(ColorFactory.getColor("white"));
 			// X軸描画
-			int scaleOneWidth = graphPropertyModel.getHorizontalPixcelWidth() / graphPropertyModel.getHorizontalScaleCount();
-			g2d.drawLine(baseOrigin.x, baseOrigin.y, baseOrigin.x + scaleOneWidth * scaleCountWidth,
-						 baseOrigin.y);
+			int scaleOneWidth =
+				graphPropertyModel.getHorizontalPixcelWidth()
+					/ graphPropertyModel.getHorizontalScaleCount();
+			g2d.drawLine(baseOrigin.x, baseOrigin.y, baseOrigin.x
+				+ scaleOneWidth
+				* scaleCountWidth, baseOrigin.y);
 			// X軸目盛り描画
 			FontMetrics metrics = g2d.getFontMetrics();
 			int strHeight = metrics.getHeight();
 			synchronized (this) {
 				Iterator it = currentAxisList.iterator();
 				SimpleDateFormat timeFormat = new SimpleDateFormat("m");
-				for (int i = baseOrigin.x, j = 0, strWidth = 0;
-					 i <= baseOrigin.x + scaleOneWidth * scaleCountWidth; i += scaleOneWidth, j++) {
+				for (int i = baseOrigin.x, j = 0, strWidth = 0; i <= baseOrigin.x
+					+ scaleOneWidth
+					* scaleCountWidth; i += scaleOneWidth, j++) {
 
 					g2d.setStroke(new BasicStroke());
 					// 描画色を白に
 					g2d.setColor(ColorFactory.getColor("white"));
 					// 目盛りの線を描画
-					g2d.drawLine(i, baseOrigin.y, i, baseOrigin.y + graphPropertyModel.getScaleOneHeightPixel());
+					g2d.drawLine(i, baseOrigin.y, i, baseOrigin.y
+						+ graphPropertyModel.getScaleOneHeightPixel());
 					// 目盛りの下に日付と時間を描画
-					Date timestamp = (Date)it.next();
+					Date timestamp = (Date) it.next();
 					g2d.setColor(ColorFactory.getColor("white"));
 					String timeString = timeFormat.format(timestamp);
 					strWidth = metrics.stringWidth(timeString);
-					g2d.drawString(timeString, i - strWidth / 2,
-								   baseOrigin.y + graphPropertyModel.getScaleOneHeightPixel() + strHeight);
+					g2d.drawString(timeString, i - strWidth / 2, baseOrigin.y
+						+ graphPropertyModel.getScaleOneHeightPixel()
+						+ strHeight);
 
 					// 縦グリッドの破線を描画
-					float[] dash = {4.0f};
-					BasicStroke bs = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-							BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+					float[] dash = { 4.0f };
+					BasicStroke bs =
+						new BasicStroke(
+							1.0f,
+							BasicStroke.CAP_BUTT,
+							BasicStroke.JOIN_MITER,
+							10.0f,
+							dash,
+							0.0f);
 					g2d.setStroke(bs);
 					g2d.setColor(ColorFactory.getColor("cornflowerblue"));
-					g2d.drawLine(i, baseOrigin.y - graphPropertyModel.getVerticalScaleHeight() * graphPropertyModel.getVerticalScaleCount(), i, baseOrigin.y);
+					g2d.drawLine(
+						i,
+						baseOrigin.y
+							- graphPropertyModel.getVerticalScaleHeight()
+							* graphPropertyModel.getVerticalScaleCount(),
+						i,
+						baseOrigin.y);
 				}
 			}
 
 			// ストロークを破線に変更
-			float[] dash = {4.0f};
-			BasicStroke bs = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+			float[] dash = { 4.0f };
+			BasicStroke bs =
+				new BasicStroke(
+					1.0f,
+					BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER,
+					10.0f,
+					dash,
+					0.0f);
 			g2d.setStroke(bs);
 			g2d.setColor(ColorFactory.getColor("cornflowerblue"));
-			for (int i = baseOrigin.y - scaleOneHeight; i >= scaleInsets.top; i -= scaleOneHeight) {
-				g2d.drawLine(baseOrigin.x, i,
-				baseOrigin.x + scaleOneWidth * scaleCountWidth, i);
+			for (int i = baseOrigin.y - scaleOneHeight; i >= scaleInsets.top; i -=
+				scaleOneHeight) {
+				g2d.drawLine(baseOrigin.x, i, baseOrigin.x
+					+ scaleOneWidth
+					* scaleCountWidth, i);
 			}
 		}
 
 		/**
 		 * タイムスタンプをグラフのX軸座標に変換します。
+		 * 
 		 * @param timestamp タイムスタンプ
 		 * @return X軸座標
 		 */
 		private double getXtime(Timestamp timestamp) {
-			long scaleOneTime = graphPropertyModel.getHorizontalScaleWidth();	// 左端のグラフ座標を算出
-			long currentTime = currentStartIndex * scaleOneTime	+ ((Timestamp)graphModel.firstKey("")).getTime();
-			double screenTime = currentStartIndex + scaleOneTime * graphPropertyModel.getHorizontalScaleCount();
-			return (double)graphPropertyModel.getHorizontalPixcelWidth() / (double)screenTime * (timestamp.getTime() - currentTime);
+			long scaleOneTime = graphPropertyModel.getHorizontalScaleWidth(); // 左端のグラフ座標を算出
+			long currentTime =
+				currentStartIndex
+					* scaleOneTime
+					+ ((Timestamp) graphModel.firstKey("")).getTime();
+			double screenTime =
+				currentStartIndex
+					+ scaleOneTime
+					* graphPropertyModel.getHorizontalScaleCount();
+			return (double) graphPropertyModel.getHorizontalPixcelWidth()
+				/ (double) screenTime
+				* (timestamp.getTime() - currentTime);
 		}
 
 		private void drawSeries(Graphics2D g2d) {
@@ -294,8 +359,8 @@ public class DemandGraph extends JPanel {
 			}
 
 			synchronized (this) {
-				for (Point p1 = null, p2 = null; graphModel.next(""); ) {
-					LoggingData loggingData2 = (LoggingData)graphModel.get("");
+				for (Point p1 = null, p2 = null; graphModel.next("");) {
+					LoggingData loggingData2 = (LoggingData) graphModel.get("");
 					if (loggingData2 == null) {
 						continue;
 					}
@@ -304,19 +369,24 @@ public class DemandGraph extends JPanel {
 					logger.debug("xTime2 : " + xTime2);
 					loggingData1.first();
 					loggingData2.first();
-					for (int series = 0; loggingData1.hasNext() && loggingData2.hasNext(); series++) {
+					for (int series = 0; loggingData1.hasNext()
+						&& loggingData2.hasNext(); series++) {
 						// シリーズデータを描画します。
 						double item1 = loggingData1.next();
 						double item2 = loggingData2.next();
 						p1 = dataToPoint(xTime1, item1, series);
 						p2 = dataToPoint(xTime2, item2, series);
 						g2d.setStroke(new BasicStroke());
-						g2d.setColor(ColorFactory.getColor("red"));
+						g2d.setColor(colorSetting
+							? graphColors[5]
+							: ColorFactory.getColor("red"));
 						if (p1.x < origin[series].x) {
 							invalidateLineX(p1, p2, origin[series].x);
 						}
-						if (p2.x > (origin[series].x + graphPropertyModel.getHorizontalPixcelWidth())) {
-							invalidateLineX(p2, p1, origin[series].x + graphPropertyModel.getHorizontalPixcelWidth());
+						if (p2.x > (origin[series].x + graphPropertyModel
+							.getHorizontalPixcelWidth())) {
+							invalidateLineX(p2, p1, origin[series].x
+								+ graphPropertyModel.getHorizontalPixcelWidth());
 						}
 						invalidateLineY(p1, p2, graphViewBounds);
 
@@ -335,10 +405,18 @@ public class DemandGraph extends JPanel {
 			int scaleCountWidth = graphPropertyModel.getHorizontalScaleCount();
 			long scaleOneTime = graphPropertyModel.getHorizontalScaleWidth();
 
-			Timestamp timestamp = (Timestamp)graphModel.firstKey("");
-			double currentTime = currentStartIndex + scaleOneTime * scaleCountWidth;
-			double screenTime = currentStartIndex * scaleOneTime + timestamp.getTime() + (scaleCountWidth * scaleOneTime);
-			double endTime = (double)this.graphPropertyModel.getHorizontalPixcelWidth() / screenTime * (timestamp.getTime() - currentTime);
+			Timestamp timestamp = (Timestamp) graphModel.firstKey("");
+			double currentTime =
+				currentStartIndex + scaleOneTime * scaleCountWidth;
+			double screenTime =
+				currentStartIndex
+					* scaleOneTime
+					+ timestamp.getTime()
+					+ (scaleCountWidth * scaleOneTime);
+			double endTime =
+				(double) this.graphPropertyModel.getHorizontalPixcelWidth()
+					/ screenTime
+					* (timestamp.getTime() - currentTime);
 			logger.debug("endTime : " + endTime);
 			if (xTime > endTime) {
 				return true;
@@ -348,6 +426,7 @@ public class DemandGraph extends JPanel {
 
 		/**
 		 * データをグラフ座標に変換します。
+		 * 
 		 * @param x X軸座標
 		 * @param y シリーズデータ
 		 * @param series シリーズ
@@ -355,8 +434,9 @@ public class DemandGraph extends JPanel {
 		 */
 		private Point dataToPoint(double x, double y, int series) {
 			synchronized (this) {
-				return new Point((int)Math.round(origin[series].x + x),
-								 (int)Math.round(origin[series].y - yScale[series] * y));
+				return new Point(
+					(int) Math.round(origin[series].x + x),
+					(int) Math.round(origin[series].y - yScale[series] * y));
 			}
 		}
 
@@ -367,14 +447,19 @@ public class DemandGraph extends JPanel {
 			}
 
 			double a = 0, y = 0;
-			a = ((double) p2.y - (double) p1.y) / ((double) p2.x - (double) p1.x);
+			a =
+				((double) p2.y - (double) p1.y)
+					/ ((double) p2.x - (double) p1.x);
 			y = a * ((double) limitX - (double) p1.x) + (double) p1.y;
 			p1.x = limitX;
 			p1.y = (int) Math.round(y);
 		}
 
 		private void invalidateLineY(Point p1, Point p2, Rectangle limitY) {
-			int graphHeight = limitY.y + limitY.height - graphPropertyModel.getScaleOneHeightPixel();
+			int graphHeight =
+				limitY.y
+					+ limitY.height
+					- graphPropertyModel.getScaleOneHeightPixel();
 			if (p1.y < limitY.y) {
 				p1.y = limitY.y;
 			} else if (p1.y > graphHeight) {
@@ -391,77 +476,139 @@ public class DemandGraph extends JPanel {
 		public Dimension getPreferredSize() {
 			int scaleOneHeight = graphPropertyModel.getVerticalScaleHeight();
 			int scaleCount = graphPropertyModel.getVerticalScaleCount();
-			int scaleOneWidth = graphPropertyModel.getHorizontalPixcelWidth() / graphPropertyModel.getHorizontalScaleCount();
+			int scaleOneWidth =
+				graphPropertyModel.getHorizontalPixcelWidth()
+					/ graphPropertyModel.getHorizontalScaleCount();
 			Insets scaleInsets = graphPropertyModel.getGraphiViewInsets();
 
-			return new Dimension(scaleInsets.left + scaleInsets.right + scaleOneWidth * graphPropertyModel.getHorizontalScaleCount(),
-								 scaleInsets.top + scaleInsets.bottom + scaleOneHeight * scaleCount);
+			return new Dimension(scaleInsets.left
+				+ scaleInsets.right
+				+ scaleOneWidth
+				* graphPropertyModel.getHorizontalScaleCount(), scaleInsets.top
+				+ scaleInsets.bottom
+				+ scaleOneHeight
+				* scaleCount);
 		}
 
 		private void drawPreference(Graphics2D g2d) {
 
-			DemandGraphModel demandGraphModel = (DemandGraphModel)graphModel;
+			DemandGraphModel demandGraphModel = (DemandGraphModel) graphModel;
 
 			// グラフの縦の長さ
-			double vHeight = graphPropertyModel.getVerticalScaleHeight()
-						   * graphPropertyModel.getVerticalScaleCount()
-						   + (graphPropertyModel.getInsets().top / 2);
+			double vHeight =
+				graphPropertyModel.getVerticalScaleHeight()
+					* graphPropertyModel.getVerticalScaleCount()
+					+ (graphPropertyModel.getInsets().top / 2);
 
 			// 契約電力値
 			g2d.setStroke(new BasicStroke());
-			g2d.setColor(ColorFactory.getColor("lime"));
+			g2d.setColor(colorSetting ? graphColors[2] : ColorFactory
+				.getColor("lime"));
 			synchronized (this) {
-				long ce = origin[0].y - Math.round(demandGraphModel.getContractElectricity() * yScale[0]);
-				Point p2 = dataToPoint(origin[0].x, origin[0].y, origin[0].x + graphPropertyModel.getHorizontalPixcelWidth(), ce, origin[0].y - vHeight);
+				long ce =
+					origin[0].y
+						- Math.round(demandGraphModel.getContractElectricity()
+							* yScale[0]);
+				Point p2 =
+					dataToPoint(
+						origin[0].x,
+						origin[0].y,
+						origin[0].x
+							+ graphPropertyModel.getHorizontalPixcelWidth(),
+						ce,
+						origin[0].y - vHeight);
 				g2d.drawLine(origin[0].x, origin[0].y, p2.x, p2.y);
 				// 目標電力値
-				g2d.setColor(ColorFactory.getColor("cyan"));
-				long te = origin[0].y - Math.round(demandGraphModel.getTargetElectricity() * yScale[0]);
-				p2 = dataToPoint(origin[0].x, origin[0].y, origin[0].x + graphPropertyModel.getHorizontalPixcelWidth(), te, origin[0].y - vHeight);
+				g2d.setColor(colorSetting ? graphColors[3] : ColorFactory
+					.getColor("cyan"));
+				long te =
+					origin[0].y
+						- Math.round(demandGraphModel.getTargetElectricity()
+							* yScale[0]);
+				p2 =
+					dataToPoint(
+						origin[0].x,
+						origin[0].y,
+						origin[0].x
+							+ graphPropertyModel.getHorizontalPixcelWidth(),
+						te,
+						origin[0].y - vHeight);
 				g2d.drawLine(origin[0].x, origin[0].y, p2.x, p2.y);
 
 				// 警報設定値
-				double countPerPixel = (double)graphPropertyModel.getHorizontalPixcelWidth() / 30D;
+				double countPerPixel =
+					(double) graphPropertyModel.getHorizontalPixcelWidth() / 30D;
 
 				double[] alarmTimes = demandGraphModel.getAlarmTimes();
 				for (int i = 0; i < alarmTimes.length; i++) {
 					g2d.setColor(graphColors[i]);
-					long x = Math.round(origin[0].x + alarmTimes[i] * countPerPixel);
+					long x =
+						Math.round(origin[0].x + alarmTimes[i] * countPerPixel);
 					long y = 0;
 					if (alarmTimeMode) {
-						y = Math.round(origin[0].y -
-								graphPropertyModel.getVerticalScaleHeight()
+						y =
+							Math.round(origin[0].y
+								- graphPropertyModel.getVerticalScaleHeight()
 								* graphPropertyModel.getVerticalScaleCount());
 					} else {
 						y = Math.round(origin[0].y - vHeight);
 					}
-					g2d.drawLine((int)x, origin[0].y, (int)x, (int)y);
+					g2d.drawLine((int) x, origin[0].y, (int) x, (int) y);
 				}
 
 				// 予想電力値
-				g2d.setColor(ColorFactory.getColor("yellow"));
-				double x = origin[0].x + demandGraphModel.getCounter() / expectYCount * countPerPixel;
-				double y = origin[0].y - demandGraphModel.getCurrentElectricity() * yScale[0];
-				double fe = origin[0].y - demandGraphModel.getForecastElectricity() * yScale[0];
-				double x2 = origin[0].x + graphPropertyModel.getHorizontalPixcelWidth();
+				g2d.setColor(colorSetting ? graphColors[4] : ColorFactory
+					.getColor("yellow"));
+				double x =
+					origin[0].x
+						+ demandGraphModel.getCounter()
+						/ expectYCount
+						* countPerPixel;
+				double y =
+					origin[0].y
+						- demandGraphModel.getCurrentElectricity()
+						* yScale[0];
+				double fe =
+					origin[0].y
+						- demandGraphModel.getForecastElectricity()
+						* yScale[0];
+				double x2 =
+					origin[0].x + graphPropertyModel.getHorizontalPixcelWidth();
 				p2 = dataToPoint(x, y, x2, fe, origin[0].y - vHeight);
-				g2d.drawLine((int)Math.round(x), (int)Math.round(y), p2.x, p2.y);
+				g2d.drawLine(
+					(int) Math.round(x),
+					(int) Math.round(y),
+					p2.x,
+					p2.y);
 			}
 		}
 
 		// グラフの上を越すときの処理
-		private Point dataToPoint(double x, double y, double x2, double y2, double limit) {
+		private Point dataToPoint(
+				double x,
+				double y,
+				double x2,
+				double y2,
+				double limit) {
 			logger.debug("(1) x:" + x + " y:" + y + " x2:" + x2 + " y2:" + y2);
 			if (y2 < limit) {
 				double a = (x2 - x) / (y2 - y);
 				logger.debug("a : " + a);
 				double tmpy2 = limit;
 				double tmpx2 = Math.round(a * (tmpy2 - y) + x);
-				logger.debug("(2) x:" + x + " y:" + y + " x2:" + tmpx2 + " y2:" + tmpy2);
-				return new Point((int)Math.round(tmpx2), (int)Math.round(tmpy2));
+				logger.debug("(2) x:"
+					+ x
+					+ " y:"
+					+ y
+					+ " x2:"
+					+ tmpx2
+					+ " y2:"
+					+ tmpy2);
+				return new Point((int) Math.round(tmpx2), (int) Math
+					.round(tmpy2));
 			}
 			logger.debug("(2) x:" + x + " y:" + y + " x2:" + x2 + " y2:" + y2);
-			return new Point((int)Math.round(x2) - 1, (int)Math.round(y2));
+			return new Point((int) Math.round(x2) - 1, (int) Math.round(y2));
 		}
 
 		public Dimension getMaximumSize() {
@@ -480,12 +627,12 @@ public class DemandGraph extends JPanel {
 			changeDisplayData();
 			rescale();
 		}
-		
+
 		public void disConnect() {
-		    if (graphModel instanceof DemandGraphModel) {
-		        DemandGraphModel model = (DemandGraphModel) graphModel;
-		        model.disConnect();
-		    }
+			if (graphModel instanceof DemandGraphModel) {
+				DemandGraphModel model = (DemandGraphModel) graphModel;
+				model.disConnect();
+			}
 		}
 	}
 
