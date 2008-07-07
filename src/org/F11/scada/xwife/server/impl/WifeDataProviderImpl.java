@@ -34,9 +34,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -80,8 +82,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		WifeDataProvider {
 	private static final long serialVersionUID = -4052507689962832517L;
 	private static Logger logger = Logger.getLogger(WifeDataProviderImpl.class);
-	private static final Class[][] TYPE_INFO = { { DataHolder.class,
-			WifeData.class } };
+	private static final Class[][] TYPE_INFO =
+		{ { DataHolder.class, WifeData.class } };
 
 	/* スレッド */
 	private Thread thread;
@@ -89,7 +91,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	/** 通信モジュールです。 */
 	private final Communicater communicater;
 	/** 通信定義からデータホルダーへのマップです。 */
-	private final Map def2holder = new ConcurrentHashMap();
+	private final Map<WifeCommand, Map<String, DataHolder>> def2holder =
+		new ConcurrentHashMap<WifeCommand, Map<String, DataHolder>>();
 
 	private final SortedMap holderJurnal;
 	private final ItemDao itemDao;
@@ -100,6 +103,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	/** クライアントとの差分データ取得時のオフセット(時間がずれる為少し前からジャーナルを取得する) */
 	private final int getDataOffset;
 	private final boolean isPageChangeInterrupt;
+	/** 割り込みで飛ばされた通信コマンド */
+	private final Queue<Set<WifeCommand>> unExecuteCommands;
+	private final long initWaitTime;
 
 	/**
 	 * コンストラクタ
@@ -126,8 +132,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		setDataProviderName(plc.getDeviceID());
 		this.itemDao = itemDao;
 		this.builder = builder;
-		holderJurnal = Collections
-				.synchronizedSortedMap(new SingletonSortedMap());
+		holderJurnal =
+			Collections.synchronizedSortedMap(new SingletonSortedMap());
 
 		Manager.getInstance().addDataProvider(this);
 		try {
@@ -139,19 +145,37 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		setParameter(PARA_NAME_ALARM, alarm);
 		setParameter(PARA_NAME_DEMAND, demand);
 		createHolders();
-		long wait = Long.parseLong(EnvironmentManager.get(
+		long wait =
+			Long.parseLong(EnvironmentManager.get(
 				"/server/communicateWaitTime",
 				"500"));
 		communicateWaitTime = Math.max(500, wait);
-		int offset = Integer.parseInt(EnvironmentManager.get(
+		int offset =
+			Integer.parseInt(EnvironmentManager.get(
 				"/server/getDataOffset",
 				"-5000"));
 		getDataOffset = Math.min(-5000, offset);
 		logger.info("getDataOffset=" + getDataOffset);
-		isPageChangeInterrupt = Boolean.valueOf(
-				EnvironmentManager
-						.get("/server/isPageChangeInterrupt", "false"))
+		isPageChangeInterrupt =
+			Boolean
+				.valueOf(
+					EnvironmentManager.get(
+						"/server/isPageChangeInterrupt",
+						"true"))
 				.booleanValue();
+		unExecuteCommands = new LinkedBlockingQueue<Set<WifeCommand>>();
+		initWaitTime = getInitWaitTime();
+		logger.info("initWaitTime=" + initWaitTime);
+	}
+
+	private long getInitWaitTime() {
+		try {
+			return Long.parseLong(EnvironmentManager.get(
+				"/server/initWaitTime",
+				"300"));
+		} catch (NumberFormatException e) {
+			return 300L;
+		}
 	}
 
 	/**
@@ -164,21 +188,22 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	public boolean addDataHolder(DataHolder dh)
 			throws DataProviderDoesNotSupportException {
 		if (isCycleRead(dh)) {
-			WifeCommand dh_define = (WifeCommand) dh
-					.getParameter(PARA_NAME_COMAND);
+			WifeCommand dh_define =
+				(WifeCommand) dh.getParameter(PARA_NAME_COMAND);
 
 			if (def2holder.containsKey(dh_define)) {
-				Map dhmap = (Map) def2holder.get(dh_define);
+				Map<String, DataHolder> dhmap = def2holder.get(dh_define);
 				if (!dhmap.containsKey(dh.getDataHolderName())) {
 					dhmap.put(dh.getDataHolderName(), dh);
 				}
 			} else {
-				LinkedHashMap dhmap = new LinkedHashMap();
+				LinkedHashMap<String, DataHolder> dhmap =
+					new LinkedHashMap<String, DataHolder>();
 				dhmap.put(dh.getDataHolderName(), dh);
 				def2holder.put(dh_define, dhmap);
 			}
 
-			List defines = new ArrayList();
+			ArrayList<WifeCommand> defines = new ArrayList<WifeCommand>();
 			defines.add(dh_define);
 			communicater.addReadCommand(defines);
 		}
@@ -195,10 +220,10 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	public boolean removeDataHolder(DataHolder dh)
 			throws DataProviderDoesNotSupportException {
 		if (isCycleRead(dh)) {
-			WifeCommand dh_define = (WifeCommand) dh
-					.getParameter(PARA_NAME_COMAND);
+			WifeCommand dh_define =
+				(WifeCommand) dh.getParameter(PARA_NAME_COMAND);
 			if (def2holder.containsKey(dh_define)) {
-				Map dhmap = (Map) def2holder.get(dh_define);
+				Map<String, DataHolder> dhmap = def2holder.get(dh_define);
 				if (dhmap.containsKey(dh.getDataHolderName())) {
 					dhmap.remove(dh.getDataHolderName());
 				}
@@ -206,7 +231,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 					def2holder.remove(dh_define);
 				}
 			}
-			List defines = new ArrayList();
+			ArrayList<WifeCommand> defines = new ArrayList<WifeCommand>();
 			defines.add(dh_define);
 			communicater.removeReadCommand(defines);
 		}
@@ -235,7 +260,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 				defines.add(dh.getParameter(PARA_NAME_COMAND));
 			}
 		}
-		syncInitRead(defines, false);
+		syncRead(defines, false, true);
 	}
 
 	/**
@@ -243,55 +268,45 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	 * 
 	 * @param defines
 	 * @param sameDataBalk
+	 * @param waitInitWait
 	 */
-	private void syncInitRead(Set defines, boolean sameDataBalk) {
+	private void syncRead(
+			Set defines,
+			boolean sameDataBalk,
+			boolean waitInitWait) {
 		DataHolder errdh = getDataHolder(Globals.ERR_HOLDER);
+		Map bytedataMap = Collections.EMPTY_MAP;
 		try {
-			Map bytedataMap = communicater.syncRead(defines, sameDataBalk);
-			for (Iterator it = bytedataMap.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
-				WifeCommand wc = (WifeCommand) entry.getKey();
-				byte[] data = (byte[]) entry.getValue();
-				setByteData(wc, data);
+			if (waitInitWait) {
+				Thread.sleep(initWaitTime);
 			}
-			if (sameDataBalk
-					&& isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
-				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
-			}
+			bytedataMap = communicater.syncRead(defines, sameDataBalk);
 		} catch (InterruptedException e) {
+			unExecuteCommands.offer(defines);
+			return;
 		} catch (Exception e) {
 			if (sameDataBalk
-					&& isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
+				&& isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
 				setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0));
 			}
 			logger.warn("通信エラー", e);
 		}
+		for (Iterator it = bytedataMap.entrySet().iterator(); it.hasNext();) {
+			Map.Entry entry = (Map.Entry) it.next();
+			WifeCommand wc = (WifeCommand) entry.getKey();
+			byte[] data = (byte[]) entry.getValue();
+			setByteData(wc, data);
+		}
+		if (sameDataBalk && isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
+			setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
+		}
 	}
 
 	private void syncRead(Set defines, boolean sameDataBalk) {
-		DataHolder errdh = getDataHolder(Globals.ERR_HOLDER);
 		// ここでは interrupt をかけないこと
 		lock.lock();
 		try {
-			Map bytedataMap = communicater.syncRead(defines, sameDataBalk);
-			for (Iterator it = bytedataMap.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
-				WifeCommand wc = (WifeCommand) entry.getKey();
-				byte[] data = (byte[]) entry.getValue();
-				setByteData(wc, data);
-			}
-			if (sameDataBalk
-					&& isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
-				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
-			}
-		} catch (InterruptedException e) {
-			return;
-		} catch (Exception e) {
-			if (sameDataBalk
-					&& isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
-				setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0));
-			}
-			logger.warn("通信エラー", e);
+			syncRead(defines, sameDataBalk, false);
 		} finally {
 			lock.unlock();
 		}
@@ -306,10 +321,10 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		errdh.setValue(value, new Date(entryDate), WifeQualityFlag.GOOD);
 		synchronized (holderJurnal) {
 			TimeIncrementWrapper.put(entryDate, new HolderData(
-					Globals.ERR_HOLDER,
-					value.toByteArray(),
-					entryDate,
-					null), holderJurnal);
+				Globals.ERR_HOLDER,
+				value.toByteArray(),
+				entryDate,
+				null), holderJurnal);
 		}
 	}
 
@@ -342,16 +357,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		// 他のクライアントへ通知する
 		long entryTime = dh.getTimeStamp().getTime();
 		synchronized (holderJurnal) {
-			TimeIncrementWrapper
-					.put(
-							entryTime,
-							new HolderData(
-									dh.getDataHolderName(),
-									wd.toByteArray(),
-									entryTime,
-									(Map) dh
-											.getParameter(DemandDataReferencer.GRAPH_DATA)),
-							holderJurnal);
+			TimeIncrementWrapper.put(entryTime, new HolderData(dh
+				.getDataHolderName(), wd.toByteArray(), entryTime, (Map) dh
+				.getParameter(DemandDataReferencer.GRAPH_DATA)), holderJurnal);
 		}
 	}
 
@@ -384,7 +392,12 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		Thread thisThread = Thread.currentThread();
 
 		while (thread == thisThread) {
-			syncRead(getCommandDefines());
+			if (unExecuteCommands.isEmpty()) {
+				syncRead(getCommandDefines());
+			} else {
+				logger.info("未実行コマンド=" + unExecuteCommands.size());
+				syncRead(unExecuteCommands.poll(), false);
+			}
 			try {
 				Thread.sleep(communicateWaitTime);
 			} catch (InterruptedException e) {
@@ -412,10 +425,10 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		if (!def2holder.containsKey(define)) {
 			return;
 		}
-		Map dhs = (Map) def2holder.get(define);
-		for (Iterator it = dhs.values().iterator(); it.hasNext();) {
+		Map<String, DataHolder> dhs = def2holder.get(define);
+		for (Iterator<DataHolder> it = dhs.values().iterator(); it.hasNext();) {
 			long entryTime = System.currentTimeMillis();
-			DataHolder dh = (DataHolder) it.next();
+			DataHolder dh = it.next();
 			WifeData wdata = (WifeData) dh.getValue();
 			WifeQualityFlag flag = (WifeQualityFlag) dh.getQualityFlag();
 			WifeData cutwdata = null;
@@ -431,16 +444,16 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 								WifeQualityFlag.GOOD);
 						} else {
 							dh.setValue(
-									cutwdata,
-									new Date(entryTime),
-									WifeQualityFlag.GOOD,
-									true);
+								cutwdata,
+								new Date(entryTime),
+								WifeQualityFlag.GOOD,
+								true);
 						}
 					} else {
 						dh.setValue(
-								cutwdata,
-								new Date(entryTime),
-								WifeQualityFlag.GOOD);
+							cutwdata,
+							new Date(entryTime),
+							WifeQualityFlag.GOOD);
 					}
 					synchronized (holderJurnal) {
 						setJurnal(readData, entryTime, dh);
@@ -449,27 +462,31 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 					if (logger.isDebugEnabled()) {
 						if (cutwdata instanceof WifeDataDigital) {
 							WifeDataDigital wdd = (WifeDataDigital) cutwdata;
-							FastDateFormat f = FastDateFormat
+							FastDateFormat f =
+								FastDateFormat
 									.getInstance("yyyy/MM/dd HH:mm:ss");
-							logger.debug("Holder=" + dh.getDataHolderName()
-									+ " Time=" + f.format(dh.getTimeStamp())
-									+ " Data=" + wdd.toString());
+							logger.debug("Holder="
+								+ dh.getDataHolderName()
+								+ " Time="
+								+ f.format(dh.getTimeStamp())
+								+ " Data="
+								+ wdd.toString());
 						}
 					}
 				}
 			} catch (BCDConvertException e) {
 				if (dh.getQualityFlag() != WifeQualityFlag.BAD) {
 					dh
-							.setValue(
-									wdata,
-									new Date(entryTime),
-									WifeQualityFlag.BAD);
+						.setValue(
+							wdata,
+							new Date(entryTime),
+							WifeQualityFlag.BAD);
 					synchronized (holderJurnal) {
 						setJurnal(readData, entryTime, dh);
 					}
 					logger.error("setValue BAD (BCD Convert error) "
-							+ dh.getDataHolderName()
-							+ dh.getTimeStamp().toString(), e);
+						+ dh.getDataHolderName()
+						+ dh.getTimeStamp().toString(), e);
 				}
 			}
 		}
@@ -477,8 +494,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 
 	private void setJurnal(byte[] readData, long entryTime, DataHolder dh) {
 		TimeIncrementWrapper.put(entryTime, new HolderData(dh
-				.getDataHolderName(), readData, entryTime, (Map) dh
-				.getParameter(DemandDataReferencer.GRAPH_DATA)), holderJurnal);
+			.getDataHolderName(), readData, entryTime, (Map) dh
+			.getParameter(DemandDataReferencer.GRAPH_DATA)), holderJurnal);
 	}
 
 	public Class[][] getProvidableDataHolderTypeInfo() {
@@ -515,7 +532,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			list = new ArrayList(smap.values());
 		}
 		sendRequestSupport.setSendRequestDateMap(session, System
-				.currentTimeMillis());
+			.currentTimeMillis());
 		return list;
 	}
 

@@ -76,7 +76,7 @@ public final class PlcCommunicater implements Communicater {
 			waiter = new TcpReplyWaiter(device, header);
 		} else {
 			throw new IllegalArgumentException("not support "
-					+ device.getDeviceKind());
+				+ device.getDeviceKind());
 		}
 
 		this.device = device;
@@ -137,19 +137,20 @@ public final class PlcCommunicater implements Communicater {
 				sendrecv();
 
 				if (sameDataBalk
-						&& !linkageCommand.updateDefine(lk_comm, recvData)) {
+					&& !linkageCommand.updateDefine(lk_comm, recvData)) {
 					continue;
 				}
 
 				// 集合コマンドから全ての元コマンドを取得（逆参照）
-				Collection dh_commands = linkageCommand
-						.getHolderCommands(lk_comm);
+				Collection dh_commands =
+					linkageCommand.getHolderCommands(lk_comm);
 				// 要求されていない元コマンドを削除
 				dh_commands.retainAll(commands);
 				for (Iterator it2 = dh_commands.iterator(); it2.hasNext();) {
 					WifeCommand dh_comm = (WifeCommand) it2.next();
 					// 要求済みのコマンドについて、データを送付
-					int byteOffset = (int) (dh_comm.getMemoryAddress() - lk_comm
+					int byteOffset =
+						(int) (dh_comm.getMemoryAddress() - lk_comm
 							.getMemoryAddress()) * 2;
 					byte[] cutdata = new byte[dh_comm.getWordLength() * 2];
 					recvData.position(byteOffset);
@@ -203,53 +204,57 @@ public final class PlcCommunicater implements Communicater {
 			sendBuffer.flip();
 			// 送信後受信待ち
 			waiter.syncSendRecv(sendBuffer, recvBuffer);
-			WifeException ex = null;
-			if (recvBuffer.remaining() <= 0) {
-				// 無データはタイムアウト
-				sendBuffer.flip();
-				ex = new WifeException(0, 0, "Recved time out. "
-						+ WifeUtilities.toString(sendBuffer));
-			} else {
-				ex = converter.checkCommandResponce(recvBuffer);
-				if (ex != null) {
-					// タイムアウト以外のエラー発生ならば試行の前に待つ
-					Thread.sleep(device.getPlcTimeout());
-				}
-			}
+			WifeException ex = timeoutError();
 			// エラー発生なら試行を繰り返す
 			for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
 				if (ex != null) {
-					log.warn("ID[" + device.getDeviceID() + "] try["
-							+ String.valueOf(i) + "] error[" + ex.getMessage()
-							+ "]");
+					log.warn("ID["
+						+ device.getDeviceID()
+						+ "] try["
+						+ String.valueOf(i)
+						+ "] error["
+						+ ex.getMessage()
+						+ "]");
 				}
 				sendBuffer.clear();
 				converter.retryCommand(sendBuffer);
 				sendBuffer.flip();
 				// 送信後受信待ち
 				waiter.syncSendRecv(sendBuffer, recvBuffer);
-				if (recvBuffer.remaining() <= 0) {
-					// 無データはタイムアウト
-					sendBuffer.flip();
-					ex = new WifeException(0, 0, "Recved time out. "
-							+ WifeUtilities.toString(sendBuffer));
-				} else {
-					ex = converter.checkCommandResponce(recvBuffer);
-					if (ex != null) {
-						// タイムアウト以外のエラー発生ならば試行の前に待つ
-						Thread.sleep(device.getPlcTimeout());
-					}
-				}
+				ex = timeoutError();
 			}
 			if (ex != null) {
-				log.warn("ID[" + device.getDeviceID() + "] error decision["
-						+ ex.getMessage() + "]");
+				log.warn("ID["
+					+ device.getDeviceID()
+					+ "] error decision["
+					+ ex.getMessage()
+					+ "]");
 				throw ex;
 			}
 			// 受信データを追加
 			converter.getResponceData(recvBuffer, recvData);
 		}
 		recvData.flip();
+	}
+
+	private WifeException timeoutError()
+			throws WifeException,
+			InterruptedException {
+		WifeException ex = null;
+		if (recvBuffer.remaining() <= 0) {
+			// 無データはタイムアウト
+			sendBuffer.flip();
+			ex =
+				new WifeException(0, 0, "Recved time out. "
+					+ WifeUtilities.toString(sendBuffer));
+		} else {
+			ex = converter.checkCommandResponce(recvBuffer);
+			if (ex != null) {
+				// タイムアウト以外のエラー発生ならば試行の前に待つ
+				Thread.sleep(device.getPlcTimeout());
+			}
+		}
+		return ex;
 	}
 
 	/*

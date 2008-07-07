@@ -43,13 +43,14 @@ import org.xml.sax.Attributes;
 
 /**
  * XPath=/page_map/page/demandgraph 状態を表すクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class DemandGraphState implements GraphState {
 	private static Logger logger;
-	
+
 	PageState pageState;
-	
+
 	Color foreground;
 	Color background;
 	String x;
@@ -61,14 +62,12 @@ public class DemandGraphState implements GraphState {
 	private double expectYCount;
 	private boolean alarmTimeMode;
 	private Color stringColor;
+	private boolean colorSetting;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
 	 */
-	public DemandGraphState(
-			String tagName,
-			Attributes atts,
-			PageState pageState) {
+	public DemandGraphState(String tagName, Attributes atts, PageState pageState) {
 
 		logger = Logger.getLogger(getClass().getName());
 
@@ -80,8 +79,11 @@ public class DemandGraphState implements GraphState {
 		width = atts.getValue("width");
 		height = atts.getValue("height");
 		expectYCount = getExpectYCount(atts);
-		alarmTimeMode = Boolean.valueOf(atts.getValue("alarmTimeMode")).booleanValue();
+		alarmTimeMode =
+			Boolean.valueOf(atts.getValue("alarmTimeMode")).booleanValue();
 		stringColor = ColorFactory.getColor(atts.getValue("scaleStringColor"));
+		colorSetting =
+			Boolean.valueOf(atts.getValue("colorSetting")).booleanValue();
 	}
 
 	private double getExpectYCount(Attributes atts) {
@@ -117,12 +119,19 @@ public class DemandGraphState implements GraphState {
 				logger.debug("Pop : " + DisplayState.toString(tagName, stack));
 			}
 
-			DemandGraph graph = new DemandGraph(graphModel, model, alarmTimeMode, stringColor);
+			DemandGraph graph =
+				new DemandGraph(
+					graphModel,
+					model,
+					alarmTimeMode,
+					stringColor,
+					colorSetting);
 			graph.setExpectYCount(expectYCount);
 			JComponent graphPanel = graph;
-	
+
 			graphPanel.setLocation(Integer.parseInt(x), Integer.parseInt(y));
-			graphPanel.setSize(Integer.parseInt(width), Integer.parseInt(height));
+			graphPanel.setSize(Integer.parseInt(width), Integer
+				.parseInt(height));
 
 			if (foreground != null) {
 				graphPanel.setForeground(foreground);
@@ -131,7 +140,7 @@ public class DemandGraphState implements GraphState {
 				graphPanel.setBackground(background);
 			}
 			pageState.addPageSymbol(graphPanel);
-	
+
 			stack.pop();
 		} else {
 			logger.debug("tagName : " + tagName);
@@ -140,6 +149,7 @@ public class DemandGraphState implements GraphState {
 
 	/**
 	 * 状態オブジェクトにグラフプロパティモデルを設定します。
+	 * 
 	 * @param graphPropertyModel グラフプロパティモデル
 	 */
 	public void setGraphPropertyModel(GraphPropertyModel graphPropertyModel) {
@@ -148,6 +158,7 @@ public class DemandGraphState implements GraphState {
 
 	/**
 	 * 状態オブジェクトのグラフプロパティモデルにシリーズプロパティを追加します。
+	 * 
 	 * @param property シリーズプロパティ
 	 */
 	public void addSeriesProperty(GraphSeriesProperty property) {
@@ -160,6 +171,7 @@ public class DemandGraphState implements GraphState {
 
 	/**
 	 * 状態オブジェクトにグラフモデルを設定します。
+	 * 
 	 * @param graphModel グラフプロパティモデル
 	 */
 	public void setGraphModel(GraphModel graphModel) {
