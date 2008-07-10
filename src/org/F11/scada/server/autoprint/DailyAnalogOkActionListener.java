@@ -25,10 +25,14 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
-class DailyAnalogOkActionListener  implements ParamDialogListener {
+class DailyAnalogOkActionListener implements ParamDialogListener {
 	NippoParamDialog dlg;
+	private final int startHour;
+	private final int startMinute;
 
-	DailyAnalogOkActionListener() {
+	DailyAnalogOkActionListener(int startHour, int startMinute) {
+		this.startHour = startHour;
+		this.startMinute = startMinute;
 	}
 
 	public void setDlg(NippoParamDialog dlg) {
@@ -60,7 +64,12 @@ class DailyAnalogOkActionListener  implements ParamDialogListener {
 				JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		dlg.setParam(new AutoPrintSchedule.DailyAnalog(autoOn, hh, mm));
+		dlg.setParam(new AutoPrintSchedule.DailyAnalog(
+			autoOn,
+			hh,
+			mm,
+			startHour,
+			startMinute));
 		dlg.dispose();
 	}
 }

@@ -29,45 +29,58 @@ import java.util.Calendar;
 public interface AutoPrintSchedule {
 	/**
 	 * スケジュールの種類を返します。
+	 * 
 	 * @return スケジュールの種類を返します。
 	 */
 	public String getScheduleName();
+
 	/**
 	 * 自動印字のOn/Offを返します。
+	 * 
 	 * @return 自動印字のOn/Offを返します。
 	 */
 	public boolean isAutoOn();
+
 	/**
 	 * スケジュールが開始状態の時trueをそうでない時falseを返します。
+	 * 
 	 * @return スケジュールが開始状態の時trueをそうでない時falseを返します。
 	 */
 	public boolean isNow();
+
 	/**
 	 * 保持している日時の文字列表現を返します。
 	 */
 	public String getDate();
+
 	/**
 	 * スケジュールが保持している日時を返します。
+	 * 
 	 * @return スケジュールが保持している日時を返します。
 	 */
 	public Timestamp getTimestamp();
+
 	/**
 	 * 日付パラメタ入力ダイアログを返します。
+	 * 
 	 * @param frame 親フレーム
 	 * @return 日付パラメタ入力ダイアログを返します。
 	 */
 	public AutoPrintSchedule showParamDialog(Frame frame);
+
 	/**
 	 * データ抽出開始日時を返します。
+	 * 
 	 * @return データ抽出開始日時を返します。
 	 */
 	public Timestamp getStartTime();
+
 	/**
 	 * データ抽出終了日時を返します。
+	 * 
 	 * @return データ抽出終了日時を返します。
 	 */
 	public Timestamp getEndTime();
-
 
 	static abstract class AbstractDaily implements AutoPrintSchedule {
 		private final boolean autoOn;
@@ -93,11 +106,15 @@ public interface AutoPrintSchedule {
 			if (!autoOn)
 				return false;
 			Calendar cal = Calendar.getInstance();
-			if (cal.get(Calendar.HOUR_OF_DAY) == hour && cal.get(Calendar.MINUTE) == minute)
+			if (cal.get(Calendar.HOUR_OF_DAY) == hour
+				&& cal.get(Calendar.MINUTE) == minute)
 				return true;
 			return false;
 		}
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getDate()
 		 */
 		public String getDate() {
@@ -112,12 +129,21 @@ public interface AutoPrintSchedule {
 			cal.set(Calendar.MINUTE, minute);
 			return new Timestamp(cal.getTimeInMillis());
 		}
-
 	}
 
 	public static final class Daily extends AbstractDaily {
-		public Daily(boolean AutoOn, int hour, int minute) {
+		private final int startHour;
+		private final int startMinute;
+
+		public Daily(
+				boolean AutoOn,
+				int hour,
+				int minute,
+				int startHour,
+				int startMinute) {
 			super(AutoOn, hour, minute);
+			this.startHour = startHour;
+			this.startMinute = startMinute;
 		}
 
 		public String getScheduleName() {
@@ -125,24 +151,31 @@ public interface AutoPrintSchedule {
 		}
 
 		public AutoPrintSchedule showParamDialog(Frame frame) {
-			NippoParamDialog dlg = new NippoParamDialog(frame, this, new DailyOkActionListener());
+			NippoParamDialog dlg =
+				new NippoParamDialog(frame, this, new DailyOkActionListener(
+					startHour,
+					startMinute));
 			return dlg.getParam();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getStartTime()
 		 */
 		public Timestamp getStartTime() {
 			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.HOUR_OF_DAY, 1);
-			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.HOUR_OF_DAY, getStartHour());
+			cal.set(Calendar.MINUTE, getStartMinute());
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 			cal.add(Calendar.DATE, -1);
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getEndTime()
 		 */
 		public Timestamp getEndTime() {
@@ -154,6 +187,13 @@ public interface AutoPrintSchedule {
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
+		private int getStartHour() {
+			return startHour < 0 ? 1 : startHour;
+		}
+
+		private int getStartMinute() {
+			return startMinute < 0 ? 0 : startMinute;
+		}
 	}
 
 	public static final class Monthly implements AutoPrintSchedule {
@@ -167,7 +207,12 @@ public interface AutoPrintSchedule {
 		}
 
 		public Monthly(boolean AutoOn, int day, int hour, int minute) {
-			if (day < 1 || 31 < day || hour < 0 || 23 < hour || minute < 0 || 59 < minute)
+			if (day < 1
+				|| 31 < day
+				|| hour < 0
+				|| 23 < hour
+				|| minute < 0
+				|| 59 < minute)
 				throw new IllegalArgumentException("範囲外");
 			this.autoOn = AutoOn;
 			this.day = day;
@@ -192,12 +237,21 @@ public interface AutoPrintSchedule {
 				return true;
 			return false;
 		}
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getDate()
 		 */
 		public String getDate() {
 			StringBuffer sb = new StringBuffer();
-			sb.append(day).append("日 ").append(hour).append("時 ").append(minute).append("分");
+			sb
+				.append(day)
+				.append("日 ")
+				.append(hour)
+				.append("時 ")
+				.append(minute)
+				.append("分");
 			return sb.toString();
 		}
 
@@ -209,7 +263,9 @@ public interface AutoPrintSchedule {
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#showParamDialog()
 		 */
 		public AutoPrintSchedule showParamDialog(Frame frame) {
@@ -217,7 +273,9 @@ public interface AutoPrintSchedule {
 			return dlg.getParam();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getStartTime()
 		 */
 		public Timestamp getStartTime() {
@@ -231,7 +289,9 @@ public interface AutoPrintSchedule {
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getEndTime()
 		 */
 		public Timestamp getEndTime() {
@@ -245,7 +305,6 @@ public interface AutoPrintSchedule {
 		}
 	}
 
-
 	public static final class Yearly implements AutoPrintSchedule {
 		private final boolean autoOn;
 		private final int month;
@@ -258,7 +317,14 @@ public interface AutoPrintSchedule {
 		}
 
 		public Yearly(boolean AutoOn, int month, int day, int hour, int minute) {
-			if (month < 1 || 12 < month || day < 1 || 31 < day || hour < 0 || 23 < hour || minute < 0 || 59 < minute)
+			if (month < 1
+				|| 12 < month
+				|| day < 1
+				|| 31 < day
+				|| hour < 0
+				|| 23 < hour
+				|| minute < 0
+				|| 59 < minute)
 				throw new IllegalArgumentException("範囲外");
 			this.autoOn = AutoOn;
 			this.month = month;
@@ -278,21 +344,30 @@ public interface AutoPrintSchedule {
 			if (!autoOn)
 				return false;
 			Calendar cal = Calendar.getInstance();
-			if ( cal.get(Calendar.MONTH) == (month - 1)
+			if (cal.get(Calendar.MONTH) == (month - 1)
 				&& cal.get(Calendar.DAY_OF_MONTH) == day
 				&& cal.get(Calendar.HOUR_OF_DAY) == hour
 				&& cal.get(Calendar.MINUTE) == minute)
 				return true;
 			return false;
 		}
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getDate()
 		 */
 		public String getDate() {
 			StringBuffer sb = new StringBuffer();
-			sb.append(month).append("月 ")
-			.append(day).append("日 ").append(hour)
-			.append("時 ").append(minute).append("分");
+			sb
+				.append(month)
+				.append("月 ")
+				.append(day)
+				.append("日 ")
+				.append(hour)
+				.append("時 ")
+				.append(minute)
+				.append("分");
 			return sb.toString();
 		}
 
@@ -305,7 +380,9 @@ public interface AutoPrintSchedule {
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#showParamDialog()
 		 */
 		public AutoPrintSchedule showParamDialog(Frame frame) {
@@ -313,7 +390,9 @@ public interface AutoPrintSchedule {
 			return dlg.getParam();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getStartTime()
 		 */
 		public Timestamp getStartTime() {
@@ -328,7 +407,9 @@ public interface AutoPrintSchedule {
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getEndTime()
 		 */
 		public Timestamp getEndTime() {
@@ -345,9 +426,18 @@ public interface AutoPrintSchedule {
 	}
 
 	public static final class DailyAnalog extends AbstractDaily {
-		
-		public DailyAnalog(boolean AutoOn, int hour, int minute) {
+		private final int startHour;
+		private final int startMinute;
+
+		public DailyAnalog(
+				boolean AutoOn,
+				int hour,
+				int minute,
+				int startHour,
+				int startMinute) {
 			super(AutoOn, hour, minute);
+			this.startHour = startHour;
+			this.startMinute = startMinute;
 		}
 
 		public String getScheduleName() {
@@ -355,24 +445,32 @@ public interface AutoPrintSchedule {
 		}
 
 		public AutoPrintSchedule showParamDialog(Frame frame) {
-			NippoParamDialog dlg = new NippoParamDialog(frame, this, new DailyAnalogOkActionListener());
+			NippoParamDialog dlg =
+				new NippoParamDialog(
+					frame,
+					this,
+					new DailyAnalogOkActionListener(startHour, startMinute));
 			return dlg.getParam();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getStartTime()
 		 */
 		public Timestamp getStartTime() {
 			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.HOUR_OF_DAY, getStartHour());
+			cal.set(Calendar.MINUTE, getStartMinute());
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 			cal.add(Calendar.DATE, -1);
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.F11.scada.server.autoprint.AutoPrintSchedule#getEndTime()
 		 */
 		public Timestamp getEndTime() {
@@ -385,5 +483,12 @@ public interface AutoPrintSchedule {
 			return new Timestamp(cal.getTimeInMillis());
 		}
 
+		private int getStartHour() {
+			return startHour < 0 ? 0 : startHour;
+		}
+
+		private int getStartMinute() {
+			return startMinute < 0 ? 0 : startMinute;
+		}
 	}
 }

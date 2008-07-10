@@ -128,9 +128,9 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	public FrameDefineManager(String recvPort, HolderRegisterBuilder builder)
 			throws RemoteException, MalformedURLException, IOException {
 		this(
-				Integer.parseInt(recvPort),
-				"/resources/XWifeAppletDefine.xml",
-				builder);
+			Integer.parseInt(recvPort),
+			"/resources/XWifeAppletDefine.xml",
+			builder);
 	}
 
 	/**
@@ -157,8 +157,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		Naming.rebind(WifeUtilities.createRmiFrameDefineManager(), this);
 
 		pageMap = new ConcurrentHashMap();
-		sendRequestDateMap = Collections
-				.synchronizedSortedMap(new SingletonSortedMap());
+		sendRequestDateMap =
+			Collections.synchronizedSortedMap(new SingletonSortedMap());
 		clientPageMap = new ConcurrentHashMap();
 		this.builder = builder;
 		pointNameCache = new WeakHashMap();
@@ -166,10 +166,10 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		InputStream stream = null;
 		try {
 			// ÉpÅ[ÉX
-			XMLReader parser = XMLReaderFactory
-					.createXMLReader(EnvironmentManager.get(
-							"/org.xml.sax.driver",
-							""));
+			XMLReader parser =
+				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
+					"/org.xml.sax.driver",
+					""));
 			parser.setContentHandler(new F11PageHandler(this));
 			stream = getClass().getResourceAsStream(path);
 			InputSource is = new InputSource(stream);
@@ -184,7 +184,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 				stream.close();
 			}
 		}
-		long timeout = Long.parseLong(EnvironmentManager.get(
+		long timeout =
+			Long.parseLong(EnvironmentManager.get(
 				"/server/pagetimeout",
 				"600000"));
 		PageTimeout pt = new PageTimeout(timeout);
@@ -289,7 +290,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		PageDefine page = (PageDefine) pageMap.get(name);
 		if (page != null && key < page.getEditTime()) {
 			return new PageDefine(page.getEditTime(), replaceAllPointName(page
-					.getSrcXml()));
+				.getSrcXml()));
 		}
 		return null;
 	}
@@ -304,33 +305,29 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			String name,
 			long key,
 			Session session) {
-		log.info("getPage 1");
 		PageDefine pd = getPage(name, key);
-		log.info("getPage 2");
 		List wdps = getWifeDataProviders(pd, session);
-		log.info("getPage 3");
 		providerLock(wdps);
-		log.info("getPage 4");
 		try {
 			checkUnregisterJim(session);
-			log.info("getPage 5");
 			sendRequestDateMap.put(new Long(key), session);
 			if (log.isDebugEnabled()) {
-				log.debug("key=" + getKeyString(key) + " value="
-						+ sendRequestDateMap.get(new Long(key)));
+				log.debug("key="
+					+ getKeyString(key)
+					+ " value="
+					+ sendRequestDateMap.get(new Long(key)));
 			}
 			clientPageMap.put(session, name);
-			log.info("getPage 6");
 			registerJim(pd);
-			log.info("getPage 7");
 		} finally {
 			providerUnlock(wdps, pd);
-			log.info("getPage 8");
 		}
 		return pd;
 	}
 
-	private List<DataProvider> getWifeDataProviders(PageDefine pd, Session session) {
+	private List<DataProvider> getWifeDataProviders(
+			PageDefine pd,
+			Session session) {
 		HashSet<String> set = new HashSet<String>();
 		getRemoveProvider(session, set);
 		getNextProvider(pd, set);
@@ -464,8 +461,9 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	}
 
 	private boolean isRemoveHolder(DataProvider dp, DataHolder dh) {
-		return dh != null && dp.canRemoveDataHolderByUser(dh)
-				&& !Globals.ERR_HOLDER.equals(dh.getDataHolderName());
+		return dh != null
+			&& dp.canRemoveDataHolderByUser(dh)
+			&& !Globals.ERR_HOLDER.equals(dh.getDataHolderName());
 	}
 
 	private Item[] removeSystem(Collection col, boolean removeMode) {
@@ -494,8 +492,10 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			if (noSystemItems.containsKey(hs)) {
 				Item item = (Item) noSystemItems.get(hs);
 				if (item.getDataType() == SCHEDULE_DATA_TYPE) {
-					item = itemDao.getItem(new HolderString(item
-							.getProvider(), item.getHolder()));
+					item =
+						itemDao.getItem(new HolderString(
+							item.getProvider(),
+							item.getHolder()));
 				}
 				newItems.add(item);
 			}
@@ -504,7 +504,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	}
 
 	private boolean hasNotDataHolder(HolderString hs) {
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				hs.getProvider(),
 				hs.getHolder());
 		if (null == dh) {
@@ -529,13 +530,9 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	public synchronized void addDataHolders(Set holderSet) {
 		// logger.info("Add holders : " + holderSet);
-		log.info("addDataHolders 1");
 		Item[] items = removeSystem(holderSet, false);
-		log.info("addDataHolders 2");
 		builder.register(items);
-		log.info("addDataHolders 3");
 		getInitialData(items);
-		log.info("addDataHolders 4");
 	}
 
 	private void getInitialData(Item[] items) {
@@ -559,9 +556,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		int index = 0;
 		for (Iterator i = holders.iterator(); i.hasNext(); index++) {
 			Item item = (Item) i.next();
-			holderArray[index] = manager.findDataHolder(
-					item.getProvider(),
-					item.getHolder());
+			holderArray[index] =
+				manager.findDataHolder(item.getProvider(), item.getHolder());
 		}
 		return holderArray;
 	}
@@ -639,7 +635,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		ResultSet rs = null;
 		try {
 			con = ConnectionUtil.getConnection();
-			stmt = con.prepareStatement(utility
+			stmt =
+				con.prepareStatement(utility
 					.getPrepareStatement("/pointtable/read"));
 			stmt.setInt(1, no);
 			rs = stmt.executeQuery();
@@ -756,8 +753,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			String xml = value.getSrcXml();
 			if (isChange(nb, xml)) {
 				pageMap.put(
-						key,
-						new PageDefine(System.currentTimeMillis(), xml));
+					key,
+					new PageDefine(System.currentTimeMillis(), xml));
 				pointNameCache.remove(nb.getPoint() + "_" + nb.getUnit());
 				pointNameCache.remove(nb.getPoint() + "_" + nb.getName());
 				pointNameCache.remove(nb.getPoint() + "_" + nb.getMark());
@@ -773,8 +770,10 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	public synchronized void setSendRequestDateMap(Session session, long time) {
 		sendRequestDateMap.put(new Long(time), session);
 		if (log.isDebugEnabled()) {
-			log.debug("key=" + getKeyString(time) + " value="
-					+ sendRequestDateMap.get(new Long(time)));
+			log.debug("key="
+				+ getKeyString(time)
+				+ " value="
+				+ sendRequestDateMap.get(new Long(time)));
 		}
 	}
 
@@ -797,8 +796,8 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	}
 
 	public synchronized void removePages(long currentTime) {
-		SortedMap removeMap = new TreeMap(sendRequestDateMap.headMap(new Long(
-				currentTime)));
+		SortedMap removeMap =
+			new TreeMap(sendRequestDateMap.headMap(new Long(currentTime)));
 		for (Iterator i = removeMap.entrySet().iterator(); i.hasNext();) {
 			Map.Entry entry = (Map.Entry) i.next();
 			Long key = (Long) entry.getKey();
@@ -806,8 +805,9 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 				Session session = (Session) entry.getValue();
 				if (log.isInfoEnabled()) {
 					log.info(" -- Page Removed : "
-							+ new Timestamp(key.longValue()) + " session : "
-							+ session);
+						+ new Timestamp(key.longValue())
+						+ " session : "
+						+ session);
 				}
 				unregisterJim(session);
 				sendRequestDateMap.remove(key);

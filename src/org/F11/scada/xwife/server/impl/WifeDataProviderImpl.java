@@ -172,9 +172,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		try {
 			return Long.parseLong(EnvironmentManager.get(
 				"/server/initWaitTime",
-				"300"));
+				"500"));
 		} catch (NumberFormatException e) {
-			return 300L;
+			return 500L;
 		}
 	}
 
@@ -395,7 +395,6 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			if (unExecuteCommands.isEmpty()) {
 				syncRead(getCommandDefines());
 			} else {
-				logger.info("未実行コマンド=" + unExecuteCommands.size());
 				syncRead(unExecuteCommands.poll(), false);
 			}
 			try {
