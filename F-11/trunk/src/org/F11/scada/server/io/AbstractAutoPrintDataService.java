@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.F11.scada.server.autoprint.AutoPrintSchedule;
 import org.F11.scada.server.entity.Item;
@@ -40,12 +41,10 @@ import org.F11.scada.util.ConnectionUtil;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-
 public abstract class AbstractAutoPrintDataService implements
 		AutoPrintDataService {
-	protected final Logger logger = Logger.getLogger(AbstractAutoPrintDataService.class);
+	protected final Logger logger =
+		Logger.getLogger(AbstractAutoPrintDataService.class);
 	protected final StrategyUtility utility;
 	protected final ItemUtil util;
 	protected final Map itemPool;
@@ -59,10 +58,12 @@ public abstract class AbstractAutoPrintDataService implements
 		S2Container container = S2ContainerUtil.getS2Container();
 		util = (ItemUtil) container.getComponent("itemutil");
 		itemPool = new ConcurrentHashMap();
-	    columnManager = new ColumnManager();
+		columnManager = new ColumnManager();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.F11.scada.server.io.AutoPrintDataService#getAutoPrintSchedules()
 	 */
 	public Map getAutoPrintSchedules() {
@@ -74,31 +75,33 @@ public abstract class AbstractAutoPrintDataService implements
 		try {
 			con = ConnectionUtil.getConnection();
 			stmt =
-				con.prepareStatement(
-					utility.getPrepareStatement("/auto/print/param/read"));
+				con.prepareStatement(utility
+					.getPrepareStatement("/auto/print/param/read"));
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				String schedule = rs.getString("schedule");
 				Calendar cal = Calendar.getInstance();
 				Timestamp ts = rs.getTimestamp("paramdate");
+				int startHour = rs.getInt("starthour");
+				int startMinute = rs.getInt("startminute");
 				if (ts != null)
 					cal.setTimeInMillis(ts.getTime());
 				else
 					cal.clear();
 				if (schedule.equals("DAILY")) {
-					ret.put(
-						rs.getString("name"),
-						new AutoPrintSchedule.Daily(
-							rs.getBoolean("auto_flag"),
-							cal.get(Calendar.HOUR_OF_DAY),
-							cal.get(Calendar.MINUTE)));
+					ret.put(rs.getString("name"), new AutoPrintSchedule.Daily(
+						rs.getBoolean("auto_flag"),
+						cal.get(Calendar.HOUR_OF_DAY),
+						cal.get(Calendar.MINUTE),
+						startHour,
+						startMinute));
 				} else if (schedule.equals("DAILY_ANALOG")) {
 					ret.put(
-							rs.getString("name"),
-							new AutoPrintSchedule.DailyAnalog(
-								rs.getBoolean("auto_flag"),
-								cal.get(Calendar.HOUR_OF_DAY),
-								cal.get(Calendar.MINUTE)));
+						rs.getString("name"),
+						new AutoPrintSchedule.DailyAnalog(rs
+							.getBoolean("auto_flag"), cal
+							.get(Calendar.HOUR_OF_DAY), cal
+							.get(Calendar.MINUTE), startHour, startMinute));
 				} else if (schedule.equals("MONTHLY")) {
 					ret.put(
 						rs.getString("name"),
@@ -108,14 +111,12 @@ public abstract class AbstractAutoPrintDataService implements
 							cal.get(Calendar.HOUR_OF_DAY),
 							cal.get(Calendar.MINUTE)));
 				} else if (schedule.equals("YEARLY")) {
-					ret.put(
-						rs.getString("name"),
-						new AutoPrintSchedule.Yearly(
-							rs.getBoolean("auto_flag"),
-							cal.get(Calendar.MONTH) + 1,
-							cal.get(Calendar.DATE),
-							cal.get(Calendar.HOUR_OF_DAY),
-							cal.get(Calendar.MINUTE)));
+					ret.put(rs.getString("name"), new AutoPrintSchedule.Yearly(
+						rs.getBoolean("auto_flag"),
+						cal.get(Calendar.MONTH) + 1,
+						cal.get(Calendar.DATE),
+						cal.get(Calendar.HOUR_OF_DAY),
+						cal.get(Calendar.MINUTE)));
 				}
 			}
 			rs.close();
@@ -152,20 +153,23 @@ public abstract class AbstractAutoPrintDataService implements
 		return ret;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.F11.scada.server.io.AutoPrintDataService#setAutoPrintSchedule(java.lang.String, org.F11.scada.server.autoprint.AutoPrintSchedule)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.F11.scada.server.io.AutoPrintDataService#setAutoPrintSchedule(java.lang.String,
+	 *      org.F11.scada.server.autoprint.AutoPrintSchedule)
 	 */
 	public void setAutoPrintSchedule(String name, AutoPrintSchedule schedule) {
 		if (name == null || schedule == null)
 			return;
-		
+
 		Connection con = null;
 		PreparedStatement stmt = null;
 		try {
 			con = ConnectionUtil.getConnection();
 			stmt =
-				con.prepareStatement(
-					utility.getPrepareStatement("/auto/print/param/update"));
+				con.prepareStatement(utility
+					.getPrepareStatement("/auto/print/param/update"));
 			stmt.setBoolean(1, schedule.isAutoOn());
 			stmt.setTimestamp(2, schedule.getTimestamp());
 			stmt.setString(3, name);
@@ -194,12 +198,13 @@ public abstract class AbstractAutoPrintDataService implements
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.F11.scada.server.io.AutoPrintDataService#getLoggingHeddarList(java.lang.String, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.F11.scada.server.io.AutoPrintDataService#getLoggingHeddarList(java.lang.String,
+	 *      java.util.List)
 	 */
-	public List getLoggingHeddarList(
-		String tableName,
-		List dataHolders) {
+	public List getLoggingHeddarList(String tableName, List dataHolders) {
 
 		List ret = new ArrayList(dataHolders.size() + 1);
 		Connection con = null;
@@ -208,14 +213,14 @@ public abstract class AbstractAutoPrintDataService implements
 		try {
 			con = ConnectionUtil.getConnection();
 			stmt =
-				con.prepareStatement(
-					utility.getPrepareStatement(
-						"/pointtable/read",
-						tableName));
-		    Item[] items = util.getItems(dataHolders, itemPool);
+				con.prepareStatement(utility.getPrepareStatement(
+					"/pointtable/read",
+					tableName));
+			Item[] items = util.getItems(dataHolders, itemPool);
 
-			Item[] manageSortedItems = columnManager.sortLogging(items, tableName);
-		    
+			Item[] manageSortedItems =
+				columnManager.sortLogging(items, tableName);
+
 			for (int i = 0; i < manageSortedItems.length; i++) {
 				stmt.setInt(1, manageSortedItems[i].getPoint().intValue());
 				rs = stmt.executeQuery();

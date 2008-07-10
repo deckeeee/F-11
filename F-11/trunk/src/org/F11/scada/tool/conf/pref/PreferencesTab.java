@@ -183,22 +183,25 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		label = new JLabel("サーバー起動待機時間(秒)：");
 		label.setToolTipText("データプロバイダーサーバーが起動されてからデータベースにアクセスし始めるまでの待機時間。");
 		mainPanel.add(label);
-		startupWait.setText(manager.getPreferences("/server/startup/wait", "0"));
+		startupWait
+			.setText(manager.getPreferences("/server/startup/wait", "0"));
 		startupWait.getDocument().addDocumentListener(this);
 		mainPanel.add(startupWait);
 		// 最大レコード数
 		label = new JLabel("最大レコード数(トレンド表示)：");
 		label.setToolTipText("トレンドグラフ表示の自動更新モード時に表示するデータ数。");
 		mainPanel.add(label);
-		maxrecord.setText(manager.getPreferences("/server/logging/maxrecord",
-				"4096"));
+		maxrecord.setText(manager.getPreferences(
+			"/server/logging/maxrecord",
+			"4096"));
 		maxrecord.getDocument().addDocumentListener(this);
 		mainPanel.add(maxrecord);
 		// 警報履歴の最大保持件数(ヒストリ・履歴 共用)
 		label = new JLabel("最大保持件数(ヒストリ・履歴)：");
 		label.setToolTipText("クライアントのヒストリ・履歴でスクロール可能な件数。");
 		mainPanel.add(label);
-		maxalarm.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
+		maxalarm
+			.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
 		maxalarm.getDocument().addDocumentListener(this);
 		mainPanel.add(maxalarm);
 		// 操作ログ検索一覧でポイント名称のプレフィックス
@@ -206,8 +209,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb = new JComboBox();
 		cb.addItem("使わない");
 		cb.addItem("使う");
-		String prefix = manager.getPreferences("/server/operationlog/prefix",
-				"false");
+		String prefix =
+			manager.getPreferences("/server/operationlog/prefix", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -217,8 +220,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("使わない".equals(e.getItem()))
-						manager.setPreferences("/server/operationlog/prefix",
-								"false");
+						manager.setPreferences(
+							"/server/operationlog/prefix",
+							"false");
 					else
 						manager.setPreferences(
 							"/server/operationlog/prefix",
@@ -231,7 +235,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		scheduleOpe(mainPanel);
 		graphCache(mainPanel);
 		pageDeployPeriod(mainPanel);
-		//noRevision(mainPanel);
+		// noRevision(mainPanel);
 		operationLoggingUtil(mainPanel);
 		scheduleCount(mainPanel);
 		outputMode(mainPanel);
@@ -241,6 +245,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		soundAttributeMode(mainPanel);
 		serverUser(mainPanel);
 		serverPass(mainPanel);
+		pageChangeInterrupt(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -255,7 +260,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JComboBox cb = new JComboBox();
 		cb.addItem("使わない");
 		cb.addItem("使う");
-		String prefix = manager.getPreferences("/server/schedulepoint", "false");
+		String prefix =
+			manager.getPreferences("/server/schedulepoint", "false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -265,7 +271,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("使わない".equals(e.getItem()))
-						manager.setPreferences("/server/schedulepoint", "false");
+						manager
+							.setPreferences("/server/schedulepoint", "false");
 					else
 						manager.setPreferences("/server/schedulepoint", "true");
 				}
@@ -533,6 +540,38 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			.getPreferences("/server/password", "okusama"));
 		serverPass.getDocument().addDocumentListener(this);
 		mainPanel.add(serverPass);
+	}
+
+	private void pageChangeInterrupt(JPanel mainPanel) {
+		JLabel label = new JLabel("ページ切替通信モード：");
+		label.setToolTipText("ページ切替時にページ通信かシステム通信のどちらを優先するのかを設定します。");
+		mainPanel.add(label);
+		final JComboBox cb = new JComboBox();
+		cb.addItem("ページ通信優先");
+		cb.addItem("システム通信優先");
+		String prefix =
+			manager.getPreferences("/server/isPageChangeInterrupt", "true");
+		if ("true".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("ページ通信優先".equals(e.getItem())) {
+						manager.setPreferences(
+							"/server/isPageChangeInterrupt",
+							"true");
+					} else {
+						manager.setPreferences(
+							"/server/isPageChangeInterrupt",
+							"false");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {

@@ -46,15 +46,22 @@ import org.apache.log4j.Logger;
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
  */
 public class PostgreSQLDataSelector implements DataSelector {
-    private static Logger logger = Logger.getLogger(PostgreSQLDataSelector.class);
-    private Calendar cal = Calendar.getInstance();
+	private static Logger logger =
+		Logger.getLogger(PostgreSQLDataSelector.class);
+	private Calendar cal = Calendar.getInstance();
 
-    /* (non-Javadoc)
-     * @see org.F11.scada.server.io.DataSelector#getSelectData(java.lang.String, java.util.List, java.lang.String, java.util.Map)
-     */
-    public List getSelectData(String name, List dataHolders, String sql,
-            Map converValueMap) throws SQLException {
-        Connection con = null;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.F11.scada.server.io.DataSelector#getSelectData(java.lang.String,
+	 *      java.util.List, java.lang.String, java.util.Map)
+	 */
+	public List getSelectData(
+			String name,
+			List dataHolders,
+			String sql,
+			Map converValueMap) throws SQLException {
+		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		ArrayList resultList = new ArrayList();
@@ -78,17 +85,17 @@ public class PostgreSQLDataSelector implements DataSelector {
 			rsMeta = rs.getMetaData();
 			resultList = new ArrayList(rowCount);
 			while (rs.next()) {
-				ArrayDoubleList values = new ArrayDoubleList(rsMeta.getColumnCount());
+				ArrayDoubleList values =
+					new ArrayDoubleList(rsMeta.getColumnCount());
 				for (Iterator it = dataHolders.iterator(); it.hasNext();) {
-				    HolderString hs = (HolderString) it.next();
-				    ConvertValue conv = (ConvertValue) converValueMap.get(hs);
-				    String columnName = "f_" + hs.getProvider() + "_" + hs.getHolder();
-					values.add(conv.convertDoubleValue(getDouble(rs, columnName)));
+					HolderString hs = (HolderString) it.next();
+					ConvertValue conv = (ConvertValue) converValueMap.get(hs);
+					String columnName =
+						"f_" + hs.getProvider() + "_" + hs.getHolder();
+					values.add(conv
+						.convertDoubleValue(getDouble(rs, columnName)));
 				}
-				resultList.add(
-					new LoggingData(
-						getTimestamp(rs),
-						values));
+				resultList.add(new LoggingData(getTimestamp(rs), values));
 			}
 		} finally {
 			if (rs != null) {
@@ -101,22 +108,28 @@ public class PostgreSQLDataSelector implements DataSelector {
 				con.close();
 			}
 		}
-		
+
 		return resultList;
-    }
-    
-    private double getDouble(ResultSet rs, String columnName) throws SQLException {
-    	try {
+	}
+
+	private double getDouble(ResultSet rs, String columnName)
+			throws SQLException {
+		try {
 			return rs.getDouble(columnName);
 		} catch (SQLException e) {
 			return rs.getBoolean(columnName) ? 1D : 0D;
 		}
-    }
+	}
 
-    private Timestamp getTimestamp(ResultSet rs) throws SQLException {
-        cal.setTimeInMillis(rs.getTimestamp(PostgreSQLUtility.DATE_FIELD_NAME).getTime());
-        cal.set(Calendar.MILLISECOND, 0);
-        
-        return new Timestamp(cal.getTimeInMillis());
-    }
+	private Timestamp getTimestamp(ResultSet rs) throws SQLException {
+		try {
+			cal.setTimeInMillis(rs.getTimestamp(
+				PostgreSQLUtility.DATE_FIELD_NAME).getTime());
+		} catch (NullPointerException e) {
+			cal.setTimeInMillis(new Timestamp(0).getTime());
+		}
+		cal.set(Calendar.MILLISECOND, 0);
+
+		return new Timestamp(cal.getTimeInMillis());
+	}
 }
