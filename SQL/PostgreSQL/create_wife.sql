@@ -210,6 +210,8 @@ CREATE TABLE auto_print_param_table (
 	auto_flag BOOL NOT NULL,
 	paramdate TIMESTAMP NOT NULL,
 	displayname VARCHAR(100),
+	starthour INTEGER NOT NULL default '-1',
+	startminute INTEGER NOT NULL default '-1',
 	PRIMARY KEY (name)
 );
 
