@@ -105,6 +105,8 @@ CREATE TABLE auto_print_param_table (
   auto_flag tinyint(1) NOT NULL default '0',
   paramdate datetime NOT NULL default '0000-00-00 00:00:00',
   displayname varchar(50) default NULL,
+  starthour int(11) NOT NULL default '-1',
+  startminute int(11) NOT NULL default '-1',
   PRIMARY KEY  (name)
 ) TYPE=MyISAM;
 
