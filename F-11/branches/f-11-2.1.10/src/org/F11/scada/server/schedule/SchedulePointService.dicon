@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN"
+	"http://www.seasar.org/dtd/components23.dtd">
+<components>
+	<include path="dao.dicon"/>
+	<include path="org/F11/scada/server/io/postgresql/ItemUtil.dicon"/>
+	<include path="org/F11/scada/server/communicater/CommunicaterFactory.dicon"/>
+	<include path="org/F11/scada/server/frame/FrameDefineManager.dicon"/>
+	<include path="org/F11/scada/server/operationlog/OperationLogging.dicon"/>
+
+	<component class="org.F11.scada.server.schedule.point.dao.ScheduleGroupDao">
+		<aspect>dao.interceptor</aspect>
+	</component>
+
+	<component class="org.F11.scada.server.schedule.point.dao.SchedulePointDao">
+		<aspect>dao.interceptor</aspect>
+	</component>
+
+	<component class="org.F11.scada.server.schedule.impl.SchedulePointCommunicatorImpl">
+		<property name="defineManager">frameManager</property>
+		<property name="service">opelog.opelogservice</property>
+	</component>
+
+	<component class="org.F11.scada.server.schedule.impl.SchedulePointServiceImpl"
+		name="scheduleService">
+		<aspect pointcut="init,updateSchedulePoint" >j2ee.requiredTx</aspect>
+	</component>
+</components>
