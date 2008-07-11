@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+	<!--テキストにログを出力するConsoleAppenderをSTDOUTとして定義 -->
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender" >
+		<!-- デフォルトのログレベル -->
+		<param name="threshold" value="INFO"/>
+		<!-- ログの出力形式を指定 -->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] [%t] %-5p (%F:%L) - %m%n"/>
+		</layout>
+	</appender>
+
+	<!-- ローリング出力するアペンダをROLLOUTとして定義 -->
+	<appender name="ROLLOUT1" class="org.apache.log4j.RollingFileAppender">
+		<param name="threshold" value="INFO"/>
+		<param name="File" value="log/applet.log" />
+		<param name="MaxFileSize" value="2MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] [%t] %-5p (%F:%L) - %m%n"/>
+		</layout>
+	</appender>
+
+	<!-- ローリング出力するアペンダをROLLOUT2として定義 -->
+	<appender name="ROLLOUT2" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="log/digital_applet.log" />
+		<param name="MaxFileSize" value="2MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] [%t] %-5p (%F:%L) - %m%n"/>
+		</layout>
+	</appender>
+
+	<category name="org.F11.scada.xwife.applet.WifeDataProviderProxy">
+		<level value="debug" />
+		<appender-ref ref="ROLLOUT2" />
+	</category>
+
+	<!-- すべてのログをinfo -->
+	<root>
+		<level value="info" />
+		<!-- appender-ref ref="STDOUT" /-->
+		<appender-ref ref="ROLLOUT1" />
+	</root>
+</log4j:configuration>
