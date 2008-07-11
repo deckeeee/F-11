@@ -1,6 +1,0 @@
-#Thu May 22 14:53:33 JST 2008
-eclipse.preferences.version=1
-encoding//SQL/PostgreSQL/create_wife.sql=EUC-JP
-encoding//SQL/PostgreSQL/insert_item.sql=EUC-JP
-encoding//cat/src/org/F11/scada/cat/dao/CatDao.dicon=UTF-8
-encoding//src/org/F11/scada/server/dao/HistoryTableDao.dicon=UTF-8
