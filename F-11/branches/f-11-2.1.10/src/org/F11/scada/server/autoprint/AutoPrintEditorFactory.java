@@ -29,23 +29,28 @@ import org.xml.sax.SAXException;
 
 /**
  * AutoPrintEditorのファクトリークラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class AutoPrintEditorFactory {
 	/** Logging API */
 	private static Logger log = Logger.getLogger(AutoPrintEditorFactory.class);
+	private AutoPrintEditor editor;
 
 	/**
 	 * サーバー定義ファイルより、自動印刷のオブジェクトを返します
+	 * 
 	 * @return 自動印刷のオブジェクトを返します
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws SAXException
 	 */
 	public AutoPrintEditor getAutoPrintEditor()
-			throws IOException, SAXException {
-
-		AutoPrintEditor editor = null;
+			throws IOException,
+			SAXException {
+		if (editor != null) {
+			return editor;
+		}
 		String clazz =
 			EnvironmentManager.get(
 				"/server/autoprint",
