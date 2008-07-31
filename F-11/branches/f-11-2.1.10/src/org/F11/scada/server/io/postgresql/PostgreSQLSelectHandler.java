@@ -49,92 +49,172 @@ public class PostgreSQLSelectHandler implements SelectHandler {
 	public PostgreSQLSelectHandler() {
 		super();
 		logger = Logger.getLogger(getClass().getName());
-	    S2Container container = S2ContainerUtil.getS2Container();
+		S2Container container = S2ContainerUtil.getS2Container();
 		sqlUtility = (SQLUtility) container.getComponent(SQLUtility.class);
 		itemUtil = (ItemUtil) container.getComponent("itemutil");
 		selector = new PostgreSQLDataSelector();
 	}
-	
+
 	void setPostgreSQLUtility(SQLUtility utility) {
-	    this.sqlUtility = utility;
+		this.sqlUtility = utility;
 	}
 
 	/**
 	 * 指定された列の LoggingRowDataのリストを返します。
+	 * 
 	 * @param name データソース名
 	 * @param dataHolders データホルダのリスト(列の情報)
 	 * @return 指定された列の LoggingRowDataのリストを返します。
 	 * @exception SQLException SQLエラーが発生した場合
 	 */
 	public List select(String name, List dataHolders) throws SQLException {
-		return select(name, dataHolders, PostgreSQLValueListHandler.MAX_MAP_SIZE);
+		return select(
+			name,
+			dataHolders,
+			PostgreSQLValueListHandler.MAX_MAP_SIZE);
 	}
 
 	/**
 	 * 指定された列の LoggingRowDataのリストを返します。
+	 * 
 	 * @param name データソース名
 	 * @param dataHolders データホルダのリスト(列の情報)
 	 * @return 指定された列の LoggingRowDataのリストを返します。
 	 * @exception SQLException SQLエラーが発生した場合
 	 */
-	public List select(String name, List dataHolders, int limit) throws SQLException {
+	public List select(String name, List dataHolders, int limit)
+			throws SQLException {
 		String sql = sqlUtility.getSelectAllString(name, dataHolders, limit);
 		logger.debug(sql);
-		
+
 		return getSelectData(name, dataHolders, sql);
 	}
-	
-    public List select(String name, List dataHolders, Timestamp time)
-            throws SQLException {
 
-        String sql = sqlUtility.getSelectTimeString(name, dataHolders, time);
+	public List select(
+			String name,
+			List dataHolders,
+			int limit,
+			List<String> tables) throws SQLException {
+		String sql =
+			sqlUtility.getSelectAllString(name, dataHolders, limit, tables);
 		logger.debug(sql);
 
 		return getSelectData(name, dataHolders, sql);
-    }
-    
-    private List getSelectData(String name, List dataHolders, String sql) throws SQLException {
+	}
+
+	public List select(String name, List dataHolders, Timestamp time)
+			throws SQLException {
+
+		String sql = sqlUtility.getSelectTimeString(name, dataHolders, time);
+		logger.debug(sql);
+
+		return getSelectData(name, dataHolders, sql);
+	}
+
+	private List getSelectData(String name, List dataHolders, String sql)
+			throws SQLException {
 		Map converValueMap = itemUtil.createConvertValueMap(dataHolders);
-		
+
 		return selector.getSelectData(name, dataHolders, sql, converValueMap);
-    }
-    
-    public LoggingRowData first(String name, List dataHolders) throws SQLException {
-        String sql = sqlUtility.getFirstData(name, dataHolders);
+	}
+
+	public LoggingRowData first(String name, List dataHolders)
+			throws SQLException {
+		String sql = sqlUtility.getFirstData(name, dataHolders);
 		logger.debug(sql);
 
 		List l = getSelectData(name, dataHolders, sql);
 		return getLoggingRowData(l);
-    }
-    
-    public LoggingRowData last(String name, List dataHolders) throws SQLException {
-        String sql = sqlUtility.getLastData(name, dataHolders);
+	}
+
+	public LoggingRowData last(String name, List dataHolders)
+			throws SQLException {
+		String sql = sqlUtility.getLastData(name, dataHolders);
 		logger.debug(sql);
 
 		List l = getSelectData(name, dataHolders, sql);
 		return getLoggingRowData(l);
-    }
+	}
 
 	private LoggingRowData getLoggingRowData(List l) {
 		if (l.isEmpty()) {
-			return new LoggingData(new Timestamp(System
-					.currentTimeMillis()), DoubleCollections.EMPTY_DOUBLE_LIST);
+			return new LoggingData(
+				new Timestamp(System.currentTimeMillis()),
+				DoubleCollections.EMPTY_DOUBLE_LIST);
 		} else {
-	        return (LoggingRowData) l.get(0);
+			return (LoggingRowData) l.get(0);
 		}
 	}
- 
-    public List selectBeforeAfter(String name, List dataHolders, Timestamp start, int limit) throws SQLException {
-        String sql = sqlUtility.getSelectBefore(name, dataHolders, start, limit);
+
+	public List selectBeforeAfter(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			int limit) throws SQLException {
+		String sql =
+			sqlUtility.getSelectBefore(name, dataHolders, start, limit);
 		logger.debug(sql);
 		List before = getSelectData(name, dataHolders, sql);
-		
-        sql = sqlUtility.getSelectAfter(name, dataHolders, start, limit);
+
+		sql = sqlUtility.getSelectAfter(name, dataHolders, start, limit);
 		logger.debug(sql);
 		List after = getSelectData(name, dataHolders, sql);
-		
+
 		before.addAll(after);
 
 		return before;
-    }
+	}
+
+	public List select(
+			String name,
+			List dataHolders,
+			Timestamp time,
+			List<String> tables) throws SQLException {
+		String sql =
+			sqlUtility.getSelectTimeString(name, dataHolders, time, tables);
+		logger.debug(sql);
+
+		return getSelectData(name, dataHolders, sql);
+	}
+
+	public List selectBeforeAfter(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			int limit,
+			List<String> tables) throws SQLException {
+		String sql =
+			sqlUtility.getSelectBefore(name, dataHolders, start, limit, tables);
+		logger.debug(sql);
+		List before = getSelectData(name, dataHolders, sql);
+
+		sql =
+			sqlUtility.getSelectAfter(name, dataHolders, start, limit, tables);
+		logger.debug(sql);
+		List after = getSelectData(name, dataHolders, sql);
+
+		before.addAll(after);
+
+		return before;
+	}
+
+
+	public LoggingRowData first(String name, List dataHolders, List<String> tables)
+			throws SQLException {
+		String sql = sqlUtility.getFirstData(name, dataHolders, tables);
+		logger.debug(sql);
+
+		List l = getSelectData(name, dataHolders, sql);
+		return getLoggingRowData(l);
+	}
+
+	public LoggingRowData last(String name, List dataHolders, List<String> tables)
+			throws SQLException {
+		String sql = sqlUtility.getLastData(name, dataHolders, tables);
+		logger.debug(sql);
+
+		List l = getSelectData(name, dataHolders, sql);
+		return getLoggingRowData(l);
+	}
+
 }

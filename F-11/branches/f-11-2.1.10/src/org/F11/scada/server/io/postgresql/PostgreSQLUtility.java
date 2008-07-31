@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.F11.scada.EnvironmentManager;
 import org.F11.scada.WifeUtilities;
@@ -54,16 +55,14 @@ import org.F11.scada.server.register.WifeDataUtil;
 import org.F11.scada.util.BooleanUtil;
 import org.apache.log4j.Logger;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * SQLに関するユーティリティークラス ほとんどのメソッドは、SQL 文字列を作成する静的メソッドです。
  */
 public final class PostgreSQLUtility implements SQLUtility {
 	public static final String DATE_FIELD_NAME = "f_date";
 	private static final String REVISION_FIELD_NAME = "f_revision";
-	private static final String PRIMARY_KEY = "PRIMARY KEY(" + DATE_FIELD_NAME
-			+ ", " + REVISION_FIELD_NAME + ")";
+	private static final String PRIMARY_KEY =
+		"PRIMARY KEY(" + DATE_FIELD_NAME + ", " + REVISION_FIELD_NAME + ")";
 
 	private final Map itemArrayPool;
 	private final Map itemPool;
@@ -85,9 +84,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 	}
 
 	private boolean isNoRevision() {
-		String isNoRevision = EnvironmentManager.get(
-				"/server/logging/noRevision",
-				"false");
+		String isNoRevision =
+			EnvironmentManager.get("/server/logging/noRevision", "false");
 		return Boolean.valueOf(isNoRevision).booleanValue();
 	}
 
@@ -105,8 +103,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 			Object[] values) {
 		if (columnNames.length != values.length)
 			throw new IllegalArgumentException(
-					"Argument Count error : columnNames=" + columnNames.length
-							+ " values=" + values.length);
+				"Argument Count error : columnNames="
+					+ columnNames.length
+					+ " values="
+					+ values.length);
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("INSERT INTO ").append(tableName).append("(");
@@ -165,17 +165,20 @@ public final class PostgreSQLUtility implements SQLUtility {
 					commands.add(wc);
 				}
 				Environment environment = EnvironmentMap.get(provider);
-				Communicater communicater = communicaterFactory
-						.createCommunicator(environment);
+				Communicater communicater =
+					communicaterFactory.createCommunicator(environment);
 				communicater.addReadCommand(commands);
 				SyncReadWrapper wrapper = new SyncReadWrapper();
 				Map bytedataMap = wrapper.syncRead(communicater, commands);
 
-				for (Iterator itemIt = itemList.iterator(), commandIt = commands
-						.iterator(); itemIt.hasNext() && commandIt.hasNext();) {
+				for (Iterator itemIt = itemList.iterator(), commandIt =
+					commands.iterator(); itemIt.hasNext()
+					&& commandIt.hasNext();) {
 					Item item = (Item) itemIt.next();
-					columnNames.add("f_" + item.getProvider() + "_"
-							+ item.getHolder());
+					columnNames.add("f_"
+						+ item.getProvider()
+						+ "_"
+						+ item.getHolder());
 					WifeData wd = WifeDataUtil.getWifeData(item);
 					WifeCommand wc = (WifeCommand) commandIt.next();
 					byte[] data = (byte[]) bytedataMap.get(wc);
@@ -195,8 +198,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 							}
 						} else {
 							throw new IllegalArgumentException(
-									"value is not WifeDataDigital and WifeDataAnalog! : "
-											+ wd.getClass().getName());
+								"value is not WifeDataDigital and WifeDataAnalog! : "
+									+ wd.getClass().getName());
 						}
 					} catch (BCDConvertException e) {
 						logger.error("BCD変換エラー発生、初期値をログに書き込みます", e);
@@ -206,8 +209,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 							values.add(BooleanUtil.getDigitalValue(false));
 						} else {
 							throw new IllegalArgumentException(
-									"value is not WifeDataDigital and WifeDataAnalog! : "
-											+ wd.getClass().getName());
+								"value is not WifeDataDigital and WifeDataAnalog! : "
+									+ wd.getClass().getName());
 						}
 						continue;
 					}
@@ -217,7 +220,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 			logger.error("ロギングSQL生成時エラー", e);
 		}
 		return getInsertString(tableName, (String[]) columnNames
-				.toArray(new String[0]), values.toArray());
+			.toArray(new String[0]), values.toArray());
 	}
 
 	/**
@@ -237,7 +240,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 		List colval = new ArrayList(multiRecordDefine.getRecordCount() + 1);
 		try {
 			List commands = new ArrayList();
-			WifeCommand wc = new WifeCommand(
+			WifeCommand wc =
+				new WifeCommand(
 					multiRecordDefine.getProvider(),
 					0,
 					0,
@@ -245,15 +249,17 @@ public final class PostgreSQLUtility implements SQLUtility {
 					multiRecordDefine.getComMemoryAddress(),
 					multiRecordDefine.getWordLength());
 			commands.add(wc);
-			Environment environment = EnvironmentMap.get(multiRecordDefine
-					.getProvider());
-			Communicater communicater = communicaterFactory
-					.createCommunicator(environment);
+			Environment environment =
+				EnvironmentMap.get(multiRecordDefine.getProvider());
+			Communicater communicater =
+				communicaterFactory.createCommunicator(environment);
 			communicater.addReadCommand(commands);
 			Map bytedataMap = communicater.syncRead(commands, false);
 			byte[] srcBytes = (byte[]) bytedataMap.get(wc);
-			int byteRecSize = multiRecordDefine.getWordLength()
-					/ multiRecordDefine.getRecordCount() * 2;
+			int byteRecSize =
+				multiRecordDefine.getWordLength()
+					/ multiRecordDefine.getRecordCount()
+					* 2;
 
 			// 日付とリビジョン番号分
 			int dateAndRevision = 2;
@@ -271,45 +277,50 @@ public final class PostgreSQLUtility implements SQLUtility {
 			boolean isFirstLoop = true;
 			List itemList = (List) itemMap.get(multiRecordDefine.getProvider());
 			for (int recno = 0; recno < multiRecordDefine.getRecordCount(); recno++) {
-				Timestamp timestamp = getTimestamp(srcBytes, recno
-						* byteRecSize);
+				Timestamp timestamp =
+					getTimestamp(srcBytes, recno * byteRecSize);
 				if (timestamp == null) {
-					logger.warn("多レコード 日付の形式が違います。" + tableName + " recno="
-							+ recno);
+					logger.warn("多レコード 日付の形式が違います。"
+						+ tableName
+						+ " recno="
+						+ recno);
 					continue;
 				}
 				ArrayList values = new ArrayList(columnSize);
 				values.add(timestamp.toString());
 				values
-						.add(new Integer(checkRevision(
-								tableName,
-								timestamp,
-								con)));
+					.add(new Integer(checkRevision(tableName, timestamp, con)));
 				for (Iterator itemIt = itemList.iterator(); itemIt.hasNext();) {
 					Item item = (Item) itemIt.next();
 					WifeData wd = WifeDataUtil.getWifeData(item);
 					if (multiRecordDefine.getComMemoryKinds() != item
-							.getComMemoryKinds()
-							|| multiRecordDefine.getComMemoryAddress() > item
-									.getComMemoryAddress()
-							|| multiRecordDefine.getComMemoryAddress()
-									+ byteRecSize < item.getComMemoryAddress()
-									+ wd.getWordSize()) {
+						.getComMemoryKinds()
+						|| multiRecordDefine.getComMemoryAddress() > item
+							.getComMemoryAddress()
+						|| multiRecordDefine.getComMemoryAddress()
+							+ byteRecSize < item.getComMemoryAddress()
+							+ wd.getWordSize()) {
 						logger.warn("多レコード データ定義がブロック範囲外です。"
-								+ item.getProvider() + " " + item.getHolder());
+							+ item.getProvider()
+							+ " "
+							+ item.getHolder());
 						continue;
 					}
 					if (isFirstLoop) {
-						columnNames.add("f_" + item.getProvider() + "_"
-								+ item.getHolder());
+						columnNames.add("f_"
+							+ item.getProvider()
+							+ "_"
+							+ item.getHolder());
 					}
-					int byteOffset = recno
+					int byteOffset =
+						recno
 							* byteRecSize
 							+ (int) (item.getComMemoryAddress() - multiRecordDefine
-									.getComMemoryAddress()) * 2;
+								.getComMemoryAddress())
+							* 2;
 					byte[] data = new byte[wd.getWordSize() * 2];
 					System.arraycopy(srcBytes, byteOffset, data, 0, wd
-							.getWordSize() * 2);
+						.getWordSize() * 2);
 					// logger.debug(item.getProvider() + " " + item.getHolder()
 					// + ": byte(" + WifeUtilities.toString(data) + ")");
 					try {
@@ -326,8 +337,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 							}
 						} else {
 							throw new IllegalArgumentException(
-									"value is not WifeDataDigital and WifeDataAnalog! : "
-											+ wd.getClass().getName());
+								"value is not WifeDataDigital and WifeDataAnalog! : "
+									+ wd.getClass().getName());
 						}
 					} catch (BCDConvertException e) {
 						logger.error("BCD変換エラー発生、初期値をログに書き込みます", e);
@@ -337,8 +348,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 							values.add(BooleanUtil.getDigitalValue(false));
 						} else {
 							throw new IllegalArgumentException(
-									"value is not WifeDataDigital and WifeDataAnalog! : "
-											+ wd.getClass().getName());
+								"value is not WifeDataDigital and WifeDataAnalog! : "
+									+ wd.getClass().getName());
 						}
 						continue;
 					}
@@ -370,7 +381,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 		Statement st = null;
 		ResultSet rs = null;
 		try {
-			st = con.createStatement(
+			st =
+				con.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = st.executeQuery(getRevisionString(tableName, today));
@@ -396,32 +408,27 @@ public final class PostgreSQLUtility implements SQLUtility {
 			return null;
 		}
 
-		int year = Integer.parseInt(WifeUtilities
-				.toString(srcBytes, pos + 0, 2));
-		int month = Integer.parseInt(WifeUtilities.toString(
-				srcBytes,
-				pos + 2,
-				1)) - 1;
-		int date = Integer.parseInt(WifeUtilities
-				.toString(srcBytes, pos + 3, 1));
-		int hour = Integer.parseInt(WifeUtilities
-				.toString(srcBytes, pos + 5, 1));
-		int minute = Integer.parseInt(WifeUtilities.toString(
-				srcBytes,
-				pos + 6,
-				1));
-		int second = Integer.parseInt(WifeUtilities.toString(
-				srcBytes,
-				pos + 7,
-				1));
+		int year =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 0, 2));
+		int month =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 2, 1)) - 1;
+		int date =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 3, 1));
+		int hour =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 5, 1));
+		int minute =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 6, 1));
+		int second =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 7, 1));
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		cal.set(year, month, date, hour, minute, second);
-		if (cal.get(Calendar.YEAR) != year || cal.get(Calendar.MONTH) != month
-				|| cal.get(Calendar.DATE) != date
-				|| cal.get(Calendar.HOUR_OF_DAY) != hour
-				|| cal.get(Calendar.MINUTE) != minute
-				|| cal.get(Calendar.SECOND) != second) {
+		if (cal.get(Calendar.YEAR) != year
+			|| cal.get(Calendar.MONTH) != month
+			|| cal.get(Calendar.DATE) != date
+			|| cal.get(Calendar.HOUR_OF_DAY) != hour
+			|| cal.get(Calendar.MINUTE) != minute
+			|| cal.get(Calendar.SECOND) != second) {
 			return null;
 		}
 		return new Timestamp(cal.getTimeInMillis());
@@ -463,8 +470,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 			String primaryKey) {
 		if (columnNames.length != values.length)
 			throw new IllegalArgumentException(
-					"Argument Count error : columnNames=" + columnNames.length
-							+ " values=" + values.length);
+				"Argument Count error : columnNames="
+					+ columnNames.length
+					+ " values="
+					+ values.length);
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CREATE TABLE ");
@@ -473,8 +482,14 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 		logger.debug("count = " + columnNames.length);
 		for (int i = 0; i < (columnNames.length - 1); i++) {
-			logger.debug("columnName[" + i + "]" + columnNames[i] + " value["
-					+ i + "]" + values[i]);
+			logger.debug("columnName["
+				+ i
+				+ "]"
+				+ columnNames[i]
+				+ " value["
+				+ i
+				+ "]"
+				+ values[i]);
 			buffer.append(columnNames[i]);
 			setCreateType(buffer, values[i]);
 			buffer.append(", ");
@@ -512,14 +527,16 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 		if (isNotEqualCount(dataHolders, items)) {
 			throw new IllegalStateException("not equal count. dataholder="
-					+ dataHolders.size() + " item=" + items.length);
+				+ dataHolders.size()
+				+ " item="
+				+ items.length);
 		}
 
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			// logger.debug("item[" + i + "] = " + item);
-			columnNames[i + dateAndRevision] = "f_" + item.getProvider() + "_"
-					+ item.getHolder();
+			columnNames[i + dateAndRevision] =
+				"f_" + item.getProvider() + "_" + item.getHolder();
 			values[i + dateAndRevision] = WifeDataUtil.getWifeData(item);
 		}
 		return getCreateString(tableName, columnNames, values, PRIMARY_KEY);
@@ -574,8 +591,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @return ALTER SQL の文字列
 	 */
 	public String getAlterString(String tableName, HolderString dataHolder) {
-		String s = "f_" + dataHolder.getProvider() + "_"
-				+ dataHolder.getHolder();
+		String s =
+			"f_" + dataHolder.getProvider() + "_" + dataHolder.getHolder();
 		Item item = itemUtil.getItem(dataHolder, itemPool);
 		return getAlterString(tableName, s, WifeDataUtil.getWifeData(item));
 	}
@@ -599,8 +616,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 			buffer.append(((Boolean) value).toString().toUpperCase());
 		} else {
 			throw new IllegalArgumentException(
-					"value is not String and Number! : "
-							+ value.getClass().getName());
+				"value is not String and Number! : "
+					+ value.getClass().getName());
 		}
 	}
 
@@ -615,8 +632,8 @@ public final class PostgreSQLUtility implements SQLUtility {
 			buffer.append(" TIMESTAMP NOT NULL");
 		} else {
 			throw new IllegalArgumentException(
-					"value is not WifeDataDigital and WifeDataAnalog! : "
-							+ value.getClass().getName());
+				"value is not WifeDataDigital and WifeDataAnalog! : "
+					+ value.getClass().getName());
 		}
 	}
 
@@ -640,8 +657,13 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @return SQL 文字列
 	 */
 	public String getRevisionString(String name, Timestamp today) {
-		return "SELECT f_revision FROM " + name + " WHERE f_date=" + "'"
-				+ today + "'" + " ORDER BY f_revision DESC";
+		return "SELECT f_revision FROM "
+			+ name
+			+ " WHERE f_date="
+			+ "'"
+			+ today
+			+ "'"
+			+ " ORDER BY f_revision DESC";
 	}
 
 	/**
@@ -685,8 +707,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 		StringBuffer b = new StringBuffer();
 		b.append(getSelectString(name, columnNames));
 		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		b.append(" WHERE f_revision = 0 AND f_date > '").append(f.format(time))
-				.append("'");
+		b
+			.append(" WHERE f_revision = 0 AND f_date > '")
+			.append(f.format(time))
+			.append("'");
 		b.append(" ORDER BY ");
 		b.append(DATE_FIELD_NAME);
 		b.append(" DESC LIMIT ");
@@ -708,12 +732,27 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return columnNames;
 	}
 
+	private String[] createFieldNames(List dataHolder, List<String> tables) {
+		String[] columnNames = new String[dataHolder.size() + 1];
+		columnNames[0] = tables.get(0) + "." + DATE_FIELD_NAME;
+		int count = 1;
+		for (Iterator i = dataHolder.iterator(); i.hasNext(); count++) {
+			HolderString hs = (HolderString) i.next();
+			columnNames[count] = "f_" + hs.getProvider() + "_" + hs.getHolder();
+		}
+		return columnNames;
+	}
+
 	public String getFirstData(String name, List dataHolder) {
 		String[] columnNames = createFieldNames(dataHolder);
 
 		StringBuffer b = new StringBuffer();
-		b.append(getSelectString(name, columnNames)).append(" ORDER BY ")
-				.append(DATE_FIELD_NAME).append(" ASC LIMIT ").append("1");
+		b
+			.append(getSelectString(name, columnNames))
+			.append(" ORDER BY ")
+			.append(DATE_FIELD_NAME)
+			.append(" ASC LIMIT ")
+			.append("1");
 
 		return b.toString();
 	}
@@ -721,8 +760,12 @@ public final class PostgreSQLUtility implements SQLUtility {
 	public String getLastData(String name, List dataHolder) {
 		String[] columnNames = createFieldNames(dataHolder);
 		StringBuffer b = new StringBuffer();
-		b.append(getSelectString(name, columnNames)).append(" ORDER BY ")
-				.append(DATE_FIELD_NAME).append(" DESC LIMIT ").append("1");
+		b
+			.append(getSelectString(name, columnNames))
+			.append(" ORDER BY ")
+			.append(DATE_FIELD_NAME)
+			.append(" DESC LIMIT ")
+			.append("1");
 
 		return b.toString();
 	}
@@ -737,8 +780,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 		StringBuffer b = new StringBuffer();
 		b.append(getSelectString(name, columnNames));
 		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		b.append(" WHERE f_revision = 0 AND f_date < '")
-				.append(f.format(start)).append("'");
+		b
+			.append(" WHERE f_revision = 0 AND f_date < '")
+			.append(f.format(start))
+			.append("'");
 		b.append(" ORDER BY ");
 		b.append(DATE_FIELD_NAME);
 		b.append(" DESC LIMIT ");
@@ -760,13 +805,182 @@ public final class PostgreSQLUtility implements SQLUtility {
 		b.append(getSelectString(name, columnNames));
 		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		b.append(" WHERE f_revision = 0 AND f_date >= '").append(
-				f.format(start)).append("'");
+			f.format(start)).append("'");
 		b.append(" ORDER BY ");
 		b.append(DATE_FIELD_NAME);
 		b.append(" ASC LIMIT ");
 		b.append(limit);
 
 		logger.debug(b.toString());
+
+		return b.toString();
+	}
+
+	public String getSelectAllString(
+			String name,
+			List dataHolder,
+			int limit,
+			List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables));
+		b.append(" WHERE ").append(tables.get(0)).append(
+			".f_revision = 0 ORDER BY ");
+		b.append(tables.get(0)).append(".");
+		b.append(DATE_FIELD_NAME);
+		b.append(" DESC LIMIT ");
+		b.append(limit);
+
+		return b.toString();
+	}
+
+	private Object getSelectString(
+			String name,
+			String[] columnNames,
+			List<String> tables) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("SELECT ");
+		for (int i = 0; i < (columnNames.length - 1); i++) {
+			buffer.append(columnNames[i]);
+			buffer.append(", ");
+		}
+		buffer.append(columnNames[columnNames.length - 1]);
+		buffer.append(" FROM ").append(getTables(tables));
+		return buffer.toString();
+	}
+
+	private String getTables(List<String> tables) {
+		if (tables.size() == 1) {
+			return tables.get(0);
+		} else {
+			StringBuilder b = new StringBuilder();
+			for (int i = 0, count = tables.size() - 1; i < count; i++) {
+				if (i == 0) {
+					b.append(tables.get(i)).append(" ");
+				}
+				b
+					.append("LEFT JOIN ")
+					.append(tables.get(i + 1))
+					.append(" ON ")
+					.append(tables.get(i))
+					.append(".f_date = ")
+					.append(tables.get(i + 1))
+					.append(".f_date");
+				if (i < (count - 1)) {
+					b.append(" ");
+				}
+			}
+			return b.toString();
+		}
+	}
+
+	public String getSelectTimeString(
+			String name,
+			List dataHolder,
+			Timestamp time,
+			List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables));
+		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		b
+			.append(" WHERE ")
+			.append(tables.get(0))
+			.append(".f_revision = 0 AND ")
+			.append(tables.get(0))
+			.append(".f_date > '")
+			.append(f.format(time))
+			.append("'");
+		b.append(" ORDER BY ");
+		b.append(tables.get(0)).append(".");
+		b.append(DATE_FIELD_NAME);
+		b.append(" DESC LIMIT ");
+		b.append(PostgreSQLValueListHandler.MAX_MAP_SIZE);
+
+		logger.debug(b.toString());
+
+		return b.toString();
+	}
+
+	public String getSelectAfter(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			int limit,
+			List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables));
+		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		b
+			.append(" WHERE ")
+			.append(tables.get(0))
+			.append(".f_revision = 0 AND ")
+			.append(tables.get(0))
+			.append(".f_date >= '")
+			.append(f.format(start))
+			.append("'");
+		b.append(" ORDER BY ");
+		b.append(tables.get(0)).append(".");
+		b.append(DATE_FIELD_NAME);
+		b.append(" ASC LIMIT ");
+		b.append(limit);
+
+		logger.debug(b.toString());
+
+		return b.toString();
+	}
+
+	public String getSelectBefore(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			int limit,
+			List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables));
+		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		b
+			.append(" WHERE ")
+			.append(tables.get(0))
+			.append(".f_revision = 0 AND ")
+			.append(tables.get(0))
+			.append(".f_date < '")
+			.append(f.format(start))
+			.append("'");
+		b.append(" ORDER BY ");
+		b.append(tables.get(0)).append(".");
+		b.append(DATE_FIELD_NAME);
+		b.append(" DESC LIMIT ");
+		b.append(limit);
+
+		logger.debug(b.toString());
+
+		return b.toString();
+	}
+
+	public String getFirstData(String name, List dataHolder, List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables)).append(
+			" ORDER BY ").append(tables.get(0)).append(".").append(
+			DATE_FIELD_NAME).append(" ASC LIMIT 1");
+
+		return b.toString();
+	}
+
+	public String getLastData(String name, List dataHolder, List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables)).append(
+			" ORDER BY ").append(tables.get(0)).append(".").append(
+			DATE_FIELD_NAME).append(" DESC LIMIT 1");
 
 		return b.toString();
 	}

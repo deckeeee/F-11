@@ -67,6 +67,13 @@ class LoggingTaskManager {
 	public List<HolderString> getHolders(
 			String loggingName) {
 		LoggingTask task = (LoggingTask) taskMap.get(loggingName);
-		return task.getDataHolders();
+		ArrayList<HolderString> hss = new ArrayList<HolderString>();
+		hss.addAll(task.getDataHolders());
+		List<String> hs = task.getTables();
+		for (String string : hs) {
+			LoggingTask loggingTask = (LoggingTask) taskMap.get(string);
+			hss.addAll(loggingTask.getDataHolders());
+		}
+		return hss;
 	}
 }

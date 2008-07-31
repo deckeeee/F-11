@@ -25,8 +25,12 @@
 
 package org.F11.scada.server.io.postgresql;
 
+import static org.F11.scada.cat.util.CollectionUtil.$;
+import static org.F11.scada.cat.util.CollectionUtil.map;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,95 +45,162 @@ import org.apache.log4j.Logger;
 import org.seasar.framework.exception.SQLRuntimeException;
 
 /**
- * ロギングデータのハンドラクラスです。
- * 定義されたロギングデータをデータストレージより読みとります。
+ * ロギングデータのハンドラクラスです。 定義されたロギングデータをデータストレージより読みとります。
  * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class PostgreSQLSelectiveAllDataValueListHandler
-		implements SelectiveAllDataValueListHandlerElement {
+public class PostgreSQLSelectiveAllDataValueListHandler implements
+		SelectiveAllDataValueListHandlerElement {
 
-    private final String name;
-    private final SelectHandler handler;
-    private static Logger log = Logger.getLogger(PostgreSQLSelectiveAllDataValueListHandler.class);
+	private final String name;
+	private final SelectHandler handler;
+	private final Map<String, List<String>> tableMap;
+	private static Logger log =
+		Logger.getLogger(PostgreSQLSelectiveAllDataValueListHandler.class);
 
-    public PostgreSQLSelectiveAllDataValueListHandler(String name, SelectHandler handler) {
-        this.name = name;
-        this.handler = handler;
-    }
+	public PostgreSQLSelectiveAllDataValueListHandler(
+			String name,
+			SelectHandler handler,
+			List<String> tables) {
+		this.name = name;
+		this.handler = handler;
+		tableMap = getTableMap(name, tables);
+	}
 
-    public SortedMap getInitialData(List holderStrings) {
-        TreeMap map = new TreeMap();
-        try {
-            List list = handler.select(name, holderStrings);
-    		createSortedMap(map, list);
-        } catch (Exception e) {
-        	log.error("", e);
-        }
-        return map;
-    }
+	private Map<String, List<String>> getTableMap(
+			String hname,
+			List<String> tables) {
+		if (tables.isEmpty()) {
+			return Collections.emptyMap();
+		} else {
+			return map($(name, tables));
+		}
+	}
 
-    public SortedMap getInitialData(List holderStrings, int limit) {
-        TreeMap map = new TreeMap();
-        try {
-            List list = handler.select(name, holderStrings, limit);
-    		createSortedMap(map, list);
-        } catch (Exception e) {
-        	log.error("", e);
-        }
-        return map;
-    }
+	public SortedMap getInitialData(List holderStrings) {
+		TreeMap map = new TreeMap();
+		try {
+			List list = null;
+			if (tableMap.containsKey(name)) {
+				list =
+					handler.select(
+						name,
+						holderStrings,
+						PostgreSQLValueListHandler.MAX_MAP_SIZE,
+						tableMap.get(name));
+			} else {
+				list = handler.select(name, holderStrings);
+			}
+			createSortedMap(map, list);
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		return map;
+	}
 
-    public Map getUpdateLoggingData(Timestamp key, List holderStrings) {
-        Map map = new HashMap();
-        try {
-            List list = handler.select(name, holderStrings, key);
-    		for (Iterator it = list.iterator(); it.hasNext(); ) {
-    			LoggingRowData data = (LoggingRowData) it.next();
-    			map.put(data.getTimestamp(), data.getList());
-    		}
-        } catch (Exception e) {
-        	log.error("", e);
-        }
-        return map;
-    }
-    
-    public Timestamp firstTime(List holderStrings) {
-        try {
-            return handler.first(name, holderStrings).getTimestamp();
-        } catch (SQLException e) {
-        	log.error("", e);
-            throw new SQLRuntimeException(e);
-        }
-    }
-    
-    public Timestamp lastTime(List holderStrings) {
-        try {
-            return handler.last(name, holderStrings).getTimestamp();
-        } catch (SQLException e) {
-        	log.error("", e);
-            throw new SQLRuntimeException(e);
-        }
-    }
-    
-    public SortedMap getLoggingData(List holderStrings, Timestamp start, int limit) {
-        TreeMap map = new TreeMap();
-        try {
-            List list = handler.selectBeforeAfter(name, holderStrings, start, limit);
-    		createSortedMap(map, list);
-        } catch (Exception e) {
-        	log.error("", e);
-        }
-        if (log.isDebugEnabled()) {
-        	log.debug(map.firstKey() + "～" + map.lastKey());
-        }
-        return map;
-    }
+	public SortedMap getInitialData(List holderStrings, int limit) {
+		TreeMap map = new TreeMap();
+		try {
+			List list = null;
+			if (tableMap.containsKey(name)) {
+				list =
+					handler.select(name, holderStrings, limit, tableMap
+						.get(name));
+			} else {
+				list = handler.select(name, holderStrings, limit);
+			}
+			createSortedMap(map, list);
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		return map;
+	}
 
-    private void createSortedMap(TreeMap map, List list) {
-        for (Iterator it = list.iterator(); it.hasNext(); ) {
-        	LoggingRowData data = (LoggingRowData) it.next();
-        	map.put(data.getTimestamp(), data.getList());
-        }
-    }
+	public Map getUpdateLoggingData(Timestamp key, List holderStrings) {
+		Map map = new HashMap();
+		try {
+			List list = null;
+			if (tableMap.containsKey(name)) {
+				list =
+					handler
+						.select(name, holderStrings, key, tableMap.get(name));
+			} else {
+				list = handler.select(name, holderStrings, key);
+			}
+			for (Iterator it = list.iterator(); it.hasNext();) {
+				LoggingRowData data = (LoggingRowData) it.next();
+				map.put(data.getTimestamp(), data.getList());
+			}
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		return map;
+	}
+
+	public Timestamp firstTime(List holderStrings) {
+		try {
+			if (tableMap.containsKey(name)) {
+				return handler
+					.first(name, holderStrings, tableMap.get(name))
+					.getTimestamp();
+			} else {
+				return handler.first(name, holderStrings).getTimestamp();
+			}
+		} catch (SQLException e) {
+			log.error("", e);
+			throw new SQLRuntimeException(e);
+		}
+	}
+
+	public Timestamp lastTime(List holderStrings) {
+		try {
+			if (tableMap.containsKey(name)) {
+				return handler
+					.last(name, holderStrings, tableMap.get(name))
+					.getTimestamp();
+			} else {
+				return handler.last(name, holderStrings).getTimestamp();
+			}
+		} catch (SQLException e) {
+			log.error("", e);
+			throw new SQLRuntimeException(e);
+		}
+	}
+
+	public SortedMap getLoggingData(
+			List holderStrings,
+			Timestamp start,
+			int limit) {
+		TreeMap map = new TreeMap();
+		try {
+			List list = null;
+			if (tableMap.containsKey(name)) {
+				list =
+					handler.selectBeforeAfter(
+						name,
+						holderStrings,
+						start,
+						limit,
+						tableMap.get(name));
+			} else {
+				list =
+					handler
+						.selectBeforeAfter(name, holderStrings, start, limit);
+			}
+			createSortedMap(map, list);
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		if (log.isDebugEnabled()) {
+			log.debug(map.firstKey() + "～" + map.lastKey());
+		}
+		return map;
+	}
+
+	private void createSortedMap(TreeMap map, List list) {
+		for (Iterator it = list.iterator(); it.hasNext();) {
+			LoggingRowData data = (LoggingRowData) it.next();
+			map.put(data.getTimestamp(), data.getList());
+		}
+	}
 }
