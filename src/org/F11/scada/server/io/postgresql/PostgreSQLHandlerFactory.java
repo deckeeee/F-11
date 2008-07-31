@@ -54,12 +54,12 @@ public class PostgreSQLHandlerFactory extends HandlerFactory {
 		return new PostgreSQLSelectHandlerForReport();
 	}
 
-	public SelectiveValueListHandlerElement createSelectviveHandler(String device) {
-		return new PostgreSQLSelectiveValueListHandler(device, createSelectHandler());
+	public SelectiveValueListHandlerElement createSelectviveHandler(String device, List<String> tables) {
+		return new PostgreSQLSelectiveValueListHandler(device, createSelectHandler(), tables);
 	}
 
-	public SelectiveAllDataValueListHandlerElement createAllDataSelectviveHandler(String device) {
-		return new PostgreSQLSelectiveAllDataValueListHandler(device, createSelectHandler());
+	public SelectiveAllDataValueListHandlerElement createAllDataSelectviveHandler(String device, List<String> tables) {
+		return new PostgreSQLSelectiveAllDataValueListHandler(device, createSelectHandler(), tables);
 	}
 
 	private PostgreSQLSelectHandler createSelectHandler() {

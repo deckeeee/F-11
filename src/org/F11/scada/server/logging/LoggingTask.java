@@ -30,6 +30,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,6 +58,9 @@ public class LoggingTask extends TimerTask {
 
 	/** ロギングAPI */
 	private static Logger logger;
+	
+	/** 他参照するテーブル名 */
+	private final List<String> tables;
 
 	/**
 	 * コンストラクタ
@@ -70,7 +74,8 @@ public class LoggingTask extends TimerTask {
 			List dataHolders,
 			String factoryName,
 			ValueListHandlerManager handlerManager,
-			String schedule)
+			String schedule,
+			List<String> tables)
 			throws SQLException, MalformedURLException, RemoteException {
 		super();
 		this.dataHolders = dataHolders;
@@ -84,6 +89,7 @@ public class LoggingTask extends TimerTask {
 		handler = factory.createValueListHandler(name, dataHolders);
 		addLoggingListener(handler);
 		handlerManager.addValueListHandlerElement(name, handler);
+		this.tables = tables;
 	}
 
 	/**
@@ -136,7 +142,7 @@ public class LoggingTask extends TimerTask {
 			}
 		}
 	}
-	
+
 	public List getDataHolders() {
 		return dataHolders; 
 	}
@@ -155,5 +161,14 @@ public class LoggingTask extends TimerTask {
 	 */
 	public String getFactoryName() {
 		return factoryName;
+	}
+	
+	/**
+	 * 連結する他テーブル名のリストを返します。
+	 * 
+	 * @return 連結する他テーブル名のリストを返します。
+	 */
+	public List<String> getTables() {
+		return Collections.unmodifiableList(tables);
 	}
 }

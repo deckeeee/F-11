@@ -21,6 +21,7 @@
 
 package org.F11.scada.server.io.nio;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -36,7 +37,10 @@ public class LogTableSelectHandler implements SelectHandler {
 	}
 
 	public List select(String name, List dataHolders) {
-		return select(name, dataHolders, PostgreSQLValueListHandler.MAX_MAP_SIZE);
+		return select(
+			name,
+			dataHolders,
+			PostgreSQLValueListHandler.MAX_MAP_SIZE);
 	}
 
 	public List select(String name, List dataHolders, int limit) {
@@ -48,14 +52,57 @@ public class LogTableSelectHandler implements SelectHandler {
 	}
 
 	public LoggingRowData first(String name, List dataHolders) {
-        return service.selectFirst(name, dataHolders);
+		return service.selectFirst(name, dataHolders);
 	}
 
 	public LoggingRowData last(String name, List dataHolders) {
-        return service.selectLast(name, dataHolders);
+		return service.selectLast(name, dataHolders);
 	}
 
-	public List selectBeforeAfter(String name, List dataHolders, Timestamp start, int limit) {
-        return service.selectBeforeAfter(name, dataHolders, start, limit);
+	public List selectBeforeAfter(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			int limit) {
+		return service.selectBeforeAfter(name, dataHolders, start, limit);
+	}
+
+	public List<LoggingRowData> select(
+			String name,
+			List dataHolders,
+			int limit,
+			List<String> table) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public List select(
+			String name,
+			List dataHolders,
+			Timestamp time,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public List selectBeforeAfter(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			int limit,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+	
+	public LoggingRowData first(
+			String name,
+			List dataHolders,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+	
+	public LoggingRowData last(
+			String name,
+			List dataHolders,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
 	}
 }

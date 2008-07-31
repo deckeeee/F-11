@@ -28,14 +28,14 @@ import org.F11.scada.server.event.LoggingDataListener;
  */
 
 /**
- * データハンドラーのファクトリークラスです。
- * getHandlerFactory メソッドで、指定のファクトリーオブジェクトを生成します。
- * @see#getHandlerFactory()
- * <!-- Abstract Factory Pattern を使用しています。 -->
+ * データハンドラーのファクトリークラスです。 getHandlerFactory メソッドで、指定のファクトリーオブジェクトを生成します。
+ * 
+ * @see#getHandlerFactory() <!-- Abstract Factory Pattern を使用しています。 -->
  */
 public abstract class HandlerFactory {
 	/**
 	 * 引数で指定したクラス名の、ファクトリーオブジェクトを生成します。
+	 * 
 	 * @param className ファクトリーオブジェクト名
 	 * @return 生成されたファクトリーオブジェクトのインスタンス
 	 */
@@ -53,14 +53,17 @@ public abstract class HandlerFactory {
 
 	/**
 	 * データ更新用データハンドラを返すファクトリーメソッドです。サブクラスで実装してください。
+	 * 
 	 * @param device デバイス名(通常はテーブル名、ファイル名)
 	 * @return データ更新用データハンドラ
 	 * @exception SQLException DBMSコネクトが失敗したときスローされます。
 	 */
-	public abstract LoggingDataListener createStoreHandler(String device) throws SQLException;
+	public abstract LoggingDataListener createStoreHandler(String device)
+			throws SQLException;
 
 	/**
 	 * クライアントハンドラインターフェイスオブジェクトを返すファクトリーメソッドです。サブクラスで実装してください。
+	 * 
 	 * @param device デバイス名(通常はテーブル名、ファイル名)
 	 * @param dataHolders データホルダーのリスト
 	 * @return クライアントハンドラインターフェイスオブジェクトを返すファクトリー
@@ -70,19 +73,27 @@ public abstract class HandlerFactory {
 	public abstract ValueListHandlerElement createValueListHandler(
 			String device,
 			List dataHolders)
-			throws MalformedURLException, RemoteException, SQLException;
+			throws MalformedURLException,
+			RemoteException,
+			SQLException;
 
 	/**
 	 * グラフ用のセレクトハンドラを返します。
+	 * 
 	 * @param device テーブル名
 	 * @return グラフ用のセレクトハンドラを返します。
 	 */
-	public abstract SelectiveValueListHandlerElement createSelectviveHandler(String device);
+	public abstract SelectiveValueListHandlerElement createSelectviveHandler(
+			String device,
+			List<String> tables);
 
 	/**
 	 * グラフ用の全データハンドラを返します。
+	 * 
 	 * @param device テーブル名
 	 * @return グラフ用の全データハンドラを返します。
 	 */
-	public abstract SelectiveAllDataValueListHandlerElement createAllDataSelectviveHandler(String device);
+	public abstract SelectiveAllDataValueListHandlerElement createAllDataSelectviveHandler(
+			String device,
+			List<String> tables);
 }

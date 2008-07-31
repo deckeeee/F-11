@@ -46,57 +46,114 @@ public class PostgreSQLSelectHandlerForReport implements SelectHandler {
 	public PostgreSQLSelectHandlerForReport() {
 		super();
 		logger = Logger.getLogger(getClass().getName());
-	    S2Container container = S2ContainerUtil.getS2Container();
-		this.utility = (PostgreSQLUtility) container.getComponent(PostgreSQLUtility.class);
+		S2Container container = S2ContainerUtil.getS2Container();
+		this.utility =
+			(PostgreSQLUtility) container.getComponent(PostgreSQLUtility.class);
 		util = (ItemUtil) container.getComponent("itemutil");
 		selector = new PostgreSQLDataSelector();
 	}
 
 	/**
 	 * 指定された列の LoggingRowDataのリストを返します。
+	 * 
 	 * @param name データソース名
 	 * @param dataHolders データホルダのリスト(列の情報)
 	 * @return 指定された列の LoggingRowDataのリストを返します。
 	 * @exception SQLException SQLエラーが発生した場合
 	 */
 	public List select(String name, List dataHolders) throws SQLException {
-		return select(name, dataHolders, PostgreSQLValueListHandler.MAX_MAP_SIZE);
+		return select(
+			name,
+			dataHolders,
+			PostgreSQLValueListHandler.MAX_MAP_SIZE);
 	}
-	
+
 	/**
 	 * 指定された列の LoggingRowDataのリストを返します。
+	 * 
 	 * @param name データソース名
 	 * @param dataHolders データホルダのリスト(列の情報)
 	 * @return 指定された列の LoggingRowDataのリストを返します。
 	 * @exception SQLException SQLエラーが発生した場合
 	 */
-	public List select(String name, List dataHolders, int limit) throws SQLException {
+	public List select(String name, List dataHolders, int limit)
+			throws SQLException {
 		String sql = utility.getSelectAllString(name, dataHolders, limit);
 		logger.debug(sql);
-		
+
 		return getSelectData(name, dataHolders, sql);
 	}
-	
-    public List select(String name, List dataHolders, Timestamp time)
-            throws SQLException {
-        throw new UnsupportedOperationException();
-    }
 
-    private List getSelectData(String name, List dataHolders, String sql) throws SQLException {
+	public List select(
+			String name,
+			List dataHolders,
+			int limit,
+			List<String> tables) throws SQLException {
+		String sql =
+			utility.getSelectAllString(name, dataHolders, limit, tables);
+		logger.debug(sql);
+
+		return getSelectData(name, dataHolders, sql);
+	}
+
+	public List select(String name, List dataHolders, Timestamp time)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public List select(
+			String name,
+			List dataHolders,
+			Timestamp time,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	private List getSelectData(String name, List dataHolders, String sql)
+			throws SQLException {
 		Map converValueMap = util.createConvertValueMap(dataHolders, name);
-		
+
 		return selector.getSelectData(name, dataHolders, sql, converValueMap);
-    }
-    
-    public LoggingRowData first(String name, List dataHolders) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-    
-    public LoggingRowData last(String name, List dataHolders) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-    
-    public List selectBeforeAfter(String name, List dataHolders, Timestamp start, int limit) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
+	}
+
+	public LoggingRowData first(String name, List dataHolders)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public LoggingRowData last(String name, List dataHolders)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public List selectBeforeAfter(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			int limit) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public List selectBeforeAfter(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			int limit,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public LoggingRowData first(
+			String name,
+			List dataHolders,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+	
+	public LoggingRowData last(
+			String name,
+			List dataHolders,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
 }

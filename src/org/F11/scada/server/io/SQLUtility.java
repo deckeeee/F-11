@@ -25,28 +25,95 @@ import java.util.List;
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
  */
 public interface SQLUtility {
-    String getSelectAllString(String name, List dataHolder, int limit);
-    String getSelectTimeString(String name, List dataHolder, Timestamp time);
-    String getFirstData(String name, List dataHolder);
-    String getLastData(String name, List dataHolder);
-    /**
-     * 引数のタイムスタンプより前(引数を含まない)のデータを返します
-     * @param name テーブル名
-     * @param data 抽出ホルダのリスト
-     * @param start このタイムスタンプより前のデータを返します
-     * @param limit 最大件数
-     * @return 引数のタイムスタンプより前(引数を含まない)のデータを返します
-     * @see #getSelectAfter(String, List, Timestamp, int)
-     */
-    String getSelectBefore(String name, List dataHolder, Timestamp start, int limit);
-    /**
-     * 引数のタイムスタンプ以上(引数を含む)のデータを返します
-     * @param name テーブル名
-     * @param data 抽出ホルダのリスト
-     * @param start このタイムスタンプ以上のデータを返します
-     * @param limit 最大件数
-     * @return 引数のタイムスタンプ以上(引数を含む)のデータを返します
-     * @see #getSelectBefore(String, List, Timestamp, int)
-     */
-    String getSelectAfter(String name, List dataHolder, Timestamp start, int limit);
+	String getSelectAllString(String name, List dataHolder, int limit);
+
+	String getSelectTimeString(String name, List dataHolder, Timestamp time);
+
+	String getFirstData(String name, List dataHolder);
+
+	String getLastData(String name, List dataHolder);
+
+	/**
+	 * 引数のタイムスタンプより前(引数を含まない)のデータを返します
+	 * 
+	 * @param name テーブル名
+	 * @param data 抽出ホルダのリスト
+	 * @param start このタイムスタンプより前のデータを返します
+	 * @param limit 最大件数
+	 * @return 引数のタイムスタンプより前(引数を含まない)のデータを返します
+	 * @see #getSelectAfter(String, List, Timestamp, int)
+	 */
+	String getSelectBefore(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			int limit);
+
+	/**
+	 * 引数のタイムスタンプ以上(引数を含む)のデータを返します
+	 * 
+	 * @param name テーブル名
+	 * @param data 抽出ホルダのリスト
+	 * @param start このタイムスタンプ以上のデータを返します
+	 * @param limit 最大件数
+	 * @return 引数のタイムスタンプ以上(引数を含む)のデータを返します
+	 * @see #getSelectBefore(String, List, Timestamp, int)
+	 */
+	String getSelectAfter(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			int limit);
+
+	/**
+	 * 引数のタイムスタンプより前(引数を含まない)のデータを返します
+	 * 
+	 * @param name テーブル名
+	 * @param data 抽出ホルダのリスト
+	 * @param start このタイムスタンプより前のデータを返します
+	 * @param limit 最大件数
+	 * @param tables 使用するテーブル名
+	 * @return 引数のタイムスタンプより前(引数を含まない)のデータを返します
+	 * @see #getSelectAfter(String, List, Timestamp, int)
+	 */
+	String getSelectBefore(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			int limit,
+			List<String> tables);
+
+	/**
+	 * 引数のタイムスタンプ以上(引数を含む)のデータを返します
+	 * 
+	 * @param name テーブル名
+	 * @param data 抽出ホルダのリスト
+	 * @param start このタイムスタンプ以上のデータを返します
+	 * @param limit 最大件数
+	 * @param tables 使用するテーブル名
+	 * @return 引数のタイムスタンプ以上(引数を含む)のデータを返します
+	 * @see #getSelectBefore(String, List, Timestamp, int)
+	 */
+	String getSelectAfter(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			int limit,
+			List<String> tables);
+
+	String getSelectAllString(
+			String name,
+			List dataHolder,
+			int limit,
+			List<String> tables);
+
+	String getSelectTimeString(
+			String name,
+			List dataHolder,
+			Timestamp time,
+			List<String> tables);
+
+	String getFirstData(String name, List dataHolder, List<String> tables);
+
+	String getLastData(String name, List dataHolder, List<String> tables);
 }
