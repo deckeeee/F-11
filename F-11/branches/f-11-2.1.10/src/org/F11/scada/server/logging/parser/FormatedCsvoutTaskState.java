@@ -130,7 +130,8 @@ public class FormatedCsvoutTaskState implements State {
 					csv_foot,
 					keepCnt,
 					midOffset,
-					formatFile);
+					formatFile,
+					state.getTables());
 			state.loggingDataListeners.add(task);
 		} catch (Exception ex) {
 			ex.printStackTrace();

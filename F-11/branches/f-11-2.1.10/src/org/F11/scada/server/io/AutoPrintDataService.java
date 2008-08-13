@@ -35,5 +35,5 @@ public interface AutoPrintDataService {
 
 	List getLoggingDataList(String tableName, Timestamp start, Timestamp end, List dataHolders);
 
-	List getLoggingHeddarList(String tableName, List dataHolders);
+	List<Map<String, String>> getLoggingHeddarList(String tableName, List dataHolders);
 }

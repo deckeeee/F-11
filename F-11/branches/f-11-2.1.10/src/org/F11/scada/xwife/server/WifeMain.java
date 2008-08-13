@@ -161,8 +161,8 @@ public class WifeMain extends JPanel {
 				rmiReceivePort);
 		LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
 				valueListHandlerManager));
-		// LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
-		// new DummyValueListHandlerManager()));
+//		 LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
+//		 new DummyValueListHandlerManager()));
 		selectiveValueListHandler = new SelectiveValueListHandlerManager(
 				rmiReceivePort);
 		new LoggingManager(new SelectiveLoggingHandler(

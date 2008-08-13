@@ -56,6 +56,7 @@ import org.F11.scada.server.event.LoggingDataListener;
 import org.F11.scada.server.io.ItemUtil;
 import org.F11.scada.server.io.SelectHandler;
 import org.F11.scada.server.io.ValueListHandlerElement;
+import org.F11.scada.server.register.HolderString;
 import org.F11.scada.util.ConnectionUtil;
 import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
@@ -371,5 +372,9 @@ public class PostgreSQLValueListHandler
 			}
 		}
     	return multiRecord;
+    }
+    
+    public List<HolderString> getHolders() {
+    	return dataHolders;
     }
 }

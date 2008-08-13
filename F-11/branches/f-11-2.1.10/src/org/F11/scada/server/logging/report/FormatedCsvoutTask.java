@@ -63,7 +63,8 @@ public class FormatedCsvoutTask extends AbstractCsvoutTask {
 			String csv_foot,
 			int keepCount,
 			long midOffset,
-			File formatFile) throws NoSuchFieldException,
+			File formatFile,
+			List<String> tables) throws NoSuchFieldException,
 			IllegalAccessException {
 		super(
 				logg_name,
@@ -75,7 +76,8 @@ public class FormatedCsvoutTask extends AbstractCsvoutTask {
 				csv_mid,
 				csv_foot,
 				keepCount,
-				midOffset);
+				midOffset,
+				tables);
 		this.formatFile = formatFile;
 	}
 
