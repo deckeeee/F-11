@@ -122,7 +122,7 @@ public class TaskState implements State, TaskStateble {
 						factoryName,
 						state.handlerManager,
 						schedule,
-						AttributesUtil.getTables(tables));
+						getTables());
 				setSchedule(task);
 			} else {
 				LoggingDefaultTask task =
@@ -132,7 +132,7 @@ public class TaskState implements State, TaskStateble {
 						factoryName,
 						state.handlerManager,
 						schedule,
-						AttributesUtil.getTables(tables));
+						getTables());
 				setSchedule(task);
 			}
 		} catch (Exception e) {
@@ -165,9 +165,14 @@ public class TaskState implements State, TaskStateble {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.logging.parser.TaskStateble#add(java.lang.Object)
+	 * @see
+	 * org.F11.scada.server.logging.parser.TaskStateble#add(java.lang.Object)
 	 */
 	public void add(Object obj) {
 		dataHolders.add(obj);
+	}
+
+	public List<String> getTables() {
+		return AttributesUtil.getTables(tables);
 	}
 }
