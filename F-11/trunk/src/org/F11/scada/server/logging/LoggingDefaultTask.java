@@ -37,8 +37,7 @@ import org.F11.scada.server.io.ValueListHandlerManager;
 import org.apache.log4j.Logger;
 
 /**
- * ロギング用のタスククラスです。
- * データロギング処理する際に、ミリ秒と秒をゼロにします。
+ * ロギング用のタスククラスです。 データロギング処理する際に、ミリ秒と秒をゼロにします。
  */
 public class LoggingDefaultTask extends LoggingTask {
 	/** ロギングAPI */
@@ -49,9 +48,10 @@ public class LoggingDefaultTask extends LoggingTask {
 			List dataHolders,
 			String factoryName,
 			ValueListHandlerManager handlerManager,
-			String schedule) throws SQLException, MalformedURLException,
+			String schedule,
+			List<String> tables) throws SQLException, MalformedURLException,
 			RemoteException {
-		super(name, dataHolders, factoryName, handlerManager, schedule);
+		super(name, dataHolders, factoryName, handlerManager, schedule, tables);
 		logger.info(LoggingDefaultTask.class.getName() + "開始");
 	}
 

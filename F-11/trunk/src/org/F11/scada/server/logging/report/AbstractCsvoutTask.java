@@ -37,6 +37,7 @@ import org.F11.scada.server.io.ValueListHandler;
 import org.F11.scada.server.io.postgresql.S2ContainerUtil;
 import org.F11.scada.server.logging.report.schedule.CsvSchedule;
 import org.F11.scada.server.logging.report.schedule.CsvScheduleFactory;
+import org.F11.scada.server.register.HolderString;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
@@ -49,7 +50,7 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 	/** ハンドラ */
 	protected ValueListHandler handlerManager;
 	/** データホルダのリスト */
-	protected List dataHolders;
+	protected List<HolderString> dataHolders;
 	/** CSVファイルの保存ディレクトリ名 */
 	protected String currDir;
 	/** CSVファイル名の先頭文字 */
@@ -70,6 +71,8 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 	protected final ItemUtil util;
 	/** ファイル名日時オフセット(ミリ秒) */
 	protected final long midOffset;
+	/** 結合するテーブル */
+	protected final List<String> tables;
 
 	/** ロギングAPI */
 	protected static Logger logger = Logger.getLogger(AbstractCsvoutTask.class);
@@ -87,13 +90,14 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 			String logg_name,
 			ValueListHandler handlerManager,
 			String schedule,
-			List dataHolders,
+			List<HolderString> dataHolders,
 			String currDir,
 			String csv_head,
 			String csv_mid,
 			String csv_foot,
 			int keepCount,
-			long midOffset) throws NoSuchFieldException, IllegalAccessException {
+			long midOffset,
+			List<String> tables) throws NoSuchFieldException, IllegalAccessException {
 		super();
 
 		this.logg_name = logg_name;
@@ -105,6 +109,7 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 		this.keepCount = keepCount;
 		this.handlerManager = handlerManager;
 		this.midOffset = midOffset;
+		this.tables = tables;
 		CsvScheduleFactory factory = new CsvScheduleFactory();
 		csvSchedule = factory.getCsvSchedule(schedule);
 		S2Container container = S2ContainerUtil.getS2Container();

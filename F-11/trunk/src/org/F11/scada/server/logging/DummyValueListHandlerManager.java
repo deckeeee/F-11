@@ -24,20 +24,24 @@ package org.F11.scada.server.logging;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.F11.scada.applet.graph.LoggingData;
+import org.F11.scada.server.event.LoggingDataEvent;
+import org.F11.scada.server.event.LoggingDataListener;
 import org.F11.scada.server.io.ValueListHandlerElement;
 import org.F11.scada.server.io.ValueListHandlerManager;
+import org.F11.scada.server.register.HolderString;
 import org.F11.scada.util.ThreadUtil;
 import org.apache.commons.collections.primitives.ArrayDoubleList;
 import org.apache.log4j.Logger;
 
 public class DummyValueListHandlerManager implements ValueListHandlerManager {
-	private final Logger logger = Logger
-			.getLogger(DummyValueListHandlerManager.class);
+	private final Logger logger =
+		Logger.getLogger(DummyValueListHandlerManager.class);
 
 	public void addValueListHandlerElement(
 			String name,
@@ -94,4 +98,49 @@ public class DummyValueListHandlerManager implements ValueListHandlerManager {
 		return new LoggingData(new Timestamp(0), new ArrayDoubleList());
 	}
 
+	public ValueListHandlerElement getValueListHandlerElement(String name) {
+		ThreadUtil.printSS();
+		return new ValueListHandlerElement() {
+
+			public void addLoggingDataListener(LoggingDataListener listener) {
+			}
+
+			public void findRecord(Timestamp key) {
+			}
+
+			public Object firstKey() {
+				return new Timestamp(0);
+			}
+
+			public SortedMap getInitialData() {
+				return new TreeMap();
+			}
+
+			public Map getUpdateLoggingData(Timestamp key) {
+				return Collections.EMPTY_MAP;
+			}
+
+			public boolean hasNext() {
+				return false;
+			}
+
+			public Object lastKey() {
+				return new Timestamp(0);
+			}
+
+			public Object next() {
+				return new LoggingData(new Timestamp(0), new ArrayDoubleList());
+			}
+
+			public void removeLoggingDataListener(LoggingDataListener listener) {
+			}
+
+			public void changeLoggingData(LoggingDataEvent event) {
+			}
+			
+			public List<HolderString> getHolders() {
+				return Collections.EMPTY_LIST;
+			}
+		};
+	}
 }

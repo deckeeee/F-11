@@ -21,6 +21,11 @@
 
 package org.F11.scada.util;
 
+import static org.F11.scada.cat.util.CollectionUtil.list;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -72,7 +77,7 @@ public abstract class AttributesUtil {
 	public static boolean isSpaceOrNull(String str) {
 		return str == null || "".equals(str);
 	}
-	
+
 	public static long getLongValue(String s) {
 		if (isSpaceOrNull(s)) {
 			return 0L;
@@ -84,7 +89,7 @@ public abstract class AttributesUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * 文字列が null か空白なら null を以外の場合は"%"で囲んだ文字列を返します。
 	 * 
@@ -93,5 +98,24 @@ public abstract class AttributesUtil {
 	 */
 	public static String getLikeString(String s) {
 		return isSpaceOrNull(s) ? null : "%" + s + "%";
+	}
+
+	/**
+	 * 引数の文字列を「,」で分割します
+	 * 
+	 * @param tables テーブル名を「,」で区切った文字列
+	 * @return テーブル名があればテーブル名のリストを無ければ空のリストを返します。
+	 */
+	public static List<String> getTables(String tables) {
+		if (null != tables) {
+			List<String> l = list();
+			String[] s = tables.split("\\,");
+			for (String string : s) {
+				l.add(string.trim());
+			}
+			return l;
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }
