@@ -501,11 +501,12 @@ public class CsvoutTask extends AbstractCsvoutTask {
 				}
 			}
 		} else {
+			boolean isFirst = true;
 			for (String table : tables) {
 				Timestamp st =
 					csvSchedule.startTime(System.currentTimeMillis(), dataMode);
 				handlerManager.findRecord(table, st);
-				boolean isFirst = true;
+				logger.info(table);
 				for (int recode = 0; handlerManager.hasNext(table);) {
 					LoggingData data = (LoggingData) handlerManager.next(table);
 					if (isNomalWrite(data)) {
@@ -522,7 +523,6 @@ public class CsvoutTask extends AbstractCsvoutTask {
 							b.append(',');
 							b.append(conv.convertStringValue(conv
 								.convertInputValue(dd)));
-							logger.info("3");
 						}
 						addList(list, b, recode, isFirst);
 						recode++;
@@ -531,9 +531,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 							startTime = data.getTimestamp();
 						}
 					}
-					logger.info("2");
 				}
-				logger.info("1");
 				isFirst = false;
 			}
 		}
