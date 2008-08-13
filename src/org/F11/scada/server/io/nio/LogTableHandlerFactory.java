@@ -59,11 +59,11 @@ public class LogTableHandlerFactory extends HandlerFactory {
 		return (LogTableSelectHandler) container.getComponent(LogTableSelectHandler.class);
 	}
 
-	public SelectiveValueListHandlerElement createSelectviveHandler(String device) {
-		return new PostgreSQLSelectiveValueListHandler(device, getSelectHandler());
+	public SelectiveValueListHandlerElement createSelectviveHandler(String device, List<String> tables) {
+		return new PostgreSQLSelectiveValueListHandler(device, getSelectHandler(), tables);
 	}
 
-	public SelectiveAllDataValueListHandlerElement createAllDataSelectviveHandler(String device) {
-		return new PostgreSQLSelectiveAllDataValueListHandler(device, getSelectHandler());
+	public SelectiveAllDataValueListHandlerElement createAllDataSelectviveHandler(String device, List<String> tables) {
+		return new PostgreSQLSelectiveAllDataValueListHandler(device, getSelectHandler(), tables);
 	}
 }

@@ -115,7 +115,8 @@ public class CsvoutTaskState implements State {
 					keepCnt,
 					data_head,
 					data_mode,
-					midOffset);
+					midOffset,
+					state.getTables());
 			state.loggingDataListeners.add(task);
 		} catch (Exception ex) {
 			ex.printStackTrace();

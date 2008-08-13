@@ -204,9 +204,9 @@ public abstract class AbstractAutoPrintDataService implements
 	 * @see org.F11.scada.server.io.AutoPrintDataService#getLoggingHeddarList(java.lang.String,
 	 *      java.util.List)
 	 */
-	public List getLoggingHeddarList(String tableName, List dataHolders) {
+	public List<Map<String, String>> getLoggingHeddarList(String tableName, List dataHolders) {
 
-		List ret = new ArrayList(dataHolders.size() + 1);
+		List<Map<String, String>> ret = new ArrayList<Map<String, String>>(dataHolders.size() + 1);
 		Connection con = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -225,19 +225,16 @@ public abstract class AbstractAutoPrintDataService implements
 				stmt.setInt(1, manageSortedItems[i].getPoint().intValue());
 				rs = stmt.executeQuery();
 				if (rs.next()) {
-					Map record = new HashMap();
+					Map<String, String> record = new HashMap();
 					record.put("unit", rs.getString("unit"));
 					record.put("name", rs.getString("name"));
 					record.put("unit_mark", rs.getString("unit_mark"));
 					ret.add(record);
 				}
 				rs.close();
-				rs = null;
 			}
 			stmt.close();
-			stmt = null;
 			con.close();
-			con = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

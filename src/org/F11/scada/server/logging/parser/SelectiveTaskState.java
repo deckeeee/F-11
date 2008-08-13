@@ -18,6 +18,8 @@
  */
 package org.F11.scada.server.logging.parser;
 
+import static org.F11.scada.util.AttributesUtil.getTables;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -26,6 +28,7 @@ import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
 import org.F11.scada.server.io.HandlerFactory;
 import org.F11.scada.server.io.SelectiveValueListHandlerElement;
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -40,11 +43,15 @@ public class SelectiveTaskState implements State, TaskStateble {
 
 	SelectiveLoggingState state;
 	private String factoryName;
+	private String tables;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
 	 */
-	public SelectiveTaskState(String tagName, Attributes atts, SelectiveLoggingState state) {
+	public SelectiveTaskState(
+			String tagName,
+			Attributes atts,
+			SelectiveLoggingState state) {
 		logger = Logger.getLogger(getClass().getName());
 		name = atts.getValue("name");
 		if (name == null) {
@@ -57,6 +64,7 @@ public class SelectiveTaskState implements State, TaskStateble {
 
 		dataHolders = new ArrayList();
 		this.state = state;
+		tables = AttributesUtil.getNonNullString(atts.getValue("tables"));
 	}
 
 	/*
@@ -69,7 +77,7 @@ public class SelectiveTaskState implements State, TaskStateble {
 		if (tagName.equals("column")) {
 			stack.push(new ColumnState(tagName, atts, this));
 		} else if (tagName.equals("csvout")) {
-//			stack.push(new CsvoutTaskState(tagName, atts, this));
+			// stack.push(new CsvoutTaskState(tagName, atts, this));
 		} else {
 			logger.debug("tagName:" + tagName);
 		}
@@ -83,17 +91,22 @@ public class SelectiveTaskState implements State, TaskStateble {
 			logger.debug("Pop : " + DisplayState.toString(tagName, stack));
 		}
 		if (tagName.equals("task")) {
-			HandlerFactory factory = HandlerFactory.getHandlerFactory(factoryName);
-			SelectiveValueListHandlerElement element = factory.createSelectviveHandler(name);
+			HandlerFactory factory =
+				HandlerFactory.getHandlerFactory(factoryName);
+			SelectiveValueListHandlerElement element =
+				factory.createSelectviveHandler(name, getTables(tables));
 			state.handlerManager.addValueListHandlerElement(name, element);
 			stack.pop();
 		}
 	}
-	
-	/* (non-Javadoc)
-     * @see org.F11.scada.server.logging.parser.TaskStateble#add(java.lang.Object)
-     */
-    public void add(Object obj) {
-        dataHolders.add(obj);
-    }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.F11.scada.server.logging.parser.TaskStateble#add(java.lang.Object)
+	 */
+	public void add(Object obj) {
+		dataHolders.add(obj);
+	}
 }

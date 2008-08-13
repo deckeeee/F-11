@@ -25,10 +25,12 @@
 package org.F11.scada.server.io;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
 import org.F11.scada.server.event.LoggingDataListener;
+import org.F11.scada.server.register.HolderString;
 
 /**
  * ロギングデータのハンドラエレメントのインターフェイスです。
@@ -88,4 +90,11 @@ public interface ValueListHandlerElement extends LoggingDataListener {
 	 * @return 初期化用データのSortedMapを返します。
 	 */
 	public SortedMap getInitialData();
+	
+	/**
+	 * このタスクが持つホルダを返します。
+	 * 
+	 * @return このタスクが持つホルダを返します。
+	 */
+	List<HolderString> getHolders();
 }

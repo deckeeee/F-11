@@ -46,7 +46,7 @@ public class ValueListHandlerManagerImpl
 			
 	private static final long serialVersionUID = -2516839121099400245L;
 	/** ハンドラ名とハンドラオブジェクトのマップです */
-	private Map handlerMap;
+	private Map<String, ValueListHandlerElement> handlerMap;
 	/** ロギングAPI */
 	private static Logger logger;
 
@@ -70,7 +70,7 @@ public class ValueListHandlerManagerImpl
 	 */
 	public synchronized void addValueListHandlerElement(String name, ValueListHandlerElement handler) {
 		if (handlerMap == null) {
-			handlerMap = new HashMap();
+			handlerMap = new HashMap<String, ValueListHandlerElement>();
 		}
 		handlerMap.put(name, handler);
 	}
@@ -86,12 +86,12 @@ public class ValueListHandlerManagerImpl
 		handlerMap.remove(name);
 	}
 	
-	private ValueListHandlerElement getValueListHandlerElement(String name) {
+	public ValueListHandlerElement getValueListHandlerElement(String name) {
 		if (handlerMap == null) {
 			throw new IllegalStateException("A ValueListHandlerManager doesn't hold a ValueListHandlerElement.");
 		}
 
-		return (ValueListHandlerElement) handlerMap.get(name);
+		return handlerMap.get(name);
 	}
 
 	/*

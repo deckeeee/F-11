@@ -85,4 +85,12 @@ public interface ValueListHandler extends Remote {
 	 */
 	public SortedMap getInitialData(String name) throws RemoteException;
 
+	/**
+	 * 引数のハンドラを返します。
+	 * 
+	 * @param name ハンドラ名
+	 * @return 引数のハンドラを返します。
+	 */
+	ValueListHandlerElement getValueListHandlerElement(String name) throws RemoteException;
+
 }

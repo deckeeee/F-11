@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import junit.framework.TestCase;
 
 import org.F11.scada.server.io.ValueListHandler;
+import org.F11.scada.server.io.ValueListHandlerElement;
 import org.F11.scada.test.util.TestUtil;
 import org.F11.scada.test.util.TimestampUtil;
 import org.apache.commons.collections.primitives.ArrayDoubleList;
@@ -134,6 +135,10 @@ public class DefaultGraphModelTest extends TestCase {
             }
             public Object next(String name) throws RemoteException {
                 return null;
+            }
+            public ValueListHandlerElement getValueListHandlerElement(
+            		String name) {
+            	return null;
             }
         }
 	}

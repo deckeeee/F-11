@@ -32,6 +32,7 @@ import org.F11.scada.server.event.LoggingDataListener;
 import org.F11.scada.server.logging.LoggingDefaultTask;
 import org.F11.scada.server.logging.LoggingSchedule;
 import org.F11.scada.server.logging.LoggingTask;
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -54,6 +55,7 @@ public class TaskState implements State, TaskStateble {
 	LoggingState state;
 
 	private boolean milliOffsetMode;
+	private String tables;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -82,6 +84,7 @@ public class TaskState implements State, TaskStateble {
 		dataHolders = new ArrayList();
 		loggingDataListeners = new ArrayList();
 		this.state = state;
+		tables = AttributesUtil.getNonNullString(atts.getValue("tables"));
 	}
 
 	/*
@@ -118,7 +121,8 @@ public class TaskState implements State, TaskStateble {
 						dataHolders,
 						factoryName,
 						state.handlerManager,
-						schedule);
+						schedule,
+						getTables());
 				setSchedule(task);
 			} else {
 				LoggingDefaultTask task =
@@ -127,7 +131,8 @@ public class TaskState implements State, TaskStateble {
 						dataHolders,
 						factoryName,
 						state.handlerManager,
-						schedule);
+						schedule,
+						getTables());
 				setSchedule(task);
 			}
 		} catch (Exception e) {
@@ -160,9 +165,14 @@ public class TaskState implements State, TaskStateble {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.logging.parser.TaskStateble#add(java.lang.Object)
+	 * @see
+	 * org.F11.scada.server.logging.parser.TaskStateble#add(java.lang.Object)
 	 */
 	public void add(Object obj) {
 		dataHolders.add(obj);
+	}
+
+	public List<String> getTables() {
+		return AttributesUtil.getTables(tables);
 	}
 }
