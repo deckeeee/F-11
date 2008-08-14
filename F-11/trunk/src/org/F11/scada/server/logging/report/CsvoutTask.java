@@ -46,6 +46,7 @@ import org.F11.scada.server.io.ValueListHandlerElement;
 import org.F11.scada.server.logging.report.schedule.BMSSchedule;
 import org.F11.scada.server.logging.report.schedule.GODAMarker;
 import org.F11.scada.server.register.HolderString;
+import org.F11.scada.util.ThreadUtil;
 
 /**
  * @author hori
@@ -401,6 +402,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 					}
 				}
 				isFirst = false;
+				ThreadUtil.sleep(1000L);
 			}
 		}
 		writeString(list, out);
@@ -458,6 +460,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 					startTime = data.getTimestamp();
 				}
 				isFirst = false;
+				ThreadUtil.sleep(1000L);
 			}
 			out.newLine();
 		}
@@ -533,6 +536,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 					}
 				}
 				isFirst = false;
+				ThreadUtil.sleep(1000L);
 			}
 		}
 		writeString(list, out);
