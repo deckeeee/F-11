@@ -54,7 +54,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
@@ -88,6 +87,7 @@ import org.F11.scada.server.alarm.table.Priority;
 import org.F11.scada.server.alarm.table.FindAlarmCondition.RadioStat;
 import org.F11.scada.xwife.applet.alarm.AlarmColumn;
 import org.F11.scada.xwife.applet.alarm.PageJump;
+import org.F11.scada.xwife.applet.alarm.RowHeaderScrollPane;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
 
@@ -115,8 +115,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	protected JComboBox h_order;
 	protected JComboBox c_order;
 	/** 検索条件表示コンポーネント */
-	protected static final FastDateFormat formatDate = FastDateFormat
-			.getInstance("yyyy/MM/dd HH:mm:ss");
+	protected static final FastDateFormat formatDate =
+		FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss");
 	protected JLabel labelStDate;
 	protected JLabel labelEdDate;
 	protected JLabel labelKind;
@@ -183,8 +183,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	protected boolean isNewLayout() {
 		return wifeApplet.configuration.getBoolean(
-				"org.F11.scada.xwife.applet.newalarm",
-				false);
+			"org.F11.scada.xwife.applet.newalarm",
+			false);
 	}
 
 	protected Component createNewAlarmConditions() {
@@ -323,16 +323,16 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		findButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					final AttributeRecord[] attris = wifeApplet.alarmListFinder
-							.getAttributeRecords();
-					final List priorityList = wifeApplet.alarmListFinder
-							.getPriorityTable();
-					FindAlarmCondition cond_new = FindAlarmDialog
-							.showFindAlarmDialog(
-									WifeUtilities.getParentFrame(wifeApplet),
-									condition,
-									attris,
-									priorityList);
+					final AttributeRecord[] attris =
+						wifeApplet.alarmListFinder.getAttributeRecords();
+					final List priorityList =
+						wifeApplet.alarmListFinder.getPriorityTable();
+					FindAlarmCondition cond_new =
+						FindAlarmDialog.showFindAlarmDialog(
+							WifeUtilities.getParentFrame(wifeApplet),
+							condition,
+							attris,
+							priorityList);
 					if (condition != cond_new) {
 						condition = cond_new;
 						s_order.setSelectedIndex(0);
@@ -343,11 +343,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(
-							WifeUtilities.getDialogParent(wifeApplet),
-							alarmDefine.getAlarmConfig()
-									.getServerErrorMessage().getMessage(),
-							"F-11 server error",
-							JOptionPane.ERROR_MESSAGE);
+						WifeUtilities.getDialogParent(wifeApplet),
+						alarmDefine
+							.getAlarmConfig()
+							.getServerErrorMessage()
+							.getMessage(),
+						"F-11 server error",
+						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -358,8 +360,10 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	protected Component getAlarmTable() {
 		JTabbedPane tabbedPane = createAlarmTables();
-		tabbedPane.setSelectedIndex(alarmDefine.getAlarmConfig()
-				.getAlarmTableConfig().getDefaultTabNo());
+		tabbedPane.setSelectedIndex(alarmDefine
+			.getAlarmConfig()
+			.getAlarmTableConfig()
+			.getDefaultTabNo());
 		createOperationFinder(tabbedPane);
 		return tabbedPane;
 	}
@@ -382,11 +386,12 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	protected void createOperationFinder(JTabbedPane tabbedPane) {
 		ClientConfiguration configuration = new ClientConfiguration();
 		if (configuration.getBoolean("operationlogging.addalarm", true)) {
-			DefaultOperationLoggingTableModel loggingTableModel = new DefaultOperationLoggingTableModel();
-			final Component loggingFinder = new OperationLoggingFinder(
-					loggingTableModel);
+			DefaultOperationLoggingTableModel loggingTableModel =
+				new DefaultOperationLoggingTableModel();
+			final Component loggingFinder =
+				new OperationLoggingFinder(loggingTableModel);
 			tabbedPane.addTab("操作ログ", null, new OperationLoggingTable(
-					loggingTableModel), "操作ログ");
+				loggingTableModel), "操作ログ");
 
 			tabbedPane.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
@@ -416,16 +421,16 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		findButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					final AttributeRecord[] attris = wifeApplet.alarmListFinder
-							.getAttributeRecords();
-					final List priorityList = wifeApplet.alarmListFinder
-							.getPriorityTable();
-					FindAlarmCondition cond_new = FindAlarmDialog
-							.showFindAlarmDialog(
-									WifeUtilities.getParentFrame(wifeApplet),
-									condition,
-									attris,
-									priorityList);
+					final AttributeRecord[] attris =
+						wifeApplet.alarmListFinder.getAttributeRecords();
+					final List priorityList =
+						wifeApplet.alarmListFinder.getPriorityTable();
+					FindAlarmCondition cond_new =
+						FindAlarmDialog.showFindAlarmDialog(
+							WifeUtilities.getParentFrame(wifeApplet),
+							condition,
+							attris,
+							priorityList);
 					if (condition != cond_new) {
 						condition = cond_new;
 						s_order.setSelectedIndex(0);
@@ -436,11 +441,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(
-							WifeUtilities.getDialogParent(wifeApplet),
-							alarmDefine.getAlarmConfig()
-									.getServerErrorMessage().getMessage(),
-							"F-11 server error",
-							JOptionPane.ERROR_MESSAGE);
+						WifeUtilities.getDialogParent(wifeApplet),
+						alarmDefine
+							.getAlarmConfig()
+							.getServerErrorMessage()
+							.getMessage(),
+						"F-11 server error",
+						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -518,14 +525,16 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	protected void updateAlarmConditionLabels() {
 		if (condition.isSt_enable()) {
-			labelStDate.setText(formatDate.format(condition.getSt_calendar()
-					.getTime()));
+			labelStDate.setText(formatDate.format(condition
+				.getSt_calendar()
+				.getTime()));
 		} else {
 			labelStDate.setText("指定なし");
 		}
 		if (condition.isEd_enable()) {
-			labelEdDate.setText(formatDate.format(condition.getEd_calendar()
-					.getTime()));
+			labelEdDate.setText(formatDate.format(condition
+				.getEd_calendar()
+				.getTime()));
 		} else {
 			labelEdDate.setText("指定なし");
 		}
@@ -576,8 +585,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	private JTabbedPane createAlarmTables() {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-		AlarmTableConfig alarmTableConfig = alarmDefine.getAlarmConfig()
-				.getAlarmTableConfig();
+		AlarmTableConfig alarmTableConfig =
+			alarmDefine.getAlarmConfig().getAlarmTableConfig();
 
 		createSummaryTab(tabbedPane, alarmTableConfig);
 		createHistoryTab(tabbedPane, alarmTableConfig);
@@ -592,16 +601,32 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	private void createCareerTab(
 			JTabbedPane tabbedPane,
 			AlarmTableConfig alarmTableConfig) {
-		TableModel c_table = new DefaultTableModel(new String[] { "ジャンプパス",
-				"自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-				"サウンドタイプ", "サウンドパス", "Emailグループ", "Emailモード", "日時", "記号", "名称",
-				"属性", "警報・状態", "種別" }, 0) {
-			private static final long serialVersionUID = -984023000372115422L;
+		TableModel c_table =
+			new DefaultTableModel(new String[] {
+				"ジャンプパス",
+				"自動ジャンプ",
+				"優先順位",
+				"表示色",
+				"point",
+				"provider",
+				"holder",
+				"サウンドタイプ",
+				"サウンドパス",
+				"Emailグループ",
+				"Emailモード",
+				"日時",
+				"記号",
+				"名称",
+				"属性",
+				"警報・状態",
+				"種別" }, 0) {
+				private static final long serialVersionUID =
+					-984023000372115422L;
 
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			};
 		career = new AlarmTable(c_table, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
 		removeColumns(career, 11);
@@ -619,14 +644,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		setColumnWidth(career, 1, alarmColumn.getUnitSize());
 		setColumnWidth(career, 3, alarmColumn.getAttributeSize());
 		setColumnWidth(career, 4, alarmColumn.getStatusSize());
-		removeSortColumn(
-				career,
-				5,
-				wifeApplet,
-				alarmColumn.getSortSize());
+		removeSortColumn(career, 5, wifeApplet, alarmColumn.getSortSize());
 
-		JScrollPane sp = new JScrollPane(career);
-		tabBase.add(sp, BorderLayout.CENTER);
+		tabBase.add(new RowHeaderScrollPane(career, alarmDefine
+			.getAlarmConfig()
+			.getAlarmTableConfig()
+			.getLineCountConfig()
+			.getValue(), wifeApplet), BorderLayout.CENTER);
 		tabbedPane.addTab("履歴", null, tabBase, "履歴");
 	}
 
@@ -672,13 +696,23 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	}
 
 	private JPanel createCareerComboBox() {
-		c_order = new JComboBox(new String[] { "標準", "逆順", "記号 昇順", "記号 降順",
-				"名称 昇順", "名称 降順" });
+		c_order =
+			new JComboBox(new String[] {
+				"標準",
+				"逆順",
+				"記号 昇順",
+				"記号 降順",
+				"名称 昇順",
+				"名称 降順" });
 		return createComboBox(c_order, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("selected order.");
-				int viewrec = alarmDefine.getAlarmConfig()
-						.getAlarmTableConfig().getLineCountConfig().getValue();
+				int viewrec =
+					alarmDefine
+						.getAlarmConfig()
+						.getAlarmTableConfig()
+						.getLineCountConfig()
+						.getValue();
 				updateCareer(FindAlarmPosition.createFindAlarmPosition(viewrec));
 			}
 		});
@@ -696,21 +730,35 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	private void createHistoryTab(
 			JTabbedPane tabbedPane,
 			AlarmTableConfig alarmTableConfig) {
-		TableModel h_table = new DefaultTableModel(new String[] { "ジャンプパス",
-				"自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-				"発生・運転", "復旧・停止", "記号", "名称", "属性", "種別", "確認" }, 0) {
-			private static final long serialVersionUID = -46305358609411425L;
+		TableModel h_table =
+			new DefaultTableModel(new String[] {
+				"ジャンプパス",
+				"自動ジャンプ",
+				"優先順位",
+				"表示色",
+				"point",
+				"provider",
+				"holder",
+				"発生・運転",
+				"復旧・停止",
+				"記号",
+				"名称",
+				"属性",
+				"種別",
+				"確認" }, 0) {
+				private static final long serialVersionUID =
+					-46305358609411425L;
 
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			};
 		history = new AlarmTable(h_table, wifeApplet, alarmTableConfig);
 		history.setAutoCreateColumnsFromModel(false);
 		if (!wifeApplet.isAppletTypeC()) {
 			history.addMouseListener(new HistoryTableListener(
-					wifeApplet,
-					alarmDefine.getAlarmConfig()));
+				wifeApplet,
+				alarmDefine.getAlarmConfig()));
 		}
 		removeColumns(history, 7);
 		setTableColor(history, alarmTableConfig);
@@ -732,14 +780,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		setColumnWidth(history, 2, alarmColumn.getUnitSize());
 		setColumnWidth(history, 4, alarmColumn.getAttributeSize());
 		setColumnWidth(history, 6, alarmColumn.getCheckSize());
-		removeSortColumn(
-				history,
-				5,
-				wifeApplet,
-				alarmColumn.getSortSize());
+		removeSortColumn(history, 5, wifeApplet, alarmColumn.getSortSize());
 
-		JScrollPane sp = new JScrollPane(history);
-		tabBase.add(sp, BorderLayout.CENTER);
+		tabBase.add(new RowHeaderScrollPane(history, alarmDefine
+			.getAlarmConfig()
+			.getAlarmTableConfig()
+			.getLineCountConfig()
+			.getValue(), wifeApplet), BorderLayout.CENTER);
 		tabbedPane.addTab("ヒストリ", null, tabBase, "ヒストリ");
 	}
 
@@ -753,7 +800,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				}
 
 				try {
-					int ret = JOptionPane.showConfirmDialog(
+					int ret =
+						JOptionPane.showConfirmDialog(
 							null,
 							"未確認情報を全て確認状態にします。よろしいですか？",
 							"F-11 Client",
@@ -766,11 +814,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(
-							WifeUtilities.getDialogParent(wifeApplet),
-							alarmDefine.getAlarmConfig()
-									.getServerErrorMessage().getMessage(),
-							"F-11 server error",
-							JOptionPane.ERROR_MESSAGE);
+						WifeUtilities.getDialogParent(wifeApplet),
+						alarmDefine
+							.getAlarmConfig()
+							.getServerErrorMessage()
+							.getMessage(),
+						"F-11 server error",
+						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -794,16 +844,29 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	}
 
 	private JPanel createHistoryComboBox() {
-		h_order = new JComboBox(new String[] { "標準", "逆順", "復旧・停止日時 昇順",
-				"復旧・停止日時 降順", "記号 昇順", "記号 降順", "名称 昇順", "名称 降順", "確認 昇順",
+		h_order =
+			new JComboBox(new String[] {
+				"標準",
+				"逆順",
+				"復旧・停止日時 昇順",
+				"復旧・停止日時 降順",
+				"記号 昇順",
+				"記号 降順",
+				"名称 昇順",
+				"名称 降順",
+				"確認 昇順",
 				"確認 降順" });
 		return createComboBox(h_order, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("selected order.");
-				int viewrec = alarmDefine.getAlarmConfig()
-						.getAlarmTableConfig().getLineCountConfig().getValue();
+				int viewrec =
+					alarmDefine
+						.getAlarmConfig()
+						.getAlarmTableConfig()
+						.getLineCountConfig()
+						.getValue();
 				updateHistory(FindAlarmPosition
-						.createFindAlarmPosition(viewrec));
+					.createFindAlarmPosition(viewrec));
 			}
 		});
 	}
@@ -811,15 +874,29 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	private void createSummaryTab(
 			JTabbedPane tabbedPane,
 			AlarmTableConfig alarmTableConfig) {
-		TableModel s_table = new DefaultTableModel(new String[] { "ジャンプパス",
-				"自動ジャンプ", "優先順位", "表示色", "point", "provider", "holder",
-				"発生・運転", "復旧・停止", "記号", "名称", "属性", "警報・状態", "種別" }, 0) {
-			private static final long serialVersionUID = 4104647228256893197L;
+		TableModel s_table =
+			new DefaultTableModel(new String[] {
+				"ジャンプパス",
+				"自動ジャンプ",
+				"優先順位",
+				"表示色",
+				"point",
+				"provider",
+				"holder",
+				"発生・運転",
+				"復旧・停止",
+				"記号",
+				"名称",
+				"属性",
+				"警報・状態",
+				"種別" }, 0) {
+				private static final long serialVersionUID =
+					4104647228256893197L;
 
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			};
 		summary = new AlarmTable(s_table, wifeApplet, alarmTableConfig);
 		summary.setAutoCreateColumnsFromModel(false);
 		removeColumns(summary, 7);
@@ -837,14 +914,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		setColumnWidth(summary, 2, alarmColumn.getUnitSize());
 		setColumnWidth(summary, 4, alarmColumn.getAttributeSize());
 		setColumnWidth(summary, 5, alarmColumn.getStatusSize());
-		removeSortColumn(
-				summary,
-				6,
-				wifeApplet,
-				alarmColumn.getSortSize());
+		removeSortColumn(summary, 6, wifeApplet, alarmColumn.getSortSize());
 
-		JScrollPane sp = new JScrollPane(summary);
-		tabBase.add(sp, BorderLayout.CENTER);
+		tabBase.add(new RowHeaderScrollPane(summary, alarmDefine
+			.getAlarmConfig()
+			.getAlarmTableConfig()
+			.getLineCountConfig()
+			.getValue(), wifeApplet), BorderLayout.CENTER);
 		tabbedPane.addTab("サマリ", null, tabBase, "サマリ");
 	}
 
@@ -864,15 +940,27 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	}
 
 	private JPanel createSummaryComboBox() {
-		s_order = new JComboBox(new String[] { "標準", "逆順", "発生・運転日時 昇順",
-				"発生・運転日時 降順", "復旧・停止日時 昇順", "復旧・停止日時 降順", "名称 昇順", "名称 降順" });
+		s_order =
+			new JComboBox(new String[] {
+				"標準",
+				"逆順",
+				"発生・運転日時 昇順",
+				"発生・運転日時 降順",
+				"復旧・停止日時 昇順",
+				"復旧・停止日時 降順",
+				"名称 昇順",
+				"名称 降順" });
 		return createComboBox(s_order, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("selected order.");
-				int viewrec = alarmDefine.getAlarmConfig()
-						.getAlarmTableConfig().getLineCountConfig().getValue();
+				int viewrec =
+					alarmDefine
+						.getAlarmConfig()
+						.getAlarmTableConfig()
+						.getLineCountConfig()
+						.getValue();
 				updateSummary(FindAlarmPosition
-						.createFindAlarmPosition(viewrec));
+					.createFindAlarmPosition(viewrec));
 			}
 		});
 	}
@@ -885,8 +973,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	private void setAlarmTableCellRenderer(JTable table) {
 		AlarmTableCellRenderer cellRecderer = new AlarmTableCellRenderer();
 		for (int i = table.getColumnCount(); i > 0; i--) {
-			DefaultTableColumnModel cmodel = (DefaultTableColumnModel) table
-					.getColumnModel();
+			DefaultTableColumnModel cmodel =
+				(DefaultTableColumnModel) table.getColumnModel();
 			TableColumn column = cmodel.getColumn(i - 1);
 			column.setCellRenderer(cellRecderer);
 		}
@@ -899,11 +987,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	 */
 	public LockAction createLockAction(PageChanger pageChanger) {
 		if (isCreateTables()) {
-			return new LockAction(
-					"画面固定",
-					GraphicManager
-							.get("/toolbarButtonGraphics/general/Stop24.gif"),
-					pageChanger);
+			return new LockAction("画面固定", GraphicManager
+				.get("/toolbarButtonGraphics/general/Stop24.gif"), pageChanger);
 		}
 		return null;
 	}
@@ -926,7 +1011,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			while (0 < model.getRowCount()) {
 				model.removeRow(0);
 			}
-			FindAlarmTable table = wifeApplet.alarmListFinder.getSummaryList(
+			FindAlarmTable table =
+				wifeApplet.alarmListFinder.getSummaryList(
 					condition,
 					newfac,
 					s_order.getSelectedIndex());
@@ -943,12 +1029,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			fac_s = newfac.setMaxrec(table.getMaxrec());
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-					WifeUtilities.getDialogParent(wifeApplet),
-					alarmDefine.getAlarmConfig().getServerErrorMessage()
-							.getMessage(),
-					"F-11 server error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(WifeUtilities
+				.getDialogParent(wifeApplet), alarmDefine
+				.getAlarmConfig()
+				.getServerErrorMessage()
+				.getMessage(), "F-11 server error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -961,7 +1046,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				model.removeRow(0);
 			}
 
-			FindAlarmTable table = wifeApplet.alarmListFinder.getHistoryList(
+			FindAlarmTable table =
+				wifeApplet.alarmListFinder.getHistoryList(
 					condition,
 					newfac,
 					h_order.getSelectedIndex());
@@ -978,12 +1064,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			fac_h = newfac.setMaxrec(table.getMaxrec());
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-					WifeUtilities.getDialogParent(wifeApplet),
-					alarmDefine.getAlarmConfig().getServerErrorMessage()
-							.getMessage(),
-					"F-11 server error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(WifeUtilities
+				.getDialogParent(wifeApplet), alarmDefine
+				.getAlarmConfig()
+				.getServerErrorMessage()
+				.getMessage(), "F-11 server error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -994,7 +1079,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			while (0 < model.getRowCount()) {
 				model.removeRow(0);
 			}
-			FindAlarmTable table = wifeApplet.alarmListFinder.getCareerList(
+			FindAlarmTable table =
+				wifeApplet.alarmListFinder.getCareerList(
 					condition,
 					newfac,
 					c_order.getSelectedIndex());
@@ -1011,12 +1097,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 			fac_c = newfac.setMaxrec(table.getMaxrec());
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-					WifeUtilities.getDialogParent(wifeApplet),
-					alarmDefine.getAlarmConfig().getServerErrorMessage()
-							.getMessage(),
-					"F-11 server error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(WifeUtilities
+				.getDialogParent(wifeApplet), alarmDefine
+				.getAlarmConfig()
+				.getServerErrorMessage()
+				.getMessage(), "F-11 server error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1060,8 +1145,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	private static class AlarmTableCellRenderer extends
 			DefaultTableCellRenderer {
 		private static final long serialVersionUID = 457590410332187554L;
-		private static final FastDateFormat format = FastDateFormat
-				.getInstance("yyyy/MM/dd HH:mm:ss");
+		private static final FastDateFormat format =
+			FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss");
 
 		public Component getTableCellRendererComponent(
 				JTable table,
@@ -1071,12 +1156,12 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				int row,
 				int column) {
 			super.getTableCellRendererComponent(
-					table,
-					value,
-					isSelected,
-					hasFocus,
-					row,
-					column);
+				table,
+				value,
+				isSelected,
+				hasFocus,
+				row,
+				column);
 
 			if (value instanceof Date) {
 				Date d = (Date) value;
@@ -1128,18 +1213,18 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				Timestamp on_date = (Timestamp) tm.getValueAt(row, 7);
 				try {
 					wifeApplet.alarmListFinder.setHistoryCheck(
-							point,
-							provider,
-							holder,
-							on_date);
+						point,
+						provider,
+						holder,
+						on_date);
 					table.setValueAt("＊＊＊＊", row, column);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(
-							WifeUtilities.getDialogParent(wifeApplet),
-							config.getServerErrorMessage().getMessage(),
-							"F-11 server error",
-							JOptionPane.ERROR_MESSAGE);
+						WifeUtilities.getDialogParent(wifeApplet),
+						config.getServerErrorMessage().getMessage(),
+						"F-11 server error",
+						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
