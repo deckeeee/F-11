@@ -29,9 +29,11 @@ import org.apache.commons.configuration.Configuration;
  * 
  */
 public class AlarmColumn {
-	private static final int UNIT_SIZE = 150;
-	private static final int DEFAULT_SIZE = 78;
-	private static final int DATE_SIZE = 141;
+	public static final int UNIT_SIZE = 150;
+	public static final int DEFAULT_SIZE = 78;
+	public static final int DATE_SIZE = 141;
+	public static final int ROW_HEADER_SIZE = 50;
+	public static final String ROW_HEADER_FORMAT = "0000";
 	private final Configuration configuration;
 
 	public AlarmColumn(Configuration configuration) {
@@ -44,7 +46,9 @@ public class AlarmColumn {
 	 * @return ‹@Ší‹L†‚Ì—ñ•
 	 */
 	public int getUnitSize() {
-		return configuration.getInt("org.F11.scada.xwife.applet.alarm.unitSize", UNIT_SIZE);
+		return configuration.getInt(
+			"org.F11.scada.xwife.applet.alarm.unitSize",
+			UNIT_SIZE);
 	}
 
 	/**
@@ -53,7 +57,9 @@ public class AlarmColumn {
 	 * @return ‘®«‚Ì—ñ•
 	 */
 	public int getAttributeSize() {
-		return configuration.getInt("org.F11.scada.xwife.applet.alarm.attributeSize", DEFAULT_SIZE);
+		return configuration.getInt(
+			"org.F11.scada.xwife.applet.alarm.attributeSize",
+			DEFAULT_SIZE);
 	}
 
 	/**
@@ -62,7 +68,9 @@ public class AlarmColumn {
 	 * @return Œx•ñEó‘Ô‚Ì—ñ•
 	 */
 	public int getStatusSize() {
-		return configuration.getInt("org.F11.scada.xwife.applet.alarm.statusSize", DEFAULT_SIZE);
+		return configuration.getInt(
+			"org.F11.scada.xwife.applet.alarm.statusSize",
+			DEFAULT_SIZE);
 	}
 
 	/**
@@ -71,7 +79,9 @@ public class AlarmColumn {
 	 * @return í•Ê‚Ì—ñ•
 	 */
 	public int getSortSize() {
-		return configuration.getInt("org.F11.scada.xwife.applet.alarm.sortSize", DEFAULT_SIZE);
+		return configuration.getInt(
+			"org.F11.scada.xwife.applet.alarm.sortSize",
+			DEFAULT_SIZE);
 	}
 
 	/**
@@ -82,12 +92,15 @@ public class AlarmColumn {
 	public int getCheckSize() {
 		return DEFAULT_SIZE;
 	}
-	
+
 	/**
 	 * “ú—ñ‚Ì•
+	 * 
 	 * @return “ú—ñ‚Ì•
 	 */
 	public int getDateSize() {
-		return DATE_SIZE;
+		return configuration.getInt(
+			"org.F11.scada.xwife.applet.alarm.dateSize",
+			DATE_SIZE);
 	}
 }

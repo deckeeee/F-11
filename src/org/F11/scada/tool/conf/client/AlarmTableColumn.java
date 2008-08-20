@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.F11.scada.tool.conf.StreamManager;
+import org.F11.scada.xwife.applet.alarm.AlarmColumn;
 
 /**
  * 警報一覧の列幅設定ダイアログ
@@ -50,10 +51,13 @@ import org.F11.scada.tool.conf.StreamManager;
 public class AlarmTableColumn extends JDialog {
 	private static final long serialVersionUID = -3024378393789154566L;
 	private final StreamManager manager;
+	private final JTextField rowHeaderWidth = new JTextField();
+	private final JTextField rowHeaderFormat = new JTextField(6);
 	private final JTextField unit = new JTextField();
 	private final JTextField attribute = new JTextField();
 	private final JTextField status = new JTextField();
 	private final JTextField sort = new JTextField();
+	private final JTextField date = new JTextField();
 
 	public AlarmTableColumn(Frame frameParent, StreamManager manager) {
 		super(frameParent, "警報一覧", true);
@@ -76,11 +80,30 @@ public class AlarmTableColumn extends JDialog {
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 
+		setRowHeaderWidth(c, panel);
+		setRowHeaderFormat(c, panel);
 		setUnit(c, panel);
 		setAttribute(c, panel);
 		setStatus(c, panel);
 		setSort(c, panel);
+		setDate(c, panel);
 		return panel;
+	}
+
+	private void setRowHeaderWidth(GridBagConstraints c, JPanel panel) {
+		JLabel label = new JLabel("行ヘッダー幅：");
+		addLabel(c, panel, label);
+		addTextArea(c, panel, rowHeaderWidth, manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.rowheader.width",
+			"" + AlarmColumn.ROW_HEADER_SIZE));
+	}
+
+	private void setRowHeaderFormat(GridBagConstraints c, JPanel panel) {
+		JLabel label = new JLabel("行ヘッダーフォーマット：");
+		addLabel(c, panel, label);
+		addTextArea(c, panel, rowHeaderFormat, manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.rowheader.format",
+			"" + AlarmColumn.ROW_HEADER_FORMAT));
 	}
 
 	private void setUnit(GridBagConstraints c, JPanel panel) {
@@ -88,7 +111,7 @@ public class AlarmTableColumn extends JDialog {
 		addLabel(c, panel, label);
 		addTextArea(c, panel, unit, manager.getClientConf(
 			"org.F11.scada.xwife.applet.alarm.unitSize",
-			"150"));
+			"" + AlarmColumn.UNIT_SIZE));
 	}
 
 	private void setAttribute(GridBagConstraints c, JPanel panel) {
@@ -96,7 +119,7 @@ public class AlarmTableColumn extends JDialog {
 		addLabel(c, panel, label);
 		addTextArea(c, panel, attribute, manager.getClientConf(
 			"org.F11.scada.xwife.applet.alarm.attributeSize",
-			"78"));
+			"" + AlarmColumn.DEFAULT_SIZE));
 	}
 
 	private void setStatus(GridBagConstraints c, JPanel panel) {
@@ -104,7 +127,7 @@ public class AlarmTableColumn extends JDialog {
 		addLabel(c, panel, label);
 		addTextArea(c, panel, status, manager.getClientConf(
 			"org.F11.scada.xwife.applet.alarm.statusSize",
-			"78"));
+			"" + AlarmColumn.DEFAULT_SIZE));
 	}
 
 	private void setSort(GridBagConstraints c, JPanel panel) {
@@ -112,7 +135,15 @@ public class AlarmTableColumn extends JDialog {
 		addLabel(c, panel, label);
 		addTextArea(c, panel, sort, manager.getClientConf(
 			"org.F11.scada.xwife.applet.alarm.sortSize",
-			"78"));
+			"" + AlarmColumn.DEFAULT_SIZE));
+	}
+
+	private void setDate(GridBagConstraints c, JPanel panel) {
+		JLabel label = new JLabel("日時：");
+		addLabel(c, panel, label);
+		addTextArea(c, panel, date, manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.dateSize",
+			"" + AlarmColumn.DATE_SIZE));
 	}
 
 	private Component getSouth() {
@@ -130,6 +161,12 @@ public class AlarmTableColumn extends JDialog {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manager.setClientConf(
+					"org.F11.scada.xwife.applet.alarm.rowheader.width",
+					rowHeaderWidth.getText());
+				manager.setClientConf(
+					"org.F11.scada.xwife.applet.alarm.rowheader.format",
+					rowHeaderFormat.getText());
+				manager.setClientConf(
 					"org.F11.scada.xwife.applet.alarm.unitSize",
 					unit.getText());
 				manager.setClientConf(
@@ -141,6 +178,9 @@ public class AlarmTableColumn extends JDialog {
 				manager.setClientConf(
 					"org.F11.scada.xwife.applet.alarm.sortSize",
 					sort.getText());
+				manager.setClientConf(
+					"org.F11.scada.xwife.applet.alarm.dateSize",
+					date.getText());
 				dispose();
 			}
 		});

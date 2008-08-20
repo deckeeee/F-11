@@ -24,7 +24,6 @@ package org.F11.scada.xwife.applet.alarm;
 import static org.F11.scada.util.TableUtil.removeColumns;
 import static org.F11.scada.util.TableUtil.setColumnWidth;
 
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
@@ -68,16 +67,18 @@ public class AlarmTabbedPane extends JTabbedPane {
 		this.alarmDefine = new AlarmDefine();
 		alarmColumn = new AlarmColumn(wifeApplet.getConfiguration());
 		createAlarmTables();
-		setSelectedIndex(alarmDefine.getAlarmConfig().getAlarmTableConfig()
-				.getDefaultTabNo());
+		setSelectedIndex(alarmDefine
+			.getAlarmConfig()
+			.getAlarmTableConfig()
+			.getDefaultTabNo());
 	}
 
 	/**
 	 * サマリ、ヒストリ、履歴テーブルを生成します。
 	 */
 	private void createAlarmTables() {
-		AlarmTableConfig alarmTableConfig = alarmDefine.getAlarmConfig()
-				.getAlarmTableConfig();
+		AlarmTableConfig alarmTableConfig =
+			alarmDefine.getAlarmConfig().getAlarmTableConfig();
 
 		addSummary(alarmTableConfig);
 		addHistory(alarmTableConfig);
@@ -88,12 +89,14 @@ public class AlarmTabbedPane extends JTabbedPane {
 
 	private void addNoncheck(AlarmTableConfig alarmTableConfig) {
 		if (wifeApplet.getConfiguration().getBoolean(
-				"org.F11.scada.xwife.applet.alarm.noncheck",
-				false)) {
-			DataHolder dh = Manager.getInstance().findDataHolder(
+			"org.F11.scada.xwife.applet.alarm.noncheck",
+			false)) {
+			DataHolder dh =
+				Manager.getInstance().findDataHolder(
 					AlarmDataProvider.PROVIDER_NAME,
 					AlarmDataProvider.NONCHECK);
-			noncheck = new AlarmTable(
+			noncheck =
+				new AlarmTable(
 					dh,
 					wifeApplet,
 					alarmTableConfig,
@@ -104,9 +107,9 @@ public class AlarmTabbedPane extends JTabbedPane {
 			noncheck.setBackground(alarmTableConfig.getBackGroundColor());
 			JTableHeader tableHeader = noncheck.getTableHeader();
 			tableHeader.setBackground(alarmTableConfig
-					.getHeaderBackGroundColor());
+				.getHeaderBackGroundColor());
 			tableHeader.setForeground(alarmTableConfig
-					.getHeaderForeGroundColor());
+				.getHeaderForeGroundColor());
 
 			setColumnWidth(noncheck, 0, alarmColumn.getDateSize());
 			setColumnWidth(noncheck, 1, alarmColumn.getDateSize());
@@ -115,17 +118,21 @@ public class AlarmTabbedPane extends JTabbedPane {
 			setColumnWidth(noncheck, 5, alarmColumn.getSortSize());
 			setColumnWidth(noncheck, 6, alarmColumn.getCheckSize());
 
-			JScrollPane sp = new JScrollPane(noncheck);
-			addTab("未確認", null, sp, "未確認");
+			addTab(
+				"未確認",
+				null,
+				new RowHeaderScrollPane(noncheck, wifeApplet),
+				"未確認");
 			setAlarmTableCellRenderer(noncheck);
 		}
 	}
 
 	private void addOccurrence(AlarmTableConfig alarmTableConfig) {
 		if (wifeApplet.getConfiguration().getBoolean(
-				"org.F11.scada.xwife.applet.alarm.occurrence",
-				false)) {
-			DataHolder dh = Manager.getInstance().findDataHolder(
+			"org.F11.scada.xwife.applet.alarm.occurrence",
+			false)) {
+			DataHolder dh =
+				Manager.getInstance().findDataHolder(
 					AlarmDataProvider.PROVIDER_NAME,
 					AlarmDataProvider.OCCURRENCE);
 			occurrence = new AlarmTable(dh, wifeApplet, alarmTableConfig);
@@ -134,9 +141,9 @@ public class AlarmTabbedPane extends JTabbedPane {
 			occurrence.setBackground(alarmTableConfig.getBackGroundColor());
 			JTableHeader tableHeader = occurrence.getTableHeader();
 			tableHeader.setBackground(alarmTableConfig
-					.getHeaderBackGroundColor());
+				.getHeaderBackGroundColor());
 			tableHeader.setForeground(alarmTableConfig
-					.getHeaderForeGroundColor());
+				.getHeaderForeGroundColor());
 
 			setColumnWidth(occurrence, 0, alarmColumn.getDateSize());
 			setColumnWidth(occurrence, 1, alarmColumn.getDateSize());
@@ -144,18 +151,22 @@ public class AlarmTabbedPane extends JTabbedPane {
 			setColumnWidth(occurrence, 4, alarmColumn.getAttributeSize());
 			setColumnWidth(occurrence, 5, alarmColumn.getStatusSize());
 			SortColumnUtil.removeSortColumn(
-					occurrence,
-					6,
-					wifeApplet,
-					alarmColumn.getSortSize());
-			JScrollPane sp = new JScrollPane(occurrence);
-			addTab("未復旧", null, sp, "未復旧");
+				occurrence,
+				6,
+				wifeApplet,
+				alarmColumn.getSortSize());
+			addTab(
+				"未復旧",
+				null,
+				new RowHeaderScrollPane(occurrence, wifeApplet),
+				"未復旧");
 			setAlarmTableCellRenderer(occurrence);
 		}
 	}
 
 	private void addSummary(AlarmTableConfig alarmTableConfig) {
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.SUMMARY);
 		summary = new AlarmTable(dh, wifeApplet, alarmTableConfig);
@@ -171,25 +182,19 @@ public class AlarmTabbedPane extends JTabbedPane {
 		setColumnWidth(summary, 2, alarmColumn.getUnitSize());
 		setColumnWidth(summary, 4, alarmColumn.getAttributeSize());
 		setColumnWidth(summary, 5, alarmColumn.getStatusSize());
-		SortColumnUtil.removeSortColumn(
-				summary,
-				6,
-				wifeApplet,
-				alarmColumn.getSortSize());
-		JScrollPane sp = new JScrollPane(summary);
-		addTab("サマリ", null, sp, "サマリ");
+		SortColumnUtil.removeSortColumn(summary, 6, wifeApplet, alarmColumn
+			.getSortSize());
+		addTab("サマリ", null, new RowHeaderScrollPane(summary, wifeApplet), "サマリ");
 		setAlarmTableCellRenderer(summary);
 	}
 
 	private void addHistory(AlarmTableConfig alarmTableConfig) {
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.HISTORY);
-		history = new AlarmTable(
-				dh,
-				wifeApplet,
-				alarmTableConfig,
-				new int[] { 4 });
+		history =
+			new AlarmTable(dh, wifeApplet, alarmTableConfig, new int[] { 4 });
 		history.setAutoCreateColumnsFromModel(false);
 		history.addMouseListener(new HistoryTableListener(wifeApplet));
 		removeColumns(history, 7);
@@ -203,18 +208,19 @@ public class AlarmTabbedPane extends JTabbedPane {
 		setColumnWidth(history, 2, alarmColumn.getUnitSize());
 		setColumnWidth(history, 4, alarmColumn.getAttributeSize());
 		setColumnWidth(history, 6, alarmColumn.getCheckSize());
-		SortColumnUtil.removeSortColumn(
-				history,
-				5,
-				wifeApplet,
-				alarmColumn.getSortSize());
-		JScrollPane sp = new JScrollPane(history);
-		addTab("ヒストリ", null, sp, "ヒストリ");
+		SortColumnUtil.removeSortColumn(history, 5, wifeApplet, alarmColumn
+			.getSortSize());
+		addTab(
+			"ヒストリ",
+			null,
+			new RowHeaderScrollPane(history, wifeApplet),
+			"ヒストリ");
 		setAlarmTableCellRenderer(history);
 	}
 
 	private void addCareer(AlarmTableConfig alarmTableConfig) {
-		DataHolder dh = Manager.getInstance().findDataHolder(
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(
 				AlarmDataProvider.PROVIDER_NAME,
 				AlarmDataProvider.CAREER);
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
@@ -230,13 +236,9 @@ public class AlarmTabbedPane extends JTabbedPane {
 		setColumnWidth(career, 1, alarmColumn.getUnitSize());
 		setColumnWidth(career, 3, alarmColumn.getAttributeSize());
 		setColumnWidth(career, 4, alarmColumn.getStatusSize());
-		SortColumnUtil.removeSortColumn(
-				career,
-				5,
-				wifeApplet,
-				alarmColumn.getSortSize());
-		JScrollPane sp = new JScrollPane(career);
-		addTab("履歴", null, sp, "履歴");
+		SortColumnUtil.removeSortColumn(career, 5, wifeApplet, alarmColumn
+			.getSortSize());
+		addTab("履歴", null, new RowHeaderScrollPane(career, wifeApplet), "履歴");
 		setAlarmTableCellRenderer(career);
 	}
 
@@ -248,8 +250,8 @@ public class AlarmTabbedPane extends JTabbedPane {
 	private void setAlarmTableCellRenderer(JTable table) {
 		AlarmTableCellRenderer cellRecderer = new AlarmTableCellRenderer();
 		for (int i = table.getColumnCount(); i > 0; i--) {
-			DefaultTableColumnModel cmodel = (DefaultTableColumnModel) table
-					.getColumnModel();
+			DefaultTableColumnModel cmodel =
+				(DefaultTableColumnModel) table.getColumnModel();
 			TableColumn column = cmodel.getColumn(i - 1);
 			column.setCellRenderer(cellRecderer);
 		}
