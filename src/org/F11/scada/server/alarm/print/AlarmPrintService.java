@@ -21,13 +21,9 @@ package org.F11.scada.server.alarm.print;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.F11.scada.EnvironmentManager;
-import org.F11.scada.Service;
-import org.F11.scada.server.alarm.AlarmDataStore;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
-import org.F11.scada.server.event.LoggingDataEventQueue;
 import org.apache.log4j.Logger;
 
 /**
@@ -35,116 +31,72 @@ import org.apache.log4j.Logger;
  * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class AlarmPrintService implements AlarmDataStore, Runnable, Service {
-	/** 警報印刷データベースDAO */
-	private final AlarmPrintDAO printDAO;
-	/** 印刷データリスト */
-	private List printLineDatas;
+public class AlarmPrintService extends AbstractPrintService {
 	/** 1ページに印刷する行数 */
 	private final int maxLine;
-	/** イベントキュー */
-	private final LoggingDataEventQueue queue;
-	/** スレッド */
-	private Thread thread;
-	/** プリンタークラス */
-	private final AlarmPrinter printer;
 	/** ロギングAPI */
 	private static Logger log = Logger.getLogger(AlarmPrintService.class);
 
 	/**
 	 * 警報印刷サービスを初期化します。データベースに未印刷のレコードが存在すれば、全て取得し内部データを初期化します。
+	 * 
 	 * @param printDAO 警報印刷データベースDAO
 	 * @param printer プリンターオブジェクト
 	 * @throws SQLException データベースエラー発生時
 	 */
 	public AlarmPrintService(AlarmPrintDAO printDAO, AlarmPrinter printer) {
-		this.printDAO = printDAO;
+		super(printDAO, printer);
 		this.maxLine =
-			Integer.parseInt(
-				EnvironmentManager.get("/server/alarm/print/pagelines", "10"));
-		this.queue = new LoggingDataEventQueue();
-		this.printer = printer;
+			Integer.parseInt(EnvironmentManager.get(
+				"/server/alarm/print/pagelines",
+				"10"));
 		start();
 		log.info("constracted AlarmPrintService.");
 	}
 
 	/**
-	 * データ変更イベント値を投入します。
-	 * @param key データ変更イベント値
-	 */
-	public void put(DataValueChangeEventKey key) {
-		this.queue.enqueue(key);
-	}
-
-	/**
-	 * キューよりデータ変更イベントを取り出し、印刷データリストに追加しデータベースに追加する。
-	 */
-	public void run() {
-		Thread ct = Thread.currentThread();
-		while (ct == this.thread) {
-			insertEvent((DataValueChangeEventKey) this.queue.dequeue());
-		}
-	}
-
-	/**
-	 * サーバースレッドを開始します。
-	 */
-	public void start() {
-	    if (thread == null) {
-			this.thread = new Thread(this);
-			this.thread.setName(getClass().getName());
-			this.thread.start();
-	    }
-	}
-
-	/**
-	 * サーバースレッドを停止します。
-	 */
-	public void stop() {
-	    if (thread != null) {
-	        Thread th = thread;
-			this.thread = null;
-			th.interrupt();
-	    }
-	}
-
-	/**
-	 * データ変更イベントをデータベースとリストに追加します
-	 * このメソッドが public になっているのは、Acpect によるトランザクションを可能にする為です。
+	 * データ変更イベントをデータベースとリストに追加します このメソッドが public になっているのは、Acpect
+	 * によるトランザクションを可能にする為です。
+	 * 
 	 * @param key データ変更イベント
 	 */
 	public void insertEvent(DataValueChangeEventKey key) {
+		lock.lock();
 		try {
-			if (this.printLineDatas == null) {
+			if (printLineDatas == null) {
 				// 印刷内容を初期化
-				this.printLineDatas =
-						new ArrayList(this.printDAO.findAll());
+				printLineDatas =
+					new ArrayList<PrintLineData>(printDAO.findAll());
 				print();
 			}
-			if (this.printDAO.isAlarmPrint(key)) {
-				this.printDAO.insert(key);
-				PrintLineData data = this.printDAO.find(key);
-				this.printLineDatas.add(data);
+			if (printDAO.isAlarmPrint(key)) {
+				printDAO.insert(key);
+				PrintLineData data = printDAO.find(key);
+				printLineDatas.add(data);
 				print();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("印刷中にDBエラーが発生しました。", e);
+		} finally {
+			lock.unlock();
 		}
 	}
 
 	/**
-	 * 印刷データリストが1ページに印刷する行数以上であれば印刷処理を開始する。
-	 * その後保持した印刷データリストとデータベースをクリアーする。
+	 * 印刷データリストが1ページに印刷する行数以上であれば印刷処理を開始する。 その後保持した印刷データリストとデータベースをクリアーする。
 	 * 
 	 * @exception SQLException データベースエラー発生時
 	 */
 	private void print() throws SQLException {
-		if (this.maxLine <= this.printLineDatas.size()) {
-//			System.out.println(this.printLineDatas);
-			this.printer.print(this.printLineDatas);
-			this.printDAO.deleteAll();
-			this.printLineDatas.clear();
-//			System.out.println("Clear printLineDatas.");
+		lock.lock();
+		try {
+			if (maxLine <= printLineDatas.size()) {
+				printer.print(printLineDatas);
+				printDAO.deleteAll();
+				printLineDatas.clear();
+			}
+		} finally {
+			lock.unlock();
 		}
 	}
 }

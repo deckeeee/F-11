@@ -55,6 +55,7 @@ public class PrintDialog extends JDialog {
 	private String printMode;
 	private final JFormattedTextField printModeDate =
 		new JFormattedTextField(new SimpleDateFormat("HH:mm:ss"));
+	private final JTextField enable = new JTextField();
 
 	public PrintDialog(StreamManager manager, Frame parent) {
 		super(parent, "警報一覧印字設定", true);
@@ -72,6 +73,7 @@ public class PrintDialog extends JDialog {
 		setPageLine(manager, gridbag, c, panel);
 		setPrintMode(manager, gridbag, c, panel);
 		setPrintDate(manager, gridbag, c, panel);
+		setEnable(manager, gridbag, c, panel);
 
 		mainPanel.add(panel, BorderLayout.CENTER);
 
@@ -298,6 +300,25 @@ public class PrintDialog extends JDialog {
 		gridbag.setConstraints(printModeDate, c);
 	}
 
+	private void setEnable(
+			StreamManager manager2,
+			GridBagLayout gridbag,
+			GridBagConstraints c,
+			JPanel panel) {
+		JLabel label = new JLabel("印刷 オン/オフ ホルダ：");
+		label.setToolTipText("警報印刷のオン/オフを制御するデジタルホルダIDを設定します。この設定が無い場合は常に印刷します。");
+		panel.add(label);
+		c.weightx = 1.0;
+		c.gridwidth = 1;
+		gridbag.setConstraints(label, c);
+		enable
+			.setText(manager.getPreferences("/server/alarm/print/enable", ""));
+		panel.add(enable);
+		c.weightx = 1.0;
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		gridbag.setConstraints(enable, c);
+	}
+
 	private void setOk(JPanel panel) {
 		JButton but = new JButton("ＯＫ");
 		but.addActionListener(new ActionListener() {
@@ -328,6 +349,7 @@ public class PrintDialog extends JDialog {
 		manager.setPreferences("/server/alarm/print/className", printMode);
 		manager.setPreferences("/server/alarm/print/printdate", printModeDate
 			.getText());
+		manager.setPreferences("/server/alarm/print/enable", enable.getText());
 		dispose();
 	}
 
