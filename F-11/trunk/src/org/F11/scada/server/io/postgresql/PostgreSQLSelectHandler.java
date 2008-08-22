@@ -217,4 +217,19 @@ public class PostgreSQLSelectHandler implements SelectHandler {
 		return getLoggingRowData(l);
 	}
 
+	public List selectPeriod(String name, List dataHolders, Timestamp start,
+			Timestamp end) throws SQLException {
+		String sql = sqlUtility.getSelectPeriod(name, dataHolders, start, end);
+		logger.debug(sql);
+		return getSelectData(name, dataHolders, sql);
+	}
+
+	public List selectPeriod(String name, List dataHolders, Timestamp start,
+			Timestamp end, List<String> tables) throws SQLException {
+		String sql = sqlUtility.getSelectPeriod(name, dataHolders, start, end,
+					tables);
+		logger.debug(sql);
+		return getSelectData(name, dataHolders, sql);
+	}
+
 }

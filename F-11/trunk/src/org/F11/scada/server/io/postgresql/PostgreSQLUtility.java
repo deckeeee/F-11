@@ -984,4 +984,66 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 		return b.toString();
 	}
+
+	/**
+	 * 引数のタイムスタンプ範囲(start以上,end未満)のデータを返します
+	 * @param name テーブル名
+	 * @param data 抽出ホルダのリスト
+	 * @param start このタイムスタンプ以上
+	 * @param end このタイムスタンプ未満
+	 * @return 引数のタイムスタンプ範囲のデータを返します
+	 * @see #getSelectBefore(String, List, Timestamp, Timestamp)
+	 */
+	public String getSelectPeriod(String name, List dataHolder, Timestamp start,
+			Timestamp end) {
+		String[] columnNames = createFieldNames(dataHolder);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames));
+		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		b
+			.append(" WHERE ")
+			.append("f_revision = 0 AND ")
+			.append("f_date >= '")
+			.append(f.format(start))
+			.append("' AND ")
+			.append("f_date < '")
+			.append(f.format(end))
+			.append("'");
+		b.append(" ORDER BY ");
+		b.append(DATE_FIELD_NAME);
+		b.append(" DESC ");
+
+		logger.debug(b.toString());
+
+		return b.toString();
+	}
+	public String getSelectPeriod(String name, List dataHolder, Timestamp start,
+			Timestamp end, List<String> tables) {
+		String[] columnNames = createFieldNames(dataHolder, tables);
+
+		StringBuffer b = new StringBuffer();
+		b.append(getSelectString(name, columnNames, tables));
+		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		b
+			.append(" WHERE ")
+			.append(tables.get(0))
+			.append(".f_revision = 0 AND ")
+			.append(tables.get(0))
+			.append(".f_date >= '")
+			.append(f.format(start))
+			.append("' AND ")
+			.append(tables.get(0))
+			.append(".f_date < '")
+			.append(f.format(end))
+			.append("'");
+		b.append(" ORDER BY ");
+		b.append(tables.get(0)).append(".");
+		b.append(DATE_FIELD_NAME);
+		b.append(" DESC ");
+
+		logger.debug(b.toString());
+
+		return b.toString();
+	}
 }
