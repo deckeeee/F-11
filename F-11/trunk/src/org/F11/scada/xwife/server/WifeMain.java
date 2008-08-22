@@ -61,11 +61,13 @@ import org.F11.scada.server.formula.ItemFormulaService;
 import org.F11.scada.server.frame.FrameDefineManager;
 import org.F11.scada.server.frame.FrameEditHandlerFactory;
 import org.F11.scada.server.frame.editor.FrameEditHandler;
+import org.F11.scada.server.io.BarGraph2ValueListHandlerManager;
 import org.F11.scada.server.io.SelectiveAllDataValueListHandlerManager;
 import org.F11.scada.server.io.SelectiveValueListHandlerManager;
 import org.F11.scada.server.io.ValueListHandlerManager;
 import org.F11.scada.server.io.ValueListHandlerManagerImpl;
 import org.F11.scada.server.io.postgresql.S2ContainerUtil;
+import org.F11.scada.server.logging.BarGraph2LoggingHandler;
 import org.F11.scada.server.logging.F11LoggingHandler;
 import org.F11.scada.server.logging.LoggingManager;
 import org.F11.scada.server.logging.SelectiveAllDataLoggingHandler;
@@ -98,6 +100,7 @@ public class WifeMain extends JPanel {
 	private ValueListHandlerManager valueListHandlerManager;
 	private SelectiveValueListHandlerManager selectiveValueListHandler;
 	private SelectiveAllDataValueListHandlerManager selectiveAllDataValueListHandlerManager;
+	private BarGraph2ValueListHandlerManager bargraph2ValueListHandlerManager;
 	private FrameEditHandler frameEditHandler;
 	private ServerEditHandler serverEditHandler;
 	private ManagerDelegator managerDelegator;
@@ -171,6 +174,9 @@ public class WifeMain extends JPanel {
 				rmiReceivePort);
 		new LoggingManager(new SelectiveAllDataLoggingHandler(
 				selectiveAllDataValueListHandlerManager));
+		bargraph2ValueListHandlerManager = new BarGraph2ValueListHandlerManager(rmiReceivePort);
+		new LoggingManager(new BarGraph2LoggingHandler(
+				bargraph2ValueListHandlerManager));
 
 		new TimeSetManager();
 
