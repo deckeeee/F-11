@@ -25,18 +25,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.F11.scada.EnvironmentManager;
-import org.F11.scada.Service;
 import org.F11.scada.scheduling.DailyIterator;
 import org.F11.scada.scheduling.Schedule;
 import org.F11.scada.scheduling.Scheduler;
 import org.F11.scada.scheduling.SchedulerTask;
-import org.F11.scada.server.alarm.AlarmDataStore;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
 import org.apache.log4j.Logger;
 
@@ -45,23 +39,9 @@ import org.apache.log4j.Logger;
  * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class AlarmDailyPrintService implements AlarmDataStore, Runnable,
-		Service {
-	/** 警報印刷データベースDAO */
-	private final AlarmPrintDAO printDAO;
-	/** 印刷データリスト */
-	private List<PrintLineData> printLineDatas;
-	/** イベントキュー */
-	private final BlockingQueue<DataValueChangeEventKey> queue;
-	/** スレッド */
-	private Thread thread;
-	/** プリンタークラス */
-	private final AlarmPrinter printer;
+public class AlarmDailyPrintService extends AbstractPrintService {
 	/** ロギングAPI */
 	private static Logger log = Logger.getLogger(AlarmDailyPrintService.class);
-	/** ロックオブジェクト */
-	private final ReentrantLock lock = new ReentrantLock();
-
 	/**
 	 * 警報印刷サービスを初期化します。データベースに未印刷のレコードが存在すれば、全て取得し内部データを初期化します。
 	 * 
@@ -70,9 +50,7 @@ public class AlarmDailyPrintService implements AlarmDataStore, Runnable,
 	 * @throws SQLException データベースエラー発生時
 	 */
 	public AlarmDailyPrintService(AlarmPrintDAO printDAO, AlarmPrinter printer) {
-		this.printDAO = printDAO;
-		queue = new LinkedBlockingQueue<DataValueChangeEventKey>();
-		this.printer = printer;
+		super(printDAO, printer);
 		// 印刷内容を初期化
 		try {
 			printLineDatas = new ArrayList<PrintLineData>(printDAO.findAll());
@@ -114,55 +92,6 @@ public class AlarmDailyPrintService implements AlarmDataStore, Runnable,
 					.warn("/server/alarm/print/printdateが不正です。00:00:00印刷で起動します。");
 			}
 			return new DailyIterator(0, 0, 0);
-		}
-	}
-
-	/**
-	 * データ変更イベント値を投入します。
-	 * 
-	 * @param key データ変更イベント値
-	 */
-	public void put(DataValueChangeEventKey key) {
-		try {
-			queue.put(key);
-		} catch (InterruptedException e) {
-			log.info("割り込みが発生しました", e);
-		}
-	}
-
-	/**
-	 * キューよりデータ変更イベントを取り出し、印刷データリストに追加しデータベースに追加する。
-	 */
-	public void run() {
-		Thread ct = Thread.currentThread();
-		while (ct == thread) {
-			try {
-				insertEvent(queue.take());
-			} catch (InterruptedException e) {
-				log.info("割り込みが発生しました", e);
-			}
-		}
-	}
-
-	/**
-	 * サーバースレッドを開始します。
-	 */
-	public void start() {
-		if (thread == null) {
-			thread = new Thread(this);
-			thread.setName(getClass().getName());
-			thread.start();
-		}
-	}
-
-	/**
-	 * サーバースレッドを停止します。
-	 */
-	public void stop() {
-		if (thread != null) {
-			Thread th = thread;
-			thread = null;
-			th.interrupt();
 		}
 	}
 

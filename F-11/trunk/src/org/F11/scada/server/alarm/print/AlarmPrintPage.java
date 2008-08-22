@@ -34,10 +34,11 @@ import org.apache.log4j.Logger;
 /**
  * 印刷実行日時より印刷データを判定する警報印刷サービスクラスです。
  * 
- * 再起動時に未印刷警報を印刷できない等、不具合があるのでこのクラスは使用
- * しないで下さい
+ * 再起動時に未印刷警報を印刷できない等、不具合があるのでこのクラスは使用 しないで下さい
+ * 
  * @author hori
  */
+@Deprecated
 public class AlarmPrintPage implements AlarmDataStore, Runnable, Service {
 	private static Logger logger;
 	private Thread thread;
@@ -57,8 +58,12 @@ public class AlarmPrintPage implements AlarmDataStore, Runnable, Service {
 		logger.info("constracted AlarmPrintPage.");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.F11.scada.server.alarm.AlarmDataStore#put(org.F11.scada.server.alarm.DataValueChangeEventKey)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.F11.scada.server.alarm.AlarmDataStore#put(org.F11.scada.server.alarm
+	 * .DataValueChangeEventKey)
 	 */
 	public void put(DataValueChangeEventKey key) {
 		synchronized (this) {
@@ -66,13 +71,17 @@ public class AlarmPrintPage implements AlarmDataStore, Runnable, Service {
 			notifyAll();
 		}
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
 		int max =
-			Integer.parseInt(
-				EnvironmentManager.get("/server/alarm/print/pagelines", "10"));
+			Integer.parseInt(EnvironmentManager.get(
+				"/server/alarm/print/pagelines",
+				"10"));
 		String printService =
 			EnvironmentManager.get("/server/alarm/print/printservice", "");
 		List printWaitData = new ArrayList();
@@ -95,7 +104,8 @@ public class AlarmPrintPage implements AlarmDataStore, Runnable, Service {
 					printWaitData.addAll(dataStore.getPrintList(lastTime));
 					/* 取得済みデータ時刻保存 */
 					PrintLineData pd =
-						(PrintLineData) printWaitData.get(printWaitData.size() - 1);
+						(PrintLineData) printWaitData
+							.get(printWaitData.size() - 1);
 					dataStore.setLastPrint(pd.getEntryDate());
 				}
 				/* 未印字件数取得 */
@@ -109,20 +119,19 @@ public class AlarmPrintPage implements AlarmDataStore, Runnable, Service {
 				}
 			} else {
 				/* 取得済みデータ時刻保存 */
-				dataStore.setLastPrint(
-					new Timestamp(System.currentTimeMillis()));
+				dataStore
+					.setLastPrint(new Timestamp(System.currentTimeMillis()));
 			}
 		}
 	}
 
-	
-    public void start() {
-        if (thread == null) {
-            thread = new Thread(this);
-            thread.setName(getClass().getName());
-            thread.start();
-        }
-    }
+	public void start() {
+		if (thread == null) {
+			thread = new Thread(this);
+			thread.setName(getClass().getName());
+			thread.start();
+		}
+	}
 
 	public void stop() {
 		Thread th = thread;

@@ -162,6 +162,7 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/user", "root"));
 		pw.println(getXmlProp("/server/password", "okusama"));
 		pw.println(getXmlProp("/server/isPageChangeInterrupt", "true"));
+		pw.println(getXmlProp("/server/alarm/print/enable", ""));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;
