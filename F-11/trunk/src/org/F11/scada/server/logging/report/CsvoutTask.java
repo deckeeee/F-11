@@ -30,10 +30,11 @@ import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
@@ -46,13 +47,18 @@ import org.F11.scada.server.io.ValueListHandlerElement;
 import org.F11.scada.server.logging.report.schedule.BMSSchedule;
 import org.F11.scada.server.logging.report.schedule.GODAMarker;
 import org.F11.scada.server.register.HolderString;
+import org.F11.scada.util.ThreadUtil;
+import org.apache.commons.lang.time.FastDateFormat;
 
 /**
  * @author hori
  */
 public class CsvoutTask extends AbstractCsvoutTask {
+	private static final String TIMESTAMP_LABEL = "日付,時刻";
 	private static final String TABLE_NOTFOUND_ERROR =
 		"指定されたテーブルが事前に取得できません。JOINするテーブルは前方で定義してください。";
+	private static final Format DATE_FORMAT =
+		FastDateFormat.getInstance("yyyy/MM/dd,HH:mm:ss");
 	/** ファイル出力開始時間の種別 true = 0:0～23:59:59 false = 0:0:1～0:0:0 */
 	private boolean dataMode;
 	/** プリントデータ更新クラス */
@@ -114,8 +120,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 				new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 					file), "Windows-31J"));
 			dataHeadWrite(out);
-			Timestamp st =
-				csvSchedule.startTime(System.currentTimeMillis(), dataMode);
+			Timestamp st = getStartTime();
 			handlerManager.findRecord(logg_name, st);
 			if (csvSchedule instanceof BMSSchedule) {
 				startTime = bmsWrite(startTime, out);
@@ -124,9 +129,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 					nomalWrite(startTime, out, new SimpleDateFormat(
 						"yyyy/MM/dd HH:mm"));
 			} else if (dataMode) {
-				startTime =
-					nomalWrite(startTime, out, new SimpleDateFormat(
-						"yyyy/MM/dd,HH:mm:ss"));
+				startTime = nomalWrite(startTime, out, DATE_FORMAT);
 			} else {
 				startTime = aAndAWrite(startTime, out);
 			}
@@ -171,7 +174,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	private void bmsHeaderWrite(List<StringBuilder> list)
 			throws RemoteException {
 		StringBuilder s = new StringBuilder();
-		s.append("日付,時刻");
+		s.append(TIMESTAMP_LABEL);
 		if (tables.isEmpty()) {
 			for (HolderString hs : dataHolders) {
 				s.append(",");
@@ -207,40 +210,49 @@ public class CsvoutTask extends AbstractCsvoutTask {
 
 	private void godaHeaderWrite(List<StringBuilder> list) throws IOException {
 		if (tables.isEmpty()) {
+			singleTableGodaHeader(list);
+		} else {
+			multiTableGodaHeader(list);
+		}
+	}
+
+	private void singleTableGodaHeader(List<StringBuilder> list) {
+		StringBuilder s = new StringBuilder();
+		for (HolderString hs : dataHolders) {
+			s.append(",");
+			s.append(hs.getHolder());
+		}
+		addList(list, s, 0, true);
+		List<Map<String, String>> hl =
+			stor.getLoggingHeddarList(logg_name, dataHolders);
+		s = new StringBuilder();
+		for (Map<String, String> map : hl) {
+			s.append(",");
+			s.append(map.get("name"));
+		}
+		addList(list, s, 1, true);
+	}
+
+	private void multiTableGodaHeader(List<StringBuilder> list)
+			throws RemoteException {
+		boolean isFirst = true;
+		for (String table : tables) {
 			StringBuilder s = new StringBuilder();
-			for (HolderString hs : dataHolders) {
+			List<HolderString> hslist = getHolder(table);
+			for (HolderString hs : hslist) {
 				s.append(",");
 				s.append(hs.getHolder());
 			}
-			addList(list, s, 0, true);
+			addList(list, s, 0, isFirst);
 			List<Map<String, String>> hl =
-				stor.getLoggingHeddarList(logg_name, dataHolders);
+				stor.getLoggingHeddarList(table, getHolder(table));
 			s = new StringBuilder();
 			for (Map<String, String> map : hl) {
 				s.append(",");
 				s.append(map.get("name"));
 			}
-			addList(list, s, 1, true);
-		} else {
-			boolean isFirst = true;
-			for (String table : tables) {
-				StringBuilder s = new StringBuilder();
-				List<HolderString> hslist = getHolder(table);
-				for (HolderString hs : hslist) {
-					s.append(",");
-					s.append(hs.getHolder());
-				}
-				addList(list, s, 0, isFirst);
-				List<Map<String, String>> hl =
-					stor.getLoggingHeddarList(table, getHolder(table));
-				s = new StringBuilder();
-				for (Map<String, String> map : hl) {
-					s.append(",");
-					s.append(map.get("name"));
-				}
-				addList(list, s, 1, isFirst);
-				isFirst = false;
-			}
+			addList(list, s, 1, isFirst);
+			isFirst = false;
 		}
 	}
 
@@ -256,69 +268,78 @@ public class CsvoutTask extends AbstractCsvoutTask {
 
 	private void headerWrite(List<StringBuilder> list) throws IOException {
 		if (tables.isEmpty()) {
-			StringBuilder s = new StringBuilder();
+			singleTableHeaderWrite(list);
+		} else {
+			multiTableHeaderWrite(list);
+		}
+	}
+
+	private void singleTableHeaderWrite(List<StringBuilder> list) {
+		StringBuilder s = new StringBuilder();
+		List<Map<String, String>> hl =
+			stor.getLoggingHeddarList(logg_name, dataHolders);
+		s.append(TIMESTAMP_LABEL);
+		for (Map<String, String> rec : hl) {
+			s.append(",\"");
+			s.append(rec.get("unit"));
+			s.append("\"");
+		}
+		addList(list, s, 0, true);
+		s = new StringBuilder();
+		s.append(TIMESTAMP_LABEL);
+		for (Map<String, String> rec : hl) {
+			s.append(",\"");
+			s.append(rec.get("name"));
+			s.append("\"");
+		}
+		addList(list, s, 1, true);
+		s = new StringBuilder();
+		s.append(TIMESTAMP_LABEL);
+		for (Map<String, String> rec : hl) {
+			s.append(",\"");
+			s.append(rec.get("unit_mark"));
+			s.append("\"");
+		}
+		addList(list, s, 2, true);
+	}
+
+	private void multiTableHeaderWrite(List<StringBuilder> list)
+			throws RemoteException {
+		boolean isFirst = true;
+		for (String table : tables) {
 			List<Map<String, String>> hl =
-				stor.getLoggingHeddarList(logg_name, dataHolders);
-			s.append("日付,時刻");
+				stor.getLoggingHeddarList(table, getHolder(table));
+			StringBuilder s = new StringBuilder();
+			if (isFirst) {
+				s.append(TIMESTAMP_LABEL);
+			}
 			for (Map<String, String> rec : hl) {
 				s.append(",\"");
 				s.append(rec.get("unit"));
 				s.append("\"");
 			}
-			addList(list, s, 0, true);
+			addList(list, s, 0, isFirst);
 			s = new StringBuilder();
-			s.append("日付,時刻");
+			if (isFirst) {
+				s.append(TIMESTAMP_LABEL);
+			}
 			for (Map<String, String> rec : hl) {
 				s.append(",\"");
 				s.append(rec.get("name"));
 				s.append("\"");
 			}
-			addList(list, s, 1, true);
+			addList(list, s, 1, isFirst);
 			s = new StringBuilder();
-			s.append("日付,時刻");
+			if (isFirst) {
+				s.append(TIMESTAMP_LABEL);
+			}
 			for (Map<String, String> rec : hl) {
 				s.append(",\"");
 				s.append(rec.get("unit_mark"));
 				s.append("\"");
 			}
-			addList(list, s, 2, true);
-		} else {
-			boolean isFirst = true;
-			for (String table : tables) {
-				List<Map<String, String>> hl =
-					stor.getLoggingHeddarList(table, getHolder(table));
-				StringBuilder s = new StringBuilder();
-				if (isFirst) {
-					s.append("日付,時刻");
-				}
-				for (Map<String, String> rec : hl) {
-					s.append(",\"");
-					s.append(rec.get("unit"));
-					s.append("\"");
-				}
-				addList(list, s, 0, isFirst);
-				s = new StringBuilder();
-				if (isFirst) {
-					s.append("日付,時刻");
-				}
-				for (Map<String, String> rec : hl) {
-					s.append(",\"");
-					s.append(rec.get("name"));
-					s.append("\"");
-				}
-				addList(list, s, 1, isFirst);
-				s = new StringBuilder();
-				if (isFirst) {
-					s.append("日付,時刻");
-				}
-				for (Map<String, String> rec : hl) {
-					s.append(",\"");
-					s.append(rec.get("unit_mark"));
-					s.append("\"");
-				}
-				addList(list, s, 2, isFirst);
-				isFirst = false;
-			}
+			addList(list, s, 2, isFirst);
+			isFirst = false;
 		}
 	}
 
@@ -340,71 +361,93 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	 */
 	private Timestamp aAndAWrite(Timestamp startTime, BufferedWriter out)
 			throws IOException {
-		Timestamp st =
-			csvSchedule.startTime(System.currentTimeMillis(), dataMode);
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
-		List<StringBuilder> list = list();
 		if (tables.isEmpty()) {
-			while (handlerManager.hasNext(logg_name)) {
-				LoggingData data = (LoggingData) handlerManager.next(logg_name);
+			return singleTableAAndAWrite(startTime, out);
+		} else {
+			return multiTableAAndAWrite(startTime, out);
+		}
+	}
+
+	private Timestamp singleTableAAndAWrite(
+			Timestamp startTime,
+			BufferedWriter out) throws RemoteException, IOException {
+		List<StringBuilder> list = list();
+		while (handlerManager.hasNext(logg_name)) {
+			LoggingData data = (LoggingData) handlerManager.next(logg_name);
+			Timestamp st = getStartTime();
+			if (st.after(data.getTimestamp())) {
+				continue;
+			}
+			StringBuilder b = new StringBuilder();
+			b.append(DATE_FORMAT.format(data.getTimestamp()));
+			data.first();
+			writeStringBuilder(data, b);
+			list.add(b);
+
+			if (startTime == null) {
+				startTime = data.getTimestamp();
+			}
+		}
+		writeString(list, out);
+		return startTime;
+	}
+
+	private Timestamp multiTableAAndAWrite(
+			Timestamp startTime,
+			BufferedWriter out) throws RemoteException, IOException {
+		boolean isFirst = true;
+		TreeMap<Timestamp, StringBuilder> map =
+			new TreeMap<Timestamp, StringBuilder>();
+		for (String table : tables) {
+			Timestamp st = getStartTime();
+			handlerManager.findRecord(table, st);
+			while (handlerManager.hasNext(table)) {
+				LoggingData data = (LoggingData) handlerManager.next(table);
 				if (st.after(data.getTimestamp())) {
 					continue;
 				}
 				StringBuilder b = new StringBuilder();
-				b.append(df.format(data.getTimestamp()));
-				data.first();
-				ConvertValue[] convertValues =
-					util.createConvertValue(dataHolders, logg_name);
-
-				for (int i = 0; i < convertValues.length; i++) {
-					ConvertValue conv = convertValues[i];
-					double dd = data.next();
-					b.append(',');
-					b.append(conv
-						.convertStringValue(conv.convertInputValue(dd)));
+				if (isFirst) {
+					b.append(DATE_FORMAT.format(data.getTimestamp()));
 				}
-				list.add(b);
+				data.first();
+				writeStringBuilder(table, data, b);
+				addMap(map, data.getTimestamp(), b);
 
 				if (startTime == null) {
 					startTime = data.getTimestamp();
 				}
 			}
-		} else {
-			boolean isFirst = true;
-			for (String table : tables) {
-				handlerManager.findRecord(table, st);
-				for (int recode = 0; handlerManager.hasNext(table);) {
-					LoggingData data = (LoggingData) handlerManager.next(table);
-					if (st.after(data.getTimestamp())) {
-						continue;
-					}
-					StringBuilder b = new StringBuilder();
-					if (isFirst) {
-						b.append(df.format(data.getTimestamp()));
-					}
-					data.first();
-					ConvertValue[] convertValues =
-						util.createConvertValue(getHolder(table), table);
-
-					for (int i = 0; i < convertValues.length; i++) {
-						ConvertValue conv = convertValues[i];
-						double dd = data.next();
-						b.append(',');
-						b.append(conv.convertStringValue(conv
-							.convertInputValue(dd)));
-					}
-					addList(list, b, recode, isFirst);
-					recode++;
-
-					if (startTime == null) {
-						startTime = data.getTimestamp();
-					}
-				}
-				isFirst = false;
-			}
+			isFirst = false;
+			ThreadUtil.sleep(1000L);
 		}
-		writeString(list, out);
+		writeMap(map, out);
 		return startTime;
+	}
+
+	private Timestamp getStartTime() {
+		return csvSchedule.startTime(System.currentTimeMillis(), dataMode);
+	}
+
+	private void addMap(
+			TreeMap<Timestamp, StringBuilder> map,
+			Timestamp timestamp,
+			StringBuilder b) {
+		if (map.containsKey(timestamp)) {
+			StringBuilder sb = map.get(timestamp);
+			sb.append(b);
+		} else {
+			map.put(timestamp, b);
+		}
+	}
+
+	private void writeMap(
+			TreeMap<Timestamp, StringBuilder> map,
+			BufferedWriter out) throws IOException {
+		for (StringBuilder b : map.values()) {
+			out.write(b.toString());
+			out.newLine();
+		}
 	}
 
 	/**
@@ -417,51 +460,64 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	 */
 	private Timestamp bmsWrite(Timestamp startTime, BufferedWriter out)
 			throws IOException {
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
 		if (tables.isEmpty()) {
-			LoggingData data = (LoggingData) handlerManager.next(logg_name);
-			out.write(df.format(data.getTimestamp()));
+			return singleTableBmsWrite(startTime, out);
+		} else {
+			return muiltiTableBmsWrite(startTime, out);
+		}
+	}
+
+	private Timestamp singleTableBmsWrite(
+			Timestamp startTime,
+			BufferedWriter out) throws RemoteException, IOException {
+		LoggingData data = (LoggingData) handlerManager.next(logg_name);
+		out.write(DATE_FORMAT.format(data.getTimestamp()));
+		data.first();
+		ConvertValue[] convertValues =
+			util.createConvertValue(dataHolders, logg_name);
+		bmsDataWrite(out, data, convertValues);
+		out.newLine();
+		if (startTime == null) {
+			startTime = data.getTimestamp();
+		}
+		return startTime;
+	}
+
+	private Timestamp muiltiTableBmsWrite(
+			Timestamp startTime,
+			BufferedWriter out) throws RemoteException, IOException {
+		boolean isFirst = true;
+		for (String table : tables) {
+			Timestamp st = getStartTime();
+			handlerManager.findRecord(table, st);
+			LoggingData data = (LoggingData) handlerManager.next(table);
+			if (isFirst) {
+				out.write(DATE_FORMAT.format(data.getTimestamp()));
+			}
 			data.first();
 			ConvertValue[] convertValues =
-				util.createConvertValue(dataHolders, logg_name);
-			for (int i = 0; i < convertValues.length; i++) {
-				ConvertValue conv = convertValues[i];
-				double dd = data.next();
-				out.write(',');
-				out.write(conv.convertStringValue(conv.convertInputValue(dd)));
-			}
-			out.newLine();
+				util.createConvertValue(getHolder(table), table);
+			bmsDataWrite(out, data, convertValues);
 			if (startTime == null) {
 				startTime = data.getTimestamp();
 			}
-		} else {
-			boolean isFirst = true;
-			for (String table : tables) {
-				Timestamp st =
-					csvSchedule.startTime(System.currentTimeMillis(), dataMode);
-				handlerManager.findRecord(table, st);
-				LoggingData data = (LoggingData) handlerManager.next(table);
-				if (isFirst) {
-					out.write(df.format(data.getTimestamp()));
-				}
-				data.first();
-				ConvertValue[] convertValues =
-					util.createConvertValue(getHolder(table), table);
-				for (int i = 0; i < convertValues.length; i++) {
-					ConvertValue conv = convertValues[i];
-					double dd = data.next();
-					out.write(',');
-					out.write(conv.convertStringValue(conv
-						.convertInputValue(dd)));
-				}
-				if (startTime == null) {
-					startTime = data.getTimestamp();
-				}
-				isFirst = false;
-			}
-			out.newLine();
+			isFirst = false;
+			ThreadUtil.sleep(1000L);
 		}
+		out.newLine();
 		return startTime;
+	}
+
+	private void bmsDataWrite(
+			BufferedWriter out,
+			LoggingData data,
+			ConvertValue[] convertValues) throws IOException {
+		for (int i = 0; i < convertValues.length; i++) {
+			ConvertValue conv = convertValues[i];
+			double dd = data.next();
+			out.write(',');
+			out.write(conv.convertStringValue(conv.convertInputValue(dd)));
+		}
 	}
 
 	/**
@@ -476,72 +532,99 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	private Timestamp nomalWrite(
 			Timestamp startTime,
 			BufferedWriter out,
-			DateFormat df) throws IOException {
-		List<StringBuilder> list = list();
+			Format df) throws IOException {
 		if (tables.isEmpty()) {
-			while (handlerManager.hasNext(logg_name)) {
-				LoggingData data = (LoggingData) handlerManager.next(logg_name);
-				if (isNomalWrite(data)) {
-					StringBuilder b = new StringBuilder();
-					b.append(df.format(data.getTimestamp()));
-					data.first();
-					ConvertValue[] convertValues =
-						util.createConvertValue(dataHolders, logg_name);
-					for (int i = 0; i < convertValues.length; i++) {
-						ConvertValue conv = convertValues[i];
-						double dd = data.next();
-						b.append(',');
-						b.append(conv.convertStringValue(conv
-							.convertInputValue(dd)));
-					}
-					list.add(b);
-
-					if (startTime == null)
-						startTime = data.getTimestamp();
-				}
-			}
+			return singleTableNomalWrite(startTime, out, df);
 		} else {
-			boolean isFirst = true;
-			for (String table : tables) {
-				Timestamp st =
-					csvSchedule.startTime(System.currentTimeMillis(), dataMode);
-				handlerManager.findRecord(table, st);
-				logger.info(table);
-				for (int recode = 0; handlerManager.hasNext(table);) {
-					LoggingData data = (LoggingData) handlerManager.next(table);
-					if (isNomalWrite(data)) {
-						StringBuilder b = new StringBuilder();
-						if (isFirst) {
-							b.append(df.format(data.getTimestamp()));
-						}
-						data.first();
-						ConvertValue[] convertValues =
-							util.createConvertValue(getHolder(table), table);
-						for (int i = 0; i < convertValues.length; i++) {
-							ConvertValue conv = convertValues[i];
-							double dd = data.next();
-							b.append(',');
-							b.append(conv.convertStringValue(conv
-								.convertInputValue(dd)));
-						}
-						addList(list, b, recode, isFirst);
-						recode++;
+			return multiTableNomalWrite(startTime, out, df);
+		}
+	}
 
-						if (startTime == null) {
-							startTime = data.getTimestamp();
-						}
-					}
+	private Timestamp singleTableNomalWrite(
+			Timestamp startTime,
+			BufferedWriter out,
+			Format df) throws RemoteException, IOException {
+		List<StringBuilder> list = list();
+		while (handlerManager.hasNext(logg_name)) {
+			LoggingData data = (LoggingData) handlerManager.next(logg_name);
+			if (isNomalWrite(data)) {
+				StringBuilder b = new StringBuilder();
+				b.append(df.format(data.getTimestamp()));
+				data.first();
+				writeStringBuilder(data, b);
+				list.add(b);
+
+				if (startTime == null) {
+					startTime = data.getTimestamp();
 				}
-				isFirst = false;
 			}
 		}
 		writeString(list, out);
 		return startTime;
 	}
 
+	private void writeStringBuilder(LoggingData data, StringBuilder b) {
+		ConvertValue[] convertValues =
+			util.createConvertValue(dataHolders, logg_name);
+		writeStringBuilder(data, b, convertValues);
+	}
+
+	private void writeStringBuilder(
+			LoggingData data,
+			StringBuilder b,
+			ConvertValue[] convertValues) {
+		for (int i = 0; i < convertValues.length; i++) {
+			ConvertValue conv = convertValues[i];
+			double dd = data.next();
+			b.append(',');
+			b.append(conv.convertStringValue(conv.convertInputValue(dd)));
+		}
+	}
+
+	private void writeStringBuilder(
+			String table,
+			LoggingData data,
+			StringBuilder b) throws RemoteException {
+		ConvertValue[] convertValues =
+			util.createConvertValue(getHolder(table), table);
+		writeStringBuilder(data, b, convertValues);
+	}
+
+	private Timestamp multiTableNomalWrite(
+			Timestamp startTime,
+			BufferedWriter out,
+			Format df) throws RemoteException, IOException {
+		boolean isFirst = true;
+		TreeMap<Timestamp, StringBuilder> map =
+			new TreeMap<Timestamp, StringBuilder>();
+		for (String table : tables) {
+			Timestamp st = getStartTime();
+			handlerManager.findRecord(table, st);
+			while (handlerManager.hasNext(table)) {
+				LoggingData data = (LoggingData) handlerManager.next(table);
+				if (isNomalWrite(data)) {
+					StringBuilder b = new StringBuilder();
+					if (isFirst) {
+						b.append(df.format(data.getTimestamp()));
+					}
+					data.first();
+					writeStringBuilder(table, data, b);
+					addMap(map, data.getTimestamp(), b);
+
+					if (startTime == null) {
+						startTime = data.getTimestamp();
+					}
+				}
+			}
+			isFirst = false;
+			ThreadUtil.sleep(1000L);
+		}
+		writeMap(map, out);
+		return startTime;
+	}
+
 	private boolean isNomalWrite(LoggingData data) {
-		Timestamp startTime =
-			csvSchedule.startTime(System.currentTimeMillis(), dataMode);
+		Timestamp startTime = getStartTime();
 		Timestamp endTime =
 			csvSchedule.endTime(System.currentTimeMillis(), dataMode);
 		return data.getTimestamp().equals(startTime)
