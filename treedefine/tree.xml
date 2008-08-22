@@ -28,6 +28,7 @@
 			<node name="月報バーグラフ" page="月報バーグラフ"/>
 			<node name="年報バーグラフ" page="nenpo"/>
 			<node name="グラフシンボル" page="graphview"/>
+			<node name="バーグラフ" page="バーグラフ"/>
 		</node>
 		<node name="デマンド" page="デマンド監視"/>
 		<node name="ツリーテスト">
