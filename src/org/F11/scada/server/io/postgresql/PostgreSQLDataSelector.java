@@ -76,7 +76,7 @@ public class PostgreSQLDataSelector implements DataSelector {
 			int rowCount = rs.getRow();
 			if (rowCount <= 0) {
 				rs.close();
-				logger.info(SelectHandler.TABLE_NOT_FOUND);
+				logger.info(SelectHandler.TABLE_NOT_FOUND + " : " + name);
 				return Collections.EMPTY_LIST;
 			}
 			rs.close();

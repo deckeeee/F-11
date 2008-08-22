@@ -116,4 +116,18 @@ public interface SQLUtility {
 	String getFirstData(String name, List dataHolder, List<String> tables);
 
 	String getLastData(String name, List dataHolder, List<String> tables);
+
+	/**
+	 * 引数のタイムスタンプ範囲(start以上,end未満)のデータを返します
+	 * @param name テーブル名
+	 * @param data 抽出ホルダのリスト
+	 * @param start このタイムスタンプ以上
+	 * @param end このタイムスタンプ未満
+	 * @return 引数のタイムスタンプ範囲のデータを返します
+	 * @see #getSelectBefore(String, List, Timestamp, Timestamp)
+	 */
+	String getSelectPeriod(String name, List dataHolder, Timestamp start,
+			Timestamp end);
+	String getSelectPeriod(String name, List dataHolder, Timestamp start,
+			Timestamp end, List<String> tables);
 }

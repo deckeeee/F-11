@@ -156,4 +156,21 @@ public class PostgreSQLSelectHandlerForReport implements SelectHandler {
 			List<String> tables) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
+
+	public List selectPeriod(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			Timestamp end) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	public List selectPeriod(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			Timestamp end,
+			List<String> tables) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
 }

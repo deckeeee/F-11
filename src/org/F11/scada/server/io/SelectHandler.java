@@ -180,4 +180,37 @@ public interface SelectHandler {
 			List dataHolders,
 			List<String> tables) throws SQLException;
 
+	/**
+	 * 指定された列の LoggingRowDataの指定した日時間のリストを返します。
+	 * 
+	 * @param name データソース名
+	 * @param dataHolders データホルダのリスト
+	 * @param start 返すデータの検索条件先頭の日時
+	 * @param end 返すデータの検索条件末尾の日時
+	 * @return 指定された列の LoggingRowDataの指定した日時間のリストを返します。
+	 * @throws SQLException
+	 */
+	public List selectPeriod(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			Timestamp end) throws SQLException;
+
+	/**
+	 * 指定された列の LoggingRowDataの指定した日時間のリストを返します。
+	 * 
+	 * @param name データソース名
+	 * @param dataHolders データホルダのリスト
+	 * @param start 返すデータの検索条件先頭の日時
+	 * @param end 返すデータの検索条件末尾の日時
+	 * @param tables 使用するテーブル名
+	 * @return 指定された列の LoggingRowDataの指定した日時間のリストを返します。
+	 * @throws SQLException
+	 */
+	public List selectPeriod(
+			String name,
+			List dataHolders,
+			Timestamp start,
+			Timestamp end,
+			List<String> tables) throws SQLException;
 }

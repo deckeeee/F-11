@@ -425,6 +425,21 @@ public class PostgreSQLSelectHandlerTest extends DatabaseTestCase {
 			return buffer.toString();
 		}
 
+		private Object getSelectString(
+				String name,
+				String[] columnNames,
+				List<String> tables) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("SELECT ");
+			for (int i = 0; i < (columnNames.length - 1); i++) {
+				buffer.append(columnNames[i]);
+				buffer.append(", ");
+			}
+			buffer.append(columnNames[columnNames.length - 1]);
+			buffer.append(" FROM ").append(getTables(tables));
+			return buffer.toString();
+		}
+
 		private String getTables(List<String> tables) {
 			if (tables.size() == 1) {
 				return tables.get(0);
@@ -544,6 +559,43 @@ public class PostgreSQLSelectHandlerTest extends DatabaseTestCase {
 				.append(" ORDER BY ")
 				.append(DATE_FIELD_NAME)
 				.append(" DESC");
+
+			return b.toString();
+		}
+		
+		public String getSelectPeriod(String name, List dataHolder, Timestamp start,
+				Timestamp end) {
+			String[] columnNames = createFieldNames(dataHolder);
+
+			StringBuffer b = new StringBuffer();
+			b.append(getSelectString(name, columnNames, 1));
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			b.append(" WHERE f_revision = 0 AND ").append(
+				"f_date >= '").append(f.format(start)).append(
+				"' AND f_date < '").append(f.format(end)).append("'");
+			b.append(" ORDER BY ");
+			b.append(DATE_FIELD_NAME);
+			b.append(" DESC");
+
+			return b.toString();
+		}
+		
+		public String getSelectPeriod(String name, List dataHolder, Timestamp start,
+				Timestamp end, List<String> tables) {
+			String[] columnNames = createFieldNames(dataHolder, tables);
+
+			StringBuffer b = new StringBuffer();
+			b.append(getSelectString(name, columnNames, tables));
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			b.append(" WHERE ").append(tables.get(0)).append(
+				".f_revision = 0 AND ").append(tables.get(0)).append(
+				".f_date >= '").append(f.format(start)).append("' AND ")
+				.append(tables.get(0)).append(".f_date < '").append(f.format(end))
+				.append("'");
+			b.append(" ORDER BY ");
+			b.append(tables.get(0)).append(".");
+			b.append(DATE_FIELD_NAME);
+			b.append(" DESC");
 
 			return b.toString();
 		}
