@@ -159,6 +159,14 @@ public class WifeUtilities {
 	}
 
 	/**
+	 * RMI RmiValueListHandlerManager サーバーの参照文字列を返します。
+	 */
+	static public String createRmiBarGraph2DataValueListHandlerManager() {
+		return createRmiManagerDelegatorBase()
+			+ "BarGraph2DataValueListHandlerManager";
+	}
+
+	/**
 	 * RMI RmiFrameDefineManager サーバーの参照文字列を返します。
 	 */
 	static public String createRmiFrameDefineManager() {
