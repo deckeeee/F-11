@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE f11:page_map SYSTEM "C:\Products\java\F-11_2_1_0\src\resources\pagemap10.dtd">
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <f11:page_map xmlns:f11="http://www.F-11.org/scada">
     <f11:page name="バーグラフ" width="1024" height="768">
         <f11:textsymbol background="gray" blink="false"
@@ -36,9 +36,9 @@
                                 -->
                             </f11:datetime>
                             <f11:values>
-                                <f11:textsymbol x="800" y="67" foreground="black" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
-                                <f11:textsymbol x="800" y="87" foreground="black" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
-                                <f11:textsymbol x="800" y="107" foreground="black" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol x="800" y="67" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol x="800" y="87" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol x="800" y="107" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
                             </f11:values>
                         </f11:focus>
                     </f11:graphview>
@@ -49,17 +49,17 @@
                         <f11:textsymbol value="[%s]" x="24" y="131" foreground="yellow" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
                     </f11:units>
                     <f11:verticalscale>
-                        <f11:textsymbol value="1.0" x="0" y="180" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.9" x="0" y="228" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.8" x="0" y="276" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.7" x="0" y="324" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.6" x="0" y="372" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.5" x="0" y="420" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.4" x="0" y="468" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.3" x="0" y="516" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.2" x="0" y="564" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.1" x="0" y="612" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.0" x="0" y="660" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="1.0" x="0" y="180" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.9" x="0" y="228" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.8" x="0" y="276" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.7" x="0" y="324" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.6" x="0" y="372" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.5" x="0" y="420" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.4" x="0" y="468" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.3" x="0" y="516" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.2" x="0" y="564" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.1" x="0" y="612" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
+                        <f11:textsymbol value="0.0" x="0" y="660" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
                         <f11:scalechangebutton value="変更" x="20" y="710" font="Monospaced" font_style="plain" font_size="12" width="58" height="26"/>
                     </f11:verticalscale>
                     <f11:textsymbol value="" x="515" y="68" opaque="true" background="yellow" width="28" height="14"/>
@@ -117,8 +117,8 @@
                                 <f11:textsymbol value="yyyy/MM/dd" x="600" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="100" height="16"/>
                             </f11:datetime>
                             <f11:values>
-                                <f11:textsymbol x="800" y="67" foreground="black" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
-                                <f11:textsymbol x="800" y="87" foreground="black" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol x="800" y="67" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol x="800" y="87" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
                             </f11:values>
                         </f11:focus>
                     </f11:graphview>
@@ -128,17 +128,17 @@
                         <f11:textsymbol value="[%s]" x="24" y="113" foreground="yellow" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
                     </f11:units>
                     <f11:verticalscale>
-                        <f11:textsymbol value="1.0" x="0" y="160" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.9" x="0" y="210" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.8" x="0" y="260" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.7" x="0" y="310" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.6" x="0" y="360" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.5" x="0" y="410" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.4" x="0" y="460" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.3" x="0" y="510" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.2" x="0" y="560" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.1" x="0" y="610" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.0" x="0" y="660" foreground="yellow" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="1.0" x="0" y="160" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.9" x="0" y="210" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.8" x="0" y="260" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.7" x="0" y="310" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.6" x="0" y="360" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.5" x="0" y="410" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.4" x="0" y="460" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.3" x="0" y="510" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.2" x="0" y="560" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.1" x="0" y="610" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
+                        <f11:textsymbol value="0.0" x="0" y="660" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
                         <f11:scalechangebutton value="変更" x="20" y="710" font="Monospaced" font_style="plain" font_size="12" width="58" height="26"/>
                     </f11:verticalscale>
                     <f11:textsymbol value="" x="515" y="68" opaque="true" background="yellow" width="28" height="14"/>
