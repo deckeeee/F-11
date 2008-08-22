@@ -368,7 +368,10 @@
 			botom CDATA #REQUIRED
 			right CDATA #REQUIRED
 >
-<!ELEMENT f11:graphview (f11:graphmodel?,f11:graphproperty?,f11:verticallyscale?)>
+<!ELEMENT f11:graphview (
+			(f11:graphmodel?,f11:graphproperty?,f11:verticallyscale?) |
+			(f11:color,f11:focus)
+)>
 <!ATTLIST f11:graphview
 			top CDATA #IMPLIED
 			left CDATA #IMPLIED
@@ -489,6 +492,74 @@
 			height CDATA #REQUIRED
 >
 
+<!-- bargraph2 -->
+<!ELEMENT f11:changeperiodbutton EMPTY>
+<!ATTLIST f11:changeperiodbutton
+			x CDATA #REQUIRED
+			y CDATA #REQUIRED
+			width CDATA #REQUIRED
+			height CDATA #REQUIRED
+			value CDATA #REQUIRED
+			period_offset CDATA #REQUIRED
+>
+<!ELEMENT f11:referencedate ((f11:textsymbol|f11:changeperiodbutton)*)>
+<!ELEMENT f11:datetime (f11:textsymbol*)>
+<!ELEMENT f11:values (f11:textsymbol*)>
+<!ELEMENT f11:focus (f11:datetime, f11:values)>
+<!ATTLIST f11:focus
+			top CDATA #REQUIRED
+			left CDATA #REQUIRED
+			botom CDATA #REQUIRED
+			right CDATA #REQUIRED
+			color CDATA #REQUIRED
+			dash_line CDATA #REQUIRED
+			dash_gap CDATA #REQUIRED
+>
+<!ELEMENT f11:units (f11:textsymbol*)>
+<!ELEMENT f11:scalechangebutton EMPTY>
+<!ATTLIST f11:scalechangebutton
+			%ATTR_BUTTONSYMBOL;
+>
+<!ELEMENT f11:verticalscale ((f11:textsymbol|f11:scalechangebutton)*)>
+<!ELEMENT f11:bargraphmodel ((
+			f11:handler|
+			f11:referencedate|
+			f11:graphview|
+			f11:units|
+			f11:verticalscale|
+			f11:textsymbol
+)*)>
+<!ATTLIST f11:bargraphmodel
+			text CDATA #REQUIRED
+			barcount CDATA #REQUIRED
+			value CDATA #REQUIRED
+			class CDATA #REQUIRED
+>
+<!ELEMENT f11:modelselector (f11:bargraphmodel*)>
+<!ATTLIST f11:modelselector
+			%ATTR_TEXTSYMBOL;
+>
+<!ELEMENT f11:barprop EMPTY>
+<!ATTLIST f11:barprop
+			minimums CDATA #REQUIRED
+			maximums CDATA #REQUIRED
+			holder CDATA #REQUIRED
+			nowvalue  CDATA #IMPLIED
+>
+<!ELEMENT f11:barseries (f11:barprop*)>
+<!ATTLIST f11:barseries
+			name CDATA #REQUIRED
+			unitmark CDATA #REQUIRED
+>
+
+<!ELEMENT f11:bargraph2 ((f11:modelselector|f11:barseries)*)>
+<!ATTLIST f11:bargraph2
+			x CDATA #REQUIRED
+			y CDATA #REQUIRED
+			width CDATA #REQUIRED
+			height CDATA #REQUIRED
+>
+
 <!-- ƒy[ƒW ================================================ -->
 <!ELEMENT f11:page ((
 				f11:imagesymbol|
@@ -514,6 +585,7 @@
 				f11:trendgraph|
 				f11:trendgraph2|
 				f11:bargraph|
+				f11:bargraph2|
 				f11:demandgraph|
 				f11:drawsymbol|
 				f11:pagechangebutton|
