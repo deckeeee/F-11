@@ -133,7 +133,8 @@ public class SymbolEditableState implements State {
 
 		} else if (tagName.equals("destination")) {
 			stack.push(new DestinationState(tagName, atts, symbolEditable));
-
+		} else if (tagName.equals("schedule")) {
+			stack.push(new PointScheduleState(tagName, atts, symbolEditable));
 		} else {
 			logger.debug("tagName:" + tagName);
 		}

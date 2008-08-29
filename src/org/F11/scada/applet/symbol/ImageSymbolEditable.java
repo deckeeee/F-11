@@ -33,11 +33,21 @@ import java.util.Map;
 
 import javax.swing.JDialog;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.Manager;
+
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.DialogFactory;
 import org.F11.scada.applet.dialog.WifeDialog;
+import org.F11.scada.applet.schedule.DefaultScheduleModel;
+import org.F11.scada.applet.schedule.ScheduleModel;
+import org.F11.scada.data.ConvertValue;
+import org.F11.scada.data.WifeData;
+import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.server.WifeDataProvider;
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 /**
@@ -45,8 +55,8 @@ import org.xml.sax.Attributes;
  * 
  * @author Youhei Horikawa <hori@users.sourceforge.jp>
  */
-public class ImageSymbolEditable extends ImageSymbol implements DigitalEditable {
-
+public class ImageSymbolEditable extends ImageSymbol implements
+		DigitalEditable, ScheduleEditable {
 	private static final long serialVersionUID = 4694682226718183275L;
 	/** ダイアログ表示位置 */
 	private Point dialogPoint;
@@ -61,6 +71,13 @@ public class ImageSymbolEditable extends ImageSymbol implements DigitalEditable 
 	/** アクションのリスト */
 	private List actions;
 	private Authenticationable authentication;
+	/** スケジュールモデルの参照 */
+	private ScheduleModel scheduleModel;
+	/** グループ書込み対象ホルダ指定 */
+	private String grProviderName;
+	private String grHolderName;
+
+	private final Logger logger = Logger.getLogger(ImageSymbolEditable.class);
 
 	/**
 	 * Constructor for ImageSymbolEditable.
@@ -104,7 +121,7 @@ public class ImageSymbolEditable extends ImageSymbol implements DigitalEditable 
 		});
 
 		addMouseListener(new HandCursorListener(this));
-		
+
 		buttonTexts = new ArrayList();
 		actions = new ArrayList();
 	}
@@ -255,9 +272,74 @@ public class ImageSymbolEditable extends ImageSymbol implements DigitalEditable 
 	public void disConnect() {
 		actions.clear();
 		buttonTexts.clear();
+		if (null != scheduleModel) {
+			scheduleModel.disConnect();
+		}
 		if (null != authentication) {
 			authentication.removeEditable(this);
 		}
 		super.disConnect();
+	}
+
+	public void addScheduleHolder(String providerName, String holderName) {
+		if (null == scheduleModel) {
+			scheduleModel = new DefaultScheduleModel(authentication);
+			scheduleModel.setEditable(new boolean[] { true });
+		}
+		scheduleModel.addGroup(providerName, holderName, "");
+	}
+
+	public void addScheduleHolder(String id) {
+		logger.info("set schedule holder = " + id);
+		int index = id.indexOf("_");
+		String providerName = id.substring(0, index);
+		String holderName = id.substring(index + 1);
+		addScheduleHolder(providerName, holderName);
+	}
+
+	public ConvertValue getConvertValue() {
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(grProviderName, grHolderName);
+		WifeData wd = (WifeData) dh.getValue();
+		if (!(wd instanceof WifeDataAnalog))
+			return null;
+
+		return (ConvertValue) dh
+			.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+	}
+
+	public ScheduleModel getScheduleModel() {
+		return scheduleModel;
+	}
+
+	public String getValue() {
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(grProviderName, grHolderName);
+		WifeData wd = (WifeData) dh.getValue();
+		if (wd instanceof WifeDataAnalog) {
+			WifeDataAnalog wa = (WifeDataAnalog) wd;
+			ConvertValue cv = getConvertValue();
+			return cv.convertStringValue(wa.doubleValue());
+		} else {
+			logger.error("グループNoのホルダがアナログタイプでない : " + wd);
+			return null;
+		}
+	}
+
+	public void setValue(String value) {
+		VariableAnalogSetter setter =
+			new VariableAnalogSetter(grProviderName, grHolderName);
+		setter.writeValue(value);
+	}
+
+	public void setGroupHolder(String dataHolderID) {
+		if (dataHolderID != null) {
+			int index = dataHolderID.indexOf("_");
+			grProviderName = dataHolderID.substring(0, index);
+			grHolderName = dataHolderID.substring(index + 1);
+		} else {
+			throw new IllegalArgumentException("dataHolderIDが指定されていません : "
+				+ dataHolderID);
+		}
 	}
 }

@@ -588,8 +588,8 @@ public class VerticallyScale extends JPanel {
 		 * @param evt イベントソースおよび変更したプロパティを記述する PropertyChangeEvent オブジェクト
 		 */
 		public void propertyChange(PropertyChangeEvent evt) {
-			repaint();
 			revalidate();
+			repaint();
 		}
 	}
 

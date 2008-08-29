@@ -35,6 +35,7 @@ import org.xml.sax.Attributes;
 
 /**
  * xpath /dialogmap/dialog/button 状態を表すクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class ButtonState implements State {
@@ -71,19 +72,30 @@ public class ButtonState implements State {
 		int width = Integer.parseInt(atts.getValue("width"));
 		int height = Integer.parseInt(atts.getValue("height"));
 		int action = Integer.parseInt(atts.getValue("action"));
-		
+
 		String foreground = atts.getValue("foreground");
 		String background = atts.getValue("background");
-		
+
 		String font = atts.getValue("font");
 		String fontStyle = atts.getValue("font_style");
 		String fontSize = atts.getValue("font_size");
 
+		String schedule = atts.getValue("schedule");
+
 		if (state.dialog instanceof DigitalDialog) {
-//			((DigitalDialog) state.dialog).add(text, action, new Rectangle(x, y, width, height));
-			((DigitalDialog) state.dialog).add(text, action, new Rectangle(x, y, width, height), foreground, background, font, fontStyle, fontSize);
+			((DigitalDialog) state.dialog).add(
+				text,
+				action,
+				new Rectangle(x, y, width, height),
+				foreground,
+				background,
+				font,
+				fontStyle,
+				fontSize,
+				schedule);
 		} else {
-			logger.warn("Not DigitalDialog:" + state.dialog.getClass().getName());
+			logger.warn("Not DigitalDialog:"
+				+ state.dialog.getClass().getName());
 		}
 	}
 

@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.applet.symbol.DigitalEditable;
+import org.F11.scada.applet.symbol.ScheduleEditable;
 import org.F11.scada.util.FontUtil;
 import org.apache.log4j.Logger;
 
@@ -58,7 +59,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 */
 	public DigitalDialog(Frame frame) {
 		super(frame);
-		this.getContentPane().setLayout(null);
+		getContentPane().setLayout(null);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 */
 	public DigitalDialog(Dialog dialog) {
 		super(dialog);
-		this.getContentPane().setLayout(null);
+		getContentPane().setLayout(null);
 	}
 
 	/**
@@ -144,10 +145,11 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 			String background,
 			String font,
 			String fontStyle,
-			String fontSize) {
+			String fontSize,
+			String schedule) {
 		logger.info("add開始");
-		invalidate();
-		DialogButton button = DialogButton.createDialogButton(this, actionNo);
+		DialogButton button =
+			DialogButton.createDialogButton(this, actionNo, schedule);
 		button.setText(text);
 		button.setBounds(rec);
 		if (null != ColorFactory.getColor(foreground)) {
@@ -158,15 +160,14 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		}
 		FontUtil.setFont(font, fontStyle, fontSize, button);
 		getContentPane().add(button);
-		validate();
 	}
 
 	/**
 	 * ダイアログに表示するボタンの基底クラスです。
 	 */
 	static abstract class DialogButton extends JButton {
-		protected static final Logger logger = Logger
-				.getLogger(DialogButton.class);
+		protected static final Logger logger =
+			Logger.getLogger(DialogButton.class);
 		/** 親ダイアログの参照です。 */
 		protected DigitalDialog dialog;
 		/** ボタンに定義された指示動作番号です */
@@ -192,11 +193,15 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 		static public DialogButton createDialogButton(
 				DigitalDialog dialog,
-				int actionNo) {
+				int actionNo,
+				String schedule) {
 			logger.info("createDialogButton開始");
-			if (actionNo == 6) {
+			switch (actionNo) {
+			case 5:
+				return new ScheduleButton(dialog, actionNo, schedule);
+			case 6:
 				return new CancelButton(dialog, actionNo);
-			} else {
+			default:
 				return new SendButton(dialog, actionNo);
 			}
 		}
@@ -252,6 +257,76 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		public void pushButton() {
 			logger.info("pushButton開始");
 			dialog.dispose();
+		}
+	}
+
+	private static class ScheduleButton extends DialogButton {
+		private final String scheduleDialogNo;
+
+		public ScheduleButton(
+				DigitalDialog dialog,
+				int actionNo,
+				String schedule) {
+			super(dialog, actionNo);
+			this.scheduleDialogNo = schedule;
+			if (null == schedule || "".equals(schedule)) {
+				throw new IllegalArgumentException(
+					"スケジュールダイアログNo(schedule属性)が設定されていません。");
+			}
+		}
+
+		@Override
+		public void pushButton() {
+			WifeDialog wd = DialogFactory.get(dialog, scheduleDialogNo);
+			wd.setListIterator(getIterator());
+			wd.setTitle(dialog.getTitle());
+			wd.show();
+			dialog.dispose();
+		}
+
+		private ListIterator getIterator() {
+			return new ScheduleIterator((ScheduleEditable) dialog.symbol);
+		}
+
+		private static class ScheduleIterator implements ListIterator {
+			private final ScheduleEditable editable;
+
+			public ScheduleIterator(ScheduleEditable editable) {
+				this.editable = editable;
+			}
+
+			public void add(Object o) {
+			}
+
+			public boolean hasNext() {
+				return false;
+			}
+
+			public boolean hasPrevious() {
+				return false;
+			}
+
+			public Object next() {
+				return editable;
+			}
+
+			public int nextIndex() {
+				return 0;
+			}
+
+			public Object previous() {
+				return null;
+			}
+
+			public int previousIndex() {
+				return 0;
+			}
+
+			public void remove() {
+			}
+
+			public void set(Object o) {
+			}
 		}
 	}
 }

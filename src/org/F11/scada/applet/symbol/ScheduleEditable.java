@@ -28,7 +28,9 @@ import org.F11.scada.data.ConvertValue;
 public interface ScheduleEditable extends Editable {
 	public ScheduleModel getScheduleModel();
 	public void addScheduleHolder(String providerName, String holderName);
+	public void addScheduleHolder(String id);
 	public ConvertValue getConvertValue();
 	public String getValue();
 	public void setValue(String value);
+	void setGroupHolder(String id);
 }

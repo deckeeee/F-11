@@ -27,10 +27,11 @@ import org.F11.scada.data.ConvertValue;
 import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.data.WifeQualityFlag;
-
+import org.F11.scada.xwife.server.WifeDataProvider;
 
 /**
- * アナログの可変値を設定するクラスです。 
+ * アナログの可変値を設定するクラスです。
+ * 
  * @author hori
  */
 public class VariableAnalogSetter implements ValueSetter {
@@ -40,6 +41,7 @@ public class VariableAnalogSetter implements ValueSetter {
 
 	/**
 	 * コンストラクタ
+	 * 
 	 * @param providerName
 	 * @param holderName
 	 */
@@ -50,16 +52,20 @@ public class VariableAnalogSetter implements ValueSetter {
 
 	/**
 	 * 値をホルダに設定し、書込みメソッドを呼び出します。
+	 * 
 	 * @param variableValue 書き込む値
 	 */
 	public void writeValue(Object variableValue) {
-		DataHolder dh = Manager.getInstance().findDataHolder(providerName, holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		if (dh == null)
 			return;
 		WifeData wd = (WifeData) dh.getValue();
 		if (wd instanceof WifeDataAnalog) {
 			WifeDataAnalog da = (WifeDataAnalog) wd;
-			ConvertValue conv = (ConvertValue) dh.getParameter("convert");
+			ConvertValue conv =
+				(ConvertValue) dh
+					.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 			dh.setValue(
 				da.valueOf(conv.convertInputValue((String) variableValue)),
 				new java.util.Date(),
@@ -75,6 +81,7 @@ public class VariableAnalogSetter implements ValueSetter {
 
 	/**
 	 * データプロバイダ名＋データホルダー名をアンダーバーで結合した文字列配列を返します。
+	 * 
 	 * @return データプロバイダ名＋データホルダー名をアンダーバーで結合した文字列配列
 	 */
 	public String getDestination() {

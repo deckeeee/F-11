@@ -48,6 +48,7 @@ import org.F11.scada.data.WifeDataSchedule;
 import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.AttributesUtil;
+import org.apache.log4j.Logger;
 
 /**
  * スケジュールモデルの実装クラスです。
@@ -55,8 +56,8 @@ import org.F11.scada.util.AttributesUtil;
 public class DefaultScheduleModel implements ScheduleModel,
 		DataReferencerOwner, DataValueChangeListener {
 	/** DataHolderタイプ情報です。 */
-	private static final Class[][] WIFE_TYPE_INFO = new Class[][] { {
-			DataHolder.class, WifeData.class } };
+	private static final Class[][] WIFE_TYPE_INFO =
+		new Class[][] { { DataHolder.class, WifeData.class } };
 	/** バウンズプロパティです。 */
 	private SwingPropertyChangeSupport changeSupport;
 	/** スケジュールデータです */
@@ -78,6 +79,8 @@ public class DefaultScheduleModel implements ScheduleModel,
 	private static final String SCHEDULE_MODEL_CHANGE = "SCHEDULE_MODEL_CHANGE";
 	/** 変更フラグが不要な場合のダミーリファレンサ */
 	private static final DataReferencer NON_FLAG = new DataReferencer("", "");
+	/** Logging API */
+	private final Logger logger = Logger.getLogger(DefaultScheduleModel.class);
 
 	/**
 	 * コンストラクタ
@@ -139,8 +142,8 @@ public class DefaultScheduleModel implements ScheduleModel,
 	}
 
 	private void writeSchedule() {
-		DataReferencer rf = (DataReferencer) dataReferencerList
-				.get(referencerIndex);
+		DataReferencer rf =
+			(DataReferencer) dataReferencerList.get(referencerIndex);
 		DataHolder dh = rf.getDataHolder();
 		dh.setValue(dataSchedule, new Date(), WifeQualityFlag.GOOD);
 		try {
@@ -151,8 +154,8 @@ public class DefaultScheduleModel implements ScheduleModel,
 	}
 
 	private void writeFlag() {
-		DataReferencer rf = (DataReferencer) flagReferencerList
-				.get(referencerIndex);
+		DataReferencer rf =
+			(DataReferencer) flagReferencerList.get(referencerIndex);
 		if (rf != NON_FLAG) {
 			DataHolder dh = rf.getDataHolder();
 			WifeDataDigital d = (WifeDataDigital) dh.getValue();
@@ -176,16 +179,17 @@ public class DefaultScheduleModel implements ScheduleModel,
 	 * 保持しているスケジュールデータを更新します。
 	 */
 	public void writeData() {
-		undoDataSchedule = (WifeDataSchedule) dataSchedule.valueOf(dataSchedule
-				.toByteArray());
+		undoDataSchedule =
+			(WifeDataSchedule) dataSchedule.valueOf(dataSchedule.toByteArray());
 	}
 
 	/**
 	 * 保持しているスケジュールデータをアンドゥします。
 	 */
 	public void undoData() {
-		dataSchedule = (WifeDataSchedule) undoDataSchedule
-				.valueOf(undoDataSchedule.toByteArray());
+		dataSchedule =
+			(WifeDataSchedule) undoDataSchedule.valueOf(undoDataSchedule
+				.toByteArray());
 		firePropertyChange(null, null);
 	}
 
@@ -198,14 +202,16 @@ public class DefaultScheduleModel implements ScheduleModel,
 		DataReferencer rf = (DataReferencer) dataReferencerList.get(index);
 		DataHolder dh = rf.getDataHolder();
 		if (dh == null) {
-			System.out.println("DP:" + rf.getDataProviderName() + " DH:"
-					+ rf.getDataHolderName());
+			logger.error(rf.getDataProviderName()
+				+ "_"
+				+ rf.getDataHolderName()
+				+ "が登録されていません。");
 		}
 		WifeDataSchedule schedule = (WifeDataSchedule) dh.getValue();
-		undoDataSchedule = (WifeDataSchedule) schedule.valueOf(schedule
-				.toByteArray());
-		dataSchedule = (WifeDataSchedule) schedule.valueOf(schedule
-				.toByteArray());
+		undoDataSchedule =
+			(WifeDataSchedule) schedule.valueOf(schedule.toByteArray());
+		dataSchedule =
+			(WifeDataSchedule) schedule.valueOf(schedule.toByteArray());
 		referencerIndex = index;
 		firePropertyChange(null, null);
 	}
@@ -287,7 +293,7 @@ public class DefaultScheduleModel implements ScheduleModel,
 		if (changeSupport == null)
 			changeSupport = new SwingPropertyChangeSupport(this);
 		changeSupport
-				.addPropertyChangeListener(SCHEDULE_MODEL_CHANGE, listener);
+			.addPropertyChangeListener(SCHEDULE_MODEL_CHANGE, listener);
 	}
 
 	/**
@@ -299,8 +305,8 @@ public class DefaultScheduleModel implements ScheduleModel,
 		if (changeSupport == null)
 			return;
 		changeSupport.removePropertyChangeListener(
-				SCHEDULE_MODEL_CHANGE,
-				listener);
+			SCHEDULE_MODEL_CHANGE,
+			listener);
 	}
 
 	/**
@@ -313,9 +319,9 @@ public class DefaultScheduleModel implements ScheduleModel,
 		if (changeSupport == null)
 			return;
 		changeSupport.firePropertyChange(
-				SCHEDULE_MODEL_CHANGE,
-				oldValue,
-				newValue);
+			SCHEDULE_MODEL_CHANGE,
+			oldValue,
+			newValue);
 	}
 
 	/**
@@ -477,8 +483,8 @@ public class DefaultScheduleModel implements ScheduleModel,
 		flagReferencerList.clear();
 
 		if (changeSupport != null) {
-			PropertyChangeListener[] listeners = changeSupport
-					.getPropertyChangeListeners();
+			PropertyChangeListener[] listeners =
+				changeSupport.getPropertyChangeListeners();
 			for (int i = 0; i < listeners.length; i++) {
 				changeSupport.removePropertyChangeListener(listeners[i]);
 			}
@@ -491,20 +497,21 @@ public class DefaultScheduleModel implements ScheduleModel,
 	public void duplicateGroup(int[] dest) {
 		try {
 			for (int i = 0; i < dest.length; i++) {
-				DataReferencer ref = (DataReferencer) dataReferencerList
-						.get(dest[i]);
+				DataReferencer ref =
+					(DataReferencer) dataReferencerList.get(dest[i]);
 				DataHolder dh = ref.getDataHolder();
 				if (dh == null) {
 					throw new NullPointerException(
-							"not registered dataholder : "
-									+ ref.getDataProviderName() + "_"
-									+ ref.getDataHolderName());
+						"not registered dataholder : "
+							+ ref.getDataProviderName()
+							+ "_"
+							+ ref.getDataHolderName());
 				}
 				WifeDataSchedule src = (WifeDataSchedule) dh.getValue();
 				dh.setValue(
-						dataSchedule.duplicate(src),
-						new Date(),
-						WifeQualityFlag.GOOD);
+					dataSchedule.duplicate(src),
+					new Date(),
+					WifeQualityFlag.GOOD);
 				dh.syncWrite();
 			}
 		} catch (DataProviderDoesNotSupportException e) {
@@ -544,8 +551,10 @@ public class DefaultScheduleModel implements ScheduleModel,
 	}
 
 	public String toString() {
-		return "referencerIndex=" + referencerIndex + " ,dataSchedule="
-				+ dataSchedule.toString();
+		return "referencerIndex="
+			+ referencerIndex
+			+ " ,dataSchedule="
+			+ dataSchedule.toString();
 	}
 
 	public int getTopSize() {

@@ -46,6 +46,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -56,8 +57,8 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 		ScheduleEditable {
 	private static final long serialVersionUID = -3912966575546294875L;
 
-	private final Logger logger = Logger
-			.getLogger(TextScheduleSymbolEditable.class);
+	private final Logger logger =
+		Logger.getLogger(TextScheduleSymbolEditable.class);
 	/** ダイアログ表示位置 */
 	private Point dialogPoint;
 	/** 編集可能フラグ */
@@ -148,7 +149,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 		para.add(this.getClass());
 		para.add(this);
 		JDialog dlg = getDialog(frame, (SymbolCollection) getParent(), para);
-		System.out.println(dlg.requestFocusInWindow());
+		dlg.requestFocusInWindow();
 		dlg.show();
 	}
 
@@ -172,18 +173,25 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 	}
 
 	public ConvertValue getConvertValue() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				grProviderName,
-				grHolderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(grProviderName, grHolderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return null;
 
-		return (ConvertValue) dh.getParameter("convert");
+		return (ConvertValue) dh
+			.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 	}
 
 	public void addScheduleHolder(String providerName, String holderName) {
 		scheduleModel.addGroup(providerName, holderName, "");
+	}
+
+	public void addScheduleHolder(String id) {
+		int index = id.indexOf("_");
+		String providerName = id.substring(0, index);
+		String holderName = id.substring(index + 1);
+		addScheduleHolder(providerName, holderName);
 	}
 
 	public WifeDialog getDialog(
@@ -279,5 +287,9 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 			authentication.removeEditable(this);
 		}
 		super.disConnect();
+	}
+	
+	public void setGroupHolder(String id) {
+		//Dummy
 	}
 }
