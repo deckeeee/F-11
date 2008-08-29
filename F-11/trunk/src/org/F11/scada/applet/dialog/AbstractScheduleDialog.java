@@ -52,6 +52,7 @@ import org.F11.scada.applet.symbol.ScheduleEditable;
 import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
+import org.F11.scada.util.FontUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -59,8 +60,6 @@ import org.apache.log4j.Logger;
  */
 abstract public class AbstractScheduleDialog extends WifeDialog implements
 		SymbolCollection, ActionListener {
-	/** シンボルのイテレーター */
-	private ListIterator listIterator;
 	/** 編集対象シンボル */
 	private ScheduleEditable symbol;
 	/** グループ番号のパネルです */
@@ -73,8 +72,8 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	private final boolean isSort;
 	private final boolean isLenient;
 	/** ロギングクラスです */
-	private final Logger logger = Logger
-			.getLogger(AbstractScheduleDialog.class);
+	private final Logger logger =
+		Logger.getLogger(AbstractScheduleDialog.class);
 
 	/**
 	 * コンストラクタ
@@ -153,15 +152,16 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 */
 	private void setDialogValue() {
 		logger.info("setDialogValue開始");
-		GraphicScheduleViewCreator view = createView(
-				symbol.getScheduleModel(),
-				isSort,
-				isLenient);
+		GraphicScheduleViewCreator view =
+			createView(symbol.getScheduleModel(), isSort, isLenient);
 		JComponent viewPanel = view.createView();
 		getContentPane().add(viewPanel, BorderLayout.CENTER);
 
 		grupNoButton = new GroupNoButton(this, symbol.getValue());
-		groupNoPanel.add(new JLabel("GroupNo : "));
+		FontUtil.setFont("SansSerif", "PLAIN", 16, grupNoButton);
+		JLabel groupLabel = new JLabel("グループNo : ");
+		FontUtil.setFont("SansSerif", "PLAIN", 16, groupLabel);
+		groupNoPanel.add(groupLabel);
 		groupNoPanel.add(grupNoButton);
 	}
 
@@ -177,8 +177,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 */
 	public void setListIterator(ListIterator listIterator) {
 		logger.info("setListIterator開始");
-		this.listIterator = listIterator;
-		this.symbol = (ScheduleEditable) this.listIterator.next();
+		symbol = (ScheduleEditable) listIterator.next();
 	}
 
 	/**
@@ -439,7 +438,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 			WifeDialog d = DialogFactory.get(window, "1");
 			if (d == null)
 				logger.warn(this.getClass().getName()
-						+ " : scheduleDialog null");
+					+ " : scheduleDialog null");
 			d.setListIterator(collection.listIterator(para));
 			return d;
 		}
@@ -513,7 +512,8 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 			para.add(new Integer(0));
 			if (this.dialog.tenkeyDialog != null)
 				this.dialog.tenkeyDialog.dispose();
-			this.dialog.tenkeyDialog = getDialog(this.dialog, this.dialog, para);
+			this.dialog.tenkeyDialog =
+				getDialog(this.dialog, this.dialog, para);
 			this.dialog.tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}

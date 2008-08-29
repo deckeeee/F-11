@@ -403,7 +403,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 						panelAlarmList.remove(loggingFinder);
 						panelAlarmList.add(alarmConditions, BorderLayout.NORTH);
 					}
-					validate();
+					revalidate();
 					repaint();
 				}
 			});

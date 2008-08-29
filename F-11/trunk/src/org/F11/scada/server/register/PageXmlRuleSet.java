@@ -89,5 +89,8 @@ public class PageXmlRuleSet extends RuleSetBase {
 
 	    digester.addSetProperties("*/bargraph2/barseries/barprop", "holder", "value");
 	    digester.addSetProperties("*/bargraph2/barseries/barprop", "nowvalue", "value");
+
+	    digester.addSetProperties("*/imagesymboleditable/schedule", "schedule", "value");
+	    digester.addSetProperties("*/imagesymboleditable/schedule", "group", "value");
 	}
 }

@@ -149,7 +149,7 @@ public class WifeAppletD extends AbstractNewApplet {
 							mainPanel.remove(loggingFinder);
 							mainPanel.add(alarmConditions, BorderLayout.NORTH);
 						}
-						validate();
+						revalidate();
 						repaint();
 					}
 				});

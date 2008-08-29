@@ -27,14 +27,40 @@ import java.awt.Font;
 public abstract class FontUtil {
 	/**
 	 * コンポーネントにフォントを設定します。
+	 * 
 	 * @param name フォント名
 	 * @param style フォントスタイル
 	 * @param size フォントサイズ
 	 * @param comp コンポーネント
 	 */
-	public static void setFont(String name, String style, String size, Component comp) {
+	public static void setFont(
+			String name,
+			String style,
+			String size,
+			Component comp) {
 		Font font = comp.getFont();
-		comp.setFont(new Font(getName(font, name), getStyle(font, style), getSize(font, size)));
+		comp.setFont(new Font(
+			getName(font, name),
+			getStyle(font, style),
+			getSize(font, size)));
+	}
+
+	/**
+	 * コンポーネントにフォントを設定します。
+	 * 
+	 * @param name フォント名
+	 * @param style フォントスタイル
+	 * @param size フォントサイズ
+	 * @param comp コンポーネント
+	 */
+	public static void setFont(
+			String name,
+			String style,
+			int size,
+			Component comp) {
+		Font font = comp.getFont();
+		comp
+			.setFont(new Font(getName(font, name), getStyle(font, style), size));
 	}
 
 	private static String getName(Font font, String name) {

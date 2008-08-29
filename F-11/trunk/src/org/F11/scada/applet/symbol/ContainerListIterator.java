@@ -49,7 +49,7 @@ public class ContainerListIterator implements ListIterator {
 	 * @param symbolClass 抽出するシンボルのクラス
 	 * @param current イテレーターの最初に持ってくるシンボル
 	 */
-	ContainerListIterator(Container compo, Class symbolClass, Editable current) {
+	public ContainerListIterator(Container compo, Class symbolClass, Editable current) {
 		symbols = new ArrayList();
 
 		int no = 0;
