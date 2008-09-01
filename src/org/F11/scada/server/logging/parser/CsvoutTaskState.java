@@ -20,12 +20,14 @@
 
 package org.F11.scada.server.logging.parser;
 
+import java.util.BitSet;
 import java.util.Stack;
 
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
 import org.F11.scada.server.logging.report.CsvoutTask;
 import org.F11.scada.util.AttributesUtil;
+import org.F11.scada.util.BooleanUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -45,6 +47,7 @@ public class CsvoutTaskState implements State {
 	boolean data_head;
 	boolean data_mode;
 	long midOffset;
+	private BitSet attributeSet;
 
 	TaskState state;
 
@@ -75,13 +78,10 @@ public class CsvoutTaskState implements State {
 			throw new IllegalArgumentException("keep is null");
 		}
 		keepCnt = Integer.parseInt(keepstr);
-
 		data_head = Boolean.valueOf(atts.getValue("data_head")).booleanValue();
-
 		data_mode = Boolean.valueOf(atts.getValue("data_mode")).booleanValue();
-
 		midOffset = AttributesUtil.getLongValue(atts.getValue("mid_offset"));
-
+		attributeSet = BooleanUtil.getBitSet(atts.getValue("attribute"));
 		this.state = state;
 	}
 
@@ -116,7 +116,8 @@ public class CsvoutTaskState implements State {
 					data_head,
 					data_mode,
 					midOffset,
-					state.getTables());
+					state.getTables(),
+					attributeSet);
 			state.loggingDataListeners.add(task);
 		} catch (Exception ex) {
 			ex.printStackTrace();

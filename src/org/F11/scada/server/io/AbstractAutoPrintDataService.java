@@ -156,8 +156,9 @@ public abstract class AbstractAutoPrintDataService implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.AutoPrintDataService#setAutoPrintSchedule(java.lang.String,
-	 *      org.F11.scada.server.autoprint.AutoPrintSchedule)
+	 * @see
+	 * org.F11.scada.server.io.AutoPrintDataService#setAutoPrintSchedule(java
+	 * .lang.String, org.F11.scada.server.autoprint.AutoPrintSchedule)
 	 */
 	public void setAutoPrintSchedule(String name, AutoPrintSchedule schedule) {
 		if (name == null || schedule == null)
@@ -201,12 +202,16 @@ public abstract class AbstractAutoPrintDataService implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.AutoPrintDataService#getLoggingHeddarList(java.lang.String,
-	 *      java.util.List)
+	 * @see
+	 * org.F11.scada.server.io.AutoPrintDataService#getLoggingHeddarList(java
+	 * .lang.String, java.util.List)
 	 */
-	public List<Map<String, String>> getLoggingHeddarList(String tableName, List dataHolders) {
+	public List<Map<String, String>> getLoggingHeddarList(
+			String tableName,
+			List dataHolders) {
 
-		List<Map<String, String>> ret = new ArrayList<Map<String, String>>(dataHolders.size() + 1);
+		List<Map<String, String>> ret =
+			new ArrayList<Map<String, String>>(dataHolders.size() + 1);
 		Connection con = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -225,10 +230,13 @@ public abstract class AbstractAutoPrintDataService implements
 				stmt.setInt(1, manageSortedItems[i].getPoint().intValue());
 				rs = stmt.executeQuery();
 				if (rs.next()) {
-					Map<String, String> record = new HashMap();
+					Map<String, String> record = new HashMap<String, String>();
 					record.put("unit", rs.getString("unit"));
 					record.put("name", rs.getString("name"));
 					record.put("unit_mark", rs.getString("unit_mark"));
+					record.put("attribute1", rs.getString("attribute1"));
+					record.put("attribute2", rs.getString("attribute2"));
+					record.put("attribute3", rs.getString("attribute3"));
 					ret.add(record);
 				}
 				rs.close();
