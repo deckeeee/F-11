@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.BitSet;
 
 import org.F11.scada.WifeUtilities;
 
@@ -29,57 +30,81 @@ import org.F11.scada.WifeUtilities;
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
  */
 public class BooleanUtil {
-    private BooleanUtil() {}
-    
+	private BooleanUtil() {
+	}
+
 	public static boolean isBoolean(ResultSet rs) throws SQLException {
-	    ResultSetMetaData rsMeta = rs.getMetaData();
-	    int type = rsMeta.getColumnType(1);
-	    String flagStr = rs.getString("value");
-	    switch (type) {
-        case Types.CHAR:
-        case Types.INTEGER:
-        case Types.VARCHAR:
-        	return "1".equals(flagStr);
-        case Types.BOOLEAN:
-        case Types.BIT:
-        	return Boolean.valueOf(flagStr).booleanValue();
-        default:
-            throw new IllegalStateException();
-        }
+		ResultSetMetaData rsMeta = rs.getMetaData();
+		int type = rsMeta.getColumnType(1);
+		String flagStr = rs.getString("value");
+		switch (type) {
+		case Types.CHAR:
+		case Types.INTEGER:
+		case Types.VARCHAR:
+			return "1".equals(flagStr);
+		case Types.BOOLEAN:
+		case Types.BIT:
+			return Boolean.valueOf(flagStr).booleanValue();
+		default:
+			throw new IllegalStateException();
+		}
 	}
-    
-	public static boolean isBoolean(ResultSet rs, String columnName) throws SQLException {
-	    int type = getColumnType(rs, columnName);
-	    String flagStr = rs.getString(columnName);
-	    System.out.println(flagStr);
-	    switch (type) {
-        case Types.CHAR:
-        case Types.INTEGER:
-        case Types.VARCHAR:
-        	return "1".equals(flagStr);
-        case Types.BOOLEAN:
-        case Types.BIT:
-        	return Boolean.valueOf(flagStr).booleanValue();
-        default:
-            throw new IllegalStateException();
-        }
+
+	public static boolean isBoolean(ResultSet rs, String columnName)
+			throws SQLException {
+		int type = getColumnType(rs, columnName);
+		String flagStr = rs.getString(columnName);
+		System.out.println(flagStr);
+		switch (type) {
+		case Types.CHAR:
+		case Types.INTEGER:
+		case Types.VARCHAR:
+			return "1".equals(flagStr);
+		case Types.BOOLEAN:
+		case Types.BIT:
+			return Boolean.valueOf(flagStr).booleanValue();
+		default:
+			throw new IllegalStateException();
+		}
 	}
-	
-	private static int getColumnType(ResultSet rs, String name) throws SQLException {
-	    ResultSetMetaData rsMeta = rs.getMetaData();
-	    int column = 1;
-	    for(int maxColumn = rsMeta.getColumnCount(); column <= maxColumn; ++column) {
-	    	String columnName = rsMeta.getColumnName(column);
-	    	if (columnName.equals(name))
-	    		break;
-	    }
-	    
-	    return rsMeta.getColumnType(column);
+
+	private static int getColumnType(ResultSet rs, String name)
+			throws SQLException {
+		ResultSetMetaData rsMeta = rs.getMetaData();
+		int column = 1;
+		for (int maxColumn = rsMeta.getColumnCount(); column <= maxColumn; ++column) {
+			String columnName = rsMeta.getColumnName(column);
+			if (columnName.equals(name))
+				break;
+		}
+
+		return rsMeta.getColumnType(column);
 	}
 
 	public static Object getDigitalValue(boolean b) {
-		return "mysql".equals(WifeUtilities.getDBMSName()) ?
-				b ? (Object) new Double(1) : (Object) new Double(0)
-	         :  b ? (Object) "true" : (Object) "false";
+		return "mysql".equals(WifeUtilities.getDBMSName()) ? b
+			? (Object) new Double(1)
+			: (Object) new Double(0) : b ? (Object) "true" : (Object) "false";
+	}
+
+	/**
+	 * ビットを表す2進数文字列表現のBitSetを返します。"001"は0ビットが1その他のビットが0を表す文字列です。1以外の文字列は0として扱います
+	 * 
+	 * @param b ビットを表す2進数文字列表現
+	 * @return ビットを表す2進数文字列表現のBitSetを返します。
+	 */
+	public static BitSet getBitSet(String b) {
+		if (null == b || "".equals(b)) {
+			return new BitSet(0);
+		} else {
+			BitSet set = new BitSet(b.length());
+			for (int i = 0; i < b.length(); i++) {
+				char c = b.charAt(i);
+				if ('1' == c) {
+					set.set(i);
+				}
+			}
+			return set;
+		}
 	}
 }

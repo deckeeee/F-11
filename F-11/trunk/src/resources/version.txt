@@ -1,4 +1,4 @@
-version=2.1.10RC5
+version=2.1.10RC6
 license1=<html>\
 			<body style="font\:Serif">\
 			<p style="font-size\:1.3em">F-11</p><br>

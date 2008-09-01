@@ -28,10 +28,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -63,15 +63,27 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	private boolean dataMode;
 	/** プリントデータ更新クラス */
 	private final AutoPrintDataService stor = new AutoPrintDataStore();
+	/** 属性ヘッダ出力設定 */
+	private final BitSet attributeSet;
 
 	/**
-	 * コンストラクタ
 	 * 
-	 * @param name ロギング名
-	 * @param dataHolders データホルダーのリスト
+	 * @param logg_name
+	 * @param handlerManager
+	 * @param schedule
+	 * @param dataHolders
+	 * @param currDir
+	 * @param csv_head
+	 * @param csv_mid
+	 * @param csv_foot
+	 * @param keepCount
+	 * @param data_head
+	 * @param dataMode
 	 * @param midOffset
-	 * @param factoryName データ永続クラス名
-	 * @exception SQLException DBMSに接続できなかったとき
+	 * @param tables
+	 * @param attributeSet
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
 	 */
 	public CsvoutTask(
 			String logg_name,
@@ -86,7 +98,8 @@ public class CsvoutTask extends AbstractCsvoutTask {
 			boolean data_head,
 			boolean dataMode,
 			long midOffset,
-			List<String> tables) throws NoSuchFieldException,
+			List<String> tables,
+			BitSet attributeSet) throws NoSuchFieldException,
 			IllegalAccessException {
 		super(
 			logg_name,
@@ -102,6 +115,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 			tables);
 		this.data_head = data_head;
 		this.dataMode = dataMode;
+		this.attributeSet = attributeSet;
 	}
 
 	/**
@@ -275,32 +289,9 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	}
 
 	private void singleTableHeaderWrite(List<StringBuilder> list) {
-		StringBuilder s = new StringBuilder();
 		List<Map<String, String>> hl =
 			stor.getLoggingHeddarList(logg_name, dataHolders);
-		s.append(TIMESTAMP_LABEL);
-		for (Map<String, String> rec : hl) {
-			s.append(",\"");
-			s.append(rec.get("unit"));
-			s.append("\"");
-		}
-		addList(list, s, 0, true);
-		s = new StringBuilder();
-		s.append(TIMESTAMP_LABEL);
-		for (Map<String, String> rec : hl) {
-			s.append(",\"");
-			s.append(rec.get("name"));
-			s.append("\"");
-		}
-		addList(list, s, 1, true);
-		s = new StringBuilder();
-		s.append(TIMESTAMP_LABEL);
-		for (Map<String, String> rec : hl) {
-			s.append(",\"");
-			s.append(rec.get("unit_mark"));
-			s.append("\"");
-		}
-		addList(list, s, 2, true);
+		setHeaderString(list, hl, true);
 	}
 
 	private void multiTableHeaderWrite(List<StringBuilder> list)
@@ -309,38 +300,45 @@ public class CsvoutTask extends AbstractCsvoutTask {
 		for (String table : tables) {
 			List<Map<String, String>> hl =
 				stor.getLoggingHeddarList(table, getHolder(table));
-			StringBuilder s = new StringBuilder();
-			if (isFirst) {
-				s.append(TIMESTAMP_LABEL);
-			}
-			for (Map<String, String> rec : hl) {
-				s.append(",\"");
-				s.append(rec.get("unit"));
-				s.append("\"");
-			}
-			addList(list, s, 0, isFirst);
-			s = new StringBuilder();
-			if (isFirst) {
-				s.append(TIMESTAMP_LABEL);
-			}
-			for (Map<String, String> rec : hl) {
-				s.append(",\"");
-				s.append(rec.get("name"));
-				s.append("\"");
-			}
-			addList(list, s, 1, isFirst);
-			s = new StringBuilder();
-			if (isFirst) {
-				s.append(TIMESTAMP_LABEL);
-			}
-			for (Map<String, String> rec : hl) {
-				s.append(",\"");
-				s.append(rec.get("unit_mark"));
-				s.append("\"");
-			}
-			addList(list, s, 2, isFirst);
+			setHeaderString(list, hl, isFirst);
 			isFirst = false;
 		}
+	}
+
+	private void setHeaderString(
+			List<StringBuilder> list,
+			List<Map<String, String>> hl,
+			boolean isFirst) {
+		getColumn(list, hl, isFirst, "unit", 0);
+		getColumn(list, hl, isFirst, "name", 1);
+		getColumn(list, hl, isFirst, "unit_mark", 2);
+		if (attributeSet.get(0)) {
+			getColumn(list, hl, isFirst, "attribute1", 3);
+		}
+		if (attributeSet.get(1)) {
+			getColumn(list, hl, isFirst, "attribute2", 4);
+		}
+		if (attributeSet.get(2)) {
+			getColumn(list, hl, isFirst, "attribute3", 5);
+		}
+	}
+
+	private void getColumn(
+			List<StringBuilder> list,
+			List<Map<String, String>> hl,
+			boolean isFirst,
+			String column,
+			int row) {
+		StringBuilder s = new StringBuilder();
+		if (isFirst) {
+			s.append(TIMESTAMP_LABEL);
+		}
+		for (Map<String, String> rec : hl) {
+			s.append(",\"");
+			s.append(rec.get(column));
+			s.append("\"");
+		}
+		addList(list, s, row, isFirst);
 	}
 
 	private void writeString(List<StringBuilder> list, BufferedWriter out)

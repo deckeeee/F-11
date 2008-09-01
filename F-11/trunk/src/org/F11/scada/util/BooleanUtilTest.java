@@ -21,11 +21,28 @@
 
 package org.F11.scada.util;
 
+import java.util.BitSet;
+
 import junit.framework.TestCase;
 
 public class BooleanUtilTest extends TestCase {
 	public void testGetDigitalValue() throws Exception {
 		assertEquals("true", BooleanUtil.getDigitalValue(true));
 		assertEquals("false", BooleanUtil.getDigitalValue(false));
+	}
+	
+	public void testGetBitSet() throws Exception {
+		BitSet set = BooleanUtil.getBitSet("001");
+		assertFalse(set.get(0));
+		assertFalse(set.get(1));
+		assertTrue(set.get(2));
+		BitSet set2 = BooleanUtil.getBitSet("a#‚Ê");
+		assertFalse(set2.get(0));
+		assertFalse(set2.get(1));
+		assertFalse(set2.get(2));
+		BitSet set3 = BooleanUtil.getBitSet(null);
+		assertFalse(set3.get(0));
+		assertFalse(set3.get(1));
+		assertFalse(set3.get(2));
 	}
 }
