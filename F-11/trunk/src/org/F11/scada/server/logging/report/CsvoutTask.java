@@ -316,10 +316,14 @@ public class CsvoutTask extends AbstractCsvoutTask {
 			getColumn(list, hl, isFirst, "attribute1", 3);
 		}
 		if (attributeSet.get(1)) {
-			getColumn(list, hl, isFirst, "attribute2", 4);
+			getColumn(list, hl, isFirst, "attribute2", attributeSet.get(0)
+				? 4
+				: 3);
 		}
 		if (attributeSet.get(2)) {
-			getColumn(list, hl, isFirst, "attribute3", 5);
+			getColumn(list, hl, isFirst, "attribute3", attributeSet.get(0)
+				? (attributeSet.get(1) ? 5 : 4)
+				: 3);
 		}
 	}
 
