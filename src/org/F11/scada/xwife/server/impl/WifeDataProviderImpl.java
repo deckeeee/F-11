@@ -281,6 +281,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 				Thread.sleep(initWaitTime);
 			}
 			bytedataMap = communicater.syncRead(defines, sameDataBalk);
+			if (sameDataBalk && isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
+				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
+			}
 		} catch (InterruptedException e) {
 			unExecuteCommands.offer(defines);
 			return;
@@ -296,9 +299,6 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			WifeCommand wc = (WifeCommand) entry.getKey();
 			byte[] data = (byte[]) entry.getValue();
 			setByteData(wc, data);
-		}
-		if (sameDataBalk && isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
-			setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
 		}
 	}
 
