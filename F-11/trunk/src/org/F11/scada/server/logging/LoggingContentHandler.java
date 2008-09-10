@@ -59,4 +59,12 @@ public interface LoggingContentHandler extends Remote {
 	 * @throws RemoteException
 	 */
 	String getFactoryName(String taskName) throws RemoteException;
+
+	/**
+	 * 結合するテーブル名のリスト。
+	 * 
+	 * @param taskName メインのテーブル名
+	 * @return 結合するテーブル名のリスト
+	 */
+	List<String> getTables(String taskName) throws RemoteException;
 }
