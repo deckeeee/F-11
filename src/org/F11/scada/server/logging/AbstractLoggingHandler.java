@@ -64,4 +64,14 @@ public abstract class AbstractLoggingHandler extends DefaultHandler implements
 		}
 		return null;
 	}
+
+	public List<String> getTables(String taskName) {
+		if (taskMap.containsKey(taskName)) {
+			LoggingTask task = (LoggingTask) taskMap.get(taskName);
+			return task.getTables();
+		} else {
+			log.warn(taskName + "‚ª‘¶İ‚µ‚Ü‚¹‚ñB");
+		}
+		return null;
+	}
 }
