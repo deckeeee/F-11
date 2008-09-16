@@ -35,7 +35,7 @@ public abstract class AbstractLoggingHandler extends DefaultHandler implements
 		LoggingContentHandler {
 	private final Logger log = Logger.getLogger(AbstractLoggingHandler.class);
 	protected Stack stack;
-	protected Map taskMap = new HashMap();
+	protected Map<String, LoggingTask> taskMap = new HashMap<String, LoggingTask>();
 
 	public Map getTaskMap() {
 		return taskMap;
@@ -71,7 +71,7 @@ public abstract class AbstractLoggingHandler extends DefaultHandler implements
 			return task.getTables();
 		} else {
 			log.warn(taskName + "Ç™ë∂ç›ÇµÇ‹ÇπÇÒÅB");
+			return Collections.emptyList();
 		}
-		return null;
 	}
 }
