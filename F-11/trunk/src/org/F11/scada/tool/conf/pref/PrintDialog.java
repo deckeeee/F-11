@@ -349,7 +349,7 @@ public class PrintDialog extends JDialog {
 		manager.setPreferences("/server/alarm/print/className", printMode);
 		manager.setPreferences("/server/alarm/print/printdate", printModeDate
 			.getText());
-		manager.setPreferences("/server/alarm/print/enable", enable.getText());
+		manager.setPreferences("/server/alarm/print/enable", enable.getText().trim());
 		dispose();
 	}
 
