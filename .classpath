@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="cat/src"/>
+	<classpathentry kind="src" path="wizerd/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-core.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
@@ -27,7 +28,6 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/AppFramework-1.03.jar"/>
 	<classpathentry kind="lib" path="lib/swing-worker.jar"/>
-	<classpathentry excluding="JavaWebStart/|META-INF/|SQL/|build/|classes/|data/|device/|docs/|lock/|misc/|pagedefine/|src/|treedefine/|cat/src/" including="resources/Explorer.dicon|resources/ServerConstruction.dicon" kind="src" path=""/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-j2ee_1.4_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-jta_1.0.1B_spec-1.0.jar"/>

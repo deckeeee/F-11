@@ -2,6 +2,7 @@
 <project name="F11_2_1_x" default="build" basedir=".">
 	<property name="src" value="." />
 	<property name="catsrc" value="cat/src" />
+	<property name="wizerdsrc" value="wizerd/src" />
 	<property name="build" value="build" />
 	<property name="dist"  value="dist" />
 	<property name="lib"  value="lib" />
@@ -31,6 +32,10 @@
 			<classpath refid="compile.classpath"/>
 		</javac>
 		<javac srcdir="${catsrc}" destdir="${classes}" debug="on"
+			excludes="**/*Test*" encoding="Windows-31J" target="1.5" source="1.5">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="${wizerdsrc}" destdir="${classes}" debug="on"
 			excludes="**/*Test*" encoding="Windows-31J" target="1.5" source="1.5">
 			<classpath refid="compile.classpath"/>
 		</javac>
@@ -73,6 +78,14 @@
 				<include name="**/*.sql"/>
 			</fileset>
 			<fileset dir="${catsrc}">
+				<include name="**/resources/*"/>
+				<include name="**/*.dicon"/>
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+				<include name="**/*.txt"/>
+				<include name="**/*.sql"/>
+			</fileset>
+			<fileset dir="${wizerdsrc}">
 				<include name="**/resources/*"/>
 				<include name="**/*.dicon"/>
 				<include name="**/*.properties"/>
