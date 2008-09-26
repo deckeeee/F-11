@@ -311,7 +311,8 @@ CREATE TABLE item_table (
   system tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (point,provider,holder),
   KEY item_table_system_idx (system),
-  KEY item_attribute_id_idx (attribute_id)
+  KEY item_attribute_id_idx (attribute_id),
+  KEY item_table_finder_idx (provider,holder)
 ) TYPE=MyISAM;
 
 --
