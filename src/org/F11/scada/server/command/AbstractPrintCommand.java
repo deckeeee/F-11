@@ -39,6 +39,7 @@ public abstract class AbstractPrintCommand implements Command {
 	private String header1;
 	private String header2;
 	private String header3;
+	private String header4;
 	private String provider;
 	private String holder;
 	private String header5;
@@ -109,6 +110,10 @@ public abstract class AbstractPrintCommand implements Command {
 		this.param2 = param2;
 	}
 
+	public void setHeader4(String header4) {
+		this.header4 = header4;
+	}
+
 	protected class ListOutPrintTask implements Runnable {
 		/** データ変更イベントの参照 */
 		private final DataValueChangeEventKey evt;
@@ -138,11 +143,15 @@ public abstract class AbstractPrintCommand implements Command {
 					pw.println(header1);
 					pw.println(header2);
 					pw.println(header3);
-					DataHolder dh = Manager.getInstance().findDataHolder(
-							provider, holder);
-					WifeDataAnalog da = (WifeDataAnalog) dh.getValue();
-					ConvertValue conv = (ConvertValue) dh.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-					pw.println(conv.convertStringValue(da.doubleValue()));
+					if (header4 == null) {
+						DataHolder dh = Manager.getInstance().findDataHolder(
+								provider, holder);
+						WifeDataAnalog da = (WifeDataAnalog) dh.getValue();
+						ConvertValue conv = (ConvertValue) dh.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+						pw.println(conv.convertStringValue(da.doubleValue()));
+					} else {
+						pw.println(header4);
+					}
 					pw.println(header5);
 					pw.flush();
 
