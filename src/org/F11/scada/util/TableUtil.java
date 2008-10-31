@@ -30,8 +30,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.F11.scada.applet.symbol.ListTable;
-
 public abstract class TableUtil {
 	public static void setWidth(
 			int width,
@@ -74,8 +72,11 @@ public abstract class TableUtil {
 	public static int getModelColumn(MouseEvent e) {
 		JTable table = (JTable) e.getSource();
 		int clickColumn = table.columnAtPoint(e.getPoint());
-		return table.getTableHeader().getColumnModel().getColumn(clickColumn)
-				.getModelIndex();
+		return table
+			.getTableHeader()
+			.getColumnModel()
+			.getColumn(clickColumn)
+			.getModelIndex();
 	}
 
 	/**
@@ -86,7 +87,7 @@ public abstract class TableUtil {
 	 * @param column
 	 * @return
 	 */
-	public static Point getDialogPoint(ListTable table, int row, int column) {
+	public static Point getDialogPoint(JTable table, int row, int column) {
 		Rectangle r = table.getCellRect(row, column, false);
 		Point p = table.getLocationOnScreen();
 		r.translate(p.x, p.y);
