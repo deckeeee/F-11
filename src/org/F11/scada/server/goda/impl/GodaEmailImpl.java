@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.swing.JOptionPane;
-
 import org.F11.scada.server.goda.GodaEmail;
 import org.F11.scada.server.goda.GodaFileSearch;
 import org.F11.scada.server.goda.GodaTaskProperty;
@@ -54,18 +52,11 @@ public class GodaEmailImpl implements GodaEmail {
 					search.setLastFile(property);
 				}
 				break;
-			} catch (EmailException e) {
-				logger.error("email送信エラー", e);
-				ThreadUtil.sleep(property.getRetryWait());
-				continue;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error("email送信エラー", e);
 				ThreadUtil.sleep(property.getRetryWait());
 				continue;
 			}
-		}
-		if (i >= property.getRetryTime()) {
-			JOptionPane.showMessageDialog(null, "email送信エラー");
 		}
 	}
 
@@ -100,10 +91,10 @@ public class GodaEmailImpl implements GodaEmail {
 		email.setMsg(property.getBody());
 		if (property.isPopBeforeSmtp()) {
 			email.setPopBeforeSmtp(
-					property.isWether(),
-					property.getPopServer(),
-					property.getUser(),
-					property.getPassword());
+				property.isWether(),
+				property.getPopServer(),
+				property.getUser(),
+				property.getPassword());
 		}
 		return email;
 	}
