@@ -529,3 +529,21 @@ CREATE TABLE item_formula_table (
   UNIQUE KEY id (id),
   KEY item_formula_table_holder (holder)
 ) TYPE=MyISAM;
+
+
+--
+-- Table structure for table `system_summary_table`
+--
+
+DROP TABLE IF EXISTS system_summary_table;
+CREATE TABLE system_summary_table (
+  point int(11) NOT NULL default '0',
+  provider varchar(100) NOT NULL default '',
+  holder varchar(100) NOT NULL default '',
+  on_date datetime default NULL,
+  off_date datetime default NULL,
+  bit_value tinyint(1) default NULL,
+  PRIMARY KEY  (point,provider,holder),
+  KEY system_summary_on_date_idx (on_date)
+) TYPE=MyISAM;
+

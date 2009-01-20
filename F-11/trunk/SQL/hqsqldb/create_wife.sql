@@ -405,3 +405,16 @@ CREATE TABLE item_formula_table (
   PRIMARY KEY (id)
 );
 CREATE INDEX item_formula_table_holder ON item_formula_table (holder);
+
+-- システムサマリ
+CREATE TABLE system_summary_table (
+	point INTEGER NOT NULL,
+	provider VARCHAR(100) NOT NULL,
+	holder VARCHAR(100) NOT NULL,
+	on_date DATETIME,
+	off_date DATETIME,
+	bit_value boolean,
+	PRIMARY KEY (point, provider, holder)
+);
+/* サマリインデックス定義 */
+CREATE INDEX system_summary_on_date_idx ON system_summary_table (on_date);
