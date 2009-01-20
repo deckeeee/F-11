@@ -30,7 +30,7 @@ import java.sql.Timestamp;
 public class Summary implements Serializable {
     private static final long serialVersionUID = -6326860590978839606L;
 
-    public static final String TABLE = "summary_table";
+    public static final String TABLE = "system_summary_table";
     public static final String point_COLUMN = "point";
     public static final String provider_COLUMN = "provider";
     public static final String holder_COLUMN = "holder";

@@ -224,6 +224,11 @@ public class Item implements Serializable {
         this.analogType = analogType;
     }
 
+    /**
+     * 2.1.10 RC11未満はサマリーを2.1.10 RC11以降はシステムサマリーを返します。
+     * 
+     * @return 2.1.10 RC11未満はサマリーを2.1.10 RC11以降はシステムサマリーを返します。
+     */
     public Summary getSummary() {
         return summary;
     }
