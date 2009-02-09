@@ -41,6 +41,8 @@ import java.util.TreeMap;
 import org.F11.scada.data.LoggingRowData;
 import org.F11.scada.server.io.SelectHandler;
 import org.F11.scada.server.io.SelectiveAllDataValueListHandlerElement;
+import org.F11.scada.server.register.HolderString;
+import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 import org.seasar.framework.exception.SQLRuntimeException;
 
@@ -77,7 +79,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler implements
 		}
 	}
 
-	public SortedMap getInitialData(List holderStrings) {
+	public SortedMap<Timestamp, DoubleList> getInitialData(List<HolderString> holderStrings) {
 		TreeMap map = new TreeMap();
 		try {
 			List list = null;
@@ -98,7 +100,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler implements
 		return map;
 	}
 
-	public SortedMap getInitialData(List holderStrings, int limit) {
+	public SortedMap<Timestamp, DoubleList> getInitialData(List<HolderString> holderStrings, int limit) {
 		TreeMap map = new TreeMap();
 		try {
 			List list = null;
@@ -116,7 +118,7 @@ public class PostgreSQLSelectiveAllDataValueListHandler implements
 		return map;
 	}
 
-	public Map getUpdateLoggingData(Timestamp key, List holderStrings) {
+	public Map<Timestamp, DoubleList> getUpdateLoggingData(Timestamp key, List<HolderString> holderStrings) {
 		Map map = new HashMap();
 		try {
 			List list = null;

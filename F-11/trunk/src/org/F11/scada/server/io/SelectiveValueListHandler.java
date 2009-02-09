@@ -25,32 +25,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
+import org.F11.scada.server.register.HolderString;
+import org.apache.commons.collections.primitives.DoubleList;
+
 /**
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
  */
 public interface SelectiveValueListHandler extends Remote {
-	
+
 	/**
 	 * keyで指定された時刻以降のロギングデータをMapインスタンスで返します。
+	 * 
 	 * @param name ハンドラ名
 	 * @param key 更新時刻
 	 * @param holderStrings 抽出するデータホルダーのリスト
 	 */
-	public Map getUpdateLoggingData(String name, Timestamp key, List holderStrings) throws RemoteException;
-	
+	public Map<Timestamp, DoubleList> getUpdateLoggingData(
+			String name,
+			Timestamp key,
+			List<HolderString> holderStrings) throws RemoteException;
+
 	/**
 	 * 初期化用データのSortedMapを返します。
+	 * 
 	 * @param name ハンドラ名
 	 * @return 初期化用データのSortedMapを返します。
 	 * @param holderStrings 抽出するデータホルダーのリスト
 	 */
-	public SortedMap getInitialData(String name, List holderStrings) throws RemoteException;
-	
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			String name,
+			List<HolderString> holderStrings) throws RemoteException;
+
 	/**
 	 * 初期化用データのSortedMapを返します。
+	 * 
 	 * @param name ハンドラ名
 	 * @return 初期化用データのSortedMapを返します。
 	 * @param holderStrings 抽出するデータホルダーのリスト
 	 */
-	public SortedMap getInitialData(String name, List holderStrings, int limit) throws RemoteException;
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			String name,
+			List<HolderString> holderStrings,
+			int limit) throws RemoteException;
 }

@@ -4,7 +4,7 @@
  * $Date: 2006/05/18 06:52:57 $
  * 
  * =============================================================================
-* Projrct F-11 - Web SCADA for Java
+ * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -35,16 +35,18 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import org.F11.scada.WifeUtilities;
+import org.F11.scada.server.register.HolderString;
+import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 
 /**
  * ロギングハンドラーの管理クラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class SelectiveValueListHandlerManager
-		extends UnicastRemoteObject
+public class SelectiveValueListHandlerManager extends UnicastRemoteObject
 		implements SelectiveValueListHandler {
-			
+
 	private static final long serialVersionUID = -3474934483417202536L;
 	/** ハンドラ名とハンドラオブジェクトのマップです */
 	private Map handlerMap;
@@ -53,23 +55,31 @@ public class SelectiveValueListHandlerManager
 
 	/**
 	 * Constructor for SelectiveValueListHandlerManager.
+	 * 
 	 * @throws RemoteException
 	 */
-	public SelectiveValueListHandlerManager(int recvPort) throws RemoteException, MalformedURLException {
+	public SelectiveValueListHandlerManager(int recvPort)
+			throws RemoteException, MalformedURLException {
 		super(recvPort);
 		logger = Logger.getLogger(getClass().getName());
 
-		logger.info("SelectiveValueListHandlerManager:" + WifeUtilities.createRmiSelectiveValueListHandlerManager());
-		Naming.rebind(WifeUtilities.createRmiSelectiveValueListHandlerManager(), this);
+		logger.info("SelectiveValueListHandlerManager:"
+			+ WifeUtilities.createRmiSelectiveValueListHandlerManager());
+		Naming.rebind(
+			WifeUtilities.createRmiSelectiveValueListHandlerManager(),
+			this);
 		logger.info("SelectiveValueListHandlerManager bound in registry");
 	}
-	
+
 	/**
 	 * ハンドラエレメントをマネージャーに追加します。
+	 * 
 	 * @param name ハンドラ名
 	 * @param handler ハンドラオブジェクト
 	 */
-	public synchronized void addValueListHandlerElement(String name, SelectiveValueListHandlerElement handler) {
+	public synchronized void addValueListHandlerElement(
+			String name,
+			SelectiveValueListHandlerElement handler) {
 		if (null == handler) {
 			throw new IllegalArgumentException("handler is null");
 		}
@@ -81,37 +91,53 @@ public class SelectiveValueListHandlerManager
 
 	/**
 	 * ハンドラエレメントをマネージャーから削除します。
+	 * 
 	 * @param name ハンドラ名
-	 */	
+	 */
 	public synchronized void removeValueListHandlerElement(String name) {
 		if (handlerMap == null) {
 			return;
 		}
 		handlerMap.remove(name);
 	}
-	
-	private SelectiveValueListHandlerElement getValueListHandlerElement(String name) {
+
+	private SelectiveValueListHandlerElement getValueListHandlerElement(
+			String name) {
 		if (handlerMap == null) {
-			throw new IllegalStateException("A SelectiveValueListHandlerManager doesn't hold a SelectiveValueListHandlerElement.");
+			throw new IllegalStateException(
+				"A SelectiveValueListHandlerManager doesn't hold a SelectiveValueListHandlerElement.");
 		}
 
 		if (handlerMap.containsKey(name)) {
-		    return (SelectiveValueListHandlerElement) handlerMap.get(name);
+			return (SelectiveValueListHandlerElement) handlerMap.get(name);
 		} else {
-		    throw new IllegalStateException("A SelectiveValueListHandlerManager doesn't hold a SelectiveValueListHandlerElement." + name);
+			throw new IllegalStateException(
+				"A SelectiveValueListHandlerManager doesn't hold a SelectiveValueListHandlerElement."
+					+ name);
 		}
 	}
-	
-    public SortedMap getInitialData(String name, List holderStrings) {
-		return getValueListHandlerElement(name).getInitialData(holderStrings);
-    }
-	
-    public SortedMap getInitialData(String name, List holderStrings, int limit) {
-		return getValueListHandlerElement(name).getInitialData(holderStrings, limit);
-    }
 
-    public Map getUpdateLoggingData(String name, Timestamp key,
-            List holderStrings) {
-		return getValueListHandlerElement(name).getUpdateLoggingData(key, holderStrings);
-    }
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			String name,
+			List<HolderString> holderStrings) {
+		return getValueListHandlerElement(name).getInitialData(holderStrings);
+	}
+
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			String name,
+			List<HolderString> holderStrings,
+			int limit) {
+		return getValueListHandlerElement(name).getInitialData(
+			holderStrings,
+			limit);
+	}
+
+	public Map<Timestamp, DoubleList> getUpdateLoggingData(
+			String name,
+			Timestamp key,
+			List<HolderString> holderStrings) {
+		return getValueListHandlerElement(name).getUpdateLoggingData(
+			key,
+			holderStrings);
+	}
 }

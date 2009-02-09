@@ -39,6 +39,7 @@ import org.F11.scada.EnvironmentManager;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.server.io.SelectiveAllDataValueListHandler;
 import org.F11.scada.server.io.SelectiveValueListHandler;
+import org.apache.commons.collections.primitives.DoubleList;
 
 public class DefaultGraphModelFactoryTest extends TestCase {
     private static final String SELECTIVALL_MODENAME = "全てのデータ";
@@ -75,15 +76,15 @@ public class DefaultGraphModelFactoryTest extends TestCase {
 	static class TestSelectiveValueListHandler implements SelectiveValueListHandler, Serializable {
 		private static final long serialVersionUID = 1L;
 
-		public SortedMap getInitialData(String name, List holderStrings) throws RemoteException {
+		public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings) throws RemoteException {
 			return new TreeMap();
 		}
 
-		public SortedMap getInitialData(String name, List holderStrings, int limit) throws RemoteException {
+		public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings, int limit) throws RemoteException {
 			return new TreeMap();
 		}
 
-		public Map getUpdateLoggingData(String name, Timestamp key, List holderStrings) throws RemoteException {
+		public Map<Timestamp, DoubleList> getUpdateLoggingData(String name, Timestamp key, List holderStrings) throws RemoteException {
 			return Collections.EMPTY_MAP;
 		}
 	}
@@ -103,15 +104,15 @@ public class DefaultGraphModelFactoryTest extends TestCase {
 			return null;
 		}
 
-		public SortedMap getInitialData(String name, List holderStrings) throws RemoteException {
+		public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings) throws RemoteException {
 			return new TreeMap();
 		}
 
-		public SortedMap getInitialData(String name, List holderStrings, int limt) throws RemoteException {
+		public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings, int limt) throws RemoteException {
 			return new TreeMap();
 		}
 
-		public Map getUpdateLoggingData(String name, Timestamp key, List holderStrings) throws RemoteException {
+		public Map<Timestamp, DoubleList> getUpdateLoggingData(String name, Timestamp key, List holderStrings) throws RemoteException {
 			return Collections.EMPTY_MAP;
 		}
 	}

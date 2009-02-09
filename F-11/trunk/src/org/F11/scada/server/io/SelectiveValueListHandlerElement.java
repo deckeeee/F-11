@@ -23,30 +23,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
+import org.F11.scada.server.register.HolderString;
+import org.apache.commons.collections.primitives.DoubleList;
+
 /**
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
  */
 public interface SelectiveValueListHandlerElement {
-	
+
 	/**
 	 * keyで指定された時刻以降のロギングデータをMapインスタンスで返します。
+	 * 
 	 * @param key 更新時刻
 	 * @param holderStrings 抽出するデータホルダーのリスト
 	 * @return keyで指定された時刻以降のロギングデータをMapインスタンスで返します。
 	 */
-	public Map getUpdateLoggingData(Timestamp key, List holderStrings);
+	public Map<Timestamp, DoubleList> getUpdateLoggingData(
+			Timestamp key,
+			List<HolderString> holderStrings);
 
 	/**
 	 * 初期化用データのSortedMapを返します。
+	 * 
 	 * @param holderStrings 抽出するデータホルダーのリスト
 	 * @return 初期化用データのSortedMapを返します。
 	 */
-	public SortedMap getInitialData(List holderStrings);
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			List<HolderString> holderStrings);
 
 	/**
 	 * 初期化用データのSortedMapを返します。
+	 * 
 	 * @param holderStrings 抽出するデータホルダーのリスト
 	 * @return 初期化用データのSortedMapを返します。
 	 */
-	public SortedMap getInitialData(List holderStrings, int limit);
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			List<HolderString> holderStrings,
+			int limit);
 }

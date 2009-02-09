@@ -33,6 +33,7 @@ import org.F11.scada.server.register.HolderString;
 import org.F11.scada.test.util.TestUtil;
 import org.F11.scada.test.util.TimestampUtil;
 import org.apache.commons.collections.primitives.ArrayDoubleList;
+import org.apache.commons.collections.primitives.DoubleList;
 
 /**
  * @author Hideaki Maekawa <frdm@user.sourceforge.jp>
@@ -111,7 +112,7 @@ public class DefaultSelectiveGraphModelTest extends TestCase {
         }
         
         static class TestSelectiveValueListHandler implements SelectiveValueListHandler {
-            public SortedMap getInitialData(String name, List holderStrings)
+            public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings)
                     throws RemoteException {
                 TreeMap map = new TreeMap();
                 insertSortedMap(map, "2005/01/01 00:00:00", 1.0, 2.0);
@@ -119,7 +120,7 @@ public class DefaultSelectiveGraphModelTest extends TestCase {
                 return map;
             }
 
-            public SortedMap getInitialData(String name, List holderStrings, int lmit)
+            public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings, int lmit)
             	throws RemoteException {
 		        TreeMap map = new TreeMap();
 		        insertSortedMap(map, "2005/01/01 00:00:00", 1.0, 2.0);
@@ -127,7 +128,7 @@ public class DefaultSelectiveGraphModelTest extends TestCase {
 		        return map;
 		    }
 
-            public Map getUpdateLoggingData(String name, Timestamp key,
+            public Map<Timestamp, DoubleList> getUpdateLoggingData(String name, Timestamp key,
                     List holderStrings) throws RemoteException {
                 TreeMap map = new TreeMap();
                 insertSortedMap(map, "2005/01/01 00:00:02", 1.0, 2.0);

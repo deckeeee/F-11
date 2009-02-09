@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import org.F11.scada.data.LoggingRowData;
 import org.F11.scada.server.io.SelectHandler;
 import org.F11.scada.server.io.SelectiveValueListHandlerElement;
+import org.F11.scada.server.register.HolderString;
 import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 
@@ -66,7 +67,9 @@ public class PostgreSQLSelectiveValueListHandler implements
 		tableMap = getTableMap(name, tables);
 	}
 
-	private Map<String, List<String>> getTableMap(String hname, List<String> tables) {
+	private Map<String, List<String>> getTableMap(
+			String hname,
+			List<String> tables) {
 		if (tables.isEmpty()) {
 			return Collections.emptyMap();
 		} else {
@@ -74,7 +77,8 @@ public class PostgreSQLSelectiveValueListHandler implements
 		}
 	}
 
-	public SortedMap<Timestamp, DoubleList> getInitialData(List holderStrings) {
+	public SortedMap<Timestamp, DoubleList> getInitialData(
+			List<HolderString> holderStrings) {
 		TreeMap<Timestamp, DoubleList> map =
 			new TreeMap<Timestamp, DoubleList>();
 		try {
@@ -100,7 +104,7 @@ public class PostgreSQLSelectiveValueListHandler implements
 	}
 
 	public SortedMap<Timestamp, DoubleList> getInitialData(
-			List holderStrings,
+			List<HolderString> holderStrings,
 			int limit) {
 		TreeMap<Timestamp, DoubleList> map =
 			new TreeMap<Timestamp, DoubleList>();
@@ -125,7 +129,7 @@ public class PostgreSQLSelectiveValueListHandler implements
 
 	public Map<Timestamp, DoubleList> getUpdateLoggingData(
 			Timestamp key,
-			List holderStrings) {
+			List<HolderString> holderStrings) {
 		Map<Timestamp, DoubleList> map = new HashMap<Timestamp, DoubleList>();
 		try {
 			List list = null;

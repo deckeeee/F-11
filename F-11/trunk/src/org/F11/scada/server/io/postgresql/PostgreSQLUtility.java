@@ -987,6 +987,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * 引数のタイムスタンプ範囲(start以上,end未満)のデータを返します
+	 * 
 	 * @param name テーブル名
 	 * @param data 抽出ホルダのリスト
 	 * @param start このタイムスタンプ以上
@@ -994,7 +995,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @return 引数のタイムスタンプ範囲のデータを返します
 	 * @see #getSelectBefore(String, List, Timestamp, Timestamp)
 	 */
-	public String getSelectPeriod(String name, List dataHolder, Timestamp start,
+	public String getSelectPeriod(
+			String name,
+			List dataHolder,
+			Timestamp start,
 			Timestamp end) {
 		String[] columnNames = createFieldNames(dataHolder);
 
@@ -1018,8 +1022,13 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 		return b.toString();
 	}
-	public String getSelectPeriod(String name, List dataHolder, Timestamp start,
-			Timestamp end, List<String> tables) {
+
+	public String getSelectPeriod(
+			String name,
+			List dataHolder,
+			Timestamp start,
+			Timestamp end,
+			List<String> tables) {
 		String[] columnNames = createFieldNames(dataHolder, tables);
 
 		StringBuffer b = new StringBuffer();
@@ -1045,5 +1054,32 @@ public final class PostgreSQLUtility implements SQLUtility {
 		logger.debug(b.toString());
 
 		return b.toString();
+	}
+
+	public String getPaddingSql(
+			String tableName,
+			List<HolderString> dataHolders,
+			Timestamp timestamp,
+			int revision) {
+		// 日付とリビジョン番号分
+		int dateAndRevision = 2;
+		// 全体の列数
+		int columnSize = dataHolders.size() + dateAndRevision;
+
+		ArrayList columnNames = new ArrayList(columnSize);
+		ArrayList values = new ArrayList(columnSize);
+
+		columnNames.add(DATE_FIELD_NAME);
+		columnNames.add(REVISION_FIELD_NAME);
+		values.add(timestamp.toString());
+		values.add(new Integer(revision));
+		Double zero = new Double(0);
+
+		for (HolderString hs : dataHolders) {
+			columnNames.add("f_" + hs.getProvider() + "_" + hs.getHolder());
+			values.add(zero);
+		}
+		return getInsertString(tableName, (String[]) columnNames
+			.toArray(new String[0]), values.toArray());
 	}
 }
