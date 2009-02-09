@@ -346,6 +346,23 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 		exp.append("', 0, 2000.0, 2500.0, 'false')");
 		assertEquals(exp.toString(), sql);
 	}
+	
+	public void testGetPaddingSql() throws Exception {
+	    HolderString hs1 = new HolderString();
+	    hs1.setProvider("P1");
+	    hs1.setHolder("D_500_BcdSingle");
+	    HolderString hs2 = new HolderString();
+	    hs2.setProvider("P1");
+	    hs2.setHolder("D_501_BcdSingle");
+	    HolderString hs3 = new HolderString();
+	    hs3.setProvider("P2");
+	    hs3.setHolder("D_1900000_Digital");
+	    ArrayList<HolderString> l = new ArrayList<HolderString>();
+	    l.add(hs1);
+	    l.add(hs2);
+	    l.add(hs3);
+	    System.out.println(utility.getPaddingSql("test", l, currentTime, 0));	    
+	}
 
 	static class TestCommunicaterFactory implements CommunicaterFactory {
         public Communicater createCommunicator(Environment device)

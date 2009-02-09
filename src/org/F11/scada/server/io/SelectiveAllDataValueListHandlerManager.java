@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import org.F11.scada.WifeUtilities;
+import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 
 /**
@@ -99,15 +100,15 @@ public class SelectiveAllDataValueListHandlerManager
 		}
 	}
 	
-    public SortedMap getInitialData(String name, List holderStrings) {
+    public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings) {
 		return getValueListHandlerElement(name).getInitialData(holderStrings);
     }
 	
-    public SortedMap getInitialData(String name, List holderStrings, int limit) {
+    public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings, int limit) {
 		return getValueListHandlerElement(name).getInitialData(holderStrings, limit);
     }
 
-    public Map getUpdateLoggingData(String name, Timestamp key,
+    public Map<Timestamp, DoubleList> getUpdateLoggingData(String name, Timestamp key,
             List holderStrings) {
 		return getValueListHandlerElement(name).getUpdateLoggingData(key, holderStrings);
     }

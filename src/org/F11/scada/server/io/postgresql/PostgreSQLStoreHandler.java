@@ -31,8 +31,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.F11.scada.Service;
 import org.F11.scada.server.dao.DatabaseMetaDataUtil;
@@ -41,6 +43,14 @@ import org.F11.scada.server.entity.MultiRecordDefine;
 import org.F11.scada.server.event.LoggingDataEvent;
 import org.F11.scada.server.event.LoggingDataEventQueue;
 import org.F11.scada.server.event.LoggingDataListener;
+import org.F11.scada.server.io.postgresql.padding.Daily;
+import org.F11.scada.server.io.postgresql.padding.Hour;
+import org.F11.scada.server.io.postgresql.padding.Minute;
+import org.F11.scada.server.io.postgresql.padding.Monthly;
+import org.F11.scada.server.io.postgresql.padding.Second;
+import org.F11.scada.server.io.postgresql.padding.PaddingLogic;
+import org.F11.scada.server.io.postgresql.padding.Yearly;
+import org.F11.scada.server.logging.LoggingTask;
 import org.F11.scada.util.ConnectionUtil;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
@@ -65,6 +75,8 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 
 	private MultiRecordDefineDao dao_;
 
+	private final Map<String, PaddingLogic> logicMap;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -73,15 +85,45 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 		this.deviceName = deviceName;
 		queue = new LoggingDataEventQueue();
 		S2Container container = S2ContainerUtil.getS2Container();
-		this.utility = (PostgreSQLUtility) container
-				.getComponent(PostgreSQLUtility.class);
-		this.dao_ = (MultiRecordDefineDao) container
+		this.utility =
+			(PostgreSQLUtility) container.getComponent(PostgreSQLUtility.class);
+		this.dao_ =
+			(MultiRecordDefineDao) container
 				.getComponent(MultiRecordDefineDao.class);
+		logicMap = createLogicMap();
 		start();
 	}
 
+	private Map<String, PaddingLogic> createLogicMap() {
+		HashMap<String, PaddingLogic> map = new HashMap<String, PaddingLogic>();
+		map.put("MINUTE", new Minute(utility, 1));
+		map.put("TENMINUTE", new Minute(utility, 10));
+		map.put("HOUR", new Hour(utility));
+		map.put("DAILY", new Daily(utility));
+		map.put("MONTHLY", new Monthly(utility));
+		map.put("YEARLY", new Yearly(utility));
+		map.put("ONESECOND", new Second(utility, 1));
+		map.put("QMINUTE", new Minute(utility, 15));
+		map.put("FIVEMINUTE", new Minute(utility, 5));
+		map.put("THIRTYMINUTE", new Minute(utility, 30));
+		map.put("SIXTYMINUTE", new Minute(utility, 60));
+		map.put("ONEHOURMONTHOUT", new Hour(utility));
+		map.put("MONTHLYMONTHOUT", new Monthly(utility));
+		map.put("GODA", new Minute(utility, 10));
+		map.put("GODA01", new Minute(utility, 1));
+		map.put("GODA05", new Minute(utility, 5));
+		map.put("GODA10", new Minute(utility, 10));
+		map.put("GODA30", new Minute(utility, 30));
+		map.put("GODA60", new Minute(utility, 60));
+		map.put("ONEMINUTE", new Minute(utility, 1));
+		map.put("BMS", new Minute(utility, 1));
+		map.put("MINUTEHOUROUT", new Minute(utility, 1));
+		return map;
+	}
+
 	/*
-	 * @see org.F11.scada.server.event.LoggingDataListener#changeLoggingData(LoggingDataEvent)
+	 * @seeorg.F11.scada.server.event.LoggingDataListener#changeLoggingData(
+	 * LoggingDataEvent)
 	 */
 	public void changeLoggingData(LoggingDataEvent event) {
 		queue.enqueue(event);
@@ -105,11 +147,21 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 			Timestamp timestamp = event.getTimeStamp();
 			checkTableName(dataHolders, con);
 			// checkColumnCount(dataHolders, con);
+			Object obj = event.getSource();
+			if (obj instanceof LoggingTask) {
+				LoggingTask lt = (LoggingTask) obj;
+				if (logicMap.containsKey(lt.getSchedule())) {
+					PaddingLogic logic = logicMap.get(lt.getSchedule());
+					logic
+						.insertPadding(con, deviceName, dataHolders, timestamp);
+				}
+			}
 
 			MultiRecordDefine multiRecord = getMultiRecordDefine(con);
 			if (multiRecord != null) {
 				// 多レコードロギング
-				List calval = utility.getColumnValueString(
+				List calval =
+					utility.getColumnValueString(
 						deviceName,
 						dataHolders,
 						multiRecord,
@@ -118,10 +170,9 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 				String[] columnNames = (String[]) it.next();
 				for (; it.hasNext();) {
 					Object[] values = (Object[]) it.next();
-					String sql = utility.getInsertString(
-							deviceName,
-							columnNames,
-							values);
+					String sql =
+						utility
+							.getInsertString(deviceName, columnNames, values);
 					if (logger.isDebugEnabled()) {
 						logger.debug(sql);
 					}
@@ -129,9 +180,10 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 					st.executeUpdate(sql);
 				}
 			} else {
-				int revision = utility
-						.checkRevision(deviceName, timestamp, con);
-				String sql = utility.getInsertString(
+				int revision =
+					utility.checkRevision(deviceName, timestamp, con);
+				String sql =
+					utility.getInsertString(
 						deviceName,
 						dataHolders,
 						timestamp,
@@ -168,7 +220,8 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 			try {
 				st = con.createStatement();
 				DatabaseMetaData metaData = con.getMetaData();
-				rs = DatabaseMetaDataUtil.getTables(
+				rs =
+					DatabaseMetaDataUtil.getTables(
 						metaData,
 						"",
 						"",
@@ -178,9 +231,8 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 				rs.last();
 				if (rs.getRow() <= 0) {
 					logger.info("TRY TABLE CREATE!! : " + deviceName);
-					String sql = utility.getCreateString(
-							deviceName,
-							dataHolders);
+					String sql =
+						utility.getCreateString(deviceName, dataHolders);
 					logger.info(sql);
 					st.executeUpdate(sql);
 				} else {
@@ -246,7 +298,8 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 		try {
 			st = con.createStatement();
 			DatabaseMetaData metaData = con.getMetaData();
-			rs = DatabaseMetaDataUtil.getTables(
+			rs =
+				DatabaseMetaDataUtil.getTables(
 					metaData,
 					"",
 					"",

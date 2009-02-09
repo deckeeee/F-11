@@ -32,6 +32,7 @@ import org.F11.scada.server.io.SelectiveAllDataValueListHandler;
 import org.F11.scada.server.register.HolderString;
 import org.F11.scada.test.util.TimestampUtil;
 import org.apache.commons.collections.primitives.ArrayDoubleList;
+import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 
 /**
@@ -391,20 +392,20 @@ public class DefaultSelectiveAllDataGraphModelTest extends TestCase {
                 map.put(timestamp, list);
             }
 
-            public SortedMap getInitialData(String name, List holderStrings)
+            public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings)
                     throws RemoteException {
                 return mainMap.subMap(
                         TimestampUtil.parse("2005/12/31 00:07:00"),
                         TimestampUtil.parse("2005/12/31 00:11:00"));
             }
-            public SortedMap getInitialData(String name, List holderStrings, int limit)
+            public SortedMap<Timestamp, DoubleList> getInitialData(String name, List holderStrings, int limit)
             	throws RemoteException {
             	return mainMap.subMap(
 		                TimestampUtil.parse("2005/12/31 00:07:00"),
 		                TimestampUtil.parse("2005/12/31 00:11:00"));
 		    }
 
-            public Map getUpdateLoggingData(String name, Timestamp key,
+            public Map<Timestamp, DoubleList> getUpdateLoggingData(String name, Timestamp key,
                     List holderStrings) throws RemoteException {
                 throw new UnsupportedOperationException();
             }

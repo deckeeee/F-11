@@ -61,6 +61,8 @@ public class LoggingTask extends TimerTask {
 	
 	/** 他参照するテーブル名 */
 	private final List<String> tables;
+	
+	private final String schedule;
 
 	/**
 	 * コンストラクタ
@@ -90,6 +92,7 @@ public class LoggingTask extends TimerTask {
 		addLoggingListener(handler);
 		handlerManager.addValueListHandlerElement(name, handler);
 		this.tables = tables;
+		this.schedule = schedule;
 	}
 
 	/**
@@ -170,5 +173,14 @@ public class LoggingTask extends TimerTask {
 	 */
 	public List<String> getTables() {
 		return Collections.unmodifiableList(tables);
+	}
+
+	/**
+	 * スケジュール名を返します。
+	 * 
+	 * @return スケジュール名を返します。
+	 */
+	public String getSchedule() {
+		return schedule;
 	}
 }
