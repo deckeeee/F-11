@@ -30,17 +30,19 @@ public class NippoPrintCommand extends AbstractPrintCommand {
 	private static Executor executor = Executors.newCachedThreadPool();
 
 	public void execute(DataValueChangeEventKey evt) {
+		String csvname = csv_dir + csv_head;
 		if (0 < csv_mid.length()) {
 			SimpleDateFormat sf = new SimpleDateFormat(csv_mid);
 			Calendar cal = new GregorianCalendar();
+			cal.setTimeInMillis(evt.getTimeStamp().getTime());
 			cal.add(Calendar.DAY_OF_MONTH, -1);
-			csv_mid = sf.format(cal.getTime());
+			csvname += sf.format(cal.getTime());
 		}
+		csvname += csv_foot;
 
 		try {
-			executor.execute(new ListOutPrintTask(evt, "“ú•ñ"));
+			executor.execute(new ListOutPrintTask(evt, "“ú•ñ", csvname));
 		} catch (RejectedExecutionException e) {
 		}
 	}
-
 }

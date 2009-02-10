@@ -43,16 +43,13 @@ public abstract class AbstractPrintCommand implements Command {
 	private String provider;
 	private String holder;
 	private String header5;
-	private String csv_dir;
-	private String csv_head;
+	protected String csv_dir;
+	protected String csv_head;
 	protected String csv_mid;
-	private String csv_foot;
+	protected String csv_foot;
 	private String path;
 	private String param1;
 	private String param2;
-
-	private String csvname;
-	private String[] exec_param;
 
 	public void setOutname(String outfile) {
 		this.outname = outfile;
@@ -118,12 +115,14 @@ public abstract class AbstractPrintCommand implements Command {
 		/** データ変更イベントの参照 */
 		private final DataValueChangeEventKey evt;
 		private final String msg;
+		private final String csvname;
+		private final String[] exec_param;
 
-		public ListOutPrintTask(DataValueChangeEventKey evt, String msg) {
+		public ListOutPrintTask(DataValueChangeEventKey evt, String msg,
+				String csvname) {
 			this.evt = evt;
 			this.msg = msg;
-
-			csvname = csv_dir + csv_head + csv_mid + csv_foot;
+			this.csvname = csvname;
 
 			if (path != null && param1 != null && param2 != null)
 				exec_param = new String[]{path, param1, param2};
