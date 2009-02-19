@@ -48,4 +48,21 @@ public interface PaddingLogic {
 			String table,
 			List<HolderString> holderList,
 			Timestamp timestamp) throws SQLException;
+	
+
+	/**
+	 * 引数の一単位後のタイムスタンプを返します。
+	 * 
+	 * @param timestamp 基準となるタイムスタンプ
+	 * @return 引数の一単位後のタイムスタンプを返します。
+	 */
+	Timestamp afterTime(Timestamp timestamp);
+
+	/**
+	 * 引数の一単位前のタイムスタンプを返します。
+	 * 
+	 * @param timestamp 基準となるタイムスタンプ
+	 * @return 引数の一単位前のタイムスタンプを返します。
+	 */
+	Timestamp beforeTime(Timestamp timestamp);
 }

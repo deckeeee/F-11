@@ -52,8 +52,8 @@ import org.apache.log4j.Logger;
  * @author hori <hoti@users.sourceforge.jp>
  */
 public class PostgreSQLAlarmListFinder implements AlarmListFinder {
-	private static Logger log = Logger
-			.getLogger(PostgreSQLAlarmListFinder.class);
+	private static Logger log =
+		Logger.getLogger(PostgreSQLAlarmListFinder.class);
 	private final StrategyUtility utility;
 	private final HistoryCheck historyCheck;
 
@@ -69,8 +69,10 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 	/*
 	 * (”ñ Javadoc)
 	 * 
-	 * @see org.F11.scada.server.alarm.table.AlarmListFinder#getSummaryList(org.F11.scada.server.alarm.table.FindAlarmCondition,
-	 *      org.F11.scada.server.alarm.table.FindAlarmPosition)
+	 * @see
+	 * org.F11.scada.server.alarm.table.AlarmListFinder#getSummaryList(org.F11
+	 * .scada.server.alarm.table.FindAlarmCondition,
+	 * org.F11.scada.server.alarm.table.FindAlarmPosition)
 	 */
 	public FindAlarmTable getSummaryList(
 			FindAlarmCondition cond,
@@ -83,24 +85,25 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		ResultSet rs = null;
 
 		String countHead = "SELECT COUNT(i.holder) AS count ";
-		String selectHead = "SELECT i.jump_path, i.auto_jump_flag, i.auto_jump_priority" +
-				", CASE WHEN s.bit_value = '1' THEN att.on_summary_color ELSE att.off_summary_color END AS alarm_color" +
-				", i.point, i.provider, i.holder, s.on_date, s.off_date, p.unit" +
-				", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname" +
-				", m.message,pri.name AS priorityname ";
+		String selectHead =
+			"SELECT i.jump_path, i.auto_jump_flag, i.auto_jump_priority"
+				+ ", CASE WHEN s.bit_value = '1' THEN att.on_summary_color ELSE att.off_summary_color END AS alarm_color"
+				+ ", i.point, i.provider, i.holder, s.on_date, s.off_date, p.unit"
+				+ ", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname"
+				+ ", m.message,pri.name AS priorityname ";
 		StringBuffer sbBody = new StringBuffer();
 		sbBody
-				.append("FROM summary_table s, point_table p, item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id, message_table m, attribute_table att ");
+			.append("FROM summary_table s, point_table p, item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id, message_table m, attribute_table att ");
 		sbBody
-				.append("WHERE p.point = s.point AND s.point = i.point AND s.provider = i.provider AND s.holder = i.holder AND i.message_id = m.message_id AND s.bit_value = m.type AND i.attribute_id = att.attribute AND ((att.summary_mode=1 AND s.bit_value='0') OR (att.summary_mode=2 AND s.bit_value='1') OR (att.summary_mode=3) OR (att.summary_mode=4 AND s.bit_value='1') OR (att.summary_mode=5 AND s.bit_value='0')) ");
+			.append("WHERE p.point = s.point AND s.point = i.point AND s.provider = i.provider AND s.holder = i.holder AND i.message_id = m.message_id AND s.bit_value = m.type AND i.attribute_id = att.attribute AND ((att.summary_mode=1 AND s.bit_value='0') OR (att.summary_mode=2 AND s.bit_value='1') OR (att.summary_mode=3) OR (att.summary_mode=4 AND s.bit_value='1') OR (att.summary_mode=5 AND s.bit_value='0')) ");
 
 		if (cond.isSt_enable()) {
 			sbBody
-					.append("AND ((s.on_date IS NOT NULL AND s.on_date >= ?) OR (s.off_date IS NOT NULL AND s.off_date >= ?)) ");
+				.append("AND ((s.on_date IS NOT NULL AND s.on_date >= ?) OR (s.off_date IS NOT NULL AND s.off_date >= ?)) ");
 		}
 		if (cond.isEd_enable()) {
 			sbBody
-					.append("AND ((s.on_date IS NOT NULL AND s.on_date < ?) OR (s.off_date IS NOT NULL AND s.off_date < ?)) ");
+				.append("AND ((s.on_date IS NOT NULL AND s.on_date < ?) OR (s.off_date IS NOT NULL AND s.off_date < ?)) ");
 		}
 		int[] attrs = cond.getSelectKind();
 		if (0 < attrs.length) {
@@ -156,22 +159,27 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		try {
 			long maxrec = 0;
 			con = ConnectionUtil.getConnection();
-			preSel = con.prepareStatement(
+			preSel =
+				con.prepareStatement(
 					countHead + sbBody.toString(),
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			int index = 1;
 			if (cond.isSt_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 			}
 			if (cond.isEd_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 			}
 			for (int i = 0; i < attrs.length; i++) {
 				preSel.setInt(index++, attrs[i]);
@@ -191,22 +199,27 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			if (log.isDebugEnabled()) {
 				log.debug(selectHead + sbBody.toString() + orderStr + hutter);
 			}
-			preSel = con.prepareStatement(
+			preSel =
+				con.prepareStatement(
 					selectHead + sbBody.toString() + orderStr + hutter,
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			index = 1;
 			if (cond.isSt_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 			}
 			if (cond.isEd_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 			}
 			for (int i = 0; i < attrs.length; i++) {
 				preSel.setInt(index++, attrs[i]);
@@ -285,7 +298,7 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			String cond) {
 		sbBody.append("AND (");
 		for (StringTokenizer t = new StringTokenizer(cond, " "); t
-				.hasMoreTokens();) {
+			.hasMoreTokens();) {
 			t.nextToken();
 			sbBody.append(fieldName).append(" LIKE ? ");
 			if (t.hasMoreTokens()) {
@@ -316,7 +329,7 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 	private int setLikeValue(PreparedStatement preSel, String cond, int index)
 			throws SQLException {
 		for (StringTokenizer t = new StringTokenizer(cond, " "); t
-				.hasMoreTokens(); index++) {
+			.hasMoreTokens(); index++) {
 			String value = t.nextToken();
 			preSel.setString(index, "%" + value + "%");
 		}
@@ -337,8 +350,10 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 	/*
 	 * (”ñ Javadoc)
 	 * 
-	 * @see org.F11.scada.server.alarm.table.AlarmListFinder#getHistoryList(org.F11.scada.server.alarm.table.FindAlarmCondition,
-	 *      org.F11.scada.server.alarm.table.FindAlarmPosition)
+	 * @see
+	 * org.F11.scada.server.alarm.table.AlarmListFinder#getHistoryList(org.F11
+	 * .scada.server.alarm.table.FindAlarmCondition,
+	 * org.F11.scada.server.alarm.table.FindAlarmPosition)
 	 */
 	public FindAlarmTable getHistoryList(
 			FindAlarmCondition cond,
@@ -351,26 +366,41 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		ResultSet rs = null;
 
 		String countHead = "SELECT COUNT(*) AS count ";
-		String selectHead = "SELECT i.jump_path, i.auto_jump_flag, i.auto_jump_priority" +
-				",CASE WHEN h.off_date='epoch' THEN att.on_alarm_color ELSE att.off_alarm_color END AS alarm_color" +
-				",h.point, h.provider, h.holder, h.on_date,h.off_date, p.unit" +
-				", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname" +
-				",pri.name AS priorityname" +
-				",CASE WHEN att.check_type = '0' THEN '„Ÿ„Ÿ„Ÿ„Ÿ' WHEN att.check_type = '1'" +
-				" AND h.check_flag = '1' THEN '––––' ELSE NULL END AS histry_check ";
+		String selectHead =
+			"SELECT i.jump_path, i.auto_jump_flag, i.auto_jump_priority"
+				+ ",CASE WHEN h.off_date='"
+				+ EpochUtil.getEpoch()
+				+ "' THEN att.on_alarm_color ELSE att.off_alarm_color END AS alarm_color"
+				+ ",h.point, h.provider, h.holder, h.on_date,h.off_date, p.unit"
+				+ ", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname"
+				+ ",pri.name AS priorityname"
+				+ ",CASE WHEN att.check_type = '0' THEN '„Ÿ„Ÿ„Ÿ„Ÿ' WHEN att.check_type = '1'"
+				+ " AND h.check_flag = '1' THEN '––––' ELSE NULL END AS histry_check ";
 		StringBuffer sbBody = new StringBuffer();
 		sbBody
-				.append("FROM history_table h, point_table p, item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id, attribute_table att ");
+			.append("FROM history_table h, point_table p, item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id, attribute_table att ");
 		sbBody
-				.append("WHERE p.point = h.point AND h.point = i.point AND h.provider = i.provider AND h.holder = i.holder AND i.attribute_id = att.attribute AND ((att.history_mode=1 AND h.off_date!='epoch') OR (att.history_mode=2 AND h.on_date!='epoch') OR (att.history_mode=3) OR (att.history_mode=4 AND h.on_date!='epoch' AND h.off_date='epoch') OR (att.history_mode=5 AND h.on_date='epoch' AND h.off_date!='epoch')) ");
+			.append("WHERE p.point = h.point AND h.point = i.point AND h.provider = i.provider AND h.holder = i.holder AND i.attribute_id = att.attribute AND ((att.history_mode=1 AND h.off_date!='"
+				+ EpochUtil.getEpoch()
+				+ "') OR (att.history_mode=2 AND h.on_date!='"
+				+ EpochUtil.getEpoch()
+				+ "') OR (att.history_mode=3) OR (att.history_mode=4 AND h.on_date!='"
+				+ EpochUtil.getEpoch()
+				+ "' AND h.off_date='"
+				+ EpochUtil.getEpoch()
+				+ "') OR (att.history_mode=5 AND h.on_date='"
+				+ EpochUtil.getEpoch()
+				+ "' AND h.off_date!='"
+				+ EpochUtil.getEpoch()
+				+ "')) ");
 
 		if (cond.isSt_enable()) {
 			sbBody
-					.append("AND ((h.on_date IS NOT NULL AND h.on_date >= ?) OR (h.off_date IS NOT NULL AND h.off_date >= ?)) ");
+				.append("AND ((h.on_date IS NOT NULL AND h.on_date >= ?) OR (h.off_date IS NOT NULL AND h.off_date >= ?)) ");
 		}
 		if (cond.isEd_enable()) {
 			sbBody
-					.append("AND ((h.on_date IS NOT NULL AND h.on_date < ?) OR (h.off_date IS NOT NULL AND h.off_date < ?)) ");
+				.append("AND ((h.on_date IS NOT NULL AND h.on_date < ?) OR (h.off_date IS NOT NULL AND h.off_date < ?)) ");
 		}
 		int[] attrs = cond.getSelectKind();
 		if (0 < attrs.length) {
@@ -385,15 +415,19 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		}
 		List priList = setPriorityQuery(cond, sbBody);
 		if (RadioStat.SELECTTRUE.equals(cond.getBitvalSelect())) {
-			sbBody.append("AND h.on_date!='epoch' AND h.off_date='epoch' ");
+			sbBody.append("AND h.on_date!='"
+				+ EpochUtil.getEpoch()
+				+ "' AND h.off_date='"
+				+ EpochUtil.getEpoch()
+				+ "' ");
 		} else if (RadioStat.SELECTFALSE.equals(cond.getBitvalSelect())) {
-			sbBody.append("AND h.off_date!='epoch' ");
+			sbBody.append("AND h.off_date!='" + EpochUtil.getEpoch() + "' ");
 		}
 		if (RadioStat.SELECTTRUE.equals(cond.getHistckSelect())) {
 			sbBody.append("AND (h.check_flag='1' OR att.check_type!='1') ");
 		} else if (RadioStat.SELECTFALSE.equals(cond.getHistckSelect())) {
 			sbBody
-					.append("AND (h.check_flag IS NULL OR h.check_flag!='1') AND att.check_type='1' ");
+				.append("AND (h.check_flag IS NULL OR h.check_flag!='1') AND att.check_type='1' ");
 		}
 		setUnitCondition(cond, sbBody);
 		setNameCondition(cond, sbBody);
@@ -437,22 +471,27 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		try {
 			long maxrec = 0;
 			con = ConnectionUtil.getConnection();
-			preSel = con.prepareStatement(
+			preSel =
+				con.prepareStatement(
 					countHead + sbBody.toString(),
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			int index = 1;
 			if (cond.isSt_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 			}
 			if (cond.isEd_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 			}
 			for (int i = 0; i < attrs.length; i++) {
 				preSel.setInt(index++, attrs[i]);
@@ -469,22 +508,27 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			preSel.close();
 			preSel = null;
 
-			preSel = con.prepareStatement(
+			preSel =
+				con.prepareStatement(
 					selectHead + sbBody.toString() + orderStr + hutter,
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			index = 1;
 			if (cond.isSt_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 			}
 			if (cond.isEd_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 			}
 			for (int i = 0; i < attrs.length; i++) {
 				preSel.setInt(index++, attrs[i]);
@@ -528,8 +572,10 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 	/*
 	 * (”ñ Javadoc)
 	 * 
-	 * @see org.F11.scada.server.alarm.table.AlarmListFinder#getCareerList(org.F11.scada.server.alarm.table.FindAlarmCondition,
-	 *      org.F11.scada.server.alarm.table.FindAlarmPosition)
+	 * @see
+	 * org.F11.scada.server.alarm.table.AlarmListFinder#getCareerList(org.F11
+	 * .scada.server.alarm.table.FindAlarmCondition,
+	 * org.F11.scada.server.alarm.table.FindAlarmPosition)
 	 */
 	public FindAlarmTable getCareerList(
 			FindAlarmCondition cond,
@@ -543,25 +589,25 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 
 		String countHead = "SELECT COUNT(*) AS count ";
 		String selectHead =
-			"SELECT i.jump_path,CASE WHEN c.bit_value='1' THEN i.auto_jump_flag ELSE '0' END as auto_jump_flag" +
-			", i.auto_jump_priority,CASE WHEN c.bit_value='1' THEN att.on_alarm_color ELSE att.off_alarm_color END as alarm_color" +
-			", i.point, i.provider, i.holder, att.sound_type, CASE WHEN c.bit_value='1' THEN i.on_sound_path ELSE i.off_sound_path END AS sound_path" +
-			", i.email_group_id, i.email_send_mode, c.entrydate,p.unit" +
-			", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname" +
-			", m.message, pri.name AS priorityname ";
+			"SELECT i.jump_path,CASE WHEN c.bit_value='1' THEN i.auto_jump_flag ELSE '0' END as auto_jump_flag"
+				+ ", i.auto_jump_priority,CASE WHEN c.bit_value='1' THEN att.on_alarm_color ELSE att.off_alarm_color END as alarm_color"
+				+ ", i.point, i.provider, i.holder, att.sound_type, CASE WHEN c.bit_value='1' THEN i.on_sound_path ELSE i.off_sound_path END AS sound_path"
+				+ ", i.email_group_id, i.email_send_mode, c.entrydate,p.unit"
+				+ ", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname"
+				+ ", m.message, pri.name AS priorityname ";
 		StringBuffer sbBody = new StringBuffer();
 		sbBody
-				.append("FROM point_table p,career_table c,item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id,message_table m,attribute_table att ");
+			.append("FROM point_table p,career_table c,item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id,message_table m,attribute_table att ");
 		sbBody
-				.append("WHERE p.point=i.point AND c.point=i.point AND c.provider=i.provider AND c.holder=i.holder AND i.message_id=m.message_id AND c.bit_value=m.type AND i.attribute_id=att.attribute AND ((att.career_mode=1 AND c.bit_value='0') OR (att.career_mode=2 AND c.bit_value='1') OR (att.career_mode=3) OR (att.career_mode=4 AND c.bit_value='1') OR (att.career_mode=5 AND c.bit_value='0')) ");
+			.append("WHERE p.point=i.point AND c.point=i.point AND c.provider=i.provider AND c.holder=i.holder AND i.message_id=m.message_id AND c.bit_value=m.type AND i.attribute_id=att.attribute AND ((att.career_mode=1 AND c.bit_value='0') OR (att.career_mode=2 AND c.bit_value='1') OR (att.career_mode=3) OR (att.career_mode=4 AND c.bit_value='1') OR (att.career_mode=5 AND c.bit_value='0')) ");
 
 		if (cond.isSt_enable()) {
 			sbBody
-					.append("AND ((c.entrydate IS NOT NULL AND c.entrydate >= ?) OR (c.entrydate IS NOT NULL AND c.entrydate >= ?)) ");
+				.append("AND ((c.entrydate IS NOT NULL AND c.entrydate >= ?) OR (c.entrydate IS NOT NULL AND c.entrydate >= ?)) ");
 		}
 		if (cond.isEd_enable()) {
 			sbBody
-					.append("AND ((c.entrydate IS NOT NULL AND c.entrydate < ?) OR (c.entrydate IS NOT NULL AND c.entrydate < ?)) ");
+				.append("AND ((c.entrydate IS NOT NULL AND c.entrydate < ?) OR (c.entrydate IS NOT NULL AND c.entrydate < ?)) ");
 		}
 		int[] attrs = cond.getSelectKind();
 		if (0 < attrs.length) {
@@ -614,22 +660,27 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			if (log.isDebugEnabled()) {
 				log.debug(countHead + sbBody.toString());
 			}
-			preSel = con.prepareStatement(
+			preSel =
+				con.prepareStatement(
 					countHead + sbBody.toString(),
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			int index = 1;
 			if (cond.isSt_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 			}
 			if (cond.isEd_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 			}
 			for (int i = 0; i < attrs.length; i++) {
 				preSel.setInt(index++, attrs[i]);
@@ -649,22 +700,27 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			if (log.isDebugEnabled()) {
 				log.debug(selectHead + sbBody.toString() + orderStr + hutter);
 			}
-			preSel = con.prepareStatement(
+			preSel =
+				con.prepareStatement(
 					selectHead + sbBody.toString() + orderStr + hutter,
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			index = 1;
 			if (cond.isSt_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getSt_calendar().getTimeInMillis()));
+					.getSt_calendar()
+					.getTimeInMillis()));
 			}
 			if (cond.isEd_enable()) {
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 				preSel.setTimestamp(index++, new Timestamp(cond
-						.getEd_calendar().getTimeInMillis()));
+					.getEd_calendar()
+					.getTimeInMillis()));
 			}
 			for (int i = 0; i < attrs.length; i++) {
 				preSel.setInt(index++, attrs[i]);
@@ -763,7 +819,8 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		ResultSet rs = null;
 		try {
 			con = ConnectionUtil.getConnection();
-			stmt = con.prepareStatement(
+			stmt =
+				con.prepareStatement(
 					utility.getPrepareStatement("/attributetable/read/all"),
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
@@ -816,8 +873,9 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 	/*
 	 * (”ñ Javadoc)
 	 * 
-	 * @see org.F11.scada.server.alarm.table.AlarmListFinder#setHistoryCheck(int,
-	 *      java.lang.String, java.lang.String, java.sql.Timestamp)
+	 * @see
+	 * org.F11.scada.server.alarm.table.AlarmListFinder#setHistoryCheck(int,
+	 * java.lang.String, java.lang.String, java.sql.Timestamp)
 	 */
 	public void setHistoryCheck(
 			Integer point,
@@ -830,14 +888,16 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 	/*
 	 * (”ñ Javadoc)
 	 * 
-	 * @see org.F11.scada.server.alarm.table.AlarmListFinder#setHistoryCheckAll()
+	 * @see
+	 * org.F11.scada.server.alarm.table.AlarmListFinder#setHistoryCheckAll()
 	 */
 	public void setHistoryCheckAll() throws SQLException, RemoteException {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		try {
 			con = ConnectionUtil.getConnection();
-			stmt = con.prepareStatement(
+			stmt =
+				con.prepareStatement(
 					utility.getPrepareStatement("/history/check/all"),
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
@@ -870,15 +930,16 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		ResultSet rs = null;
 		try {
 			con = ConnectionUtil.getConnection();
-			st = con.prepareStatement(
+			st =
+				con.prepareStatement(
 					"SELECT id, name FROM priority_table ORDER BY id",
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = st.executeQuery();
 			ArrayList list = new ArrayList();
 			while (rs.next()) {
-				Priority priority = new Priority(rs.getInt("id"), rs
-						.getString("name"));
+				Priority priority =
+					new Priority(rs.getInt("id"), rs.getString("name"));
 				list.add(priority);
 			}
 			return list;

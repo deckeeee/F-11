@@ -18,31 +18,21 @@
  * 
  */
 
-package org.F11.scada.server.io.postgresql.padding;
+package org.F11.scada.server.alarm.table.postgresql;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import junit.framework.TestCase;
 
-import org.F11.scada.server.io.postgresql.PostgreSQLUtility;
+public class EpochUtilTest extends TestCase {
 
-public class Hour extends AbstractPaddingLogic {
-
-	public Hour(PostgreSQLUtility utility) {
-		super(utility);
+	protected void setUp() throws Exception {
+		super.setUp();
 	}
 
-	public Timestamp afterTime(Timestamp timestamp) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(timestamp);
-		cal.add(Calendar.HOUR_OF_DAY, 1);
-		return new Timestamp(cal.getTimeInMillis());
+	protected void tearDown() throws Exception {
+		super.tearDown();
 	}
 
-	public Timestamp beforeTime(Timestamp timestamp) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(timestamp);
-		cal.add(Calendar.HOUR_OF_DAY, -1);
-		return new Timestamp(cal.getTimeInMillis());
+	public void testGetEpoch() throws Exception {
+		assertEquals("epoch", EpochUtil.getEpoch());
 	}
-
 }

@@ -33,16 +33,14 @@ public class Second extends AbstractPaddingLogic {
 		this.second = second;
 	}
 
-	@Override
-	protected Timestamp afterTime(Timestamp timestamp) {
+	public Timestamp afterTime(Timestamp timestamp) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
 		cal.add(Calendar.SECOND, second);
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
-	@Override
-	protected Timestamp beforeTime(Timestamp timestamp) {
+	public Timestamp beforeTime(Timestamp timestamp) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
 		cal.add(Calendar.SECOND, second * -1);

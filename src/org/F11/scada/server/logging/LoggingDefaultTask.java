@@ -42,6 +42,8 @@ import org.apache.log4j.Logger;
 public class LoggingDefaultTask extends LoggingTask {
 	/** ロギングAPI */
 	private final Logger logger = Logger.getLogger(LoggingDefaultTask.class);
+	/** 初回のロギングかどうか */
+	private boolean isFirst = true;
 
 	public LoggingDefaultTask(
 			String name,
@@ -64,6 +66,10 @@ public class LoggingDefaultTask extends LoggingTask {
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.set(Calendar.SECOND, 0);
 		Timestamp today = new Timestamp(cal.getTimeInMillis());
+		if (isFirst) {
+			//TODO PadingLogicで一つ前の日付をtodayに入れる
+			isFirst = false;
+		}
 		// dataHoldersより文字列→データホルダーしイベント発火する。
 		LoggingDataEvent dataEvent =
 			new LoggingDataEvent(this, today, dataHolders);

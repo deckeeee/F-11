@@ -31,16 +31,14 @@ public class Yearly extends AbstractPaddingLogic {
 		super(utility);
 	}
 
-	@Override
-	protected Timestamp afterTime(Timestamp timestamp) {
+	public Timestamp afterTime(Timestamp timestamp) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
 		cal.add(Calendar.YEAR, 1);
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
-	@Override
-	protected Timestamp beforeTime(Timestamp timestamp) {
+	public Timestamp beforeTime(Timestamp timestamp) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
 		cal.add(Calendar.YEAR, -1);
