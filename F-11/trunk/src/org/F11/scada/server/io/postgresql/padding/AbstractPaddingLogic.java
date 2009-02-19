@@ -60,7 +60,7 @@ public abstract class AbstractPaddingLogic implements PaddingLogic {
 			if (rs.next()) {
 				Timestamp maxTime = rs.getTimestamp("maxdate");
 				Timestamp beforeTime = beforeTime(timestamp);
-				if (!maxTime.equals(beforeTime)) {
+				if (!rs.wasNull() && !maxTime.equals(beforeTime)) {
 					insert(con, table, holderList, beforeTime, maxTime);
 				}
 			}
@@ -96,20 +96,4 @@ public abstract class AbstractPaddingLogic implements PaddingLogic {
 			}
 		}
 	}
-
-	/**
-	 * 引数の一単位後のタイムスタンプを返します。
-	 * 
-	 * @param timestamp 基準となるタイムスタンプ
-	 * @return 引数の一単位後のタイムスタンプを返します。
-	 */
-	protected abstract Timestamp afterTime(Timestamp timestamp);
-
-	/**
-	 * 引数の一単位前のタイムスタンプを返します。
-	 * 
-	 * @param timestamp 基準となるタイムスタンプ
-	 * @return 引数の一単位前のタイムスタンプを返します。
-	 */
-	protected abstract Timestamp beforeTime(Timestamp timestamp);
 }

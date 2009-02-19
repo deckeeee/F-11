@@ -31,7 +31,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +42,8 @@ import org.F11.scada.server.entity.MultiRecordDefine;
 import org.F11.scada.server.event.LoggingDataEvent;
 import org.F11.scada.server.event.LoggingDataEventQueue;
 import org.F11.scada.server.event.LoggingDataListener;
-import org.F11.scada.server.io.postgresql.padding.Daily;
-import org.F11.scada.server.io.postgresql.padding.Hour;
-import org.F11.scada.server.io.postgresql.padding.Minute;
-import org.F11.scada.server.io.postgresql.padding.Monthly;
-import org.F11.scada.server.io.postgresql.padding.Second;
 import org.F11.scada.server.io.postgresql.padding.PaddingLogic;
-import org.F11.scada.server.io.postgresql.padding.Yearly;
+import org.F11.scada.server.io.postgresql.padding.PaddingMapFactory;
 import org.F11.scada.server.logging.LoggingTask;
 import org.F11.scada.util.ConnectionUtil;
 import org.apache.log4j.Logger;
@@ -90,35 +84,8 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 		this.dao_ =
 			(MultiRecordDefineDao) container
 				.getComponent(MultiRecordDefineDao.class);
-		logicMap = createLogicMap();
+		logicMap = PaddingMapFactory.createLogicMap();
 		start();
-	}
-
-	private Map<String, PaddingLogic> createLogicMap() {
-		HashMap<String, PaddingLogic> map = new HashMap<String, PaddingLogic>();
-		map.put("MINUTE", new Minute(utility, 1));
-		map.put("TENMINUTE", new Minute(utility, 10));
-		map.put("HOUR", new Hour(utility));
-		map.put("DAILY", new Daily(utility));
-		map.put("MONTHLY", new Monthly(utility));
-		map.put("YEARLY", new Yearly(utility));
-		map.put("ONESECOND", new Second(utility, 1));
-		map.put("QMINUTE", new Minute(utility, 15));
-		map.put("FIVEMINUTE", new Minute(utility, 5));
-		map.put("THIRTYMINUTE", new Minute(utility, 30));
-		map.put("SIXTYMINUTE", new Minute(utility, 60));
-		map.put("ONEHOURMONTHOUT", new Hour(utility));
-		map.put("MONTHLYMONTHOUT", new Monthly(utility));
-		map.put("GODA", new Minute(utility, 10));
-		map.put("GODA01", new Minute(utility, 1));
-		map.put("GODA05", new Minute(utility, 5));
-		map.put("GODA10", new Minute(utility, 10));
-		map.put("GODA30", new Minute(utility, 30));
-		map.put("GODA60", new Minute(utility, 60));
-		map.put("ONEMINUTE", new Minute(utility, 1));
-		map.put("BMS", new Minute(utility, 1));
-		map.put("MINUTEHOUROUT", new Minute(utility, 1));
-		return map;
 	}
 
 	/*
@@ -148,7 +115,7 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 			checkTableName(dataHolders, con);
 			// checkColumnCount(dataHolders, con);
 			Object obj = event.getSource();
-			if (obj instanceof LoggingTask) {
+			if (tableCheck && obj instanceof LoggingTask) {
 				LoggingTask lt = (LoggingTask) obj;
 				if (logicMap.containsKey(lt.getSchedule())) {
 					PaddingLogic logic = logicMap.get(lt.getSchedule());

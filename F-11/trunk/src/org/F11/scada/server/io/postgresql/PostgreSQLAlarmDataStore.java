@@ -35,6 +35,7 @@ import org.F11.scada.Service;
 import org.F11.scada.server.alarm.AlarmDataStore;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
 import org.F11.scada.server.alarm.HistoryCheck;
+import org.F11.scada.server.alarm.table.postgresql.EpochUtil;
 import org.F11.scada.server.event.LoggingDataEventQueue;
 import org.F11.scada.util.ConnectionUtil;
 import org.apache.log4j.Logger;
@@ -501,7 +502,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 						// あればUPDATE
 						PreparedStatement preUp =
 							con
-								.prepareStatement("UPDATE summary_table SET bit_value=?, on_date='epoch', off_date=? WHERE point=?  AND provider=? AND holder=?");
+								.prepareStatement("UPDATE summary_table SET bit_value=?, on_date='"
+									+ EpochUtil.getEpoch()
+									+ "', off_date=? WHERE point=?  AND provider=? AND holder=?");
 						preUp.setBoolean(1, key.getValue().booleanValue());
 						preUp.setTimestamp(2, key.getTimeStamp());
 						preUp.setInt(3, key.getPoint());
@@ -513,7 +516,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 						// なければINSERT
 						PreparedStatement preIns =
 							con
-								.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, 'epoch', ?, ?)");
+								.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, '"
+									+ EpochUtil.getEpoch()
+									+ "', ?, ?)");
 						preIns.setInt(1, key.getPoint());
 						preIns.setString(2, key.getProvider());
 						preIns.setString(3, key.getHolder());
@@ -553,7 +558,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// あればUPDATE
 							PreparedStatement preUp =
 								con
-									.prepareStatement("UPDATE summary_table SET bit_value=?, off_date='epoch', on_date=? WHERE point=?  AND provider=? AND holder=?");
+									.prepareStatement("UPDATE summary_table SET bit_value=?, off_date='"
+										+ EpochUtil.getEpoch()
+										+ "', on_date=? WHERE point=?  AND provider=? AND holder=?");
 							preUp.setBoolean(1, key.getValue().booleanValue());
 							preUp.setTimestamp(2, key.getTimeStamp());
 							preUp.setInt(3, key.getPoint());
@@ -565,7 +572,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// なければINSERT
 							PreparedStatement preIns =
 								con
-									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, ?, 'epoch', ?)");
+									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, ?, '"
+										+ EpochUtil.getEpoch()
+										+ "', ?)");
 							preIns.setInt(1, key.getPoint());
 							preIns.setString(2, key.getProvider());
 							preIns.setString(3, key.getHolder());
@@ -609,7 +618,10 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 									.append(
 										"UPDATE summary_table SET bit_value=")
 									.append(key.getValue().booleanValue())
-									.append(", off_date='epoch', on_date=")
+									.append(
+										", off_date='"
+											+ EpochUtil.getEpoch()
+											+ "', on_date=")
 									.append(key.getTimeStamp())
 									.append(" WHERE point=")
 									.append(key.getPoint())
@@ -622,7 +634,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// あればUPDATE
 							PreparedStatement preUp =
 								con
-									.prepareStatement("UPDATE summary_table SET bit_value=?, off_date='epoch', on_date=? WHERE point=?  AND provider=? AND holder=?");
+									.prepareStatement("UPDATE summary_table SET bit_value=?, off_date='"
+										+ EpochUtil.getEpoch()
+										+ "', on_date=? WHERE point=?  AND provider=? AND holder=?");
 							preUp.setBoolean(1, key.getValue().booleanValue());
 							preUp.setTimestamp(2, key.getTimeStamp());
 							preUp.setInt(3, key.getPoint());
@@ -643,7 +657,8 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 									.append(key.getHolder())
 									.append(", ")
 									.append(key.getTimeStamp())
-									.append(", 'epoch', ")
+									.append(
+										", '" + EpochUtil.getEpoch() + "', ")
 									.append(key.getValue().booleanValue())
 									.append(")");
 								logger.debug(b.toString());
@@ -651,7 +666,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// なければINSERT
 							PreparedStatement preIns =
 								con
-									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, ?, 'epoch', ?)");
+									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, ?, '"
+										+ EpochUtil.getEpoch()
+										+ "', ?)");
 							preIns.setInt(1, key.getPoint());
 							preIns.setString(2, key.getProvider());
 							preIns.setString(3, key.getHolder());
@@ -743,7 +760,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// あればUPDATE
 							PreparedStatement preUp =
 								con
-									.prepareStatement("UPDATE summary_table SET bit_value=?, off_date='epoch', on_date=? WHERE point=?  AND provider=? AND holder=?");
+									.prepareStatement("UPDATE summary_table SET bit_value=?, off_date='"
+										+ EpochUtil.getEpoch()
+										+ "', on_date=? WHERE point=?  AND provider=? AND holder=?");
 							preUp.setBoolean(1, key.getValue().booleanValue());
 							preUp.setTimestamp(2, key.getTimeStamp());
 							preUp.setInt(3, key.getPoint());
@@ -755,7 +774,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// なければINSERT
 							PreparedStatement preIns =
 								con
-									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, ?, 'epoch', ?)");
+									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, ?, '"
+										+ EpochUtil.getEpoch()
+										+ "', ?)");
 							preIns.setInt(1, key.getPoint());
 							preIns.setString(2, key.getProvider());
 							preIns.setString(3, key.getHolder());
@@ -842,7 +863,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// あればUPDATE
 							PreparedStatement preUp =
 								con
-									.prepareStatement("UPDATE summary_table SET bit_value=?, on_date='epoch', off_date=? WHERE point=?  AND provider=? AND holder=?");
+									.prepareStatement("UPDATE summary_table SET bit_value=?, on_date='"
+										+ EpochUtil.getEpoch()
+										+ "', off_date=? WHERE point=?  AND provider=? AND holder=?");
 							preUp.setBoolean(1, key.getValue().booleanValue());
 							preUp.setTimestamp(2, key.getTimeStamp());
 							preUp.setInt(3, key.getPoint());
@@ -854,7 +877,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// なければINSERT
 							PreparedStatement preIns =
 								con
-									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, 'epoch', ?, ?)");
+									.prepareStatement("INSERT INTO summary_table VALUES (?, ?, ?, '"
+										+ EpochUtil.getEpoch()
+										+ "', ?, ?)");
 							preIns.setInt(1, key.getPoint());
 							preIns.setString(2, key.getProvider());
 							preIns.setString(3, key.getHolder());
@@ -946,7 +971,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 					// off_dateに設定して行を追加
 					PreparedStatement preIns =
 						con
-							.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, 'epoch', ?, NULL)");
+							.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, '"
+								+ EpochUtil.getEpoch()
+								+ "', ?, NULL)");
 					preIns.setInt(1, key.getPoint());
 					preIns.setString(2, key.getProvider());
 					preIns.setString(3, key.getHolder());
@@ -973,7 +1000,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 						// on_dateに設定して行を追加
 						PreparedStatement preIns =
 							con
-								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, ?, 'epoch', NULL)");
+								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, ?, '"
+									+ EpochUtil.getEpoch()
+									+ "', NULL)");
 						preIns.setInt(1, key.getPoint());
 						preIns.setString(2, key.getProvider());
 						preIns.setString(3, key.getHolder());
@@ -1001,7 +1030,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 						// on_dateに設定して行を追加
 						PreparedStatement preIns =
 							con
-								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, ?, 'epoch', NULL)");
+								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, ?, '"
+									+ EpochUtil.getEpoch()
+									+ "', NULL)");
 						preIns.setInt(1, key.getPoint());
 						preIns.setString(2, key.getProvider());
 						preIns.setString(3, key.getHolder());
@@ -1053,7 +1084,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 						// on_dateに設定して行を追加
 						PreparedStatement preIns =
 							con
-								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, ?, 'epoch', NULL)");
+								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, ?, '"
+									+ EpochUtil.getEpoch()
+									+ "', NULL)");
 						preIns.setInt(1, key.getPoint());
 						preIns.setString(2, key.getProvider());
 						preIns.setString(3, key.getHolder());
@@ -1130,7 +1163,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 						// off_dateに設定して行を追加
 						PreparedStatement preIns =
 							con
-								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, 'epoch', ?, NULL)");
+								.prepareStatement("INSERT INTO history_table VALUES (?, ?, ?, '"
+									+ EpochUtil.getEpoch()
+									+ "', ?, NULL)");
 						preIns.setInt(1, key.getPoint());
 						preIns.setString(2, key.getProvider());
 						preIns.setString(3, key.getHolder());
@@ -1431,7 +1466,10 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 									.append(
 										"UPDATE system_summary_table SET bit_value=")
 									.append(key.getValue().booleanValue())
-									.append(", off_date='epoch', on_date=")
+									.append(
+										", off_date='"
+											+ EpochUtil.getEpoch()
+											+ "', on_date=")
 									.append(key.getTimeStamp())
 									.append(" WHERE point=")
 									.append(key.getPoint())
@@ -1444,7 +1482,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// あればUPDATE
 							PreparedStatement preUp =
 								con
-									.prepareStatement("UPDATE system_summary_table SET bit_value=?, off_date='epoch', on_date=? WHERE point=?  AND provider=? AND holder=?");
+									.prepareStatement("UPDATE system_summary_table SET bit_value=?, off_date='"
+										+ EpochUtil.getEpoch()
+										+ "', on_date=? WHERE point=?  AND provider=? AND holder=?");
 							preUp.setBoolean(1, key.getValue().booleanValue());
 							preUp.setTimestamp(2, key.getTimeStamp());
 							preUp.setInt(3, key.getPoint());
@@ -1465,7 +1505,8 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 									.append(key.getHolder())
 									.append(", ")
 									.append(key.getTimeStamp())
-									.append(", 'epoch', ")
+									.append(
+										", '" + EpochUtil.getEpoch() + "', ")
 									.append(key.getValue().booleanValue())
 									.append(")");
 								logger.debug(b.toString());
@@ -1473,7 +1514,9 @@ public class PostgreSQLAlarmDataStore implements AlarmDataStore, HistoryCheck,
 							// なければINSERT
 							PreparedStatement preIns =
 								con
-									.prepareStatement("INSERT INTO system_summary_table VALUES (?, ?, ?, ?, 'epoch', ?)");
+									.prepareStatement("INSERT INTO system_summary_table VALUES (?, ?, ?, ?, '"
+										+ EpochUtil.getEpoch()
+										+ "', ?)");
 							preIns.setInt(1, key.getPoint());
 							preIns.setString(2, key.getProvider());
 							preIns.setString(3, key.getHolder());

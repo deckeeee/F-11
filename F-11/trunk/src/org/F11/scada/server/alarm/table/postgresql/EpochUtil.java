@@ -18,31 +18,19 @@
  * 
  */
 
-package org.F11.scada.server.io.postgresql.padding;
+package org.F11.scada.server.alarm.table.postgresql;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import org.F11.scada.EnvironmentManager;
+import org.F11.scada.Globals;
+import org.apache.commons.lang.time.FastDateFormat;
 
-import org.F11.scada.server.io.postgresql.PostgreSQLUtility;
-
-public class Hour extends AbstractPaddingLogic {
-
-	public Hour(PostgreSQLUtility utility) {
-		super(utility);
+public abstract class EpochUtil {
+	public static String getEpoch() {
+		Boolean mysqlVersion =
+			Boolean.parseBoolean(EnvironmentManager
+				.get("mysqlVersion", "false"));
+		return mysqlVersion ? FastDateFormat
+			.getInstance("yyyy/MM/dd HH:mm:ss")
+			.format(Globals.EPOCH) : "epoch";
 	}
-
-	public Timestamp afterTime(Timestamp timestamp) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(timestamp);
-		cal.add(Calendar.HOUR_OF_DAY, 1);
-		return new Timestamp(cal.getTimeInMillis());
-	}
-
-	public Timestamp beforeTime(Timestamp timestamp) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(timestamp);
-		cal.add(Calendar.HOUR_OF_DAY, -1);
-		return new Timestamp(cal.getTimeInMillis());
-	}
-
 }
