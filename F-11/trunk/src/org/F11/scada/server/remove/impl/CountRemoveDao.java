@@ -34,8 +34,9 @@ import org.seasar.framework.container.S2Container;
 
 /**
  * 残レコード件数を指定して、レコードを削除するDaoクラスです。
+ * 
  * @author maekawa
- *
+ * 
  */
 public class CountRemoveDao implements RemoveDao {
 	private static Logger logger = Logger.getLogger(CountRemoveDao.class);
@@ -54,7 +55,8 @@ public class CountRemoveDao implements RemoveDao {
 		logger.info(SQLUtil.getDatabaseProductName(container));
 		if (isRemove(dto)) {
 			Timestamp deleteDate = getTimestamp(dto);
-			RemoveExecutor executor = factory.getRemoveExecutor(dto.getTableName());
+			RemoveExecutor executor =
+				factory.getRemoveExecutor(dto.getTableName());
 			return executor.execute(dto, deleteDate);
 		} else {
 			return 0;
@@ -65,21 +67,24 @@ public class CountRemoveDao implements RemoveDao {
 		return getCount(dto).intValue() > dto.getRemoveValue();
 	}
 
-	private Integer getCount(RemoveDto dto) {
+	private Number getCount(RemoveDto dto) {
 		BasicSelectHandler handler = (BasicSelectHandler) container
 				.getComponent("org_F11_scada_server_remove.selectCountHandler");
 		String sql = SQLUtil.replace(dto, handler.getSql());
 		handler.setSql(sql);
 		Map map = (Map) handler.execute(null);
-		return (Integer) map.get("RECCOUNT");
+		return (Number) map.get("RECCOUNT");
 	}
 
 	private Timestamp getTimestamp(RemoveDto dto) {
-		BasicSelectHandler handler = (BasicSelectHandler) container
+		BasicSelectHandler handler =
+			(BasicSelectHandler) container
 				.getComponent("org_F11_scada_server_remove.selectTimestampHandler");
 		String sql = SQLUtil.replace(dto, handler.getSql());
 		handler.setSql(sql);
-		Map map = (Map) handler.execute(new Object[]{new Integer(dto.getRemoveValue() - 1)});
+		Map map =
+			(Map) handler.execute(new Object[] { new Integer(dto
+				.getRemoveValue() - 1) });
 		return (Timestamp) map.get("DELETETIME");
 	}
 }

@@ -34,17 +34,19 @@ import org.seasar.framework.container.S2Container;
 
 public abstract class SQLUtil {
 	public static String replace(RemoveDto dto, String srcsql) {
-		String sql = srcsql
-				.replaceAll("\\$table", dto.getTableName()).replaceAll(
-						"\\$datefield", dto.getDateFieldName());
+		String sql =
+			srcsql.replaceAll("\\$table", dto.getTableName()).replaceAll(
+				"\\$datefield",
+				dto.getDateFieldName());
 		return sql;
 	}
-	
+
 	public static String getDatabaseProductName(S2Container container) {
-		DataSource dataSource = (DataSource) container.getComponent(DataSource.class);
+		DataSource dataSource =
+			(DataSource) container.getComponent(DataSource.class);
 		return getDbmsName(dataSource);
 	}
-	
+
 	public static String getDbmsName(DataSource dataSource) {
 		String dbms = null;
 		Connection con = DataSourceUtil.getConnection(dataSource);
@@ -60,5 +62,4 @@ public abstract class SQLUtil {
 	public static String getSql(String sql, Object deleteDate) {
 		return sql.replaceFirst("\\?", deleteDate.toString());
 	}
-
 }
