@@ -21,7 +21,6 @@
 package org.F11.scada.applet.ngraph;
 
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.KeyAdapter;
@@ -77,21 +76,8 @@ public class SeriesTable extends JTable implements Mediator, Colleague {
 	}
 
 	private void setColorCellRenderer() {
-		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-			private static final long serialVersionUID = -7941680905414950619L;
-
-			@Override
-			protected void setValue(Object value) {
-				if (value instanceof Color) {
-					Color c = (Color) value;
-					setBackground(c);
-				} else {
-					super.setValue(value);
-				}
-			}
-		};
 		TableColumn column = getColumn(getModel().getColumnName(1));
-		column.setCellRenderer(renderer);
+		column.setCellRenderer(TableUtil.getColorTableCellRenderer());
 	}
 
 	private void setDoubleCellRenderer(int columnNo) {

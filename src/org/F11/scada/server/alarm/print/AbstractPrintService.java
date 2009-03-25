@@ -49,6 +49,8 @@ public abstract class AbstractPrintService implements AlarmDataStore, Runnable,
 	protected final AlarmPrinter printer;
 	/** ロックオブジェクト */
 	protected final ReentrantLock lock = new ReentrantLock();
+	/** 警告メッセージの表示フラグ */
+	private boolean isWarning = true;
 	/** ロギングAPI */
 	private static Logger log = Logger.getLogger(AbstractPrintService.class);
 
@@ -77,12 +79,18 @@ public abstract class AbstractPrintService implements AlarmDataStore, Runnable,
 		String dataHolderID =
 			EnvironmentManager.get("/server/alarm/print/enable", "");
 		if (null == dataHolderID || "".equals(dataHolderID)) {
-			log.info("印字設定ホルダが設定されていません。常に印字します");
+			if (isWarning) {
+				log.info("印字設定ホルダが設定されていません。常に印字します");
+				isWarning = false;
+			}
 			return true;
 		} else {
 			DataHolder hd = Manager.getInstance().findDataHolder(dataHolderID);
 			if (hd == null) {
-				log.info("印字設定ホルダが設定されていません。常に印字します");
+				if (isWarning) {
+					log.info("印字設定ホルダが設定されていません。常に印字します");
+					isWarning = false;
+				}
 				return true;
 			} else {
 				Object obj = hd.getValue();
@@ -90,7 +98,10 @@ public abstract class AbstractPrintService implements AlarmDataStore, Runnable,
 					WifeDataDigital d = (WifeDataDigital) obj;
 					return d.isOnOff(true);
 				} else {
-					log.info("印字設定ホルダがデジタルタイプではありません。常に印字します");
+					if (isWarning) {
+						log.info("印字設定ホルダがデジタルタイプではありません。常に印字します");
+						isWarning = false;
+					}
 					return true;
 				}
 			}

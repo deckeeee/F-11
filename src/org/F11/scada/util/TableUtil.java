@@ -21,12 +21,15 @@
 
 package org.F11.scada.util;
 
+import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -105,5 +108,21 @@ public abstract class TableUtil {
 		for (int i = removeColumnCount - 1; i >= 0; i--) {
 			table.removeColumn(table.getColumn(table.getColumnName(0)));
 		}
+	}
+
+	public static TableCellRenderer getColorTableCellRenderer() {
+		return new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = -7941680905414950619L;
+
+			@Override
+			protected void setValue(Object value) {
+				if (value instanceof Color) {
+					Color c = (Color) value;
+					setBackground(c);
+				} else {
+					super.setValue(value);
+				}
+			}
+		};
 	}
 }

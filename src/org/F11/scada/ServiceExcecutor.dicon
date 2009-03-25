@@ -7,6 +7,7 @@
 	
 	<include path="org/F11/scada/server/output/OutputService.dicon"/>
 	<include path="org/F11/scada/server/remove/Remove.dicon"/>
+	<include path="org/F11/scada/server/alarm/csvout/CareerCsvout.dicon"/>
 	
 	<component class="org.F11.scada.ServiceExcecutor" name="serviceExecutor">
 		<!--
@@ -16,6 +17,9 @@
 		-->
 		<initMethod name="addService">
 			<arg>remove</arg>
+		</initMethod>
+		<initMethod name="addService">
+			<arg>career_csvout</arg>
 		</initMethod>
 		<destroyMethod name="clearService" />
 	</component>
