@@ -27,7 +27,7 @@
 		<level value="debug" />
 		<appender-ref ref="STDOUT1" />
 	</category>
--->
+ -->
 
 	<!-- ‚·‚×‚Ä‚ÌƒƒO‚ðinfo -->
 	<root>

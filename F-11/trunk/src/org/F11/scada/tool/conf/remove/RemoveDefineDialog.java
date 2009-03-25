@@ -86,7 +86,7 @@ public class RemoveDefineDialog extends JDialog {
 				"操作ログ", "警報メール送信履歴"});
 		String name = bean.getTableName();
 		tableName.setEditable(false);
-		if ("hisotry_table".equals(name)) {
+		if ("history_table".equals(name)) {
 			cb.setSelectedItem("ヒストリ");
 		} else if ("career_table".equals(name)) {
 			cb.setSelectedItem("履歴");
@@ -102,7 +102,7 @@ public class RemoveDefineDialog extends JDialog {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("ヒストリ".equals(e.getItem())) {
-						tableName.setText("hisotry_table");
+						tableName.setText("history_table");
 						tableName.setEditable(false);
 						fieldName.setText("off_date");
 					} else if ("履歴".equals(e.getItem())) {
