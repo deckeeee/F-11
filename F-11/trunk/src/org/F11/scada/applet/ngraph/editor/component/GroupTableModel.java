@@ -65,33 +65,44 @@ public class GroupTableModel extends AbstractTableModel {
 			Color.yellow,
 			"CV-AHU-0101",
 			"CVìè " + i + "F éññ±é∫ånìù",
-			""));
+			"",
+			0F,
+			100F));
 		l.add(new UnitData(
 			Color.magenta,
 			"CV-AHU-0101",
 			"CVìè " + i + "F éññ±é∫ånìù",
-			""));
+			"",
+			0F,
+			100F));
 		l.add(new UnitData(
 			Color.cyan,
 			"CV-AHU-0101",
 			"CVìè " + i + "F éññ±é∫ånìù",
-			""));
-		l
-			.add(new UnitData(
-				Color.red,
-				"CV-AHU-0101",
-				"CVìè " + i + "F éññ±é∫ånìù",
-				""));
+			"",
+			0F,
+			100F));
+		l.add(new UnitData(
+			Color.red,
+			"CV-AHU-0101",
+			"CVìè " + i + "F éññ±é∫ånìù",
+			"",
+			0F,
+			100F));
 		l.add(new UnitData(
 			Color.green,
 			"CV-AHU-0101",
 			"CVìè " + i + "F éññ±é∫ånìù",
-			""));
+			"",
+			0F,
+			100F));
 		l.add(new UnitData(
 			Color.white,
 			"CV-AHU-0101",
 			"CVìè " + i + "F éññ±é∫ånìù",
-			""));
+			"",
+			0F,
+			100F));
 		return l;
 	}
 
@@ -134,7 +145,7 @@ public class GroupTableModel extends AbstractTableModel {
 		int size = groupDatas.size();
 		fireTableRowsInserted(size, size);
 	}
-	
+
 	public void removeRow(int row) {
 		groupDatas.remove(row);
 		renumber();
@@ -147,11 +158,11 @@ public class GroupTableModel extends AbstractTableModel {
 			gd.setGroupNo(i++);
 		}
 	}
-	
+
 	public void updateRow(int row) {
 		fireTableRowsUpdated(row, row);
 	}
-	
+
 	public GroupData getRow(int row) {
 		return groupDatas.get(row);
 	}
