@@ -37,7 +37,8 @@ import org.F11.scada.applet.ngraph.editor.UnitData;
 
 public class UnitTableModel extends AbstractTableModel implements
 		MouseListener, KeyListener {
-	private static final String[] titles = { "", "記号", "機器名称", "単位" };
+	private static final String[] titles =
+		{ "", "最小値", "最大値", "記号", "機器名称", "単位" };
 	private List<UnitData> unitDatas;
 	private List<UnitData> backupUnitDatas;
 	private Map<Integer, Color> colorMap;
@@ -71,10 +72,14 @@ public class UnitTableModel extends AbstractTableModel implements
 			case 0:
 				return unitDatas.get(rowIndex).getUnitColor();
 			case 1:
-				return unitDatas.get(rowIndex).getUnitNo();
+				return unitDatas.get(rowIndex).getMin();
 			case 2:
-				return unitDatas.get(rowIndex).getUnitName();
+				return unitDatas.get(rowIndex).getMax();
 			case 3:
+				return unitDatas.get(rowIndex).getUnitNo();
+			case 4:
+				return unitDatas.get(rowIndex).getUnitName();
+			case 5:
 				return unitDatas.get(rowIndex).getUnitMark();
 			default:
 				throw new IllegalStateException();
@@ -167,7 +172,7 @@ public class UnitTableModel extends AbstractTableModel implements
 	}
 
 	public UnitData getRow(int row) {
-		return new UnitData(unitDatas.get(row));
+		return unitDatas.get(row);
 	}
 
 	public void insertRow(UnitData unitData) {
@@ -201,7 +206,7 @@ public class UnitTableModel extends AbstractTableModel implements
 			break;
 		}
 	}
-	
+
 	public void commit() {
 		if (null != backupUnitDatas) {
 			backupUnitDatas = null;

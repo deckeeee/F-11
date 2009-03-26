@@ -29,6 +29,8 @@ public class UnitData implements Serializable {
 	private String unitNo;
 	private String unitName;
 	private String unitMark;
+	private Float min;
+	private Float max;
 
 	public UnitData() {
 	}
@@ -37,18 +39,24 @@ public class UnitData implements Serializable {
 			Color unitColor,
 			String unitNo,
 			String unitName,
-			String unitMark) {
+			String unitMark,
+			Float min,
+			Float max) {
 		this.unitColor = unitColor;
 		this.unitNo = unitNo;
 		this.unitName = unitName;
 		this.unitMark = unitMark;
+		this.min = min;
+		this.max = max;
 	}
-	
+
 	public UnitData(UnitData src) {
 		unitColor = src.unitColor;
 		unitNo = src.unitNo;
 		unitName = src.unitName;
 		unitMark = src.unitMark;
+		min = src.min;
+		max = src.max;
 	}
 
 	public Color getUnitColor() {
@@ -83,8 +91,34 @@ public class UnitData implements Serializable {
 		this.unitMark = unitMark;
 	}
 
+	public Float getMin() {
+		return min;
+	}
+
+	public void setMin(Float min) {
+		this.min = min;
+	}
+
+	public Float getMax() {
+		return max;
+	}
+
+	public void setMax(Float max) {
+		this.max = max;
+	}
+
 	@Override
 	public String toString() {
-		return unitColor + " " + unitNo + " " + unitName + " " + unitMark;
+		return unitColor
+			+ " "
+			+ min
+			+ " "
+			+ max
+			+ " "
+			+ unitNo
+			+ " "
+			+ unitName
+			+ " "
+			+ unitMark;
 	}
 }

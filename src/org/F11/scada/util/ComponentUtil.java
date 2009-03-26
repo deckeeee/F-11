@@ -22,10 +22,13 @@ package org.F11.scada.util;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Window;
 
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -36,6 +39,7 @@ public abstract class ComponentUtil {
 	public static final String HTML_START = "<html><body><p>";
 	/** HTMLの終了文字列 */
 	public static final String HTML_END = "</p></body></html>";
+
 	/**
 	 * コンポーネント内にマウスポイントがあるか判定します。
 	 * 
@@ -106,4 +110,20 @@ public abstract class ComponentUtil {
 		panel.add(text, c);
 	}
 
+	/**
+	 * Cクラスの親の中央にコンポーネントを配置します。
+	 * 
+	 * @param <C> 親クラス
+	 * @param c 親クラス
+	 * @param comp 中央に配置するコンポーネント
+	 */
+	public static <C extends Window> void setCenter(Class<C> c, Component comp) {
+		JDialog parent = (JDialog) SwingUtilities.getAncestorOfClass(c, comp);
+		Dimension dlgSize = comp.getSize();
+		Dimension frmSize = parent.getSize();
+		Point loc = parent.getLocation();
+		comp.setLocation(
+			(frmSize.width - dlgSize.width) / 2 + loc.x,
+			(frmSize.height - dlgSize.height) / 2 + loc.y);
+	}
 }

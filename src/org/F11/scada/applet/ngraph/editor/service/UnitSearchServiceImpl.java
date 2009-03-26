@@ -65,7 +65,9 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 				null,
 				pointTableDto.getUnit(),
 				pointTableDto.getName(),
-				pointTableDto.getUnitMark()));
+				pointTableDto.getUnitMark(),
+				0F,
+				0F));
 		}
 		return unitList;
 	}
