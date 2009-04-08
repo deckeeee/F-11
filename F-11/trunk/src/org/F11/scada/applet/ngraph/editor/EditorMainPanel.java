@@ -34,7 +34,9 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,7 +45,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
@@ -62,6 +63,7 @@ import org.apache.log4j.Logger;
 
 public class EditorMainPanel extends JDialog implements Mediator {
 	private final Logger logger = Logger.getLogger(EditorMainPanel.class);
+	private static final int INPUT_HISTORY_MAX = 10;
 	private GroupTableModel groupTableModel;
 	private JTable groupTable;
 	private Label groupNoLabel;
@@ -81,9 +83,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	private Button unitSpanButton = new Button("ｽﾊﾟﾝ変更", this);
 	private Button searchButton = new Button("検索", this);
 	private Button searchInsertButton = new Button("登録", this);
-	private JTextField searchUnit = new JTextField(25);
-	private JTextField searchMark = new JTextField(6);
-	private JTextField searchName = new JTextField(35);
+	private JComboBox searchUnit = new JComboBox();
+	private JComboBox searchMark = new JComboBox();
+	private JComboBox searchName = new JComboBox();
 
 	public EditorMainPanel(Frame frame) {
 		super(frame, "トレンドグラフ操作", true);
@@ -96,27 +98,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	}
 
 	private void init() {
-		groupEditButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Button b = (Button) e.getSource();
-				b.performMediator();
-			}
-		});
-		unitCancelButton.setEnabled(false);
-		unitCancelButton.setMargin(new Insets(2, 10, 2, 10));
-		unitCancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Button b = (Button) e.getSource();
-				b.performMediator();
-			}
-		});
-		unitUpdateButton.setEnabled(false);
-		unitUpdateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Button b = (Button) e.getSource();
-				b.performMediator();
-			}
-		});
+		setGroupEditButton();
+		setUnitCancelButton();
+		setUnitUpdateButton();
 		unitDeleteButton.setEnabled(false);
 		unitSpanButton.setEnabled(false);
 		searchButton.setEnabled(false);
@@ -125,7 +109,63 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		searchUnit.setEnabled(false);
 		searchMark.setEnabled(false);
 		searchName.setEnabled(false);
+
+		setSearchBox();
+
 		searchTable.setEnabled(false);
+		setGroupCreateButton();
+		setGroupRenameButton();
+		setGroupDeleteButton();
+		setUnitDeleteButton();
+		setUnitSpanButton();
+	}
+
+	private void setGroupEditButton() {
+		groupEditButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Button b = (Button) e.getSource();
+				b.performMediator();
+			}
+		});
+	}
+
+	private void setUnitCancelButton() {
+		unitCancelButton.setEnabled(false);
+		unitCancelButton.setMargin(new Insets(2, 10, 2, 10));
+		unitCancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Button b = (Button) e.getSource();
+				b.performMediator();
+			}
+		});
+	}
+
+	private void setUnitUpdateButton() {
+		unitUpdateButton.setEnabled(false);
+		unitUpdateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Button b = (Button) e.getSource();
+				b.performMediator();
+			}
+		});
+	}
+
+	private void setSearchBox() {
+		searchUnit.setEditable(true);
+		searchUnit.setPreferredSize(new Dimension(250, 20));
+		searchUnit.setMinimumSize(new Dimension(250, 20));
+		searchUnit.setMaximumSize(new Dimension(250, 20));
+		searchMark.setEditable(true);
+		searchMark.setPreferredSize(new Dimension(80, 20));
+		searchMark.setMinimumSize(new Dimension(80, 20));
+		searchMark.setMaximumSize(new Dimension(80, 20));
+		searchName.setEditable(true);
+		searchName.setPreferredSize(new Dimension(390, 20));
+		searchName.setMinimumSize(new Dimension(390, 20));
+		searchName.setMaximumSize(new Dimension(390, 20));
+	}
+
+	private void setGroupCreateButton() {
 		groupCreateButton.setMargin(new Insets(2, 2, 2, 2));
 		groupCreateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -141,6 +181,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				}
 			}
 		});
+	}
+
+	private void setGroupRenameButton() {
 		groupRenameButton.setMargin(new Insets(2, 2, 2, 2));
 		groupRenameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,6 +201,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				}
 			}
 		});
+	}
+
+	private void setGroupDeleteButton() {
 		groupDeleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = groupTable.getSelectedRow();
@@ -176,6 +222,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				}
 			}
 		});
+	}
+
+	private void setUnitDeleteButton() {
 		unitDeleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = unitTable.getSelectedRow();
@@ -184,6 +233,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				}
 			}
 		});
+	}
+
+	private void setUnitSpanButton() {
 		unitSpanButton.setMargin(new Insets(2, 0, 2, 0));
 		unitSpanButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -194,7 +246,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 					new SpanDialog(ComponentUtil.getAncestorOfClass(
 						JDialog.class,
 						unitSpanButton), ud).setVisible(true);
-					unitTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+					unitTableModel.fireTableRowsUpdated(
+						selectedRow,
+						selectedRow);
 				}
 			}
 		});
@@ -354,6 +408,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.EAST;
+		c.insets = new Insets(3, 3, 3, 3);
 		panel.add(new JLabel("記号："), c);
 		panel.add(searchUnit, c);
 		panel.add(new JLabel("単位："), c);
@@ -372,10 +427,34 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UnitData ud = new UnitData();
-				ud.setUnitNo(searchUnit.getText());
-				ud.setUnitName(searchName.getText());
-				ud.setUnitMark(searchMark.getText());
+				String searchUnitItem =
+					(String) searchUnit.getEditor().getItem();
+				ud.setUnitNo(searchUnitItem);
+				String searchUnitNameItem =
+					(String) searchName.getEditor().getItem();
+				ud.setUnitName(searchUnitNameItem);
+				String searchUnitMarkItem =
+					(String) searchMark.getEditor().getItem();
+				ud.setUnitMark(searchUnitMarkItem);
 				searchTableModel.setValueAt(searchService.getUnitDataList(ud));
+				addItem(searchUnit, searchUnitItem);
+				addItem(searchName, searchUnitNameItem);
+				addItem(searchMark, searchUnitMarkItem);
+			}
+
+			private void addItem(JComboBox combo, String str) {
+				if (str != null && str.length() != 0) {
+					combo.setVisible(false);
+					DefaultComboBoxModel model =
+						(DefaultComboBoxModel) combo.getModel();
+					model.removeElement(str);
+					model.insertElementAt(str, 0);
+					if (model.getSize() > INPUT_HISTORY_MAX) {
+						model.removeElementAt(INPUT_HISTORY_MAX);
+					}
+					combo.setSelectedIndex(0);
+					combo.setVisible(true);
+				}
 			}
 		});
 		return box;

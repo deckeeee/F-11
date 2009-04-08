@@ -92,5 +92,7 @@ public class PageXmlRuleSet extends RuleSetBase {
 
 	    digester.addSetProperties("*/imagesymboleditable/schedule", "schedule", "value");
 	    digester.addSetProperties("*/imagesymboleditable/schedule", "group", "value");
+
+	    digester.addSetProperties("*/trendgraph3/series/series-property", "holder", "holderString");
 	}
 }
