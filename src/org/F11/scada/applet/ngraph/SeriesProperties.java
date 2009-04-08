@@ -25,17 +25,29 @@ import java.awt.Color;
 import org.F11.scada.server.register.HolderString;
 
 public class SeriesProperties {
+	/** シリーズのインデックス */
 	private int index;
+	/** 表示・非表示 */
 	private Boolean visible;
+	/** 色 */
 	private Color color;
+	/** 機器番号 */
 	private String unit;
+	/** 機器名称 */
 	private String name;
+	/** 参照値 */
 	private Float referenceValue;
+	/** 現在値 */
 	private Float nowValue;
+	/** 単位記号 */
 	private String unitMark;
+	/** 目盛数値のフォーマット */
 	private String verticalFormat;
+	/** 表示最大値 */
 	private float max;
+	/** 表示最小値 */
 	private float min;
+	/** 現在値のホルダID */
 	private HolderString holderString;
 
 	/**

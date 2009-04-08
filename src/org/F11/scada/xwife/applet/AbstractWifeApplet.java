@@ -894,6 +894,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 						}
 						applet.spane.setDividerLocation(currentDividerLocation);
 						applet.spane.revalidate();
+						applet.spane.repaint();
 						applet.fireSubjectChanged();
 					};
 				});

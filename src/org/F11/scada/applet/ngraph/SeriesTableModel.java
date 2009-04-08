@@ -28,8 +28,11 @@ import java.beans.PropertyChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.log4j.Logger;
+
 public class SeriesTableModel extends AbstractTableModel implements
 		PropertyChangeListener {
+	private final Logger logger = Logger.getLogger(SeriesTableModel.class);
 	/** 表示の有無を表示している列 */
 	public static final int VISIBLE_COLUMN = 0;
 	/** 参照値を表示している列 */
@@ -61,7 +64,9 @@ public class SeriesTableModel extends AbstractTableModel implements
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return isNotEmpty() ? getSeriesProperty(rowIndex, columnIndex) : null;
+		return isNotEmpty() ? getSeriesProperty(rowIndex, columnIndex) != null
+			? getSeriesProperty(rowIndex, columnIndex)
+			: "" : "";
 	}
 
 	@Override
@@ -165,6 +170,5 @@ public class SeriesTableModel extends AbstractTableModel implements
 				setValueAt(null, i, REFERENCE_VALUE_COLUMN);
 			}
 		}
-		fireTableDataChanged();
 	}
 }

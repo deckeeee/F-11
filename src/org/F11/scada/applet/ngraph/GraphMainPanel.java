@@ -20,12 +20,10 @@
 
 package org.F11.scada.applet.ngraph;
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -40,10 +38,10 @@ import org.F11.scada.applet.ngraph.model.DefaultAllGraphModel;
 import org.F11.scada.applet.ngraph.model.DefaultGraphModel;
 import org.F11.scada.applet.ngraph.model.GraphModel;
 import org.apache.commons.collections.primitives.DoubleIterator;
+import org.apache.log4j.Logger;
 
 public class GraphMainPanel extends JPanel implements Mediator {
-	private final Logger logger =
-		Logger.getLogger(GraphMainPanel.class.getName());
+	private final Logger logger = Logger.getLogger(GraphMainPanel.class);
 	private GraphStatusBar statusBar;
 	private GraphProperties graphProperties;
 	private GraphModel graphModel;
@@ -53,13 +51,13 @@ public class GraphMainPanel extends JPanel implements Mediator {
 	private SeriesTable seriesTable;
 	private GraphToolBar graphToolBar;
 
-	public GraphMainPanel() {
+	public GraphMainPanel(GraphProperties graphProperties) {
 		super(new BorderLayout());
+		this.graphProperties = graphProperties;
 		createColleagus();
 	}
 
 	private void createColleagus() {
-		graphProperties = new GraphProperties();
 		graphModel = new DefaultGraphModel(graphProperties);
 		graphView = new GraphView(this, graphModel, graphProperties);
 		scrollBar = new GraphScrollBar(graphView);
@@ -166,7 +164,9 @@ public class GraphMainPanel extends JPanel implements Mediator {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				JFrame f = new JFrame("トレンドグラフテスト");
-				f.add(new GraphMainPanel(), BorderLayout.CENTER);
+				f.add(
+					new GraphMainPanel(new GraphProperties()),
+					BorderLayout.CENTER);
 				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				f.pack();
 				f.setVisible(true);

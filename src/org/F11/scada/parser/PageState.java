@@ -34,6 +34,7 @@ import org.F11.scada.parser.graph.TrendGraphState;
 import org.F11.scada.parser.graph.bargraph.BarGraphState;
 import org.F11.scada.parser.graph.bargraph2.BarGraph2State;
 import org.F11.scada.parser.graph.demand.DemandGraphState;
+import org.F11.scada.parser.ngraph.TrendGraph3State;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
@@ -138,6 +139,9 @@ public class PageState implements State, SymbolContainerState {
 			stack.push(new TrendJumpButtonState(tagName, atts, this));
 		} else if (tagName.equals("bargraph2")) {
 			stack.push(new BarGraph2State(tagName, atts, this));
+			setPageCache();
+		} else if (tagName.equals("trendgraph3")) {
+			stack.push(new TrendGraph3State(tagName, atts, this));
 			setPageCache();
 		} else {
 			logger.info("tagName:" + tagName);

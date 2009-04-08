@@ -87,7 +87,7 @@ public abstract class AbstractPaddingLogic implements PaddingLogic {
 			for (Timestamp t = afterTime(maxTime); t.compareTo(timestamp) <= 0; t =
 				afterTime(t)) {
 				String sql = utility.getPaddingSql(table, holderList, t, 0);
-				logger.info(sql);
+//				logger.info(sql);
 				st.execute(sql);
 			}
 		} finally {

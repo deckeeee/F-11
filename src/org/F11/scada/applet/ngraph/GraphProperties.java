@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph;
 
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
@@ -31,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.F11.scada.applet.ngraph.model.GraphModel;
-import org.F11.scada.server.register.HolderString;
+import org.F11.scada.applet.symbol.ColorFactory;
 
 /**
  * トレンドグラフのプロパティ。
@@ -40,29 +39,45 @@ import org.F11.scada.server.register.HolderString;
  * 
  */
 public class GraphProperties {
+	/** このプロパティーのリスナー */
 	private final PropertyChangeSupport changeSupport;
+	/** ｽﾊﾟﾝ全表示の横幅ピクセル数 */
 	private int horizontalForAllSpanMode = 112;
+	/** ｽﾊﾟﾝ略表示の横幅ピクセル数 */
 	private int horizontalForSelectSpanMode = 168;
+	/** 横目盛の数 */
 	private int horizontalCount = 5;
+	/** 横目盛の時間スケール幅 */
 	private long horizontalLineSpan = 18000000L;
+	/** 日付表示フォーマット */
 	private String dateFormat = "%1$tm/%1$td";
+	/** 時間表示フォーマット */
 	private String timeFormat = "%1$tH:%1$tM";
+	/** 縦目盛1つ分のピクセル数 */
 	private int verticalScale = 48;
+	/** 縦目盛の数 */
 	private int verticalCount = 10;
+	/** 縦目盛のピクセル数 */
 	private int verticalLine;
+	/** 目盛線のピクセル数 */
 	private int scalePixcelSize = 5;
+	/** グラフエリアの余白 */
 	private Insets insets = new Insets(50, 80, 60, 50);
+	/** 使用フォント */
 	private Font font = new Font("Monospaced", Font.PLAIN, 18);
+	/** 線の色 */
 	private Color lineColor = Color.WHITE;
-	private Color backGround = new Color(0, 0, 135);
-	private Color verticalScaleColor = new Color(64, 95, 237);
+	/** 背景色 */
+	private Color backGround = ColorFactory.getColor("navy");
+	/** グラフエリアのグリッド色 */
+	private Color verticalScaleColor = ColorFactory.getColor("cornflowerblue");
 	/** シリーズグループのリスト */
 	private List<SeriesGroup> seriesGroups;
+	/** カレントグループNo. */
 	private int groupNo;
 
 	public GraphProperties() {
 		changeSupport = new PropertyChangeSupport(this);
-		seriesGroups = getTestGroup();
 	}
 
 	public void addPropertyChangeListener(
@@ -352,22 +367,8 @@ public class GraphProperties {
 	 * 
 	 * @param s シリーズをグループに追加します。
 	 */
-	public void addSeriesGroup(SeriesGroup s) {
-		if (null == seriesGroups) {
-			seriesGroups = new ArrayList<SeriesGroup>();
-		}
-		seriesGroups.add(s);
-	}
-
-	/**
-	 * シリーズをグループから削除します。
-	 * 
-	 * @param groupNo グループNo.
-	 */
-	public void removeSeriesGroup(int groupNo) {
-		if (null != seriesGroups) {
-			seriesGroups.remove(groupNo);
-		}
+	public void setSeriesGroup(List<SeriesGroup> s) {
+		seriesGroups = new ArrayList<SeriesGroup>(s);
 	}
 
 	/**
@@ -418,211 +419,5 @@ public class GraphProperties {
 
 	private boolean isValidGroupNo(int groupNo) {
 		return 0 <= groupNo && seriesGroups.size() - 1 >= groupNo;
-	}
-
-	public SeriesGroup getTestData() {
-		List<SeriesProperties> serieses = new ArrayList<SeriesProperties>();
-		serieses.add(getProperty(
-			true,
-			Color.yellow,
-			"",
-			"施設棟　受電　電流",
-			null,
-			null,
-			"A",
-			"%3.0f",
-			0,
-			100,
-			0,
-			"P1_D_500_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.magenta,
-			"",
-			"施設棟　受電　電圧",
-			null,
-			null,
-			"V",
-			"%04.0f",
-			0,
-			90,
-			1,
-			"P1_D_501_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.cyan,
-			"",
-			"施設棟　受電　電力",
-			null,
-			null,
-			"kW",
-			"%3.1f",
-			0,
-			90,
-			2,
-			"P1_D_502_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.red,
-			"",
-			"施設棟　受電　無効電力",
-			null,
-			null,
-			"kVar",
-			"%3.2f",
-			0,
-			100,
-			3,
-			"P1_D_503_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.green,
-			"",
-			"施設棟　受電　力率",
-			null,
-			null,
-			null,
-			"%03.1f",
-			0,
-			100,
-			4,
-			"P1_D_504_BcdSingle"));
-		serieses.add(getProperty(
-			false,
-			Color.white,
-			"UNIT-06",
-			"名前06",
-			null,
-			null,
-			null,
-			"%04.1f",
-			0,
-			100,
-			5,
-			"P1_D_506_BcdSingle"));
-		return new SeriesGroup("施設棟　電源", serieses);
-	}
-
-	private SeriesProperties getProperty(
-			boolean visible,
-			Color color,
-			String unit,
-			String name,
-			Float refValue,
-			Float nowValue,
-			String unitMark,
-			String verticalFormat,
-			float min,
-			float max,
-			int index,
-			String holderString) {
-		SeriesProperties p = new SeriesProperties();
-		p.setVisible(visible);
-		p.setColor(color);
-		p.setUnit(unit);
-		p.setName(name);
-		p.setReferenceValue(refValue);
-		p.setNowValue(nowValue);
-		p.setUnitMark(unitMark);
-		p.setVerticalFormat(verticalFormat);
-		p.setMin(min);
-		p.setMax(max);
-		p.setIndex(index);
-		p.setHolderString(getHolderString(holderString));
-		return p;
-	}
-
-	private HolderString getHolderString(String holderString) {
-		return null == holderString ? null : new HolderString(holderString);
-	}
-
-	private SeriesGroup getTestData2() {
-		List<SeriesProperties> serieses = new ArrayList<SeriesProperties>();
-		serieses.add(getProperty(
-			true,
-			Color.yellow,
-			"",
-			"東棟　受電　電流",
-			null,
-			null,
-			"kA",
-			"%3.0f",
-			0,
-			2000,
-			0,
-			"P1_D_3300_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.magenta,
-			"",
-			"東棟　受電　電圧",
-			null,
-			null,
-			"V",
-			"%04.0f",
-			0,
-			2000,
-			1,
-			"P1_D_3301_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.cyan,
-			"",
-			"東棟　受電　電力",
-			null,
-			null,
-			"kW",
-			"%3.1f",
-			0,
-			5000,
-			2,
-			"P1_D_3307_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.red,
-			"",
-			"東棟　受電　無効電力",
-			null,
-			null,
-			"kVar",
-			"%3.2f",
-			0,
-			5000,
-			3,
-			"P1_D_3310_BcdSingle"));
-		serieses.add(getProperty(
-			true,
-			Color.green,
-			"",
-			"東棟　受電　力率",
-			null,
-			null,
-			null,
-			"%03.1f",
-			0,
-			60,
-			4,
-			"P1_D_3316_BcdSingle"));
-		serieses.add(getProperty(
-			false,
-			Color.white,
-			"UNIT-06",
-			"名前06",
-			null,
-			null,
-			null,
-			"%04.1f",
-			0,
-			100,
-			5,
-			"P1_D_3316_BcdSingle"));
-		return new SeriesGroup("東棟　電源", serieses);
-	}
-
-	private List<SeriesGroup> getTestGroup() {
-		ArrayList<SeriesGroup> l = new ArrayList<SeriesGroup>();
-		l.add(getTestData());
-		l.add(getTestData2());
-		return l;
 	}
 }
