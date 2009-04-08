@@ -22,6 +22,10 @@ package org.F11.scada.applet.ngraph;
 
 import java.awt.Color;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.Manager;
+
+import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.server.register.HolderString;
 
 public class SeriesProperties {
@@ -182,7 +186,19 @@ public class SeriesProperties {
 	 * @return åªç›íl
 	 */
 	public Float getNowValue() {
-		return nowValue;
+		Manager manager = Manager.getInstance();
+		DataHolder hd = manager.findDataHolder(holderString.getHolderId());
+		if (hd != null) {
+			Object obj = hd.getValue();
+			if (obj instanceof WifeDataAnalog) {
+				WifeDataAnalog a = (WifeDataAnalog) obj;
+				return (float) a.doubleValue();
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
 
 	/**

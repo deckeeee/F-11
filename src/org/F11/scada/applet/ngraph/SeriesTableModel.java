@@ -24,6 +24,9 @@ import static org.F11.scada.applet.ngraph.model.GraphModel.GROUP_CHANGE;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -37,6 +40,8 @@ public class SeriesTableModel extends AbstractTableModel implements
 	public static final int VISIBLE_COLUMN = 0;
 	/** 参照値を表示している列 */
 	public static final int REFERENCE_VALUE_COLUMN = 5;
+	/** 現在値の列 */
+	public static final int NOW_VALUE_COUMN = 6;
 	private final String[] titles =
 		new String[] { "表示", "色", "ｽﾊﾟﾝ", "記号", "機器名称", "参照値", "現在値", "単位" };
 	private final GraphProperties graphProperties;
@@ -44,6 +49,14 @@ public class SeriesTableModel extends AbstractTableModel implements
 	public SeriesTableModel(GraphProperties graphProperties) {
 		this.graphProperties = graphProperties;
 		this.graphProperties.addPropertyChangeListener(GROUP_CHANGE, this);
+		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+		service.scheduleAtFixedRate(new Runnable() {
+			public void run() {
+				for (int i = 0; i < getRowCount(); i++) {
+					fireTableChanged(getTableModelEvent(i, NOW_VALUE_COUMN));
+				}
+			}
+		}, 0, 1, TimeUnit.SECONDS);
 	}
 
 	public int getColumnCount() {
@@ -120,7 +133,7 @@ public class SeriesTableModel extends AbstractTableModel implements
 		case REFERENCE_VALUE_COLUMN:
 			return format(seriesPropertie.getVerticalFormat(), seriesPropertie
 				.getReferenceValue());
-		case 6:
+		case NOW_VALUE_COUMN:
 			return format(seriesPropertie.getVerticalFormat(), seriesPropertie
 				.getNowValue());
 		case 7:
