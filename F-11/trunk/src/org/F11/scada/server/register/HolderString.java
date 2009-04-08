@@ -47,8 +47,8 @@ public class HolderString implements Serializable {
 			this.holder = value.substring(value.indexOf("_") + 1);
 		} catch (StringIndexOutOfBoundsException e) {
 			throw new IllegalArgumentException(
-					"文字列が 'プロバイダ_ホルダ' で無い (設定された文字列 = " + value + ")",
-					e);
+				"文字列が 'プロバイダ_ホルダ' で無い (設定された文字列 = " + value + ")",
+				e);
 		}
 	}
 
@@ -109,5 +109,9 @@ public class HolderString implements Serializable {
 			hashCode = result;
 		}
 		return hashCode;
+	}
+
+	public String getHolderId() {
+		return provider + "_" + holder;
 	}
 }
