@@ -75,6 +75,9 @@ public class GraphProperties {
 	private List<SeriesGroup> seriesGroups;
 	/** カレントグループNo. */
 	private int groupNo;
+	/** ページ定義ファイル名 */
+	private String pagefile;
+
 
 	public GraphProperties() {
 		changeSupport = new PropertyChangeSupport(this);
@@ -419,5 +422,21 @@ public class GraphProperties {
 
 	private boolean isValidGroupNo(int groupNo) {
 		return 0 <= groupNo && seriesGroups.size() - 1 >= groupNo;
+	}
+
+	public String getPagefile() {
+		return pagefile;
+	}
+
+	public void setPagefile(String pagefile) {
+		this.pagefile = pagefile;
+	}
+
+	public int getHorizontalForAllSpanMode() {
+		return horizontalForAllSpanMode;
+	}
+
+	public int getHorizontalForSelectSpanMode() {
+		return horizontalForSelectSpanMode;
 	}
 }

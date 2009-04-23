@@ -29,7 +29,12 @@ import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
 import org.F11.scada.applet.ngraph.SeriesProperties;
 
-
+/**
+ * グラフ描画の基底クラス
+ * 
+ * @author maekawa
+ *
+ */
 public abstract class AbstractGraphDraw implements GraphDraw {
 	protected static final float DATE_STRING_RATE = 2.5F;
 	protected final GraphProperties properties;

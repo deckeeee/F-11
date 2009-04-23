@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph;
 
-
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.KeyAdapter;
@@ -39,20 +38,30 @@ import javax.swing.table.TableModel;
 import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 import org.F11.scada.util.TableUtil;
 
+/**
+ * シリーズのテーブル
+ * 
+ * @author maekawa
+ *
+ */
 public class SeriesTable extends JTable implements Mediator, Colleague {
+	private static final long serialVersionUID = -7114874651479629734L;
 	private final Mediator mediator;
 	private TableListener tableListener;
 	private TableKeyListener tableKeyListener;
 
-	public SeriesTable(TableModel model, Mediator mediator) {
+	public SeriesTable(
+			TableModel model,
+			Mediator mediator,
+			GraphProperties graphProperties) {
 		super(model);
 		this.mediator = mediator;
-		init();
+		init(graphProperties);
 		setListener();
 	}
 
-	private void init() {
-		final Font font = new Font("Monospaced", Font.PLAIN, 18);
+	private void init(GraphProperties graphProperties) {
+		Font font = graphProperties.getFont();
 		setFont(font);
 		FontMetrics metrics = getFontMetrics(font);
 		setRowHeight(metrics.getHeight());

@@ -26,13 +26,18 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
 
-
 import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
 import org.F11.scada.applet.ngraph.SeriesProperties;
 import org.apache.commons.collections.primitives.DoubleIterator;
 import org.apache.commons.collections.primitives.DoubleList;
 
+/**
+ * 合成表示のグラフ描画クラス
+ * 
+ * @author maekawa
+ *
+ */
 public class CompositGraphDraw extends AbstractGraphDraw {
 
 	public CompositGraphDraw(GraphProperties properties) {

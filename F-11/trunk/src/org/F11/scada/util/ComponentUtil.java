@@ -28,7 +28,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -118,7 +117,7 @@ public abstract class ComponentUtil {
 	 * @param comp 中央に配置するコンポーネント
 	 */
 	public static <C extends Window> void setCenter(Class<C> c, Component comp) {
-		JDialog parent = (JDialog) SwingUtilities.getAncestorOfClass(c, comp);
+		Window parent = ComponentUtil.getAncestorOfClass(c, comp);
 		Dimension dlgSize = comp.getSize();
 		Dimension frmSize = parent.getSize();
 		Point loc = parent.getLocation();

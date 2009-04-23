@@ -82,4 +82,28 @@ public abstract class FontUtil {
 	private static int getSize(Font font, String size) {
 		return (null == size) ? font.getSize() : Integer.parseInt(size);
 	}
+
+	public static Font getFont(String fontStr) {
+		if (fontStr != null) {
+			String[] s = fontStr.split("-");
+			return new Font(s[0], getFontStyle(s[1]), getNumber(s[2]));
+		} else {
+			return new Font("Monospaced", Font.PLAIN, 18);
+		}
+	}
+
+	private static int getFontStyle(String s) {
+		if ("PLAIN".equalsIgnoreCase(s)) {
+			return Font.PLAIN;
+		} else if ("BOLD".equalsIgnoreCase(s)) {
+			return Font.BOLD;
+		} else {
+			return Font.ITALIC;
+		}
+	}
+
+	private static int getNumber(String string) {
+		return Integer.parseInt(string);
+	}
+
 }

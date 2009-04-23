@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.F11.scada.WifeUtilities;
-import org.F11.scada.applet.ngraph.editor.UnitData;
+import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 import org.F11.scada.data.DataAccessable;
 import org.F11.scada.exception.RemoteRuntimeException;
 import org.F11.scada.server.dao.PointTableDto;
@@ -45,30 +45,60 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 		}
 	}
 
-	public List<UnitData> getUnitDataList(UnitData unit) {
+	public List<SeriesPropertyData> getSeriesPropertyDataList(SeriesPropertyData spd) {
 		try {
 			List<PointTableDto> pointList =
 				(List<PointTableDto>) alarmRef.invoke(
 					"UnitSearchService",
-					new Object[] { unit });
+					new Object[] { spd });
 			return convertList(pointList);
 		} catch (RemoteException e) {
 			throw new RemoteRuntimeException(e);
 		}
 	}
 
-	private List<UnitData> convertList(List<PointTableDto> pointList) {
-		ArrayList<UnitData> unitList =
-			new ArrayList<UnitData>(pointList.size());
+	private List<SeriesPropertyData> convertList(List<PointTableDto> pointList) {
+		ArrayList<SeriesPropertyData> unitList =
+			new ArrayList<SeriesPropertyData>(pointList.size());
+		//TODO 必要な値をDBから持ってくること。
 		for (PointTableDto pointTableDto : pointList) {
-			unitList.add(new UnitData(
+			unitList.add(getSeriesPropertyData(
+				0,
+				true,
 				null,
 				pointTableDto.getUnit(),
 				pointTableDto.getName(),
 				pointTableDto.getUnitMark(),
 				0F,
-				0F));
+				0F,
+				"",
+				""));
 		}
 		return unitList;
+	}
+
+	private SeriesPropertyData getSeriesPropertyData(
+			int index,
+			boolean visible,
+			String color,
+			String unit,
+			String name,
+			String mark,
+			Float min,
+			Float max,
+			String verticalFormat,
+			String holder) {
+		SeriesPropertyData spd = new SeriesPropertyData();
+		spd.setIndex(index);
+		spd.setVisible(visible);
+		spd.setColor(color);
+		spd.setUnit(unit);
+		spd.setName(name);
+		spd.setMark(mark);
+		spd.setMin(min);
+		spd.setMax(max);
+		spd.setVerticalFormat(verticalFormat);
+		spd.setHolder(holder);
+		return spd;
 	}
 }

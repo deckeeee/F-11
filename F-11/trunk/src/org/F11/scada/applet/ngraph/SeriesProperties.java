@@ -28,6 +28,12 @@ import jp.gr.javacons.jim.Manager;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.server.register.HolderString;
 
+/**
+ * シリーズ個々のプロパティー
+ * 
+ * @author maekawa
+ *
+ */
 public class SeriesProperties {
 	/** シリーズのインデックス */
 	private int index;
@@ -41,8 +47,6 @@ public class SeriesProperties {
 	private String name;
 	/** 参照値 */
 	private Float referenceValue;
-	/** 現在値 */
-	private Float nowValue;
 	/** 単位記号 */
 	private String unitMark;
 	/** 目盛数値のフォーマット */
@@ -199,15 +203,6 @@ public class SeriesProperties {
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * 現在値を設定
-	 * 
-	 * @param nowValue 現在値
-	 */
-	public void setNowValue(Float nowValue) {
-		this.nowValue = nowValue;
 	}
 
 	/**

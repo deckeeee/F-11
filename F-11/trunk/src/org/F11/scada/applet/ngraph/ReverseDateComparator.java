@@ -23,6 +23,12 @@ package org.F11.scada.applet.ngraph;
 import java.util.Comparator;
 import java.util.Date;
 
+/**
+ * Dateオブジェクトの降順コンパレイター
+ * 
+ * @author maekawa
+ *
+ */
 public class ReverseDateComparator implements Comparator<Date> {
 	public int compare(Date o1, Date o2) {
 		return o1.compareTo(o2) * -1;

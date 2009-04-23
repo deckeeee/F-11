@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -40,6 +41,13 @@ import org.F11.scada.applet.ngraph.model.GraphModel;
 import org.apache.commons.collections.primitives.DoubleIterator;
 import org.apache.log4j.Logger;
 
+/**
+ * トレンドグラフのメインパネル
+ * 各コンポーネントのメデエイターにもなっている
+ * 
+ * @author maekawa
+ *
+ */
 public class GraphMainPanel extends JPanel implements Mediator {
 	private final Logger logger = Logger.getLogger(GraphMainPanel.class);
 	private GraphStatusBar statusBar;
@@ -72,7 +80,7 @@ public class GraphMainPanel extends JPanel implements Mediator {
 		graphView.addPropertyChangeListener(
 			GraphView.GRAPH_CLICKED_CHANGE,
 			new GraphClickedListener(seriesModel));
-		seriesTable = new SeriesTable(seriesModel, this);
+		seriesTable = new SeriesTable(seriesModel, this, graphProperties);
 		JScrollPane spane = new JScrollPane(seriesTable);
 		spane.setPreferredSize(new Dimension(
 			graphView.getPreferredSize().width,
@@ -81,8 +89,8 @@ public class GraphMainPanel extends JPanel implements Mediator {
 				+ seriesTable.getRowMargin()
 				* 2.5F)));
 		JPanel northPanel = new JPanel(new BorderLayout());
-		graphToolBar = new GraphToolBar(this);
-		northPanel.add(graphToolBar, BorderLayout.NORTH);
+		graphToolBar = new GraphToolBar(this, graphProperties);
+//		northPanel.add(graphToolBar, BorderLayout.NORTH);
 		northPanel.add(spane, BorderLayout.CENTER);
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
@@ -114,6 +122,7 @@ public class GraphMainPanel extends JPanel implements Mediator {
 			statusBar.performColleagueChange(getGraphChangeEvent());
 		} else if (graphToolBar == colleague) {
 			graphToolBar.performColleagueChange(getGraphChangeEvent());
+			seriesModel.fireTableDataChanged();
 		} else if (seriesTable == colleague) {
 			seriesTable.performColleagueChange(getGraphChangeEvent());
 		}
@@ -129,6 +138,10 @@ public class GraphMainPanel extends JPanel implements Mediator {
 			statusBar,
 			seriesTable,
 			seriesModel);
+	}
+
+	public JComponent getToolBar() {
+		return graphToolBar;
 	}
 
 	private static class ChangeTableModelListener implements TableModelListener {

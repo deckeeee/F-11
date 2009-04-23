@@ -53,6 +53,7 @@ import javax.swing.border.CompoundBorder;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.graph.JListUtil;
+import org.F11.scada.applet.ngraph.editor.EditorMainPanel;
 import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 import org.F11.scada.applet.ngraph.model.GraphModel;
 import org.F11.scada.applet.symbol.GraphicManager;
@@ -68,14 +69,17 @@ import org.F11.scada.util.FontUtil;
 public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 	private static final long serialVersionUID = -3659589949473526923L;
 	private final Mediator mediator;
+	private final GraphProperties graphProperties;
 	private final JLabel groupNameLabel;
 	private BackAction backAction;
 	private ForwardAction forwardAction;
 	private ListAction listAction;
 
-	public GraphToolBar(Mediator mediator) {
+	public GraphToolBar(Mediator mediator, GraphProperties graphProperties) {
 		this.mediator = mediator;
+		this.graphProperties = graphProperties;
 		groupNameLabel = getGroupNameLabel();
+		add(getTrendOpButton());
 		add(getBackButton());
 		add(getForwardButton());
 		addSeparator();
@@ -84,6 +88,20 @@ public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 		add(getListButton());
 		//初期表示グループラベル表示のため
 		performColleagueChange(getGraphChangeEvent());
+		setFloatable(false);
+	}
+
+	private JButton getTrendOpButton() {
+		JButton button = new JButton(GraphicManager.get("/images/trendop.png"));
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JButton b = (JButton) e.getSource();
+				Frame frame = ComponentUtil.getAncestorOfClass(Frame.class, b);
+				EditorMainPanel editor = new EditorMainPanel(frame, graphProperties);
+				editor.setVisible(true);
+			}
+		});
+		return button;
 	}
 
 	private JLabel getGroupNameLabel() {
@@ -96,9 +114,9 @@ public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 				BorderFactory.createEmptyBorder(0, 10, 0, 10));
 		label.setBorder(border);
 		FontUtil.setFont("Monospaced", "PLAIN", 18, label);
-		label.setMinimumSize(new Dimension(500, 30));
-		label.setMaximumSize(new Dimension(500, 30));
-		label.setPreferredSize(new Dimension(500, 30));
+		label.setMinimumSize(new Dimension(400, 30));
+		label.setMaximumSize(new Dimension(400, 30));
+		label.setPreferredSize(new Dimension(400, 30));
 		return label;
 	}
 

@@ -20,6 +20,12 @@
 
 package org.F11.scada.applet.ngraph.editor.component;
 
+/**
+ * エディタのメディエイターインターフェイス
+ * 
+ * @author maekawa
+ *
+ */
 public interface Mediator {
 	/**
 	 * サブコンポーネントが変更された場合に実行される。

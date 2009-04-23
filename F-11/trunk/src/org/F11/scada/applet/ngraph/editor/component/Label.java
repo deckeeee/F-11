@@ -28,9 +28,16 @@ import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
-import org.F11.scada.applet.ngraph.editor.GroupData;
+import org.F11.scada.applet.ngraph.editor.SeriesData;
 
+/**
+ * エディタのラベルクラス
+ * 
+ * @author maekawa
+ * 
+ */
 public class Label extends JLabel implements MouseListener, KeyListener {
+	private static final long serialVersionUID = 3130779776179786966L;
 	private final boolean isNo;
 
 	public Label(boolean isNo) {
@@ -73,13 +80,13 @@ public class Label extends JLabel implements MouseListener, KeyListener {
 	}
 
 	private void fireRowChanged(JTable table, int row) {
-		GroupTableModel model = (GroupTableModel) table.getModel();
-		GroupData gd = model.getGroupData(row);
-		if (null != gd) {
+		SeriesTableModel model = (SeriesTableModel) table.getModel();
+		SeriesData sd = model.getGroupData(row);
+		if (null != sd) {
 			if (isNo) {
-				setText(String.format("No.%03d", gd.getGroupNo()));
+				setText(String.format("No.%03d", sd.getGroupNo()));
 			} else {
-				setText(gd.getGroupName());
+				setText(sd.getGroupName());
 			}
 		}
 	}

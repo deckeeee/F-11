@@ -20,6 +20,17 @@
 
 package org.F11.scada.applet.ngraph.editor.component;
 
+/**
+ * エディタのコリーグインターフェイス
+ * 
+ * @author maekawa
+ *
+ */
 public interface Colleague {
+	/**
+	 * コンポーネントの有効・無効を設定します。
+	 * 
+	 * @param enabled true なら有効 false なら無効
+	 */
 	void setColleagueEnabled(boolean enabled);
 }

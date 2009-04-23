@@ -23,6 +23,7 @@ package org.F11.scada.server.dao;
 import java.io.Serializable;
 
 public class PointTableDto implements Serializable {
+	private static final long serialVersionUID = -5524060769812506998L;
 	public static final String TABLE = "point_table";
 
 	private Integer point;

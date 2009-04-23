@@ -37,17 +37,24 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 
 import org.F11.scada.applet.ngraph.SelectedFieldNumberEditor;
-import org.F11.scada.applet.ngraph.editor.UnitData;
+import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 import org.F11.scada.util.ComponentUtil;
 
+/**
+ * エディタのｽﾊﾟﾝ変更ダイアログ
+ * 
+ * @author maekawa
+ *
+ */
 public class SpanDialog extends JDialog {
-	private final UnitData unitData;
+	private static final long serialVersionUID = -8780547647715972052L;
+	private final SeriesPropertyData seriesPropertyData;
 	private JSpinner minSpinner;
 	private JSpinner maxSpinner;
 
-	public SpanDialog(JDialog dialog, UnitData unitData) {
-		super(dialog, unitData.getUnitName(), true);
-		this.unitData = unitData;
+	public SpanDialog(JDialog dialog, SeriesPropertyData seriesPropertyData) {
+		super(dialog, seriesPropertyData.getName(), true);
+		this.seriesPropertyData = seriesPropertyData;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		add(getCenter(), BorderLayout.CENTER);
 		add(getSouth(), BorderLayout.SOUTH);
@@ -80,7 +87,7 @@ public class SpanDialog extends JDialog {
 		minSpinner.setMaximumSize(new Dimension(80, 20));
 		SelectedFieldNumberEditor editor =
 			new SelectedFieldNumberEditor(minSpinner, "0.0");
-		minSpinner.setValue(unitData.getMin());
+		minSpinner.setValue(seriesPropertyData.getMin());
 		minSpinner.setEditor(editor);
 	}
 
@@ -88,7 +95,7 @@ public class SpanDialog extends JDialog {
 		maxSpinner = new JSpinner();
 		SelectedFieldNumberEditor editor =
 			new SelectedFieldNumberEditor(maxSpinner, "0.0");
-		maxSpinner.setValue(unitData.getMax());
+		maxSpinner.setValue(seriesPropertyData.getMax());
 		maxSpinner.setEditor(editor);
 	}
 
@@ -106,8 +113,8 @@ public class SpanDialog extends JDialog {
 		JButton button = new JButton("了解");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				unitData.setMin(getValue(minSpinner.getValue()));
-				unitData.setMax(getValue(maxSpinner.getValue()));
+				seriesPropertyData.setMin(getValue(minSpinner.getValue()));
+				seriesPropertyData.setMax(getValue(maxSpinner.getValue()));
 				dispose();
 			}
 
