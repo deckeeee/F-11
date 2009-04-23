@@ -22,8 +22,8 @@ package org.F11.scada.applet.ngraph.editor.service;
 
 import java.util.List;
 
-import org.F11.scada.applet.ngraph.editor.UnitData;
+import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 
 public interface UnitSearchService {
-	List<UnitData> getUnitDataList(UnitData unit);
+	List<SeriesPropertyData> getSeriesPropertyDataList(SeriesPropertyData spd);
 }

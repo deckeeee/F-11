@@ -45,7 +45,7 @@ public class SeriesPropertyState implements State {
 		sp.setColor(ColorFactory.getColor(atts.getValue("color")));
 		sp.setUnit(atts.getValue("unit"));
 		sp.setName(atts.getValue("name"));
-		sp.setUnitMark(atts.getValue("unitMark"));
+		sp.setUnitMark(atts.getValue("mark"));
 		sp.setVerticalFormat(atts.getValue("verticalFormat"));
 		sp.setMax(Float.valueOf(atts.getValue("max")));
 		sp.setMin(Float.valueOf(atts.getValue("min")));

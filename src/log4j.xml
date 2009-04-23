@@ -4,7 +4,6 @@
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 	<!--テキストにログを出力するConsoleAppenderをSTDOUTとして定義 -->
 	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender" >
-		<!-- ログの出力形式を指定 -->
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] [%t] %-5p (%F:%L) - %m%n"/>
 		</layout>
@@ -19,6 +18,10 @@
 	</appender>
 
 <!--
+	<category name="org.apache.commons.digester">
+		<level value="debug" />
+		<appender-ref ref="STDOUT1" />
+	</category>
 	<category name="org.seasar">
 		<level value="debug" />
 		<appender-ref ref="STDOUT1" />

@@ -18,45 +18,10 @@
  * 
  */
 
-package org.F11.scada.applet.ngraph.editor;
+package org.F11.scada.applet.ngraph.util;
 
-import java.util.List;
-
-public class GroupData {
-	private int groupNo;
-	private String groupName;
-	private List<UnitData> unitDatas;
-
-	public GroupData() {
-	}
-
-	public GroupData(int groupNo, String groupName, List<UnitData> unitDatas) {
-		this.groupNo = groupNo;
-		this.groupName = groupName;
-		this.unitDatas = unitDatas;
-	}
-
-	public int getGroupNo() {
-		return groupNo;
-	}
-
-	public void setGroupNo(int groupNo) {
-		this.groupNo = groupNo;
-	}
-
-	public String getGroupName() {
-		return groupName;
-	}
-
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	public List<UnitData> getUnitDatas() {
-		return unitDatas;
-	}
-
-	public void setUnitDatas(List<UnitData> unitDatas) {
-		this.unitDatas = unitDatas;
+public abstract class XmlAttributeUtil {
+	public static String getAttribute(String name, Object value) {
+		return null != value ? " " + name + "=\"" + value + "\"" : "";
 	}
 }

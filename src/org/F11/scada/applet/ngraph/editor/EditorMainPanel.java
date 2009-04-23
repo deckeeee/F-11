@@ -30,6 +30,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.StringReader;
+import java.rmi.Naming;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -48,30 +50,44 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
+import org.F11.scada.WifeUtilities;
+import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.editor.component.Button;
 import org.F11.scada.applet.ngraph.editor.component.Colleague;
-import org.F11.scada.applet.ngraph.editor.component.GroupTableModel;
 import org.F11.scada.applet.ngraph.editor.component.Label;
 import org.F11.scada.applet.ngraph.editor.component.Mediator;
+import org.F11.scada.applet.ngraph.editor.component.SeriesPropertyTableModel;
+import org.F11.scada.applet.ngraph.editor.component.SeriesTableModel;
 import org.F11.scada.applet.ngraph.editor.component.SpanDialog;
-import org.F11.scada.applet.ngraph.editor.component.UnitTableModel;
 import org.F11.scada.applet.ngraph.editor.service.UnitSearchService;
 import org.F11.scada.applet.ngraph.editor.service.UnitSearchServiceImpl;
+import org.F11.scada.data.DataAccessable;
+import org.F11.scada.server.invoke.TrendFileService;
 import org.F11.scada.util.ComponentUtil;
 import org.F11.scada.util.TableUtil;
+import org.apache.commons.digester.Digester;
 import org.apache.log4j.Logger;
 
+/**
+ * グラフ操作ダイアログ
+ * 
+ * @author maekawa
+ *
+ */
 public class EditorMainPanel extends JDialog implements Mediator {
+	private static final long serialVersionUID = -1995919687610018906L;
 	private final Logger logger = Logger.getLogger(EditorMainPanel.class);
 	private static final int INPUT_HISTORY_MAX = 10;
-	private GroupTableModel groupTableModel;
+	private DataAccessable accessable;
+	private final GraphProperties graphProperties;
+	private SeriesTableModel groupTableModel;
 	private JTable groupTable;
 	private Label groupNoLabel;
 	private Label groupLabel;
-	private UnitTableModel unitTableModel;
+	private SeriesPropertyTableModel unitTableModel;
 	private JTable unitTable;
 	private final UnitSearchService searchService;
-	private final UnitTableModel searchTableModel;
+	private final SeriesPropertyTableModel searchTableModel;
 	private JTable searchTable;
 	private Button groupCreateButton = new Button("新規作成", this);
 	private Button groupRenameButton = new Button("名称変更", this);
@@ -86,15 +102,44 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	private JComboBox searchUnit = new JComboBox();
 	private JComboBox searchMark = new JComboBox();
 	private JComboBox searchName = new JComboBox();
+	private final PageData page;
 
-	public EditorMainPanel(Frame frame) {
+	public EditorMainPanel(Frame frame, GraphProperties graphProperties) {
 		super(frame, "トレンドグラフ操作", true);
-		searchTableModel = new UnitTableModel();
+		this.graphProperties = graphProperties;
+		String collectorServer = WifeUtilities.createRmiManagerDelegator();
+		logger.debug("collectorServer : " + collectorServer);
+		try {
+			accessable = (DataAccessable) Naming.lookup(collectorServer);
+		} catch (Exception e) {
+			logger.error("サーバー接続エラー", e);
+		}
+		searchTableModel = new SeriesPropertyTableModel();
 		searchService = new UnitSearchServiceImpl();
+		page = getPageData();
 		add(getTabPane(), BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		init();
 		setSize(1030, 850);
+		ComponentUtil.setCenter(Frame.class, this);
+	}
+
+	private PageData getPageData() {
+		PageData page = new PageData();
+		Digester digester = new Digester();
+		digester.addRuleSet(new TrendRuleSet());
+		digester.push(page);
+		try {
+			String xml =
+				(String) accessable.invoke("TrendFileService", new Object[] {
+					TrendFileService.READ_OP,
+					graphProperties.getPagefile() });
+			digester.parse(new StringReader(xml));
+		} catch (Exception e) {
+			logger.error("ファイルが無いか、サーバー接続エラーです。 : "
+				+ graphProperties.getPagefile(), e);
+		}
+		return page;
 	}
 
 	private void init() {
@@ -146,6 +191,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			public void actionPerformed(ActionEvent e) {
 				Button b = (Button) e.getSource();
 				b.performMediator();
+				System.out.println(page.getXmlString());
 			}
 		});
 	}
@@ -172,12 +218,12 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				String groupName =
 					JOptionPane.showInputDialog("グループ名を入力してください");
 				if (null != groupName && !"".equals(groupName)) {
-					GroupData gd =
-						new GroupData(
-							groupTableModel.getRowCount(),
+					SeriesData sd =
+						new SeriesData(
+							groupTableModel.getRowCount() + 1,
 							groupName,
-							new ArrayList<UnitData>());
-					groupTableModel.insertRow(gd);
+							new ArrayList<SeriesPropertyData>());
+					groupTableModel.insertRow(sd);
 				}
 			}
 		});
@@ -189,12 +235,12 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			public void actionPerformed(ActionEvent e) {
 				int row = groupTable.getSelectedRow();
 				if (0 <= row) {
-					GroupData gd = groupTableModel.getGroupData(row);
+					SeriesData sd = groupTableModel.getGroupData(row);
 					String groupName =
-						JOptionPane.showInputDialog("グループ名を入力してください", gd
+						JOptionPane.showInputDialog("グループ名を入力してください", sd
 							.getGroupName());
 					if (null != groupName) {
-						gd.setGroupName(groupName);
+						sd.setGroupName(groupName);
 						groupTableModel.updateRow(row);
 						groupLabel.setText(groupName);
 					}
@@ -241,11 +287,11 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = unitTable.getSelectedRow();
 				if (0 <= selectedRow) {
-					UnitData ud =
+					SeriesPropertyData spd =
 						unitTableModel.getRow(unitTable.getSelectedRow());
 					new SpanDialog(ComponentUtil.getAncestorOfClass(
 						JDialog.class,
-						unitSpanButton), ud).setVisible(true);
+						unitSpanButton), spd).setVisible(true);
 					unitTableModel.fireTableRowsUpdated(
 						selectedRow,
 						selectedRow);
@@ -294,7 +340,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	}
 
 	private Component getTable() {
-		groupTableModel = new GroupTableModel();
+		groupTableModel = new SeriesTableModel(page.getTrend3Data());
 		groupTable = new JTable(groupTableModel);
 		groupTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		TableUtil.setColumnWidth(groupTable, 0, 50);
@@ -357,7 +403,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	}
 
 	private Component getCenterNorthCenter() {
-		unitTableModel = new UnitTableModel();
+		unitTableModel = new SeriesPropertyTableModel();
 		addListeners(unitTableModel);
 		unitTable = new JTable(unitTableModel);
 		unitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -372,7 +418,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		return new JScrollPane(unitTable);
 	}
 
-	private void addListeners(UnitTableModel model) {
+	private void addListeners(SeriesPropertyTableModel model) {
 		groupTable.addMouseListener(model);
 		groupTable.addKeyListener(model);
 		groupTable.addMouseListener(groupNoLabel);
@@ -426,17 +472,18 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		box.add(searchButton);
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UnitData ud = new UnitData();
+				SeriesPropertyData ud = new SeriesPropertyData();
 				String searchUnitItem =
 					(String) searchUnit.getEditor().getItem();
-				ud.setUnitNo(searchUnitItem);
+				ud.setUnit(searchUnitItem);
 				String searchUnitNameItem =
 					(String) searchName.getEditor().getItem();
-				ud.setUnitName(searchUnitNameItem);
+				ud.setName(searchUnitNameItem);
 				String searchUnitMarkItem =
 					(String) searchMark.getEditor().getItem();
-				ud.setUnitMark(searchUnitMarkItem);
-				searchTableModel.setValueAt(searchService.getUnitDataList(ud));
+				ud.setMark(searchUnitMarkItem);
+				searchTableModel.setValueAt(searchService
+					.getSeriesPropertyDataList(ud));
 				addItem(searchUnit, searchUnitItem);
 				addItem(searchName, searchUnitNameItem);
 				addItem(searchMark, searchUnitMarkItem);
@@ -490,7 +537,8 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = searchTable.getSelectedRow();
 				if (0 <= selectedRow) {
-					UnitData data = searchTableModel.getRow(selectedRow);
+					SeriesPropertyData data =
+						searchTableModel.getRow(selectedRow);
 					unitTableModel.insertRow(data);
 				}
 			}
@@ -579,7 +627,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		JButton b = new JButton("トレンドグラフ操作");
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new EditorMainPanel(f).setVisible(true);
+				GraphProperties p = new GraphProperties();
+				p.setPagefile("trend4.xml");
+				new EditorMainPanel(f, p).setVisible(true);
 			}
 		});
 		f.add(b);

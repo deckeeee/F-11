@@ -37,6 +37,8 @@ import org.F11.scada.applet.ngraph.SeriesGroup;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.parser.PageState;
 import org.F11.scada.parser.State;
+import org.F11.scada.util.AttributesUtil;
+import org.F11.scada.util.FontUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -82,6 +84,8 @@ public class TrendGraph3State implements State {
 	private Color verticalScaleColor;
 	/** シリーズグループのリスト */
 	List<SeriesGroup> seriesGroups;
+	/** ページファイル名 */
+	private String pagefile;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -111,8 +115,8 @@ public class TrendGraph3State implements State {
 		verticalCount = Integer.parseInt(getValue(atts, "verticalCount", "10"));
 		scalePixcelSize =
 			Integer.parseInt(getValue(atts, "scalePixcelSize", "5"));
-		insets = getInsets(atts);
-		font = getFont(atts);
+		insets = AttributesUtil.getInsets(atts.getValue("insets"));
+		font = FontUtil.getFont(atts.getValue("font"));
 
 		lineColor = ColorFactory.getColor(getValue(atts, "lineColor", "white"));
 		backGround =
@@ -122,49 +126,12 @@ public class TrendGraph3State implements State {
 				atts,
 				"verticalScaleColor",
 				"cornflowerblue"));
+		pagefile = atts.getValue("pagefile");
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
 		String value = atts.getValue(name);
 		return value != null ? value : def;
-	}
-
-	private Insets getInsets(Attributes atts) {
-		String is = atts.getValue("insets");
-		if (is != null) {
-			String[] s = is.split(",");
-			return new Insets(
-				getNumber(s[0].trim()),
-				getNumber(s[1].trim()),
-				getNumber(s[2].trim()),
-				getNumber(s[3].trim()));
-		} else {
-			return new Insets(50, 80, 60, 50);
-		}
-	}
-
-	private int getNumber(String string) {
-		return Integer.parseInt(string);
-	}
-
-	private Font getFont(Attributes atts) {
-		String fontStr = atts.getValue("font");
-		if (fontStr != null) {
-			String[] s = fontStr.split("-");
-			return new Font(s[0], getFontStyle(s[1]), getNumber(s[2]));
-		} else {
-			return new Font("Monospaced", Font.PLAIN, 18);
-		}
-	}
-
-	private int getFontStyle(String s) {
-		if ("PLAIN".equalsIgnoreCase(s)) {
-			return Font.PLAIN;
-		} else if ("BOLD".equalsIgnoreCase(s)) {
-			return Font.BOLD;
-		} else {
-			return Font.ITALIC;
-		}
 	}
 
 	/*
@@ -190,6 +157,7 @@ public class TrendGraph3State implements State {
 				mainPanel.setSize(getNumber(width), getNumber(height));
 			}
 			pageState.addPageSymbol(mainPanel);
+			pageState.setToolBar(mainPanel.getToolBar());
 			stack.pop();
 		}
 	}
@@ -210,6 +178,12 @@ public class TrendGraph3State implements State {
 		p.setLineColor(lineColor);
 		p.setBackGround(backGround);
 		p.setVerticalScaleColor(verticalScaleColor);
+		p.setPagefile(pagefile);
 		return p;
 	}
+
+	private int getNumber(String string) {
+		return Integer.parseInt(string);
+	}
+
 }

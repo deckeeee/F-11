@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph.editor.component;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -33,28 +32,35 @@ import java.util.Map;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import org.F11.scada.applet.ngraph.editor.UnitData;
+import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 
-public class UnitTableModel extends AbstractTableModel implements
+/**
+ * エディタのシリーズプロパティのテーブルモデル
+ * 
+ * @author maekawa
+ *
+ */
+public class SeriesPropertyTableModel extends AbstractTableModel implements
 		MouseListener, KeyListener {
+	private static final long serialVersionUID = -5850823694570225954L;
 	private static final String[] titles =
 		{ "", "最小値", "最大値", "記号", "機器名称", "単位" };
-	private List<UnitData> unitDatas;
-	private List<UnitData> backupUnitDatas;
-	private Map<Integer, Color> colorMap;
+	private List<SeriesPropertyData> seriesPropertyDatas;
+	private List<SeriesPropertyData> backupSeriesPropertyDatas;
+	private Map<Integer, String> colorMap;
 
-	public UnitTableModel() {
+	public SeriesPropertyTableModel() {
 		colorMap = getColorMap();
 	}
 
-	private Map<Integer, Color> getColorMap() {
-		HashMap<Integer, Color> map = new HashMap<Integer, Color>();
-		map.put(0, Color.yellow);
-		map.put(1, Color.magenta);
-		map.put(2, Color.cyan);
-		map.put(3, Color.red);
-		map.put(4, Color.green);
-		map.put(5, Color.white);
+	private Map<Integer, String> getColorMap() {
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
+		map.put(0, "yellow");
+		map.put(1, "magenta");
+		map.put(2, "cyan");
+		map.put(3, "red");
+		map.put(4, "lime");
+		map.put(5, "white");
 		return map;
 	}
 
@@ -63,24 +69,24 @@ public class UnitTableModel extends AbstractTableModel implements
 	}
 
 	public int getRowCount() {
-		return null != unitDatas ? unitDatas.size() : 0;
+		return null != seriesPropertyDatas ? seriesPropertyDatas.size() : 0;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (null != unitDatas) {
+		if (null != seriesPropertyDatas) {
 			switch (columnIndex) {
 			case 0:
-				return unitDatas.get(rowIndex).getUnitColor();
+				return seriesPropertyDatas.get(rowIndex).getColorObject();
 			case 1:
-				return unitDatas.get(rowIndex).getMin();
+				return seriesPropertyDatas.get(rowIndex).getMin();
 			case 2:
-				return unitDatas.get(rowIndex).getMax();
+				return seriesPropertyDatas.get(rowIndex).getMax();
 			case 3:
-				return unitDatas.get(rowIndex).getUnitNo();
+				return seriesPropertyDatas.get(rowIndex).getUnit();
 			case 4:
-				return unitDatas.get(rowIndex).getUnitName();
+				return seriesPropertyDatas.get(rowIndex).getName();
 			case 5:
-				return unitDatas.get(rowIndex).getUnitMark();
+				return seriesPropertyDatas.get(rowIndex).getMark();
 			default:
 				throw new IllegalStateException();
 			}
@@ -94,8 +100,8 @@ public class UnitTableModel extends AbstractTableModel implements
 		return titles[column];
 	}
 
-	public void setValueAt(List<UnitData> unitDatas) {
-		this.unitDatas = unitDatas;
+	public void setValueAt(List<SeriesPropertyData> seriesPropertyDatas) {
+		this.seriesPropertyDatas = seriesPropertyDatas;
 		fireTableDataChanged();
 	}
 
@@ -138,68 +144,70 @@ public class UnitTableModel extends AbstractTableModel implements
 	}
 
 	private void fireRowChanged(JTable table, int row) {
-		GroupTableModel model = (GroupTableModel) table.getModel();
-		unitDatas = model.getUnitDatas(row);
+		SeriesTableModel model = (SeriesTableModel) table.getModel();
+		seriesPropertyDatas = model.getUnitDatas(row);
 		fireTableDataChanged();
 	}
 
 	public void removeRow(int row) {
-		if (null == backupUnitDatas) {
-			backupUnitDatas = new ArrayList<UnitData>(unitDatas.size());
-			for (UnitData ud : unitDatas) {
-				backupUnitDatas.add(new UnitData(ud));
+		if (null == backupSeriesPropertyDatas) {
+			backupSeriesPropertyDatas =
+				new ArrayList<SeriesPropertyData>(seriesPropertyDatas.size());
+			for (SeriesPropertyData ud : seriesPropertyDatas) {
+				backupSeriesPropertyDatas.add(new SeriesPropertyData(ud));
 			}
 		}
-		unitDatas.remove(row);
+		seriesPropertyDatas.remove(row);
 		resetColor();
 		fireTableRowsDeleted(row, row);
 	}
 
 	private void resetColor() {
 		int i = 0;
-		for (UnitData ud : unitDatas) {
-			ud.setUnitColor(colorMap.get(i++));
+		for (SeriesPropertyData spd : seriesPropertyDatas) {
+			spd.setColor(colorMap.get(i++));
 		}
 	}
 
 	public void undo() {
-		if (null != backupUnitDatas) {
-			unitDatas.clear();
-			unitDatas.addAll(backupUnitDatas);
+		if (null != backupSeriesPropertyDatas) {
+			seriesPropertyDatas.clear();
+			seriesPropertyDatas.addAll(backupSeriesPropertyDatas);
 			fireTableDataChanged();
-			backupUnitDatas = null;
+			backupSeriesPropertyDatas = null;
 		}
 	}
 
-	public UnitData getRow(int row) {
-		return unitDatas.get(row);
+	public SeriesPropertyData getRow(int row) {
+		return seriesPropertyDatas.get(row);
 	}
 
-	public void insertRow(UnitData unitData) {
-		setColor(unitData);
-		unitDatas.add(unitData);
-		fireTableRowsInserted(unitDatas.size(), unitDatas.size());
+	public void insertRow(SeriesPropertyData seriesPropertyData) {
+		setColor(seriesPropertyData);
+		seriesPropertyDatas.add(seriesPropertyData);
+		fireTableRowsInserted(seriesPropertyDatas.size(), seriesPropertyDatas
+			.size());
 	}
 
-	private void setColor(UnitData unitData) {
-		switch (unitDatas.size() % 6) {
+	private void setColor(SeriesPropertyData seriesPropertyData) {
+		switch (seriesPropertyDatas.size() % 6) {
 		case 0:
-			unitData.setUnitColor(Color.yellow);
+			seriesPropertyData.setColor("yellow");
 			break;
 		case 1:
-			unitData.setUnitColor(Color.magenta);
+			seriesPropertyData.setColor("magenta");
 			break;
 		case 2:
-			unitData.setUnitColor(Color.cyan);
+			seriesPropertyData.setColor("cyan");
 			break;
 		case 3:
-			unitData.setUnitColor(Color.red);
+			seriesPropertyData.setColor("red");
 			break;
 		case 4:
-			unitData.setUnitColor(Color.green);
+			seriesPropertyData.setColor("lime");
 			break;
 		case 5:
-			unitData.setUnitColor(Color.white);
+			seriesPropertyData.setColor("white");
 			break;
 
 		default:
@@ -208,8 +216,8 @@ public class UnitTableModel extends AbstractTableModel implements
 	}
 
 	public void commit() {
-		if (null != backupUnitDatas) {
-			backupUnitDatas = null;
+		if (null != backupSeriesPropertyDatas) {
+			backupSeriesPropertyDatas = null;
 		}
 	}
 }

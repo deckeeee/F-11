@@ -39,7 +39,7 @@ public class SeriesState implements State {
 	public SeriesState(String tagName, Attributes atts, TrendGraph3State state) {
 		this.state = state;
 		seriesProperties = new ArrayList<SeriesProperties>();
-		groupName = atts.getValue("groupname");
+		groupName = atts.getValue("groupName");
 	}
 
 	public void add(String tagName, Attributes atts, Stack stack) {

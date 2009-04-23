@@ -23,35 +23,35 @@ package org.F11.scada.server.invoke;
 
 import java.util.List;
 
-import org.F11.scada.applet.ngraph.editor.UnitData;
+import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 import org.F11.scada.server.dao.PointTableDao;
 import org.F11.scada.server.dao.PointTableDto;
 import org.F11.scada.server.io.postgresql.S2ContainerUtil;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
-public class UnitSerachServiceImpl implements InvokeHandler {
-	private Logger logger = Logger.getLogger(UnitSerachServiceImpl.class);
+public class UnitSerachService implements InvokeHandler {
+	private Logger logger = Logger.getLogger(UnitSerachService.class);
 	private final PointTableDao dao;
 
-	public UnitSerachServiceImpl() {
+	public UnitSerachService() {
 		S2Container container = S2ContainerUtil.getS2Container();
 		this.dao = (PointTableDao) container.getComponent(PointTableDao.class);
 	}
 
 	public Object invoke(Object[] args) {
-		UnitData unit = (UnitData) args[0];
+		SeriesPropertyData unit = (SeriesPropertyData) args[0];
 		PointTableDto dto = getPointTableDto(unit);
 		List<PointTableDto> pointTable = dao.getPointTable(dto);
-		logger.info(pointTable);
+//		logger.info(pointTable);
 		return pointTable;
 	}
 
-	private PointTableDto getPointTableDto(UnitData unit) {
+	private PointTableDto getPointTableDto(SeriesPropertyData unit) {
 		PointTableDto dto = new PointTableDto();
-		dto.setUnit(getConstraction(unit.getUnitNo()));
-		dto.setName(getConstraction(unit.getUnitName()));
-		dto.setUnitMark(getConstraction(unit.getUnitMark()));
+		dto.setUnit(getConstraction(unit.getUnit()));
+		dto.setName(getConstraction(unit.getName()));
+		dto.setUnitMark(getConstraction(unit.getMark()));
 		return dto;
 	}
 

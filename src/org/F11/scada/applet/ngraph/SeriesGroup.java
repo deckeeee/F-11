@@ -22,6 +22,12 @@ package org.F11.scada.applet.ngraph;
 
 import java.util.List;
 
+/**
+ * シリーズのグループデータ
+ * 
+ * @author maekawa
+ *
+ */
 public class SeriesGroup {
 	private final String groupName;
 	private final List<SeriesProperties> seriesProperties;

@@ -28,6 +28,12 @@ import java.util.Date;
 import org.apache.commons.collections.primitives.DoubleCollections;
 import org.apache.commons.collections.primitives.DoubleList;
 
+/**
+ * 表示しているデータ
+ * 
+ * @author maekawa
+ *
+ */
 public class LogData implements Serializable {
 	private static final long serialVersionUID = 1621006178387927799L;
 	public static final LogData ZERO =

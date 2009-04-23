@@ -33,8 +33,15 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
 
+/**
+ * シリーズのテーブルモデル
+ * 
+ * @author maekawa
+ * 
+ */
 public class SeriesTableModel extends AbstractTableModel implements
 		PropertyChangeListener {
+	private static final long serialVersionUID = -3612081678949839803L;
 	private final Logger logger = Logger.getLogger(SeriesTableModel.class);
 	/** 表示の有無を表示している列 */
 	public static final int VISIBLE_COLUMN = 0;

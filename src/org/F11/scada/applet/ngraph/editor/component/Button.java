@@ -22,7 +22,14 @@ package org.F11.scada.applet.ngraph.editor.component;
 
 import javax.swing.JButton;
 
+/**
+ * エディタのボタンクラス
+ * 
+ * @author maekawa
+ *
+ */
 public class Button extends JButton implements Colleague {
+	private static final long serialVersionUID = -4364965574419133854L;
 	private final Mediator mediator;
 
 	public Button(String text, Mediator mediator) {

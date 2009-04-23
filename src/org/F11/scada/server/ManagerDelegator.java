@@ -73,7 +73,8 @@ import org.F11.scada.server.invoke.GetCheckEventJournal;
 import org.F11.scada.server.invoke.HistoryAllCheck;
 import org.F11.scada.server.invoke.InvokeHandler;
 import org.F11.scada.server.invoke.SetNoncheckTable;
-import org.F11.scada.server.invoke.UnitSerachServiceImpl;
+import org.F11.scada.server.invoke.TrendFileService;
+import org.F11.scada.server.invoke.UnitSerachService;
 import org.F11.scada.server.io.postgresql.PostgreSQLAlarmDataStore;
 import org.F11.scada.server.operationlog.OperationLoggingService;
 import org.F11.scada.server.register.HolderString;
@@ -137,7 +138,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		map.put("GetCheckEventJournal", new GetCheckEventJournal());
 		map.put("AddCheckJournal", new AddCheckJournal());
 		map.put("HistoryAllCheck", new HistoryAllCheck());
-		map.put("UnitSearchService", new UnitSerachServiceImpl());
+		map.put("UnitSearchService", new UnitSerachService());
+		map.put("TrendFileService", new TrendFileService());
 		return map;
 	}
 
@@ -510,7 +512,9 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.data.DataAccessable#getCreateHolderDatas(org.F11.scada.server.register.HolderString[])
+	 * @see
+	 * org.F11.scada.data.DataAccessable#getCreateHolderDatas(org.F11.scada.
+	 * server.register.HolderString[])
 	 */
 	public List getCreateHolderDatas(Collection holderStrings)
 			throws RemoteException {
