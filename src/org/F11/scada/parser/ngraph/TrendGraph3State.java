@@ -33,6 +33,7 @@ import java.util.Stack;
 
 import org.F11.scada.applet.ngraph.GraphMainPanel;
 import org.F11.scada.applet.ngraph.GraphProperties;
+import org.F11.scada.applet.ngraph.HorizontalScaleButtonProperty;
 import org.F11.scada.applet.ngraph.SeriesGroup;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.parser.PageState;
@@ -86,6 +87,10 @@ public class TrendGraph3State implements State {
 	List<SeriesGroup> seriesGroups;
 	/** ページファイル名 */
 	private String pagefile;
+	/** 横スケールボタンプロパティーのリスト */
+	List<HorizontalScaleButtonProperty> scaleButtonProperties;
+	/** トレンドグラフ最大表示レコード */
+	private int maxRecord;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -127,6 +132,7 @@ public class TrendGraph3State implements State {
 				"verticalScaleColor",
 				"cornflowerblue"));
 		pagefile = atts.getValue("pagefile");
+		maxRecord = Integer.parseInt(getValue(atts, "maxRecord", "5000"));
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
@@ -140,6 +146,8 @@ public class TrendGraph3State implements State {
 	public void add(String tagName, Attributes atts, Stack stack) {
 		if (tagName.equals("series")) {
 			stack.push(new SeriesState(tagName, atts, this));
+		} else if (tagName.equals("horizontalScaleButton")) {
+			stack.push(new HorizontalScaleButtonState(tagName, atts, this));
 		} else {
 			logger.debug("tagName : " + tagName);
 		}
@@ -149,6 +157,7 @@ public class TrendGraph3State implements State {
 		if (tagName.equals("trendgraph3")) {
 			GraphProperties p = getGraphProperties();
 			p.setSeriesGroup(seriesGroups);
+			p.setHorizontalScaleButtonProperty(scaleButtonProperties);
 			GraphMainPanel mainPanel = new GraphMainPanel(p);
 			if (x != null && y != null) {
 				mainPanel.setLocation(getNumber(x), getNumber(y));
@@ -179,6 +188,7 @@ public class TrendGraph3State implements State {
 		p.setBackGround(backGround);
 		p.setVerticalScaleColor(verticalScaleColor);
 		p.setPagefile(pagefile);
+		p.setMaxRecord(maxRecord);
 		return p;
 	}
 

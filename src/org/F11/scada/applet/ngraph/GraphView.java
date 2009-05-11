@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -57,6 +56,7 @@ import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 import org.F11.scada.applet.ngraph.model.GraphModel;
 import org.F11.scada.applet.ngraph.util.MapUtil;
 import org.apache.commons.collections.primitives.DoubleCollections;
+import org.apache.log4j.Logger;
 
 /**
  * 折れ線グラフを表示するコンポーネント
@@ -203,7 +203,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 				displayDatas,
 				isAllSpanDisplayMode);
 		} catch (Exception e) {
-			logger.info("scrollBarIndex=" + scrollBarIndex);
+			logger.info("scrollBarIndex=" + scrollBarIndex, e);
 		}
 	}
 

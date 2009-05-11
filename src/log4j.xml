@@ -20,7 +20,7 @@
 <!--
 	<category name="org.apache.commons.digester">
 		<level value="debug" />
-		<appender-ref ref="STDOUT1" />
+		<appender-ref ref="STDOUT" />
 	</category>
 	<category name="org.seasar">
 		<level value="debug" />

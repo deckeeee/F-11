@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph.model;
 
-
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,8 +31,8 @@ import java.util.SortedMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
 
 import org.F11.scada.applet.graph.DefaultSelectiveValueListHandlerFactory;
 import org.F11.scada.applet.graph.SelectiveValueListHandlerFactory;
@@ -44,10 +43,10 @@ import org.F11.scada.applet.ngraph.SeriesProperties;
 import org.F11.scada.server.io.SelectiveValueListHandler;
 import org.F11.scada.server.register.HolderString;
 import org.apache.commons.collections.primitives.DoubleList;
+import org.apache.log4j.Logger;
 
 public class DefaultGraphModel extends AbstractGraphModel {
-	private final static int MAX_RECORD = 6000;
-	private final Logger logger = Logger.getLogger(DefaultGraphModel.class.getName());
+	private final Logger logger = Logger.getLogger(DefaultGraphModel.class);
 	/** データハンドラマネージャーです。 */
 	private SelectiveValueListHandler valueListHandler;
 	/** データ更新スケジュール */
@@ -59,10 +58,6 @@ public class DefaultGraphModel extends AbstractGraphModel {
 		SelectiveValueListHandlerFactory factory =
 			new DefaultSelectiveValueListHandlerFactory();
 		valueListHandler = factory.getSelectiveValueListHandler();
-	}
-
-	public int getMaxRecord() {
-		return MAX_RECORD;
 	}
 
 	public void initialize() {
@@ -96,7 +91,7 @@ public class DefaultGraphModel extends AbstractGraphModel {
 					getHolderStrings());
 			list = convertLogDataList(map);
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			serverError(e);
 		}
 		return list;
 	}
@@ -117,6 +112,27 @@ public class DefaultGraphModel extends AbstractGraphModel {
 			list.add(new LogData(entry.getKey(), entry.getValue()));
 		}
 		return list;
+	}
+
+	private void serverError(RemoteException e) {
+		String errorMessage = "データ取り込みにてサーバーでエラーが発生しました。\n";
+		logger.error(errorMessage, e);
+		JOptionPane.showMessageDialog(
+			null,
+			errorMessage + printStackTrace(e.getStackTrace()),
+			"サーバーエラー",
+			JOptionPane.ERROR_MESSAGE);
+	}
+
+	private String printStackTrace(StackTraceElement[] stackTrace) {
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < stackTrace.length; i++) {
+			if (0 != i) {
+				b.append("\t");
+			}
+			b.append(stackTrace[i]).append("\n");
+		}
+		return b.toString();
 	}
 
 	public boolean reachedMaximum() {
@@ -150,7 +166,7 @@ public class DefaultGraphModel extends AbstractGraphModel {
 				performPropertyChange(map);
 				setCurrentTimestamp(map);
 			} catch (RemoteException e) {
-				e.printStackTrace();
+				serverError(e);
 			}
 		}
 

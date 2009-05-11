@@ -18,32 +18,44 @@
  * 
  */
 
-package org.F11.scada.server.dao;
+package org.F11.scada.server.logging;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.seasar.dao.unit.S2DaoTestCase;
+public class Task {
+	private String name;
+	private String tables;
+	private List<Column> columns;
 
-public class PointTableDaoTest extends S2DaoTestCase {
-	PointTableDao dao;
-
-	protected void setUp() throws Exception {
-		include("PointTableDao.dicon");
+	public String getName() {
+		return name;
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void testGetPointTable() throws Exception {
-		PointTableDto dto = new PointTableDto();
-		dto.setUnit("%AHU%");
-		dto.setName("%1F%");
-		ArrayList<String> l = new ArrayList<String>();
-		l.add("D_2200_BcdSingle");
-		l.add("D_2201_BcdSingle");
-		List<PointTableDto> dtos = dao.getPointTable(dto, l);
-		System.out.println(dtos);
+	public String getTables() {
+		return tables;
+	}
+
+	public void setTables(String tables) {
+		this.tables = tables;
+	}
+
+	public List<Column> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<Column> columns) {
+		this.columns = columns;
+	}
+
+	public void addColumn(Column column) {
+		if (null == columns) {
+			columns = new ArrayList<Column>();
+		}
+		columns.add(column);
 	}
 }

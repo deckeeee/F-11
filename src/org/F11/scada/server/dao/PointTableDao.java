@@ -25,5 +25,6 @@ import java.util.List;
 public interface PointTableDao {
 	public static final Class BEAN = PointTableDto.class;
 	
-	List<PointTableDto> getPointTable(PointTableDto dto);
+	public String getPointTable_ARGS = "dto, holders";
+	List<PointTableDto> getPointTable(PointTableDto dto, List<String> holders);
 }

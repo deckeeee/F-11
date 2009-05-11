@@ -26,11 +26,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.F11.scada.applet.ngraph.HorizontalScaleButtonProperty;
+
 /**
  * ページ定義のトレンドグラフプロパティー
  * 
  * @author maekawa
- *
+ * 
  */
 public class Trend3Data implements Serializable {
 	private static final long serialVersionUID = -7411129957549137491L;
@@ -54,6 +56,10 @@ public class Trend3Data implements Serializable {
 	private String verticalScaleColor;
 	private String pagefile;
 	private List<SeriesData> seriesDatas;
+	private String seriesColors;
+	/** 横スケール変更ボタンのプロパティー */
+	private List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties;
+	private Integer maxRecord;
 
 	public Integer getX() {
 		return x;
@@ -223,6 +229,40 @@ public class Trend3Data implements Serializable {
 		this.seriesDatas.add(seriesData);
 	}
 
+	public String getSeriesColors() {
+		return seriesColors;
+	}
+
+	public void setSeriesColors(String seriesColors) {
+		this.seriesColors = seriesColors;
+	}
+
+	public List<HorizontalScaleButtonProperty> getHorizontalScaleButtonProperty() {
+		return horizontalScaleButtonProperties;
+	}
+
+	public void setHorizontalScaleButtonProperty(
+			List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties) {
+		this.horizontalScaleButtonProperties = horizontalScaleButtonProperties;
+	}
+
+	public void addHorizontalScaleButtonProperty(
+			HorizontalScaleButtonProperty property) {
+		if (null == horizontalScaleButtonProperties) {
+			horizontalScaleButtonProperties =
+				new ArrayList<HorizontalScaleButtonProperty>();
+		}
+		horizontalScaleButtonProperties.add(property);
+	}
+
+	public Integer getMaxRecord() {
+		return maxRecord;
+	}
+
+	public void setMaxRecord(Integer maxRecord) {
+		this.maxRecord = maxRecord;
+	}
+
 	public String getXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("    <trendgraph3");
@@ -248,7 +288,14 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute("lineColor", lineColor));
 		sb.append(getAttribute("backGround", backGround));
 		sb.append(getAttribute("verticalScaleColor", verticalScaleColor));
-		sb.append(getAttribute("pagefile", pagefile)).append(">\n");
+		sb.append(getAttribute("pagefile", pagefile));
+		sb.append(getAttribute("seriesColors", seriesColors));
+		sb.append(getAttribute("maxRecord", maxRecord)).append(">\n");
+		sb.append("      <horizontalScaleButton>\n");
+		for (HorizontalScaleButtonProperty hp : horizontalScaleButtonProperties) {
+			sb.append(hp.getXmlString());
+		}
+		sb.append("      </horizontalScaleButton>\n");
 		for (SeriesData sd : seriesDatas) {
 			sb.append(sd.getXmlString());
 		}

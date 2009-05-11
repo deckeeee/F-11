@@ -24,6 +24,7 @@ import static org.F11.scada.applet.ngraph.model.GraphModel.GROUP_CHANGE;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -151,7 +152,8 @@ public class SeriesTableModel extends AbstractTableModel implements
 	}
 
 	private String format(String format, Float value) {
-		return value == null ? null : String.format(format, value);
+		DecimalFormat f = new DecimalFormat(format);
+		return value == null ? null : f.format(value);
 	}
 
 	@Override

@@ -39,10 +39,12 @@ public abstract class AbstractGraphModel implements GraphModel {
 	protected final PropertyChangeSupport changeSupport;
 	protected final GraphProperties graphProperties;
 	private String logName = "";
+	private int maxRecord;
 
 	public AbstractGraphModel(GraphProperties graphProperties) {
 		this.graphProperties = graphProperties;
 		changeSupport = new PropertyChangeSupport(this);
+		maxRecord = graphProperties.getMaxRecord();
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -85,4 +87,9 @@ public abstract class AbstractGraphModel implements GraphModel {
 		this.logName = logName;
 		initialize();
 	}
+
+	public int getMaxRecord() {
+		return maxRecord;
+	}
+
 }

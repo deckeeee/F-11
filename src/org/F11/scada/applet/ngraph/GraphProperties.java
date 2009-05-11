@@ -77,7 +77,10 @@ public class GraphProperties {
 	private int groupNo;
 	/** ページ定義ファイル名 */
 	private String pagefile;
-
+	/** 横スケール変更ボタンのプロパティー */
+	private List<HorizontalScaleButtonProperty> horizontalScaleButtonProperty;
+	/** トレンドグラフ最大表示レコード */
+	private int maxRecord;
 
 	public GraphProperties() {
 		changeSupport = new PropertyChangeSupport(this);
@@ -439,4 +442,22 @@ public class GraphProperties {
 	public int getHorizontalForSelectSpanMode() {
 		return horizontalForSelectSpanMode;
 	}
+
+	public List<HorizontalScaleButtonProperty> getHorizontalScaleButtonProperty() {
+		return horizontalScaleButtonProperty;
+	}
+
+	public void setHorizontalScaleButtonProperty(
+			List<HorizontalScaleButtonProperty> horizontalScaleButtonProperty) {
+		this.horizontalScaleButtonProperty = horizontalScaleButtonProperty;
+	}
+
+	public int getMaxRecord() {
+		return maxRecord;
+	}
+
+	public void setMaxRecord(int maxRecord) {
+		this.maxRecord = maxRecord;
+	}
+	
 }

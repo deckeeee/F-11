@@ -27,6 +27,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.F11.scada.applet.ngraph.HorizontalScaleButtonProperty;
 import org.apache.commons.digester.Digester;
 import org.xml.sax.SAXException;
 
@@ -50,7 +51,8 @@ public class TrendRuleSetTest extends TestCase {
 			new BufferedReader(
 				new InputStreamReader(
 					TrendRuleSetTest.class
-						.getResourceAsStream("/org/F11/scada/applet/ngraph/editor/trend4.xml"), "UTF-8"));
+						.getResourceAsStream("/org/F11/scada/applet/ngraph/editor/trend4.xml"),
+					"UTF-8"));
 		try {
 			digester.parse(xml);
 		} catch (IOException e) {
@@ -58,12 +60,12 @@ public class TrendRuleSetTest extends TestCase {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertEquals(new Integer(1028), page.getWidth());
 		assertEquals(new Integer(800), page.getHeight());
 		assertEquals("TRND0004", page.getName());
 		assertEquals("/images/base/back.png", page.getValue());
-		
+
 		Trend3Data td3 = page.getTrend3Data();
 		assertEquals(new Integer(0), td3.getX());
 		assertEquals(new Integer(0), td3.getY());
@@ -84,21 +86,24 @@ public class TrendRuleSetTest extends TestCase {
 		assertEquals("gray", td3.getBackGround());
 		assertEquals("white", td3.getVerticalScaleColor());
 		assertEquals("trend1.xml", td3.getPagefile());
+		assertEquals("yellow, magenta, cyan, red, lime, white", td3
+			.getSeriesColors());
+		assertEquals(new Integer(1000), td3.getMaxRecord());
 
 		List<SeriesData> sds = td3.getSeriesDatas();
 		assertEquals(2, sds.size());
-		
+
 		SeriesData sd1 = sds.get(0);
 		assertEquals(new Integer(1), sd1.getGroupNo());
 		assertEquals("空調", sd1.getGroupName());
-		
+
 		List<SeriesPropertyData> spds = sd1.getSeriesProperties();
 		assertEquals(6, spds.size());
 		SeriesPropertyData spd = spds.get(0);
 		assertEquals(new Integer(0), spd.getIndex());
 		assertEquals(Boolean.TRUE, spd.isVisible());
 		assertEquals("yellow", spd.getColor());
-		assertEquals("AHU-1-1", spd.getUnit()); 
+		assertEquals("AHU-1-1", spd.getUnit());
 		assertEquals("空調機-1-1", spd.getName());
 		assertEquals("", spd.getMark());
 		assertEquals("%3.0f", spd.getVerticalFormat());
@@ -109,5 +114,18 @@ public class TrendRuleSetTest extends TestCase {
 		SeriesData sd2 = sds.get(1);
 		assertEquals(new Integer(2), sd2.getGroupNo());
 		assertEquals("デマンド", sd2.getGroupName());
+
+		List<HorizontalScaleButtonProperty> buttonPropertys =
+			td3.getHorizontalScaleButtonProperty();
+		assertEquals(6, buttonPropertys.size());
+		HorizontalScaleButtonProperty hbp = buttonPropertys.get(0);
+		assertEquals("4時間", hbp.getButtonText());
+		assertEquals("1分", hbp.getLabelText());
+		assertEquals(new Integer(5), hbp.getHorizontalCount());
+		assertEquals(new Integer(112), hbp.getHorizontalAllSpanMode());
+		assertEquals(new Integer(168), hbp.getHorizontalSelectSpanMode());
+		assertEquals(new Long(18000000), hbp.getHorizontalLineSpan());
+		assertEquals(new Long(60000), hbp.getRecordeSpan());
+		assertEquals("log_table_minute", hbp.getLogName());	
 	}
 }

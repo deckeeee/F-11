@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph;
 
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Insets;
@@ -29,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -53,28 +53,26 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 	private DataAreaListener dataAreaListener;
 	private VerticalModeListener verticalModeListener;
 	private DrawSeriesModeListener drawSeriesModeListener;
-	private HorizontalScaleButtonListener listener1;
-	private HorizontalScaleButtonListener listener2;
-	private HorizontalScaleButtonListener listener3;
-	private HorizontalScaleButtonListener listener4;
-	private HorizontalScaleButtonListener listener5;
-	private HorizontalScaleButtonListener listener6;
+	private HorizontalScaleButtonListener[] scaleButtonlisteners;
 	private boolean isDataAreaListener;
 
-	public GraphStatusBar(Mediator mediator) {
+	public GraphStatusBar(Mediator mediator, GraphProperties graphProperties) {
 		super(new BorderLayout());
 		this.mediator = mediator;
 		setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-		add(getCenter(), BorderLayout.CENTER);
+		add(
+			getCenter(graphProperties.getHorizontalScaleButtonProperty()),
+			BorderLayout.CENTER);
 	}
 
-	private Component getCenter() {
+	private Component getCenter(
+			List<HorizontalScaleButtonProperty> buttonProperties) {
 		Box box = Box.createHorizontalBox();
 		box.add(getChangeDataArea());
 		box.add(getChangeVerticalMode());
 		box.add(getChangeDrawSeriesMode());
 		dataCycleLabel = new JLabel("データ周期：1分");
-		setHorizontalScaleButtons(box);
+		setHorizontalScaleButtons(box, buttonProperties);
 		box.add(Box.createHorizontalGlue());
 		box.add(dataCycleLabel);
 		box.add(Box.createHorizontalStrut(10));
@@ -108,102 +106,36 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 		return button;
 	}
 
-	private void setHorizontalScaleButtons(Box box) {
+	private void setHorizontalScaleButtons(
+			Box box,
+			List<HorizontalScaleButtonProperty> buttonProperties) {
 		box.add(Box.createHorizontalStrut(50));
-		listener1 =
-			getButtonListener(
-				dataCycleLabel,
-				"4時間",
-				"1分",
-				5,
-				112,
-				168,
-				18000000L,
-				60000L,
-				"log_table_minute");
-		box.add(getButton(listener1, "4時間"));
-		listener2 =
-			getButtonListener(
-				dataCycleLabel,
-				"12時間",
-				"1分",
-				8,
-				70,
-				105,
-				54000000L,
-				60000L,
-				"log_table_minute");
-		box.add(getButton(listener2, "12時間"));
-		listener3 =
-			getButtonListener(
-				dataCycleLabel,
-				"1日間",
-				"10分",
-				8,
-				70,
-				105,
-				86400000L,
-				600000L,
-				"log_table_10_minute");
-		box.add(getButton(listener3, "1日間"));
-		listener4 =
-			getButtonListener(
-				dataCycleLabel,
-				"3日間",
-				"10分",
-				8,
-				70,
-				105,
-				259200000L,
-				600000L,
-				"log_table_10_minute");
-		box.add(getButton(listener4, "3日間"));
-		listener5 =
-			getButtonListener(
-				dataCycleLabel,
-				"1週間",
-				"1時間",
-				8,
-				70,
-				105,
-				604800000L,
-				3600000L,
-				"log_table_hour");
-		box.add(getButton(listener5, "1週間"));
-		listener6 =
-			getButtonListener(
-				dataCycleLabel,
-				"1月間",
-				"1時間",
-				7,
-				80,
-				120,
-				18144000000L,
-				3600000L,
-				"log_table_hour");
-		box.add(getButton(listener6, "1月間"));
+		scaleButtonlisteners =
+			new HorizontalScaleButtonListener[buttonProperties.size()];
+		int i = 0;
+		for (HorizontalScaleButtonProperty property : buttonProperties) {
+			scaleButtonlisteners[i] =
+				getButtonListener(dataCycleLabel, property);
+			box
+				.add(getButton(scaleButtonlisteners[i], property
+					.getButtonText()));
+			i++;
+		}
 	}
 
 	private HorizontalScaleButtonListener getButtonListener(
 			JLabel dataCycleLabel,
-			String buttonText,
-			String labelText,
-			int horizontalCount,
-			int horizontalAllSpanMode,
-			int horizontalSelectSpanMode,
-			long horizontalLineSpan,
-			long recordeSpan,
-			String logName) {
+			HorizontalScaleButtonProperty property) {
 		return new HorizontalScaleButtonListener(
 			this,
 			dataCycleLabel,
-			labelText,
-			horizontalCount,
-			horizontalAllSpanMode,
-			horizontalSelectSpanMode,
-			horizontalLineSpan,
-			recordeSpan,
-			logName);
+			property.getLabelText(),
+			property.getHorizontalCount(),
+			property.getHorizontalAllSpanMode(),
+			property.getHorizontalSelectSpanMode(),
+			property.getHorizontalLineSpan(),
+			property.getRecordeSpan(),
+			property.getLogName());
 	}
 
 	private Component getButton(
@@ -234,18 +166,13 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 				.performColleagueChange(getGraphChangeEvent());
 		} else if (verticalModeListener == colleague) {
 			verticalModeListener.performColleagueChange(getGraphChangeEvent());
-		} else if (listener1 == colleague) {
-			listener1.performColleagueChange(getGraphChangeEvent());
-		} else if (listener2 == colleague) {
-			listener2.performColleagueChange(getGraphChangeEvent());
-		} else if (listener3 == colleague) {
-			listener3.performColleagueChange(getGraphChangeEvent());
-		} else if (listener4 == colleague) {
-			listener4.performColleagueChange(getGraphChangeEvent());
-		} else if (listener5 == colleague) {
-			listener5.performColleagueChange(getGraphChangeEvent());
-		} else if (listener6 == colleague) {
-			listener6.performColleagueChange(getGraphChangeEvent());
+		} else {
+			for (HorizontalScaleButtonListener l : scaleButtonlisteners) {
+				if (l == colleague) {
+					l.performColleagueChange(getGraphChangeEvent());
+					break;
+				}
+			}
 		}
 		mediator.colleaguChanged(this);
 	}
@@ -260,7 +187,7 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 			referenceDateLabel.setText(f.format(date));
 		}
 	}
-	
+
 	public boolean isDataAreaListener() {
 		return isDataAreaListener;
 	}
@@ -385,7 +312,12 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 				horizontalLineSpan,
 				logName);
 			int min = (int) (horizontalLineSpan / recordeSpan);
-			e.getScrollBar().setMinimum(min);
+			int maxRecord = e.getProperties().getMaxRecord();
+			e.getScrollBar().setMinimum(Math.min(min, maxRecord));
+			System.out.println("min="
+				+ min
+				+ " max="
+				+ e.getScrollBar().getMaximum());
 		}
 	}
 }

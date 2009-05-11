@@ -35,6 +35,8 @@ public class TrendRuleSet extends RuleSetBase {
 		"org.F11.scada.applet.ngraph.editor.SeriesData";
 	private static final String SERIES_PROPERTY_DATA =
 		"org.F11.scada.applet.ngraph.editor.SeriesPropertyData";
+	private static final String HORIZONTAL_SCALE_BUTTON =
+		"org.F11.scada.applet.ngraph.HorizontalScaleButtonProperty";
 	private static final String[] PAGE_ATTRIBUTE =
 		{ "width", "height", "name", "value" };
 	private static final String[] TREND3_ATTRIBUTE =
@@ -57,7 +59,9 @@ public class TrendRuleSet extends RuleSetBase {
 			"lineColor",
 			"backGround",
 			"verticalScaleColor",
-			"pagefile" };
+			"pagefile",
+			"seriesColors",
+			"maxRecord", };
 	private static final String[] SERIES_ATTRIBUTE = { "groupNo", "groupName" };
 	private static final String[] SERIES_PROPERTIES =
 		{
@@ -71,6 +75,16 @@ public class TrendRuleSet extends RuleSetBase {
 			"max",
 			"min",
 			"holder" };
+	private static final String[] HORIZONTAL_SCALE_BUTTON_PROPERTY =
+		{
+			"buttonText",
+			"labelText",
+			"horizontalCount",
+			"horizontalAllSpanMode",
+			"horizontalSelectSpanMode",
+			"horizontalLineSpan",
+			"recordeSpan",
+			"logName", };
 
 	public void addRuleInstances(Digester digester) {
 		digester.addSetProperties("*/page", PAGE_ATTRIBUTE, PAGE_ATTRIBUTE);
@@ -100,5 +114,20 @@ public class TrendRuleSet extends RuleSetBase {
 			"*/trendgraph3/series/series-property",
 			SERIES_PROPERTIES,
 			SERIES_PROPERTIES);
+
+		digester
+			.addObjectCreate(
+				"*/trendgraph3/horizontalScaleButton/horizontalScaleButton-property",
+				HORIZONTAL_SCALE_BUTTON);
+		digester
+			.addSetNext(
+				"*/trendgraph3/horizontalScaleButton/horizontalScaleButton-property",
+				"addHorizontalScaleButtonProperty",
+				HORIZONTAL_SCALE_BUTTON);
+		digester
+			.addSetProperties(
+				"*/trendgraph3/horizontalScaleButton/horizontalScaleButton-property",
+				HORIZONTAL_SCALE_BUTTON_PROPERTY,
+				HORIZONTAL_SCALE_BUTTON_PROPERTY);
 	}
 }

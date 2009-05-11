@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StringReader;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -72,7 +73,7 @@ import org.apache.log4j.Logger;
  * グラフ操作ダイアログ
  * 
  * @author maekawa
- *
+ * 
  */
 public class EditorMainPanel extends JDialog implements Mediator {
 	private static final long serialVersionUID = -1995919687610018906L;
@@ -114,9 +115,10 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		} catch (Exception e) {
 			logger.error("サーバー接続エラー", e);
 		}
-		searchTableModel = new SeriesPropertyTableModel();
-		searchService = new UnitSearchServiceImpl();
 		page = getPageData();
+		searchTableModel =
+			new SeriesPropertyTableModel(page.getTrend3Data().getSeriesColors());
+		searchService = new UnitSearchServiceImpl(page);
 		add(getTabPane(), BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		init();
@@ -133,7 +135,8 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			String xml =
 				(String) accessable.invoke("TrendFileService", new Object[] {
 					TrendFileService.READ_OP,
-					graphProperties.getPagefile() });
+					graphProperties.getPagefile(),
+					"" });
 			digester.parse(new StringReader(xml));
 		} catch (Exception e) {
 			logger.error("ファイルが無いか、サーバー接続エラーです。 : "
@@ -191,7 +194,14 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			public void actionPerformed(ActionEvent e) {
 				Button b = (Button) e.getSource();
 				b.performMediator();
-				System.out.println(page.getXmlString());
+				try {
+					accessable.invoke("TrendFileService", new Object[] {
+						TrendFileService.SAVE_OP,
+						graphProperties.getPagefile(),
+						page.getXmlString() });
+				} catch (RemoteException rex) {
+					rex.printStackTrace();
+				}
 			}
 		});
 	}
@@ -403,7 +413,8 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	}
 
 	private Component getCenterNorthCenter() {
-		unitTableModel = new SeriesPropertyTableModel();
+		unitTableModel =
+			new SeriesPropertyTableModel(page.getTrend3Data().getSeriesColors());
 		addListeners(unitTableModel);
 		unitTable = new JTable(unitTableModel);
 		unitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

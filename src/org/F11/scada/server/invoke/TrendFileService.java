@@ -22,10 +22,13 @@
 package org.F11.scada.server.invoke;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import org.apache.log4j.Logger;
 
@@ -36,41 +39,59 @@ public class TrendFileService implements InvokeHandler {
 	public static final String READ_OP =
 		TrendFileService.class.getCanonicalName() + ".READ";
 
-	public TrendFileService() {
-	}
-
 	public Object invoke(Object[] args) {
 		String op = (String) args[0];
 		String file = (String) args[1];
+		String xml = (String) args[2];
 		try {
-			return opration(op, file);
+			return opration(op, file, xml);
 		} catch (IOException e) {
+			logger.error("XMLファイル入出力処理でエラーが発生しました。", e);
 			throw new RuntimeException(e);
 		}
 	}
 
-	private Object opration(String op, String file) throws IOException {
+	private Object opration(String op, String file, String xml)
+			throws IOException {
 		if (SAVE_OP.equals(op)) {
-			save(file);
+			save(file, xml);
 			return null;
 		} else {
 			return read(file);
 		}
 	}
 
-	private void save(String file) {
+	private void save(String file, String xml) throws IOException {
+		BufferedWriter out = null;
+		try {
+			out =
+				new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+					new File(file)), "UTF-8"));
+			out.write(xml);
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
 	}
 
 	private String read(String file) throws IOException {
 		logger.info("file = " + file);
-		BufferedReader xml =
-			new BufferedReader(new InputStreamReader(new FileInputStream(
-				new File(file)), "UTF-8"));
-		StringBuilder sb = new StringBuilder();
-		for (String s = xml.readLine(); s != null; s = xml.readLine()) {
-			sb.append(s);
+		BufferedReader xml = null;
+		try {
+			xml =
+				new BufferedReader(new InputStreamReader(new FileInputStream(
+					new File(file)), "UTF-8"));
+			StringBuilder sb = new StringBuilder();
+			for (String s = xml.readLine(); s != null; s = xml.readLine()) {
+				sb.append(s);
+			}
+			StringUtil util = new StringUtil();
+			return util.replaceAllPointName(sb.toString());
+		} finally {
+			if (null != xml) {
+				xml.close();
+			}
 		}
-		StringUtil util = new StringUtil();
-		return util.replaceAllPointName(sb.toString());
 	}
 }
