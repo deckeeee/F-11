@@ -38,7 +38,7 @@ import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
  * エディタのシリーズプロパティのテーブルモデル
  * 
  * @author maekawa
- *
+ * 
  */
 public class SeriesPropertyTableModel extends AbstractTableModel implements
 		MouseListener, KeyListener {
@@ -49,18 +49,17 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 	private List<SeriesPropertyData> backupSeriesPropertyDatas;
 	private Map<Integer, String> colorMap;
 
-	public SeriesPropertyTableModel() {
-		colorMap = getColorMap();
+	public SeriesPropertyTableModel(String seriesColors) {
+		colorMap = getColorMap(seriesColors);
 	}
 
-	private Map<Integer, String> getColorMap() {
+	private Map<Integer, String> getColorMap(String seriesColors) {
 		HashMap<Integer, String> map = new HashMap<Integer, String>();
-		map.put(0, "yellow");
-		map.put(1, "magenta");
-		map.put(2, "cyan");
-		map.put(3, "red");
-		map.put(4, "lime");
-		map.put(5, "white");
+		String[] seriesColorStr = seriesColors.split(",");
+		int i = 0;
+		for (String color : seriesColorStr) {
+			map.put(i++, color.trim());
+		}
 		return map;
 	}
 
@@ -158,14 +157,15 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 			}
 		}
 		seriesPropertyDatas.remove(row);
-		resetColor();
+		resetIndexAndColor();
 		fireTableRowsDeleted(row, row);
 	}
 
-	private void resetColor() {
+	private void resetIndexAndColor() {
 		int i = 0;
 		for (SeriesPropertyData spd : seriesPropertyDatas) {
-			spd.setColor(colorMap.get(i++));
+			spd.setColor(colorMap.get(i % 6));
+			spd.setIndex(i++);
 		}
 	}
 
@@ -183,36 +183,10 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 	}
 
 	public void insertRow(SeriesPropertyData seriesPropertyData) {
-		setColor(seriesPropertyData);
 		seriesPropertyDatas.add(seriesPropertyData);
+		resetIndexAndColor();
 		fireTableRowsInserted(seriesPropertyDatas.size(), seriesPropertyDatas
 			.size());
-	}
-
-	private void setColor(SeriesPropertyData seriesPropertyData) {
-		switch (seriesPropertyDatas.size() % 6) {
-		case 0:
-			seriesPropertyData.setColor("yellow");
-			break;
-		case 1:
-			seriesPropertyData.setColor("magenta");
-			break;
-		case 2:
-			seriesPropertyData.setColor("cyan");
-			break;
-		case 3:
-			seriesPropertyData.setColor("red");
-			break;
-		case 4:
-			seriesPropertyData.setColor("lime");
-			break;
-		case 5:
-			seriesPropertyData.setColor("white");
-			break;
-
-		default:
-			break;
-		}
 	}
 
 	public void commit() {

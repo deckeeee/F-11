@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.F11.scada.WifeUtilities;
+import org.F11.scada.applet.ngraph.editor.PageData;
 import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 import org.F11.scada.data.DataAccessable;
 import org.F11.scada.exception.RemoteRuntimeException;
@@ -35,24 +36,34 @@ import org.apache.log4j.Logger;
 public class UnitSearchServiceImpl implements UnitSearchService {
 	private final Logger logger = Logger.getLogger(UnitSearchServiceImpl.class);
 	private DataAccessable alarmRef;
+	private final PageData page;
 
-	public UnitSearchServiceImpl() {
+	public UnitSearchServiceImpl(PageData page) {
 		String collectorServer = WifeUtilities.createRmiManagerDelegator();
 		try {
 			alarmRef = (DataAccessable) Naming.lookup(collectorServer);
 		} catch (Exception e) {
-			logger.info("サーバーのリモート参照取得に失敗しました:", e);
+			logger.error("サーバーのリモート参照取得に失敗しました:", e);
 		}
+		this.page = page;
 	}
 
-	public List<SeriesPropertyData> getSeriesPropertyDataList(SeriesPropertyData spd) {
+	public List<SeriesPropertyData> getSeriesPropertyDataList(
+			SeriesPropertyData spd) {
 		try {
 			List<PointTableDto> pointList =
 				(List<PointTableDto>) alarmRef.invoke(
 					"UnitSearchService",
-					new Object[] { spd });
+					new Object[] {
+						spd,
+						page
+							.getTrend3Data()
+							.getHorizontalScaleButtonProperty()
+							.get(0)
+							.getLogName() });
 			return convertList(pointList);
 		} catch (RemoteException e) {
+			logger.error("ポイント情報取り込みにて、サーバーエラーが発生しました。:", e);
 			throw new RemoteRuntimeException(e);
 		}
 	}
@@ -60,7 +71,6 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 	private List<SeriesPropertyData> convertList(List<PointTableDto> pointList) {
 		ArrayList<SeriesPropertyData> unitList =
 			new ArrayList<SeriesPropertyData>(pointList.size());
-		//TODO 必要な値をDBから持ってくること。
 		for (PointTableDto pointTableDto : pointList) {
 			unitList.add(getSeriesPropertyData(
 				0,
@@ -69,10 +79,10 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 				pointTableDto.getUnit(),
 				pointTableDto.getName(),
 				pointTableDto.getUnitMark(),
-				0F,
-				0F,
-				"",
-				""));
+				pointTableDto.getMin(),
+				pointTableDto.getMax(),
+				pointTableDto.getFormat(),
+				pointTableDto.getProvider() + "_" + pointTableDto.getHolder()));
 		}
 		return unitList;
 	}

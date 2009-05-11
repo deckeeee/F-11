@@ -25,6 +25,7 @@ import static java.lang.Math.round;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.text.DecimalFormat;
 
 import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
@@ -36,7 +37,7 @@ import org.apache.commons.collections.primitives.DoubleList;
  * 分離表示のグラフ描画クラス
  * 
  * @author maekawa
- *
+ * 
  */
 public class SegmentasionGraphDraw extends AbstractGraphDraw {
 	public SegmentasionGraphDraw(GraphProperties properties) {
@@ -110,14 +111,12 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 				properties.getSeriesGroup().getSeriesProperties().get(
 					drawSeriesIndex);
 			float max = p.getMax();
+			DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
 			String dateStr =
-				String
-					.format(
-						p.getVerticalFormat(),
-						max
-							- (i - drawSeriesIndex * 2)
-							* ((max - p.getMin())
-								/ properties.getVerticalCount() * getHalfVerticalCount()));
+				f
+					.format(max
+						- (i - drawSeriesIndex * 2)
+						* ((max - p.getMin()) / properties.getVerticalCount() * getHalfVerticalCount()));
 			FontMetrics metrics = g.getFontMetrics();
 			if (p.isVisible()) {
 				g.setColor(p.getColor());

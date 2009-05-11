@@ -33,6 +33,11 @@ public class PointTableDto implements Serializable {
 	private String attribute1;
 	private String attribute2;
 	private String attribute3;
+	private String provider;
+	private String holder;
+	private Float min;
+	private Float max;
+	private String format;
 
 	public Integer getPoint() {
 		return point;
@@ -90,6 +95,46 @@ public class PointTableDto implements Serializable {
 		this.attribute3 = attribute3;
 	}
 
+	public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	public String getHolder() {
+		return holder;
+	}
+
+	public void setHolder(String holder) {
+		this.holder = holder;
+	}
+
+	public Float getMin() {
+		return min;
+	}
+
+	public void setMin(Float min) {
+		this.min = min;
+	}
+
+	public Float getMax() {
+		return max;
+	}
+
+	public void setMax(Float max) {
+		this.max = max;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
 	@Override
 	public String toString() {
 		return point
@@ -104,6 +149,16 @@ public class PointTableDto implements Serializable {
 			+ " "
 			+ attribute2
 			+ " "
-			+ attribute3;
+			+ attribute3
+			+ " "
+			+ provider
+			+ " "
+			+ holder
+			+ " "
+			+ min
+			+ " "
+			+ max
+			+ " "
+			+ format;
 	}
 }

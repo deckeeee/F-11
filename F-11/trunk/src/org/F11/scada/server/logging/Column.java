@@ -18,32 +18,35 @@
  * 
  */
 
-package org.F11.scada.server.dao;
+package org.F11.scada.server.logging;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Column {
+	private Integer index;
+	private String provider;
+	private String holder;
 
-import org.seasar.dao.unit.S2DaoTestCase;
-
-public class PointTableDaoTest extends S2DaoTestCase {
-	PointTableDao dao;
-
-	protected void setUp() throws Exception {
-		include("PointTableDao.dicon");
+	public Integer getIndex() {
+		return index;
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	public void setIndex(Integer index) {
+		this.index = index;
 	}
 
-	public void testGetPointTable() throws Exception {
-		PointTableDto dto = new PointTableDto();
-		dto.setUnit("%AHU%");
-		dto.setName("%1F%");
-		ArrayList<String> l = new ArrayList<String>();
-		l.add("D_2200_BcdSingle");
-		l.add("D_2201_BcdSingle");
-		List<PointTableDto> dtos = dao.getPointTable(dto, l);
-		System.out.println(dtos);
+	public String getProvider() {
+		return provider;
 	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	public String getHolder() {
+		return holder;
+	}
+
+	public void setHolder(String holder) {
+		this.holder = holder;
+	}
+
 }

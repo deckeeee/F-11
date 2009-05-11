@@ -44,7 +44,12 @@ public class GraphScrollBar extends JScrollBar {
 		setValues(
 			maxRecord,
 			0,
-			(int) (p.getHorizontalLineSpan() / 60000),
+			getMin(p),
 			maxRecord);
+	}
+
+	private int getMin(GraphProperties p) {
+		//TODO 60000のマジックナンバーは駄目だろ。recordeSpanを持ってくるべし
+		return (int) (p.getHorizontalLineSpan() / 60000);
 	}
 }

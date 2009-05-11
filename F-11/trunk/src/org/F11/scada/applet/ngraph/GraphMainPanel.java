@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class GraphMainPanel extends JPanel implements Mediator {
+	private static final long serialVersionUID = -2337555152897226798L;
 	private final Logger logger = Logger.getLogger(GraphMainPanel.class);
 	private GraphStatusBar statusBar;
 	private GraphProperties graphProperties;
@@ -69,7 +70,7 @@ public class GraphMainPanel extends JPanel implements Mediator {
 		graphModel = new DefaultGraphModel(graphProperties);
 		graphView = new GraphView(this, graphModel, graphProperties);
 		scrollBar = new GraphScrollBar(graphView);
-		statusBar = new GraphStatusBar(this);
+		statusBar = new GraphStatusBar(this, graphProperties);
 		JPanel centerPanel = new JPanel(new BorderLayout());
 		centerPanel.add(statusBar, BorderLayout.NORTH);
 		centerPanel.add(graphView, BorderLayout.CENTER);

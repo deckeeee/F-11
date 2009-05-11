@@ -25,6 +25,7 @@ import static java.lang.Math.round;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.text.DecimalFormat;
 
 import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
@@ -36,7 +37,7 @@ import org.apache.commons.collections.primitives.DoubleList;
  * 合成表示のグラフ描画クラス
  * 
  * @author maekawa
- *
+ * 
  */
 public class CompositGraphDraw extends AbstractGraphDraw {
 
@@ -104,8 +105,9 @@ public class CompositGraphDraw extends AbstractGraphDraw {
 			properties.getSeriesGroup().getSeriesProperties().get(
 				drawSeriesIndex);
 		float max = p.getMax();
+		DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
 		String dateStr =
-			String.format(p.getVerticalFormat(), max
+			f.format(max
 				- i
 				* ((max - p.getMin()) / properties.getVerticalCount()));
 		FontMetrics metrics = g.getFontMetrics();

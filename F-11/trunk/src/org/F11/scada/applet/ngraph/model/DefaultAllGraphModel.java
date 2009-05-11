@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph.model;
 
-
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.logging.Logger;
-
 
 import org.F11.scada.applet.graph.DefaultSelectiveAllDataValueListHandlerFactory;
 import org.F11.scada.applet.graph.SelectiveAllDataValueListHandlerFactory;
@@ -43,7 +41,6 @@ import org.F11.scada.server.register.HolderString;
 import org.apache.commons.collections.primitives.DoubleList;
 
 public class DefaultAllGraphModel extends AbstractGraphModel {
-	private final static int MAX_RECORD = 6000;
 	private final Logger logger =
 		Logger.getLogger(DefaultAllGraphModel.class.getName());
 	/** データハンドラマネージャーです。 */
@@ -60,10 +57,6 @@ public class DefaultAllGraphModel extends AbstractGraphModel {
 		SelectiveAllDataValueListHandlerFactory factory =
 			new DefaultSelectiveAllDataValueListHandlerFactory();
 		valueListHandler = factory.getSelectiveAllDataValueListHandler();
-	}
-
-	public int getMaxRecord() {
-		return MAX_RECORD;
 	}
 
 	public void initialize() {

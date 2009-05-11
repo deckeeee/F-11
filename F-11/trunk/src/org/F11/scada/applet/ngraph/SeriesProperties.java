@@ -27,6 +27,7 @@ import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.server.register.HolderString;
+import org.apache.log4j.Logger;
 
 /**
  * シリーズ個々のプロパティー
@@ -35,6 +36,7 @@ import org.F11.scada.server.register.HolderString;
  *
  */
 public class SeriesProperties {
+	private final Logger logger = Logger.getLogger(SeriesProperties.class);
 	/** シリーズのインデックス */
 	private int index;
 	/** 表示・非表示 */
@@ -198,9 +200,11 @@ public class SeriesProperties {
 				WifeDataAnalog a = (WifeDataAnalog) obj;
 				return (float) a.doubleValue();
 			} else {
+				logger.info("Class=" + obj.getClass().getName());
 				return null;
 			}
 		} else {
+			logger.info("Holder null");
 			return null;
 		}
 	}

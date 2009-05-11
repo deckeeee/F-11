@@ -20,7 +20,35 @@
 			lineColor="black"
 			backGround="gray"
 			verticalScaleColor="white"
-			pagefile="trend1.xml">
+			pagefile="trend1.xml"
+			seriesColors="yellow, magenta, cyan, red, lime, white"
+			maxRecord="2000">
+			<horizontalScaleButton>
+				<horizontalScaleButton-property
+					buttonText="4時間" labelText="1分" horizontalCount="5"
+					horizontalAllSpanMode="112" horizontalSelectSpanMode="168"
+					horizontalLineSpan="18000000" recordeSpan="60000" logName="log_table_minute" />
+				<horizontalScaleButton-property
+					buttonText="12時間" labelText="1分" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="54000000" recordeSpan="60000" logName="log_table_minute" />
+				<horizontalScaleButton-property
+					buttonText="1日間" labelText="10分" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="86400000" recordeSpan="600000" logName="log_table_10_minute" />
+				<horizontalScaleButton-property
+					buttonText="3日間" labelText="10分" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="259200000" recordeSpan="600000" logName="log_table_10_minute" />
+				<horizontalScaleButton-property
+					buttonText="1週間" labelText="1時間" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="604800000" recordeSpan="3600000" logName="log_table_hour" />
+				<horizontalScaleButton-property
+					buttonText="1月間" labelText="1時間" horizontalCount="7"
+					horizontalAllSpanMode="80" horizontalSelectSpanMode="120"
+					horizontalLineSpan="18144000000" recordeSpan="3600000" logName="log_table_hour" />
+			</horizontalScaleButton>
 			<series groupNo="1" groupName="空調">
 				<series-property index="0" visible="true" color="yellow" unit="AHU-1-1" name="空調機-1-1"
 				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_500_BcdSingle" />
