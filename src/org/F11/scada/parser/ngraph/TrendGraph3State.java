@@ -114,8 +114,8 @@ public class TrendGraph3State implements State {
 			Integer.parseInt(getValue(atts, "horizontalCount", "5"));
 		horizontalLineSpan =
 			Long.parseLong(getValue(atts, "horizontalLineSpan", "18000000"));
-		dateFormat = getValue(atts, "dateFormat", "%1$tm/%1$td");
-		timeFormat = getValue(atts, "timeFormat", "%1$tH:%1$tM");
+		dateFormat = getValue(atts, "dateFormat", "MM/dd");
+		timeFormat = getValue(atts, "timeFormat", "HH:mm");
 		verticalScale = Integer.parseInt(getValue(atts, "verticalScale", "48"));
 		verticalCount = Integer.parseInt(getValue(atts, "verticalCount", "10"));
 		scalePixcelSize =

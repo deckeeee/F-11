@@ -121,7 +121,7 @@ public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 	}
 
 	private String getGroupName(GraphModel model) {
-		int no = model.getGroupNo();
+		int no = model.getGroupNo() + 1;
 		String s = model.getGroupName();
 		return String.format("No.%03d : %s%n", no, s);
 	}
@@ -266,7 +266,7 @@ public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 			private Vector<String> getModel() {
 				Vector<String> v = new Vector<String>();
 				List<SeriesGroup> l = model.getSeriesGroups();
-				int i = 0;
+				int i = 1;
 				for (SeriesGroup seriesGroup : l) {
 					v.add(String.format("%03d : %s", i++, seriesGroup
 						.getGroupName()));

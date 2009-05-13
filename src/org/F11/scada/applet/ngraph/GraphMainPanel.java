@@ -42,11 +42,10 @@ import org.apache.commons.collections.primitives.DoubleIterator;
 import org.apache.log4j.Logger;
 
 /**
- * トレンドグラフのメインパネル
- * 各コンポーネントのメデエイターにもなっている
+ * トレンドグラフのメインパネル 各コンポーネントのメデエイターにもなっている
  * 
  * @author maekawa
- *
+ * 
  */
 public class GraphMainPanel extends JPanel implements Mediator {
 	private static final long serialVersionUID = -2337555152897226798L;
@@ -91,7 +90,7 @@ public class GraphMainPanel extends JPanel implements Mediator {
 				* 2.5F)));
 		JPanel northPanel = new JPanel(new BorderLayout());
 		graphToolBar = new GraphToolBar(this, graphProperties);
-//		northPanel.add(graphToolBar, BorderLayout.NORTH);
+		// northPanel.add(graphToolBar, BorderLayout.NORTH);
 		northPanel.add(spane, BorderLayout.CENTER);
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
@@ -124,6 +123,7 @@ public class GraphMainPanel extends JPanel implements Mediator {
 		} else if (graphToolBar == colleague) {
 			graphToolBar.performColleagueChange(getGraphChangeEvent());
 			seriesModel.fireTableDataChanged();
+			graphView.setSelectSeries(0);
 		} else if (seriesTable == colleague) {
 			seriesTable.performColleagueChange(getGraphChangeEvent());
 		}

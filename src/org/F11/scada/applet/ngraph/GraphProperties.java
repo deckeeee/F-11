@@ -50,9 +50,9 @@ public class GraphProperties {
 	/** 横目盛の時間スケール幅 */
 	private long horizontalLineSpan = 18000000L;
 	/** 日付表示フォーマット */
-	private String dateFormat = "%1$tm/%1$td";
+	private String dateFormat = "MM/dd";
 	/** 時間表示フォーマット */
-	private String timeFormat = "%1$tH:%1$tM";
+	private String timeFormat = "HH:mm";
 	/** 縦目盛1つ分のピクセル数 */
 	private int verticalScale = 48;
 	/** 縦目盛の数 */

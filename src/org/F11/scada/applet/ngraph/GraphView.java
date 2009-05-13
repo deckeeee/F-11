@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph;
 
-
 import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -56,6 +55,7 @@ import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 import org.F11.scada.applet.ngraph.model.GraphModel;
 import org.F11.scada.applet.ngraph.util.MapUtil;
 import org.apache.commons.collections.primitives.DoubleCollections;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
 
 /**
@@ -250,7 +250,8 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			int x2,
 			String format,
 			float z) {
-		String dateStr = String.format(format, date);
+		FastDateFormat f = FastDateFormat.getInstance(format);
+		String dateStr = f.format(date);
 		FontMetrics metrics = g.getFontMetrics();
 		g.drawString(dateStr, (x2 - metrics.stringWidth(dateStr) / 2)
 			+ insets.left, insets.top
@@ -791,11 +792,9 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			GraphProperties graphProperties = view.getGraphProperties();
 			Insets insets = graphProperties.getInsets();
 			Rectangle r =
-				new Rectangle(
-					insets.left,
-					insets.top,
-					view.getHorizontalLine(),
-					graphProperties.getVerticalLine());
+				new Rectangle(insets.left, insets.top, view.getHorizontalLine()
+					+ graphProperties.getScalePixcelSize(), graphProperties
+					.getVerticalLine());
 			return r.contains(p);
 		}
 	}

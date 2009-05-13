@@ -194,14 +194,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 			public void actionPerformed(ActionEvent e) {
 				Button b = (Button) e.getSource();
 				b.performMediator();
-				try {
-					accessable.invoke("TrendFileService", new Object[] {
-						TrendFileService.SAVE_OP,
-						graphProperties.getPagefile(),
-						page.getXmlString() });
-				} catch (RemoteException rex) {
-					rex.printStackTrace();
-				}
+				writePage();
 			}
 		});
 	}
@@ -253,6 +246,12 @@ public class EditorMainPanel extends JDialog implements Mediator {
 						sd.setGroupName(groupName);
 						groupTableModel.updateRow(row);
 						groupLabel.setText(groupName);
+						page
+							.getTrend3Data()
+							.getSeriesDatas()
+							.get(row)
+							.setGroupName(groupName);
+						writePage();
 					}
 				}
 			}
@@ -274,6 +273,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 							JOptionPane.OK_CANCEL_OPTION);
 					if (rt == JOptionPane.OK_OPTION) {
 						groupTableModel.removeRow(selectedRow);
+						writePage();
 					}
 				}
 			}
@@ -630,6 +630,17 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		searchMark.setEnabled(false);
 		searchName.setEnabled(false);
 		searchTable.setEnabled(false);
+	}
+
+	private void writePage() {
+		try {
+			accessable.invoke("TrendFileService", new Object[] {
+				TrendFileService.SAVE_OP,
+				graphProperties.getPagefile(),
+				page.getXmlString() });
+		} catch (RemoteException ex) {
+			logger.error("ページファイル出力時にエラーが発生しました。", ex);
+		}
 	}
 
 	public static void main(String[] args) {
