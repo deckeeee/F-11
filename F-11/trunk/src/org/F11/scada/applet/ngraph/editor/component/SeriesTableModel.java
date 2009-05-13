@@ -90,7 +90,7 @@ public class SeriesTableModel extends AbstractTableModel {
 	}
 
 	private void renumber() {
-		int i = 0;
+		int i = 1;
 		for (SeriesData gd : seriesDatas) {
 			gd.setGroupNo(i++);
 		}

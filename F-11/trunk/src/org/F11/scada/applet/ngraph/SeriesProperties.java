@@ -25,15 +25,17 @@ import java.awt.Color;
 import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.Manager;
 
+import org.F11.scada.data.ConvertValue;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.server.register.HolderString;
+import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 
 /**
  * シリーズ個々のプロパティー
  * 
  * @author maekawa
- *
+ * 
  */
 public class SeriesProperties {
 	private final Logger logger = Logger.getLogger(SeriesProperties.class);
@@ -198,7 +200,10 @@ public class SeriesProperties {
 			Object obj = hd.getValue();
 			if (obj instanceof WifeDataAnalog) {
 				WifeDataAnalog a = (WifeDataAnalog) obj;
-				return (float) a.doubleValue();
+				ConvertValue convertValue =
+					(ConvertValue) hd
+						.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+				return (float) convertValue.convertDoubleValue(a.doubleValue());
 			} else {
 				logger.info("Class=" + obj.getClass().getName());
 				return null;
