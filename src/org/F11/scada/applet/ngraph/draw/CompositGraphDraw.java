@@ -101,24 +101,26 @@ public class CompositGraphDraw extends AbstractGraphDraw {
 			int y,
 			int i,
 			int drawSeriesIndex) {
-		SeriesProperties p =
-			properties.getSeriesGroup().getSeriesProperties().get(
-				drawSeriesIndex);
-		float max = p.getMax();
-		DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
-		String dateStr =
-			f.format(max
-				- i
-				* ((max - p.getMin()) / properties.getVerticalCount()));
-		FontMetrics metrics = g.getFontMetrics();
-		if (p.isVisible()) {
-			g.setColor(p.getColor());
-			g.drawString(dateStr, x
-				- metrics.stringWidth(dateStr)
-				- properties.getScalePixcelSize(), round(top
-				+ y
-				+ metrics.getAscent()
-				/ DATE_STRING_RATE));
+		if (properties.isVisibleVerticalString()) {
+			SeriesProperties p =
+				properties.getSeriesGroup().getSeriesProperties().get(
+					drawSeriesIndex);
+			float max = p.getMax();
+			DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
+			String dateStr =
+				f.format(max
+					- i
+					* ((max - p.getMin()) / properties.getVerticalCount()));
+			FontMetrics metrics = g.getFontMetrics();
+			if (p.isVisible()) {
+				g.setColor(p.getColor());
+				g.drawString(dateStr, x
+					- metrics.stringWidth(dateStr)
+					- properties.getScalePixcelSize(), round(top
+					+ y
+					+ metrics.getAscent()
+					/ DATE_STRING_RATE));
+			}
 		}
 	}
 }

@@ -44,15 +44,17 @@ public abstract class AbstractGraphDraw implements GraphDraw {
 	}
 
 	public void drawUnitMark(Graphics g, int top, int x, int drawSeriesIndex) {
-		SeriesProperties seriesProperties =
-			properties.getSeriesGroup().getSeriesProperties().get(
-				drawSeriesIndex);
-		String unitMark = getUnitMark(seriesProperties);
-		FontMetrics metrics = g.getFontMetrics();
-		if (seriesProperties.isVisible()) {
-			g.drawString(unitMark, x
-				- metrics.stringWidth(unitMark)
-				- properties.getScalePixcelSize(), top - metrics.getHeight());
+		if (properties.isVisibleVerticalString()) {
+			SeriesProperties seriesProperties =
+				properties.getSeriesGroup().getSeriesProperties().get(
+					drawSeriesIndex);
+			String unitMark = getUnitMark(seriesProperties);
+			FontMetrics metrics = g.getFontMetrics();
+			if (seriesProperties.isVisible()) {
+				g.drawString(unitMark, x
+					- metrics.stringWidth(unitMark)
+					- properties.getScalePixcelSize(), top - metrics.getHeight());
+			}
 		}
 	}
 

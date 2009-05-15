@@ -88,7 +88,15 @@ public class TrendRuleSetTest extends TestCase {
 		assertEquals("trend1.xml", td3.getPagefile());
 		assertEquals("yellow, magenta, cyan, red, lime, white", td3
 			.getSeriesColors());
-		assertEquals(new Integer(1000), td3.getMaxRecord());
+		assertEquals(new Integer(2000), td3.getMaxRecord());
+		assertTrue(td3.isVisibleReferenceLine());
+		assertTrue(td3.isVisibleScroolbar());
+		assertTrue(td3.isVisibleSeries());
+		assertTrue(td3.isVisibleStatus());
+		assertTrue(td3.isVisibleToolbar());
+		assertTrue(td3.isVisibleVerticalString());
+		assertTrue(td3.isCompositionMode());
+		assertTrue(td3.isAllSpanDisplayMode());
 
 		List<SeriesData> sds = td3.getSeriesDatas();
 		assertEquals(2, sds.size());

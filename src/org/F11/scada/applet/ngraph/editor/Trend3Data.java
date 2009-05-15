@@ -60,6 +60,14 @@ public class Trend3Data implements Serializable {
 	/** 横スケール変更ボタンのプロパティー */
 	private List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties;
 	private Integer maxRecord;
+	private boolean isVisibleToolbar;
+	private boolean isVisibleSeries;
+	private boolean isVisibleStatus;
+	private boolean isVisibleScroolbar;
+	private boolean isVisibleReferenceLine;
+	private boolean isVisibleVerticalString;
+	private boolean isCompositionMode;
+	private boolean isAllSpanDisplayMode;
 
 	public Integer getX() {
 		return x;
@@ -263,6 +271,70 @@ public class Trend3Data implements Serializable {
 		this.maxRecord = maxRecord;
 	}
 
+	public boolean isVisibleToolbar() {
+		return isVisibleToolbar;
+	}
+
+	public void setVisibleToolbar(boolean isVisibleToolbar) {
+		this.isVisibleToolbar = isVisibleToolbar;
+	}
+
+	public boolean isVisibleSeries() {
+		return isVisibleSeries;
+	}
+
+	public void setVisibleSeries(boolean isVisibleSeries) {
+		this.isVisibleSeries = isVisibleSeries;
+	}
+
+	public boolean isVisibleStatus() {
+		return isVisibleStatus;
+	}
+
+	public void setVisibleStatus(boolean isVisibleStatus) {
+		this.isVisibleStatus = isVisibleStatus;
+	}
+
+	public boolean isVisibleScroolbar() {
+		return isVisibleScroolbar;
+	}
+
+	public void setVisibleScroolbar(boolean isVisibleScroolbar) {
+		this.isVisibleScroolbar = isVisibleScroolbar;
+	}
+
+	public boolean isVisibleReferenceLine() {
+		return isVisibleReferenceLine;
+	}
+
+	public void setVisibleReferenceLine(boolean isVisibleReferenceLine) {
+		this.isVisibleReferenceLine = isVisibleReferenceLine;
+	}
+
+	public boolean isVisibleVerticalString() {
+		return isVisibleVerticalString;
+	}
+
+	public void setVisibleVerticalString(boolean isVisibleVerticalString) {
+		this.isVisibleVerticalString = isVisibleVerticalString;
+	}
+
+	public boolean isCompositionMode() {
+		return isCompositionMode;
+	}
+
+	public void setCompositionMode(boolean isCompositionMode) {
+		this.isCompositionMode = isCompositionMode;
+	}
+
+	public boolean isAllSpanDisplayMode() {
+		return isAllSpanDisplayMode;
+	}
+
+	public void setAllSpanDisplayMode(boolean isAllSpanDisplayMode) {
+		this.isAllSpanDisplayMode = isAllSpanDisplayMode;
+	}
+
 	public String getXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("    <trendgraph3");
@@ -290,7 +362,21 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute("verticalScaleColor", verticalScaleColor));
 		sb.append(getAttribute("pagefile", pagefile));
 		sb.append(getAttribute("seriesColors", seriesColors));
-		sb.append(getAttribute("maxRecord", maxRecord)).append(">\n");
+		sb.append(getAttribute("maxRecord", maxRecord));
+		sb.append(getAttribute("visibleToolbar", isVisibleToolbar));
+		sb.append(getAttribute("visibleSeries", isVisibleSeries));
+		sb.append(getAttribute("visibleStatus", isVisibleStatus));
+		sb.append(getAttribute("visibleScroolbar", isVisibleScroolbar));
+		sb
+			.append(getAttribute(
+				"visibleReferenceLine",
+				isVisibleReferenceLine));
+		sb.append(getAttribute(
+			"visibleVerticalString",
+			isVisibleVerticalString));
+		sb.append(getAttribute("compositionMode", isCompositionMode));
+		sb.append(getAttribute("allSpanDisplayMode", isAllSpanDisplayMode));
+		sb.append(">\n");
 		sb.append("      <horizontalScaleButton>\n");
 		for (HorizontalScaleButtonProperty hp : horizontalScaleButtonProperties) {
 			sb.append(hp.getXmlString());

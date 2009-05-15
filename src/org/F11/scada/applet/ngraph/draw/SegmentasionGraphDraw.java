@@ -106,26 +106,29 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 			int y,
 			int i,
 			int drawSeriesIndex) {
-		if (isDrawDateString(i, drawSeriesIndex)) {
-			SeriesProperties p =
-				properties.getSeriesGroup().getSeriesProperties().get(
-					drawSeriesIndex);
-			float max = p.getMax();
-			DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
-			String dateStr =
-				f
-					.format(max
-						- (i - drawSeriesIndex * 2)
-						* ((max - p.getMin()) / properties.getVerticalCount() * getHalfVerticalCount()));
-			FontMetrics metrics = g.getFontMetrics();
-			if (p.isVisible()) {
-				g.setColor(p.getColor());
-				g.drawString(dateStr, x
-					- metrics.stringWidth(dateStr)
-					- properties.getScalePixcelSize(), Math.round(top
-					+ y
-					+ metrics.getAscent()
-					/ DATE_STRING_RATE));
+		if (properties.isVisibleVerticalString()) {
+			if (isDrawDateString(i, drawSeriesIndex)) {
+				SeriesProperties p =
+					properties.getSeriesGroup().getSeriesProperties().get(
+						drawSeriesIndex);
+				float max = p.getMax();
+				DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
+				String dateStr =
+					f
+						.format(max
+							- (i - drawSeriesIndex * 2)
+							* ((max - p.getMin())
+								/ properties.getVerticalCount() * getHalfVerticalCount()));
+				FontMetrics metrics = g.getFontMetrics();
+				if (p.isVisible()) {
+					g.setColor(p.getColor());
+					g.drawString(dateStr, x
+						- metrics.stringWidth(dateStr)
+						- properties.getScalePixcelSize(), Math.round(top
+						+ y
+						+ metrics.getAscent()
+						/ DATE_STRING_RATE));
+				}
 			}
 		}
 	}

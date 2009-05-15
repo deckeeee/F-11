@@ -81,6 +81,22 @@ public class GraphProperties {
 	private List<HorizontalScaleButtonProperty> horizontalScaleButtonProperty;
 	/** トレンドグラフ最大表示レコード */
 	private int maxRecord;
+	/** ツールバー表示の有無 */
+	private boolean isVisibleToolbar;
+	/** シリーズ表示の有無 */
+	private boolean isVisibleSeries;
+	/** ステータス表示の有無 */
+	private boolean isVisibleStatus;
+	/** スクロールバー表示の有無 */
+	private boolean isVisibleScroolbar;
+	/** 参照位置線表示の有無 */
+	private boolean isVisibleReferenceLine;
+	/** 縦スケール文字表示の有無 */
+	private boolean isVisibleVerticalString;
+	/** 現在の合成・分離表示モード */
+	private boolean isCompositionMode = true;
+	/** 現在のスパン表示モード */
+	private boolean isAllSpanDisplayMode;
 
 	public GraphProperties() {
 		changeSupport = new PropertyChangeSupport(this);
@@ -427,37 +443,221 @@ public class GraphProperties {
 		return 0 <= groupNo && seriesGroups.size() - 1 >= groupNo;
 	}
 
+	/**
+	 * グラフ定義ファイル名を返します
+	 * 
+	 * @return グラフ定義ファイル名を返します
+	 */
 	public String getPagefile() {
 		return pagefile;
 	}
 
+	/**
+	 * グラフ定義ファイル名を設定します
+	 * 
+	 * @param pagefile グラフ定義ファイル名を設定します
+	 */
 	public void setPagefile(String pagefile) {
 		this.pagefile = pagefile;
 	}
 
+	/**
+	 * ｽﾊﾟﾝ全表示の横幅ピクセル数を返します
+	 * 
+	 * @return ｽﾊﾟﾝ全表示の横幅ピクセル数を返します
+	 */
 	public int getHorizontalForAllSpanMode() {
 		return horizontalForAllSpanMode;
 	}
 
+	/**
+	 * ｽﾊﾟﾝ略表示の横幅ピクセル数を返します
+	 * 
+	 * @return ｽﾊﾟﾝ略表示の横幅ピクセル数を返します
+	 */
 	public int getHorizontalForSelectSpanMode() {
 		return horizontalForSelectSpanMode;
 	}
 
+	/**
+	 * 横スケール変更ボタンのプロパティーを返します
+	 * 
+	 * @return 横スケール変更ボタンのプロパティーを返します
+	 */
 	public List<HorizontalScaleButtonProperty> getHorizontalScaleButtonProperty() {
 		return horizontalScaleButtonProperty;
 	}
 
+	/**
+	 * 横スケール変更ボタンのプロパティーを設定します
+	 * 
+	 * @param horizontalScaleButtonProperty 横スケール変更ボタンのプロパティー
+	 */
 	public void setHorizontalScaleButtonProperty(
 			List<HorizontalScaleButtonProperty> horizontalScaleButtonProperty) {
 		this.horizontalScaleButtonProperty = horizontalScaleButtonProperty;
 	}
 
+	/**
+	 * トレンドグラフ最大表示レコードを返します
+	 * 
+	 * @return トレンドグラフ最大表示レコードを返します
+	 */
 	public int getMaxRecord() {
 		return maxRecord;
 	}
 
+	/**
+	 * トレンドグラフ最大表示レコードを設定します
+	 * 
+	 * @param maxRecord トレンドグラフ最大表示レコード
+	 */
 	public void setMaxRecord(int maxRecord) {
 		this.maxRecord = maxRecord;
 	}
-	
+
+	/**
+	 * ツールバー表示の有無を返します
+	 * 
+	 * @return ツールバー表示の有無を返します
+	 */
+	public boolean isVisibleToolbar() {
+		return isVisibleToolbar;
+	}
+
+	/**
+	 * ツールバー表示の有無を設定します
+	 * 
+	 * @param isVisibleToolbar ツールバー表示の有無
+	 */
+	public void setVisibleToolbar(boolean isVisibleToolbar) {
+		this.isVisibleToolbar = isVisibleToolbar;
+	}
+
+	/**
+	 * シリーズ表示の有無を返します
+	 * 
+	 * @return シリーズ表示の有無を返します
+	 */
+	public boolean isVisibleSeries() {
+		return isVisibleSeries;
+	}
+
+	/**
+	 * シリーズ表示の有無を設定します
+	 * 
+	 * @param isVisibleSeries シリーズ表示の有無
+	 */
+	public void setVisibleSeries(boolean isVisibleSeries) {
+		this.isVisibleSeries = isVisibleSeries;
+	}
+
+	/**
+	 * ステータス表示の有無を返します
+	 * 
+	 * @return ステータス表示の有無
+	 */
+	public boolean isVisibleStatus() {
+		return isVisibleStatus;
+	}
+
+	/**
+	 * ステータス表示の有無を設定します
+	 * 
+	 * @param isVisibleStatus ステータス表示の有無
+	 */
+	public void setVisibleStatus(boolean isVisibleStatus) {
+		this.isVisibleStatus = isVisibleStatus;
+	}
+
+	/**
+	 * スクロールバー表示の有無を返します
+	 * 
+	 * @return スクロールバー表示の有無
+	 */
+	public boolean isVisibleScroolbar() {
+		return isVisibleScroolbar;
+	}
+
+	/**
+	 * スクロールバー表示の有無を設定します
+	 * 
+	 * @param isVisibleScroolbar スクロールバー表示の有無
+	 */
+	public void setVisibleScroolbar(boolean isVisibleScroolbar) {
+		this.isVisibleScroolbar = isVisibleScroolbar;
+	}
+
+	/**
+	 * 参照位置線表示の有無を返します
+	 * 
+	 * @return 参照位置線表示の有無を返します
+	 */
+	public boolean isVisibleReferenceLine() {
+		return isVisibleReferenceLine;
+	}
+
+	/**
+	 * 参照位置線表示の有無を設定します
+	 * 
+	 * @param isVisibleReferenceLine 参照位置線表示の有無
+	 */
+	public void setVisibleReferenceLine(boolean isVisibleReferenceLine) {
+		this.isVisibleReferenceLine = isVisibleReferenceLine;
+	}
+
+	/**
+	 * 縦スケール文字表示の有無を返します
+	 * 
+	 * @return 縦スケール文字表示の有無を返します
+	 */
+	public boolean isVisibleVerticalString() {
+		return isVisibleVerticalString;
+	}
+
+	/**
+	 * 縦スケール文字表示の有無を設定します
+	 * 
+	 * @param isVisibleVerticalString 縦スケール文字表示の有無
+	 */
+	public void setVisibleVerticalString(boolean isVisibleVerticalString) {
+		this.isVisibleVerticalString = isVisibleVerticalString;
+	}
+
+	/**
+	 * 現在の合成・分離表示モードを返します
+	 * 
+	 * @return 現在の合成・分離表示モードを返します
+	 */
+	public boolean isCompositionMode() {
+		return isCompositionMode;
+	}
+
+	/**
+	 * 現在の合成・分離表示モードを設定します
+	 * 
+	 * @param isCompositionMode 現在の合成・分離表示モード
+	 */
+	public void setCompositionMode(boolean isCompositionMode) {
+		this.isCompositionMode = isCompositionMode;
+	}
+
+	/**
+	 * 現在のスパン表示モードを返します
+	 * 
+	 * @return 現在のスパン表示モードを返します
+	 */
+	public boolean isAllSpanDisplayMode() {
+		return isAllSpanDisplayMode;
+	}
+
+	/**
+	 * 現在のスパン表示モードを設定します
+	 * 
+	 * @param isAllSpanDisplayMode 現在のスパン表示モード
+	 */
+	public void setAllSpanDisplayMode(boolean isAllSpanDisplayMode) {
+		this.isAllSpanDisplayMode = isAllSpanDisplayMode;
+	}
+
 }
