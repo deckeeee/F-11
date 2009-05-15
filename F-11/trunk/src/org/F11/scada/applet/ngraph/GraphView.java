@@ -54,6 +54,7 @@ import org.F11.scada.applet.ngraph.draw.SegmentasionGraphDraw;
 import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 import org.F11.scada.applet.ngraph.model.GraphModel;
 import org.F11.scada.applet.ngraph.util.MapUtil;
+import org.F11.scada.util.ThreadUtil;
 import org.apache.commons.collections.primitives.DoubleCollections;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
@@ -722,9 +723,10 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			Colleague {
 		private final Mediator mediator;
 		private PropertyChangeEvent event;
-
 		private SortedMap<Date, LogData> mainMap =
 			new TreeMap<Date, LogData>(new ReverseDateComparator());
+		
+		private final Logger logger = Logger.getLogger(GraphModelListener.class);
 
 		GraphModelListener(Mediator mediator) {
 			this.mediator = mediator;
@@ -754,6 +756,22 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 				setDisplayDatas(view);
 			}
 			view.repaint();
+			printMainMap();
+		}
+
+		private void printMainMap() {
+			logger.info("printMainMap>>");
+			int i = 0;
+			for (Map.Entry<Date, LogData> entry : mainMap.entrySet()) {
+				Date date = entry.getKey();
+				logger.info(date);
+				i++;
+				if (i >= 10) {
+					break;
+				}
+			}
+			logger.info("printMainMap<<");
+			ThreadUtil.printSS();
 		}
 
 		private void setDisplayDatas(GraphView view) {

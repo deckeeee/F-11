@@ -60,14 +60,14 @@ public class Trend3Data implements Serializable {
 	/** 横スケール変更ボタンのプロパティー */
 	private List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties;
 	private Integer maxRecord;
-	private boolean isVisibleToolbar;
-	private boolean isVisibleSeries;
-	private boolean isVisibleStatus;
-	private boolean isVisibleScroolbar;
-	private boolean isVisibleReferenceLine;
-	private boolean isVisibleVerticalString;
-	private boolean isCompositionMode;
-	private boolean isAllSpanDisplayMode;
+	private Boolean isVisibleToolbar;
+	private Boolean isVisibleSeries;
+	private Boolean isVisibleStatus;
+	private Boolean isVisibleScroolbar;
+	private Boolean isVisibleReferenceLine;
+	private Boolean isVisibleVerticalString;
+	private Boolean isCompositionMode;
+	private Boolean isAllSpanDisplayMode;
 
 	public Integer getX() {
 		return x;
@@ -271,67 +271,67 @@ public class Trend3Data implements Serializable {
 		this.maxRecord = maxRecord;
 	}
 
-	public boolean isVisibleToolbar() {
+	public Boolean isVisibleToolbar() {
 		return isVisibleToolbar;
 	}
 
-	public void setVisibleToolbar(boolean isVisibleToolbar) {
+	public void setVisibleToolbar(Boolean isVisibleToolbar) {
 		this.isVisibleToolbar = isVisibleToolbar;
 	}
 
-	public boolean isVisibleSeries() {
+	public Boolean isVisibleSeries() {
 		return isVisibleSeries;
 	}
 
-	public void setVisibleSeries(boolean isVisibleSeries) {
+	public void setVisibleSeries(Boolean isVisibleSeries) {
 		this.isVisibleSeries = isVisibleSeries;
 	}
 
-	public boolean isVisibleStatus() {
+	public Boolean isVisibleStatus() {
 		return isVisibleStatus;
 	}
 
-	public void setVisibleStatus(boolean isVisibleStatus) {
+	public void setVisibleStatus(Boolean isVisibleStatus) {
 		this.isVisibleStatus = isVisibleStatus;
 	}
 
-	public boolean isVisibleScroolbar() {
+	public Boolean isVisibleScroolbar() {
 		return isVisibleScroolbar;
 	}
 
-	public void setVisibleScroolbar(boolean isVisibleScroolbar) {
+	public void setVisibleScroolbar(Boolean isVisibleScroolbar) {
 		this.isVisibleScroolbar = isVisibleScroolbar;
 	}
 
-	public boolean isVisibleReferenceLine() {
+	public Boolean isVisibleReferenceLine() {
 		return isVisibleReferenceLine;
 	}
 
-	public void setVisibleReferenceLine(boolean isVisibleReferenceLine) {
+	public void setVisibleReferenceLine(Boolean isVisibleReferenceLine) {
 		this.isVisibleReferenceLine = isVisibleReferenceLine;
 	}
 
-	public boolean isVisibleVerticalString() {
+	public Boolean isVisibleVerticalString() {
 		return isVisibleVerticalString;
 	}
 
-	public void setVisibleVerticalString(boolean isVisibleVerticalString) {
+	public void setVisibleVerticalString(Boolean isVisibleVerticalString) {
 		this.isVisibleVerticalString = isVisibleVerticalString;
 	}
 
-	public boolean isCompositionMode() {
+	public Boolean isCompositionMode() {
 		return isCompositionMode;
 	}
 
-	public void setCompositionMode(boolean isCompositionMode) {
+	public void setCompositionMode(Boolean isCompositionMode) {
 		this.isCompositionMode = isCompositionMode;
 	}
 
-	public boolean isAllSpanDisplayMode() {
+	public Boolean isAllSpanDisplayMode() {
 		return isAllSpanDisplayMode;
 	}
 
-	public void setAllSpanDisplayMode(boolean isAllSpanDisplayMode) {
+	public void setAllSpanDisplayMode(Boolean isAllSpanDisplayMode) {
 		this.isAllSpanDisplayMode = isAllSpanDisplayMode;
 	}
 

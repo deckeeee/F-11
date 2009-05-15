@@ -181,7 +181,7 @@ public class DefaultGraphModel extends AbstractGraphModel {
 
 		private void setCurrentTimestamp(Map<Timestamp, DoubleList> map) {
 			for (Timestamp timestamp : map.keySet()) {
-				if (currentTimestamp.after(timestamp)) {
+				if (timestamp.after(currentTimestamp)) {
 					currentTimestamp = timestamp;
 				}
 			}
