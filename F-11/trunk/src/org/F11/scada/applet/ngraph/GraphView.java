@@ -95,10 +95,6 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 	private int seriesMaxCount;
 	/** 現在の表示データモード */
 	private boolean isAllDataDisplayMode;
-	/** 現在の合成・分離表示モード */
-	private boolean isCompositionMode = true;
-	/** 現在のスパン表示モード */
-	private boolean isAllSpanDisplayMode;
 	/** グラフ描画オブジェクトのマップ */
 	private final Map<Boolean, GraphDraw> graphDrawMap;
 	/** グラフ画面クリック時の参照データ */
@@ -197,11 +193,11 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	private void drawSeries(Graphics g) {
 		try {
-			graphDrawMap.get(isCompositionMode).drawSeries(
+			graphDrawMap.get(graphProperties.isCompositionMode()).drawSeries(
 				g,
 				scrollBarIndex,
 				displayDatas,
-				isAllSpanDisplayMode);
+				graphProperties.isAllSpanDisplayMode());
 		} catch (Exception e) {
 			logger.info("scrollBarIndex=" + scrollBarIndex, e);
 		}
@@ -240,7 +236,9 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	private boolean isWriteHScale(int i) {
 		return i == 0
-			|| i % graphProperties.getHorizontalScale(isAllSpanDisplayMode) == 0;
+			|| i
+				% graphProperties.getHorizontalScale(graphProperties
+					.isAllSpanDisplayMode()) == 0;
 	}
 
 	private void drawHorizontalString(
@@ -317,7 +315,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		int top = graphProperties.getInsets().top;
 		int x1 = graphProperties.getInsets().left;
 		g.setFont(graphProperties.getFont());
-		GraphDraw gd = graphDrawMap.get(isCompositionMode);
+		GraphDraw gd = graphDrawMap.get(graphProperties.isCompositionMode());
 		gd.drawUnitMark(g, top, x1, selectSeriesIndex);
 		for (int i = 0; i <= graphProperties.getVerticalCount(); i++) {
 			int vs = i * graphProperties.getVerticalScale();
@@ -352,7 +350,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			g2d.drawLine(x1, top + vs, x1
 				+ graphProperties.getScalePixcelSize(), top + vs);
 		}
-		if (isAllSpanDisplayMode) {
+		if (graphProperties.isAllSpanDisplayMode()) {
 			drawAllSpan(g);
 		}
 	}
@@ -373,7 +371,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		int x1 = left + horizontalLine;
 		int i = 1;
 		FontMetrics metrics = g.getFontMetrics();
-		GraphDraw gd = graphDrawMap.get(isCompositionMode);
+		GraphDraw gd = graphDrawMap.get(graphProperties.isCompositionMode());
 		for (SeriesProperties sp : sps) {
 			if (sp.isVisible()) {
 				// 全スパン表示時の間隔。シリーズが増えた場合減らす必要がある。自動ではないほうがよいか?
@@ -440,7 +438,8 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 	}
 
 	private boolean isGraphViewContent(int x) {
-		return graphProperties.getInsets().left <= x
+		return graphProperties.isVisibleReferenceLine()
+			&& graphProperties.getInsets().left <= x
 			&& graphProperties.getInsets().left + getHorizontalLine() >= x;
 	}
 
@@ -556,7 +555,8 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 	 * 
 	 */
 	public void changeSpanDisplayMode() {
-		isAllSpanDisplayMode = isAllSpanDisplayMode ? false : true;
+		graphProperties.setAllSpanDisplayMode(graphProperties
+			.isAllSpanDisplayMode() ? false : true);
 		repaint();
 	}
 
@@ -565,13 +565,19 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 	 * 
 	 */
 	public void changeDrawSeriesMode() {
-		isCompositionMode = isCompositionMode ? false : true;
-		if (isCompositionMode) {
+		graphProperties.setCompositionMode((graphProperties.isCompositionMode()
+			? false
+			: true));
+		setVerticalCount();
+		repaint();
+	}
+
+	private void setVerticalCount() {
+		if (graphProperties.isCompositionMode()) {
 			setVerticalCount(10);
 		} else {
 			setVerticalCount(seriesMaxCount * 2);
 		}
-		repaint();
 	}
 
 	private void setVerticalCount(int verticalCount) {
@@ -597,6 +603,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 	 */
 	public void setSeriesMaxCount(int maxCount) {
 		seriesMaxCount = maxCount;
+		setVerticalCount();
 	}
 
 	/**
@@ -683,7 +690,8 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 	 * @return グラフの横軸の長さを返します(ピクセル)
 	 */
 	public int getHorizontalLine() {
-		return graphProperties.getHorizontalLine(isAllSpanDisplayMode);
+		return graphProperties.getHorizontalLine(graphProperties
+			.isAllSpanDisplayMode());
 	}
 
 	public void colleaguChanged(Colleague colleague) {

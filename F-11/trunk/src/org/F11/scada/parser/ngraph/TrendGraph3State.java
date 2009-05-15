@@ -91,6 +91,22 @@ public class TrendGraph3State implements State {
 	List<HorizontalScaleButtonProperty> scaleButtonProperties;
 	/** トレンドグラフ最大表示レコード */
 	private int maxRecord;
+	/** ツールバー表示の有無 */
+	private boolean isVisibleToolbar;
+	/** シリーズ表示の有無 */
+	private boolean isVisibleSeries;
+	/** ステータス表示の有無 */
+	private boolean isVisibleStatus;
+	/** スクロールバー表示の有無 */
+	private boolean isVisibleScroolbar;
+	/** 参照位置線表示の有無 */
+	private boolean isVisibleReferenceLine;
+	/** 縦スケール文字表示の有無 */
+	private boolean isVisibleVerticalString;
+	/** 現在の合成・分離表示モード */
+	private boolean isCompositionMode;
+	/** 現在のスパン表示モード */
+	private boolean isAllSpanDisplayMode;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -133,6 +149,26 @@ public class TrendGraph3State implements State {
 				"cornflowerblue"));
 		pagefile = atts.getValue("pagefile");
 		maxRecord = Integer.parseInt(getValue(atts, "maxRecord", "5000"));
+		isVisibleToolbar =
+			Boolean.parseBoolean(getValue(atts, "visibleToolbar", "true"));
+		isVisibleSeries =
+			Boolean.parseBoolean(getValue(atts, "visibleSeries", "true"));
+		isVisibleStatus =
+			Boolean.parseBoolean(getValue(atts, "visibleStatus", "true"));
+		isVisibleScroolbar =
+			Boolean.parseBoolean(getValue(atts, "visibleScroolbar", "true"));
+		isVisibleReferenceLine =
+			Boolean.parseBoolean(getValue(
+				atts,
+				"visibleReferenceLine",
+				"true"));
+		isVisibleVerticalString =
+			Boolean.parseBoolean(getValue(atts, "visibleVerticalString", "true"));
+		isCompositionMode =
+			Boolean.parseBoolean(getValue(atts, "compositionMode", "true"));
+		isAllSpanDisplayMode =
+			Boolean
+				.parseBoolean(getValue(atts, "allSpanDisplayMode", "false"));
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
@@ -166,7 +202,9 @@ public class TrendGraph3State implements State {
 				mainPanel.setSize(getNumber(width), getNumber(height));
 			}
 			pageState.addPageSymbol(mainPanel);
-			pageState.setToolBar(mainPanel.getToolBar());
+			if (p.isVisibleToolbar()) {
+				pageState.setToolBar(mainPanel.getToolBar());
+			}
 			stack.pop();
 		}
 	}
@@ -189,6 +227,14 @@ public class TrendGraph3State implements State {
 		p.setVerticalScaleColor(verticalScaleColor);
 		p.setPagefile(pagefile);
 		p.setMaxRecord(maxRecord);
+		p.setVisibleToolbar(isVisibleToolbar);
+		p.setVisibleSeries(isVisibleSeries);
+		p.setVisibleStatus(isVisibleStatus);
+		p.setVisibleScroolbar(isVisibleScroolbar);
+		p.setVisibleReferenceLine(isVisibleReferenceLine);
+		p.setVisibleVerticalString(isVisibleVerticalString);
+		p.setCompositionMode(isCompositionMode);
+		p.setAllSpanDisplayMode(isAllSpanDisplayMode);
 		return p;
 	}
 

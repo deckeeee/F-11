@@ -61,7 +61,15 @@ public class TrendRuleSet extends RuleSetBase {
 			"verticalScaleColor",
 			"pagefile",
 			"seriesColors",
-			"maxRecord", };
+			"maxRecord",
+			"visibleToolbar",
+			"visibleSeries",
+			"visibleStatus",
+			"visibleScroolbar",
+			"visibleReferenceLine",
+			"visibleVerticalString",
+			"compositionMode",
+			"allSpanDisplayMode" };
 	private static final String[] SERIES_ATTRIBUTE = { "groupNo", "groupName" };
 	private static final String[] SERIES_PROPERTIES =
 		{

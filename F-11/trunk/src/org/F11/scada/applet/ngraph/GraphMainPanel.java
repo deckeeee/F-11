@@ -58,6 +58,7 @@ public class GraphMainPanel extends JPanel implements Mediator {
 	private SeriesTableModel seriesModel;
 	private SeriesTable seriesTable;
 	private GraphToolBar graphToolBar;
+	private JScrollPane seriesPane;
 
 	public GraphMainPanel(GraphProperties graphProperties) {
 		super(new BorderLayout());
@@ -81,8 +82,8 @@ public class GraphMainPanel extends JPanel implements Mediator {
 			GraphView.GRAPH_CLICKED_CHANGE,
 			new GraphClickedListener(seriesModel));
 		seriesTable = new SeriesTable(seriesModel, this, graphProperties);
-		JScrollPane spane = new JScrollPane(seriesTable);
-		spane.setPreferredSize(new Dimension(
+		seriesPane = new JScrollPane(seriesTable);
+		seriesPane.setPreferredSize(new Dimension(
 			graphView.getPreferredSize().width,
 			Math.round(seriesTable.getPreferredSize().height
 				+ seriesTable.getRowHeight()
@@ -91,11 +92,24 @@ public class GraphMainPanel extends JPanel implements Mediator {
 		JPanel northPanel = new JPanel(new BorderLayout());
 		graphToolBar = new GraphToolBar(this, graphProperties);
 		// northPanel.add(graphToolBar, BorderLayout.NORTH);
-		northPanel.add(spane, BorderLayout.CENTER);
+		northPanel.add(seriesPane, BorderLayout.CENTER);
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
 		add(scrollBar, BorderLayout.SOUTH);
 		graphModel.setLogName("log_table_minute");
+		visibleSet();
+	}
+
+	private void visibleSet() {
+		if (!graphProperties.isVisibleSeries()) {
+			seriesPane.setVisible(false);
+		}
+		if (!graphProperties.isVisibleStatus()) {
+			statusBar.setVisible(false);
+		}
+		if (!graphProperties.isVisibleScroolbar()) {
+			scrollBar.setVisible(false);
+		}
 	}
 
 	public void colleaguChanged(Colleague colleague) {

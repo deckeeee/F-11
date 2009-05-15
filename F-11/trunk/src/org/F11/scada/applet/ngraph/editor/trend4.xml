@@ -22,7 +22,15 @@
 			verticalScaleColor="white"
 			pagefile="trend1.xml"
 			seriesColors="yellow, magenta, cyan, red, lime, white"
-			maxRecord="2000">
+			maxRecord="2000"
+			visibleToolbar="true"
+			visibleSeries="true"
+			visibleStatus="true"
+			visibleScroolbar="true"
+			visibleReferenceLine="true"
+			visibleVerticalString="true"
+			compositionMode="true"
+			allSpanDisplayMode="true">
 			<horizontalScaleButton>
 				<horizontalScaleButton-property
 					buttonText="4時間" labelText="1分" horizontalCount="5"
