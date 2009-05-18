@@ -54,7 +54,6 @@ public class DefaultGraphModel extends AbstractGraphModel {
 
 	public DefaultGraphModel(GraphProperties graphProperties) {
 		super(graphProperties);
-		service = Executors.newScheduledThreadPool(1);
 		SelectiveValueListHandlerFactory factory =
 			new DefaultSelectiveValueListHandlerFactory();
 		valueListHandler = factory.getSelectiveValueListHandler();
@@ -63,8 +62,10 @@ public class DefaultGraphModel extends AbstractGraphModel {
 	public void initialize() {
 		List<LogData> logData = getLogData();
 		if (0 < logData.size()) {
+			shutdown();
+			service = Executors.newScheduledThreadPool(1);
 			service.scheduleAtFixedRate(
-				getLastLogData(logData),
+				getLoggingTask(logData),
 				getInitialDelay(),
 				60,
 				TimeUnit.SECONDS);
@@ -72,7 +73,7 @@ public class DefaultGraphModel extends AbstractGraphModel {
 		}
 	}
 
-	private LoggingTask getLastLogData(List<LogData> logData) {
+	private LoggingTask getLoggingTask(List<LogData> logData) {
 		return new LoggingTask(logData.get(logData.size() - 1));
 	}
 
@@ -144,7 +145,9 @@ public class DefaultGraphModel extends AbstractGraphModel {
 	}
 
 	public void shutdown() {
-		service.shutdown();
+		if (null != service) {
+			service.shutdown();
+		}
 	}
 
 	private class LoggingTask implements Runnable {
