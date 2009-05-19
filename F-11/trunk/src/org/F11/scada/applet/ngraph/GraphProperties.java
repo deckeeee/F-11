@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.F11.scada.applet.ngraph.model.GraphModel;
-import org.F11.scada.applet.symbol.ColorFactory;
 
 /**
  * トレンドグラフのプロパティ。
@@ -42,35 +41,37 @@ public class GraphProperties {
 	/** このプロパティーのリスナー */
 	private final PropertyChangeSupport changeSupport;
 	/** ｽﾊﾟﾝ全表示の横幅ピクセル数 */
-	private int horizontalForAllSpanMode = 112;
+	private int horizontalForAllSpanMode;
 	/** ｽﾊﾟﾝ略表示の横幅ピクセル数 */
-	private int horizontalForSelectSpanMode = 168;
+	private int horizontalForSelectSpanMode;
 	/** 横目盛の数 */
-	private int horizontalCount = 5;
+	private int horizontalCount;
 	/** 横目盛の時間スケール幅 */
-	private long horizontalLineSpan = 18000000L;
+	private long horizontalLineSpan;
 	/** 日付表示フォーマット */
-	private String dateFormat = "MM/dd";
+	private String dateFormat;
 	/** 時間表示フォーマット */
-	private String timeFormat = "HH:mm";
+	private String timeFormat;
 	/** 縦目盛1つ分のピクセル数 */
-	private int verticalScale = 48;
+	private int verticalScale;
 	/** 縦目盛の数 */
-	private int verticalCount = 10;
+	private int verticalCount;
 	/** 縦目盛のピクセル数 */
 	private int verticalLine;
 	/** 目盛線のピクセル数 */
-	private int scalePixcelSize = 5;
+	private int scalePixcelSize;
+	/** 合成モード縦目盛の数 */
+	private int compositionVerticalCount;
 	/** グラフエリアの余白 */
-	private Insets insets = new Insets(50, 80, 60, 50);
+	private Insets insets;
 	/** 使用フォント */
-	private Font font = new Font("Monospaced", Font.PLAIN, 18);
+	private Font font;
 	/** 線の色 */
-	private Color lineColor = Color.WHITE;
+	private Color lineColor;
 	/** 背景色 */
-	private Color backGround = ColorFactory.getColor("navy");
+	private Color backGround;
 	/** グラフエリアのグリッド色 */
-	private Color verticalScaleColor = ColorFactory.getColor("cornflowerblue");
+	private Color verticalScaleColor;
 	/** シリーズグループのリスト */
 	private List<SeriesGroup> seriesGroups;
 	/** カレントグループNo. */
@@ -114,14 +115,21 @@ public class GraphProperties {
 		changeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
+	public void removePropertyChangeListeners() {
+		PropertyChangeListener[] l = changeSupport.getPropertyChangeListeners();
+		for (PropertyChangeListener listener : l) {
+			changeSupport.removePropertyChangeListener(listener);
+		}
+	}
+
 	/**
-	 * 縦軸の総ピクセル verticalScale × verticalCount
+	 * 縦軸の総ピクセル verticalScale × compositionVerticalCount
 	 * 
-	 * @return 縦軸の総ピクセル verticalScale × verticalCount
+	 * @return 縦軸の総ピクセル verticalScale × compositionVerticalCount
 	 */
 	public int getVerticalLine() {
 		if (verticalLine == 0) {
-			verticalLine = verticalScale * verticalCount;
+			verticalLine = verticalScale * compositionVerticalCount;
 		}
 		return verticalLine;
 	}
@@ -160,6 +168,24 @@ public class GraphProperties {
 	 */
 	public void setVerticalCount(int verticalCount) {
 		this.verticalCount = verticalCount;
+	}
+
+	/**
+	 * 合成表示モードの縦目盛の数
+	 * 
+	 * @return 合成表示モードの縦目盛の数
+	 */
+	public int getCompositionVerticalCount() {
+		return compositionVerticalCount;
+	}
+
+	/**
+	 * 合成表示モードの縦目盛の数を設定します
+	 * 
+	 * @param compositionVerticalCount 合成表示モードの縦目盛の数
+	 */
+	public void setCompositionVerticalCount(int compositionVerticalCount) {
+		this.compositionVerticalCount = compositionVerticalCount;
 	}
 
 	/**

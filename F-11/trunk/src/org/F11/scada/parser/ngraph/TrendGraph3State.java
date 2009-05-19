@@ -71,6 +71,8 @@ public class TrendGraph3State implements State {
 	private int verticalScale;
 	/** 縦目盛の数 */
 	private int verticalCount;
+	/** 合成モードの縦目盛の数 */
+	private int compositionVerticalCount;
 	/** 目盛線のピクセル数 */
 	private int scalePixcelSize;
 	/** グラフエリアの余白 */
@@ -134,6 +136,8 @@ public class TrendGraph3State implements State {
 		timeFormat = getValue(atts, "timeFormat", "HH:mm");
 		verticalScale = Integer.parseInt(getValue(atts, "verticalScale", "48"));
 		verticalCount = Integer.parseInt(getValue(atts, "verticalCount", "10"));
+		compositionVerticalCount =
+			Integer.parseInt(getValue(atts, "compositionVerticalCount", "10"));
 		scalePixcelSize =
 			Integer.parseInt(getValue(atts, "scalePixcelSize", "5"));
 		insets = AttributesUtil.getInsets(atts.getValue("insets"));
@@ -158,17 +162,15 @@ public class TrendGraph3State implements State {
 		isVisibleScroolbar =
 			Boolean.parseBoolean(getValue(atts, "visibleScroolbar", "true"));
 		isVisibleReferenceLine =
-			Boolean.parseBoolean(getValue(
-				atts,
-				"visibleReferenceLine",
-				"true"));
+			Boolean
+				.parseBoolean(getValue(atts, "visibleReferenceLine", "true"));
 		isVisibleVerticalString =
-			Boolean.parseBoolean(getValue(atts, "visibleVerticalString", "true"));
+			Boolean
+				.parseBoolean(getValue(atts, "visibleVerticalString", "true"));
 		isCompositionMode =
 			Boolean.parseBoolean(getValue(atts, "compositionMode", "true"));
 		isAllSpanDisplayMode =
-			Boolean
-				.parseBoolean(getValue(atts, "allSpanDisplayMode", "false"));
+			Boolean.parseBoolean(getValue(atts, "allSpanDisplayMode", "false"));
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
@@ -219,6 +221,7 @@ public class TrendGraph3State implements State {
 		p.setTimeFormat(timeFormat);
 		p.setVerticalScale(verticalScale);
 		p.setVerticalCount(verticalCount);
+		p.setCompositionVerticalCount(compositionVerticalCount);
 		p.setScalePixcelSize(scalePixcelSize);
 		p.setInsets(insets);
 		p.setFont(font);

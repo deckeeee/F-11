@@ -53,6 +53,7 @@ public class TrendRuleSet extends RuleSetBase {
 			"timeFormat",
 			"verticalScale",
 			"verticalCount",
+			"compositionVerticalCount",
 			"scalePixcelSize",
 			"insets",
 			"font",

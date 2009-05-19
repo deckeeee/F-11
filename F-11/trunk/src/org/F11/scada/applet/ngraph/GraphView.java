@@ -67,6 +67,7 @@ import org.apache.log4j.Logger;
  */
 public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		Colleague {
+	private static final long serialVersionUID = -7135402419995170758L;
 	/** 参照データ表示の為にグラフ画面クリック時に発生するイベント名称 */
 	public static final String GRAPH_CLICKED_CHANGE =
 		GraphView.class.getName() + "graph.clicked.change";
@@ -575,7 +576,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	private void setVerticalCount() {
 		if (graphProperties.isCompositionMode()) {
-			setVerticalCount(10);
+			setVerticalCount(graphProperties.getCompositionVerticalCount());
 		} else {
 			setVerticalCount(seriesMaxCount * 2);
 		}
