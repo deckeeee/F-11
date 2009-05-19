@@ -48,6 +48,7 @@ public class Trend3Data implements Serializable {
 	private String timeFormat;
 	private Integer verticalScale;
 	private Integer verticalCount;
+	private Integer compositionVerticalCount;
 	private Integer scalePixcelSize;
 	private String insets;
 	private String font;
@@ -164,6 +165,14 @@ public class Trend3Data implements Serializable {
 
 	public void setVerticalCount(Integer verticalCount) {
 		this.verticalCount = verticalCount;
+	}
+
+	public Integer getCompositionVerticalCount() {
+		return compositionVerticalCount;
+	}
+
+	public void setCompositionVerticalCount(Integer compositionVerticalCount) {
+		this.compositionVerticalCount = compositionVerticalCount;
 	}
 
 	public Integer getScalePixcelSize() {
@@ -354,6 +363,9 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute("timeFormat", timeFormat));
 		sb.append(getAttribute("verticalScale", verticalScale));
 		sb.append(getAttribute("verticalCount", verticalCount));
+		sb.append(getAttribute(
+			"compositionVerticalCount",
+			compositionVerticalCount));
 		sb.append(getAttribute("scalePixcelSize", scalePixcelSize));
 		sb.append(getAttribute("insets", insets));
 		sb.append(getAttribute("font", font));
@@ -367,13 +379,11 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute("visibleSeries", isVisibleSeries));
 		sb.append(getAttribute("visibleStatus", isVisibleStatus));
 		sb.append(getAttribute("visibleScroolbar", isVisibleScroolbar));
+		sb.append(getAttribute("visibleReferenceLine", isVisibleReferenceLine));
 		sb
 			.append(getAttribute(
-				"visibleReferenceLine",
-				isVisibleReferenceLine));
-		sb.append(getAttribute(
-			"visibleVerticalString",
-			isVisibleVerticalString));
+				"visibleVerticalString",
+				isVisibleVerticalString));
 		sb.append(getAttribute("compositionMode", isCompositionMode));
 		sb.append(getAttribute("allSpanDisplayMode", isAllSpanDisplayMode));
 		sb.append(">\n");

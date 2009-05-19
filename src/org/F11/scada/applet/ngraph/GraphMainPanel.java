@@ -34,6 +34,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import org.F11.scada.Service;
 import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 import org.F11.scada.applet.ngraph.model.DefaultAllGraphModel;
 import org.F11.scada.applet.ngraph.model.DefaultGraphModel;
@@ -47,7 +48,7 @@ import org.apache.log4j.Logger;
  * @author maekawa
  * 
  */
-public class GraphMainPanel extends JPanel implements Mediator {
+public class GraphMainPanel extends JPanel implements Mediator, Service {
 	private static final long serialVersionUID = -2337555152897226798L;
 	private final Logger logger = Logger.getLogger(GraphMainPanel.class);
 	private GraphStatusBar statusBar;
@@ -157,6 +158,19 @@ public class GraphMainPanel extends JPanel implements Mediator {
 
 	public JComponent getToolBar() {
 		return graphToolBar;
+	}
+	
+	public void start() {
+	}
+
+	public void stop() {
+		System.out.println("stop");
+		graphProperties.removePropertyChangeListeners();
+		graphModel.shutdown();
+		PropertyChangeListener[] l = graphView.getPropertyChangeListeners();
+		for (PropertyChangeListener listener : l) {
+			graphView.removePropertyChangeListener(listener);
+		}
 	}
 
 	private static class ChangeTableModelListener implements TableModelListener {
