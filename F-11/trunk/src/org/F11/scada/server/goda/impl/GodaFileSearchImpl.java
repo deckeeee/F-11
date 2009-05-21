@@ -26,6 +26,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TreeSet;
 
 import org.F11.scada.server.goda.GodaFileSearch;
@@ -39,7 +40,8 @@ import org.apache.log4j.Logger;
 
 public class GodaFileSearchImpl implements GodaFileSearch {
 	static final String GODA_XML = "goda.xml";
-	static final String LAST_SEND_FILE_KEY = "org.F11.scada.server.goda.impl.LastSendFileKey";
+	static final String LAST_SEND_FILE_KEY =
+		"org.F11.scada.server.goda.impl.LastSendFileKey";
 	private final Logger logger = Logger.getLogger(GodaFileSearchImpl.class);
 
 	public File[] getFiles(GodaTaskProperty property) throws IOException {
@@ -51,8 +53,8 @@ public class GodaFileSearchImpl implements GodaFileSearch {
 			FileConfiguration configuration,
 			GodaTaskProperty property) {
 		File root = new File(property.getWatchPath());
-		File[] files = root
-				.listFiles(new CsvFilenameFilter(".*\\.[cC][sS][vV]"));
+		File[] files =
+			root.listFiles(new CsvFilenameFilter(".*\\.[cC][sS][vV]"));
 		logger.info(Arrays.asList(files));
 		return tailFiles(files, configuration, property);
 	}
@@ -73,9 +75,9 @@ public class GodaFileSearchImpl implements GodaFileSearch {
 			GodaTaskProperty property) {
 		String lastFile = configuration.getString(LAST_SEND_FILE_KEY);
 		return (File[]) new TreeSet(fileSet.tailSet(new File(property
-				.getWatchPath(), lastFile))).headSet(
-				new File(property.getWatchPath(), getLastFile(property)))
-				.toArray(new File[0]);
+			.getWatchPath(), lastFile))).headSet(
+			new File(property.getWatchPath(), getLastFile(property))).toArray(
+			new File[0]);
 	}
 
 	FileConfiguration getConfig(GodaTaskProperty property) throws IOException {
@@ -83,10 +85,11 @@ public class GodaFileSearchImpl implements GodaFileSearch {
 			File file = new File(property.getWatchPath(), GODA_XML);
 			if (!file.exists()) {
 				file.getParentFile().mkdirs();
-				XMLPropertiesConfiguration configuration = new XMLPropertiesConfiguration();
+				XMLPropertiesConfiguration configuration =
+					new XMLPropertiesConfiguration();
 				configuration.addProperty(
-						LAST_SEND_FILE_KEY,
-						getNowFile(property));
+					LAST_SEND_FILE_KEY,
+					getNowFile(property));
 				configuration.save(file);
 				return configuration;
 			} else {
@@ -104,9 +107,12 @@ public class GodaFileSearchImpl implements GodaFileSearch {
 		return DateFormatUtils.format(cal.getTime(), property.getFileFormat());
 	}
 
-	public void setLastFile(GodaTaskProperty property) throws IOException {
+	public void setLastFile(GodaTaskProperty property, Date date)
+			throws IOException {
 		FileConfiguration configuration = getConfig(property);
-		configuration.setProperty(LAST_SEND_FILE_KEY, getLastFile(property));
+		configuration.setProperty(LAST_SEND_FILE_KEY, DateFormatUtils.format(
+			date,
+			property.getFileFormat()));
 		try {
 			configuration.save();
 		} catch (ConfigurationException e) {

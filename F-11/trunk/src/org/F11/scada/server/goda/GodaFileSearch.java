@@ -23,9 +23,10 @@ package org.F11.scada.server.goda;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public interface GodaFileSearch {
 	File[] getFiles(GodaTaskProperty property) throws IOException;
 
-	void setLastFile(GodaTaskProperty property) throws IOException;
+	void setLastFile(GodaTaskProperty property, Date date) throws IOException;
 }

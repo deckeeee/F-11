@@ -137,8 +137,8 @@ public class GodaFileSearchImplTest extends S2TestCase {
 			assertEquals(DateFormatUtils.format(cal.getTime(), property
 					.getFileFormat()), fileConfiguration
 					.getString(GodaFileSearchImpl.LAST_SEND_FILE_KEY));
-			search.setLastFile(property);
 			cal = Calendar.getInstance();
+			search.setLastFile(property, cal.getTime());
 			fileConfiguration = searchImpl.getConfig(property);
 			assertEquals(DateFormatUtils.format(cal.getTime(), property
 					.getFileFormat()), fileConfiguration
