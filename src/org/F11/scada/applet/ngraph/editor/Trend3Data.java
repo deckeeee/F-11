@@ -42,8 +42,6 @@ public class Trend3Data implements Serializable {
 	private Integer height;
 	private Integer horizontalForAllSpanMode;
 	private Integer horizontalForSelectSpanMode;
-	private Integer horizontalCount;
-	private Integer horizontalLineSpan;
 	private String dateFormat;
 	private String timeFormat;
 	private Integer verticalScale;
@@ -117,22 +115,6 @@ public class Trend3Data implements Serializable {
 	public void setHorizontalForSelectSpanMode(
 			Integer horizontalForSelectSpanMode) {
 		this.horizontalForSelectSpanMode = horizontalForSelectSpanMode;
-	}
-
-	public Integer getHorizontalCount() {
-		return horizontalCount;
-	}
-
-	public void setHorizontalCount(Integer horizontalCount) {
-		this.horizontalCount = horizontalCount;
-	}
-
-	public Integer getHorizontalLineSpan() {
-		return horizontalLineSpan;
-	}
-
-	public void setHorizontalLineSpan(Integer horizontalLineSpan) {
-		this.horizontalLineSpan = horizontalLineSpan;
 	}
 
 	public String getDateFormat() {
@@ -357,8 +339,6 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute(
 			"horizontalForSelectSpanMode",
 			horizontalForSelectSpanMode));
-		sb.append(getAttribute("horizontalCount", horizontalCount));
-		sb.append(getAttribute("horizontalLineSpan", horizontalLineSpan));
 		sb.append(getAttribute("dateFormat", dateFormat));
 		sb.append(getAttribute("timeFormat", timeFormat));
 		sb.append(getAttribute("verticalScale", verticalScale));

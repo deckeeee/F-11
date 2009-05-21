@@ -56,6 +56,7 @@ public class TaskState implements State, TaskStateble {
 
 	private boolean milliOffsetMode;
 	private String tables;
+	private boolean isPadding;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -80,6 +81,7 @@ public class TaskState implements State, TaskStateble {
 		}
 		milliOffsetMode =
 			Boolean.valueOf(atts.getValue("milliOffsetMode")).booleanValue();
+		isPadding = Boolean.valueOf(atts.getValue("isPadding")).booleanValue();
 
 		dataHolders = new ArrayList();
 		loggingDataListeners = new ArrayList();
@@ -122,7 +124,8 @@ public class TaskState implements State, TaskStateble {
 						factoryName,
 						state.handlerManager,
 						schedule,
-						getTables());
+						getTables(),
+						isPadding);
 				setSchedule(task);
 			} else {
 				LoggingDefaultTask task =
@@ -132,7 +135,8 @@ public class TaskState implements State, TaskStateble {
 						factoryName,
 						state.handlerManager,
 						schedule,
-						getTables());
+						getTables(),
+						isPadding);
 				setSchedule(task);
 			}
 		} catch (Exception e) {

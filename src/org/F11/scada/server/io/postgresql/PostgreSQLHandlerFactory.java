@@ -36,8 +36,8 @@ import org.F11.scada.server.io.ValueListHandlerElement;
  * PostgreSQL のハンドラーファクトリークラスを生成します。
  */
 public class PostgreSQLHandlerFactory extends HandlerFactory {
-	public LoggingDataListener createStoreHandler(String device) throws SQLException {
-		return new PostgreSQLStoreHandler(device);
+	public LoggingDataListener createStoreHandler(String device, boolean isPadding) throws SQLException {
+		return new PostgreSQLStoreHandler(device, isPadding);
 	}
 
 	/*

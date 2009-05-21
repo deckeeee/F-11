@@ -51,9 +51,17 @@ public class LoggingDefaultTask extends LoggingTask {
 			String factoryName,
 			ValueListHandlerManager handlerManager,
 			String schedule,
-			List<String> tables) throws SQLException, MalformedURLException,
+			List<String> tables,
+			boolean isPadding) throws SQLException, MalformedURLException,
 			RemoteException {
-		super(name, dataHolders, factoryName, handlerManager, schedule, tables);
+		super(
+			name,
+			dataHolders,
+			factoryName,
+			handlerManager,
+			schedule,
+			tables,
+			isPadding);
 		logger.info(LoggingDefaultTask.class.getName() + "開始");
 	}
 
@@ -67,7 +75,7 @@ public class LoggingDefaultTask extends LoggingTask {
 		cal.set(Calendar.SECOND, 0);
 		Timestamp today = new Timestamp(cal.getTimeInMillis());
 		if (isFirst) {
-			//TODO PadingLogicで一つ前の日付をtodayに入れる
+			// TODO PadingLogicで一つ前の日付をtodayに入れる
 			isFirst = false;
 		}
 		// dataHoldersより文字列→データホルダーしイベント発火する。

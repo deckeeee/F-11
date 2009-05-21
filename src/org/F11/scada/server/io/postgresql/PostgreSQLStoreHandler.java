@@ -70,11 +70,13 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 	private MultiRecordDefineDao dao_;
 
 	private final Map<String, PaddingLogic> logicMap;
+	
+	private boolean isPadding;
 
 	/**
 	 * コンストラクタ
 	 */
-	public PostgreSQLStoreHandler(String deviceName) {
+	public PostgreSQLStoreHandler(String deviceName, boolean isPadding) {
 		logger = Logger.getLogger(getClass().getName());
 		this.deviceName = deviceName;
 		queue = new LoggingDataEventQueue();
@@ -85,6 +87,7 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 			(MultiRecordDefineDao) container
 				.getComponent(MultiRecordDefineDao.class);
 		logicMap = PaddingMapFactory.createLogicMap();
+		this.isPadding = isPadding;
 		start();
 	}
 
@@ -117,7 +120,7 @@ public class PostgreSQLStoreHandler implements Runnable, LoggingDataListener,
 			Object obj = event.getSource();
 			if (tableCheck && obj instanceof LoggingTask) {
 				LoggingTask lt = (LoggingTask) obj;
-				if (logicMap.containsKey(lt.getSchedule())) {
+				if (isPadding && logicMap.containsKey(lt.getSchedule())) {
 					PaddingLogic logic = logicMap.get(lt.getSchedule());
 					logic
 						.insertPadding(con, deviceName, dataHolders, timestamp);

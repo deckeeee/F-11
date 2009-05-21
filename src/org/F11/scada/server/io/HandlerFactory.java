@@ -55,10 +55,11 @@ public abstract class HandlerFactory {
 	 * データ更新用データハンドラを返すファクトリーメソッドです。サブクラスで実装してください。
 	 * 
 	 * @param device デバイス名(通常はテーブル名、ファイル名)
+	 * @param isPadding TODO
 	 * @return データ更新用データハンドラ
 	 * @exception SQLException DBMSコネクトが失敗したときスローされます。
 	 */
-	public abstract LoggingDataListener createStoreHandler(String device)
+	public abstract LoggingDataListener createStoreHandler(String device, boolean isPadding)
 			throws SQLException;
 
 	/**

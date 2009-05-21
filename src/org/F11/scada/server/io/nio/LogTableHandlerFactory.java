@@ -40,7 +40,7 @@ import org.seasar.framework.container.S2Container;
 public class LogTableHandlerFactory extends HandlerFactory {
 	private S2Container container = S2ContainerUtil.getS2Container();
 
-	public LoggingDataListener createStoreHandler(String device)
+	public LoggingDataListener createStoreHandler(String device, boolean isPadding)
 			throws SQLException {
 		LogTableStoreHandler handler =
 			(LogTableStoreHandler) container.getComponent(LogTableStoreHandler.class);

@@ -165,10 +165,6 @@ public final class ConvertValue implements Serializable {
 					PowerFactorType valuePFType) {
 				double result =
 					convertDoubleValue(convertMin, convertMax, inputMin, inputMax, value);
-				if (result < Math.min(convertMax, convertMin))
-					result = Math.min(convertMax, convertMin);
-				if (result > Math.max(convertMax, convertMin))
-					result = Math.max(convertMax, convertMin);
 				FormatFactory factory = new FormatFactory();
 				Format format = factory.getFormat(pattern);
 //				DecimalFormat format = new DecimalFormat(pattern);
@@ -210,10 +206,6 @@ public final class ConvertValue implements Serializable {
 					double coefficient = (inputMax - inputMin) / (convertMax - convertMin);
 					result = coefficient * (value - convertMin) + inputMin;
 				}
-				if (result < Math.min(inputMax, inputMin))
-					result = Math.min(inputMax, inputMin);
-				if (result > Math.max(inputMax, inputMin))
-					result = Math.max(inputMax, inputMin);
 				return result;
 			}
 

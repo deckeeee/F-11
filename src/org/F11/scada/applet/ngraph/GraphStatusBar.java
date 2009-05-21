@@ -314,10 +314,6 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 			int min = (int) (horizontalLineSpan / recordeSpan);
 			int maxRecord = e.getProperties().getMaxRecord();
 			e.getScrollBar().setMinimum(Math.min(min, maxRecord));
-			System.out.println("min="
-				+ min
-				+ " max="
-				+ e.getScrollBar().getMaximum());
 		}
 	}
 }

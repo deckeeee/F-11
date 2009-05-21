@@ -59,10 +59,6 @@ public class TrendGraph3State implements State {
 	private int horizontalForAllSpanMode;
 	/** ｽﾊﾟﾝ略表示の横幅ピクセル数 */
 	private int horizontalForSelectSpanMode;
-	/** 横目盛の数 */
-	private int horizontalCount;
-	/** 横目盛の時間スケール幅 */
-	private long horizontalLineSpan;
 	/** 日付表示フォーマット */
 	private String dateFormat;
 	/** 時間表示フォーマット */
@@ -116,10 +112,10 @@ public class TrendGraph3State implements State {
 	public TrendGraph3State(String tagName, Attributes atts, PageState pageState) {
 		seriesGroups = new ArrayList<SeriesGroup>();
 		this.pageState = pageState;
-		x = atts.getValue("x");
-		y = atts.getValue("y");
-		width = atts.getValue("width");
-		height = atts.getValue("height");
+		x = getValue(atts, "x", "0");
+		y = getValue(atts, "y", "0");
+		width = getValue(atts, "width", "1028");
+		height = getValue(atts, "height", "800");
 
 		horizontalForAllSpanMode =
 			Integer.parseInt(getValue(atts, "horizontalForAllSpanMode", "112"));
@@ -128,10 +124,6 @@ public class TrendGraph3State implements State {
 				atts,
 				"horizontalForSelectSpanMode",
 				"168"));
-		horizontalCount =
-			Integer.parseInt(getValue(atts, "horizontalCount", "5"));
-		horizontalLineSpan =
-			Long.parseLong(getValue(atts, "horizontalLineSpan", "18000000"));
 		dateFormat = getValue(atts, "dateFormat", "MM/dd");
 		timeFormat = getValue(atts, "timeFormat", "HH:mm");
 		verticalScale = Integer.parseInt(getValue(atts, "verticalScale", "48"));
@@ -215,8 +207,8 @@ public class TrendGraph3State implements State {
 		GraphProperties p = new GraphProperties();
 		p.setHorizontalForAllSpanMode(horizontalForAllSpanMode);
 		p.setHorizontalForSelectSpanMode(horizontalForSelectSpanMode);
-		p.setHorizontalCount(horizontalCount);
-		p.setHorizontalLineSpan(horizontalLineSpan);
+		p.setHorizontalCount(getHorizontalCount());
+		p.setHorizontalLineSpan(getHorizontalSpan());
 		p.setDateFormat(dateFormat);
 		p.setTimeFormat(timeFormat);
 		p.setVerticalScale(verticalScale);
@@ -239,6 +231,14 @@ public class TrendGraph3State implements State {
 		p.setCompositionMode(isCompositionMode);
 		p.setAllSpanDisplayMode(isAllSpanDisplayMode);
 		return p;
+	}
+
+	private long getHorizontalSpan() {
+		return scaleButtonProperties.get(0).getHorizontalLineSpan();
+	}
+
+	private int getHorizontalCount() {
+		return scaleButtonProperties.get(0).getHorizontalCount();
 	}
 
 	private int getNumber(String string) {
