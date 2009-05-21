@@ -73,8 +73,6 @@ public class TrendRuleSetTest extends TestCase {
 		assertEquals(new Integer(800), td3.getHeight());
 		assertEquals(new Integer(1), td3.getHorizontalForAllSpanMode());
 		assertEquals(new Integer(1), td3.getHorizontalForSelectSpanMode());
-		assertEquals(new Integer(1), td3.getHorizontalCount());
-		assertEquals(new Integer(1), td3.getHorizontalLineSpan());
 		assertEquals("%1$tm", td3.getDateFormat());
 		assertEquals("%1$tH", td3.getTimeFormat());
 		assertEquals(new Integer(1), td3.getVerticalScale());

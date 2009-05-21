@@ -53,6 +53,8 @@ public class PriorityController implements TableModelListener,
 	private TableRowModel currentAlarm;
 	/** 警報音停止タイマー */
 	private AlarmTimer timer = new AlarmTimer();
+	/** クライアント設定 */
+	private final ClientConfiguration configuration;
 
 	public PriorityController(PageChanger pageChanger) {
 		this(pageChanger, new ClientConfiguration());
@@ -62,11 +64,12 @@ public class PriorityController implements TableModelListener,
 			PageChanger pageChanger,
 			ClientConfiguration configuration) {
 		this.pageChanger = pageChanger;
+		this.configuration = configuration;
 		currentAlarm = TableRowModel.INIT_ROW_MODEL;
-		isPriorityControl = getPriorityControl(configuration);
+		isPriorityControl = getPriorityControl();
 	}
 
-	private boolean getPriorityControl(ClientConfiguration configuration) {
+	private boolean getPriorityControl() {
 		return configuration.getBoolean(
 			"org.F11.scada.xwife.applet.alarm.PriorityController",
 			false);
@@ -128,9 +131,16 @@ public class PriorityController implements TableModelListener,
 		if (sound_type != 0) {
 			String sound_path = (String) model.getValueAt(0, 8);
 			pageChanger.playAlarm(sound_path);
-			//TODO 停止タイマーの切り替えと、停止までの時間のリソース化
-			if (false) {
-				timer.playAlarm(pageChanger, 5000L);
+			boolean soundTimer =
+				configuration.getBoolean(
+					"org.F11.scada.xwife.applet.alarm.soundTimer",
+					false);
+			long soundTimerTime =
+				configuration.getLong(
+					"org.F11.scada.xwife.applet.alarm.soundTimerTime",
+					5000L);
+			if (soundTimer) {
+				timer.playAlarm(pageChanger, soundTimerTime);
 			}
 		}
 	}

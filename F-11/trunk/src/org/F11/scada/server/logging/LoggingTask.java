@@ -77,7 +77,8 @@ public class LoggingTask extends TimerTask {
 			String factoryName,
 			ValueListHandlerManager handlerManager,
 			String schedule,
-			List<String> tables)
+			List<String> tables,
+			boolean isPadding)
 			throws SQLException, MalformedURLException, RemoteException {
 		super();
 		this.dataHolders = dataHolders;
@@ -85,7 +86,7 @@ public class LoggingTask extends TimerTask {
 
 		this.factoryName = factoryName;
 		HandlerFactory factory = HandlerFactory.getHandlerFactory(factoryName);
-		addLoggingListener(factory.createStoreHandler(name));
+		addLoggingListener(factory.createStoreHandler(name, isPadding));
 
 		// PostgreSQL Value List Handler
 		handler = factory.createValueListHandler(name, dataHolders);

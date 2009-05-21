@@ -47,8 +47,6 @@ public class TrendRuleSet extends RuleSetBase {
 			"height",
 			"horizontalForAllSpanMode",
 			"horizontalForSelectSpanMode",
-			"horizontalCount",
-			"horizontalLineSpan",
 			"dateFormat",
 			"timeFormat",
 			"verticalScale",

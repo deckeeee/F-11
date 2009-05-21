@@ -92,7 +92,6 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 				* 2.5F)));
 		JPanel northPanel = new JPanel(new BorderLayout());
 		graphToolBar = new GraphToolBar(this, graphProperties);
-		// northPanel.add(graphToolBar, BorderLayout.NORTH);
 		northPanel.add(seriesPane, BorderLayout.CENTER);
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
@@ -164,7 +163,6 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 	}
 
 	public void stop() {
-		System.out.println("stop");
 		graphProperties.removePropertyChangeListeners();
 		graphModel.shutdown();
 		PropertyChangeListener[] l = graphView.getPropertyChangeListeners();

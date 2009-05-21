@@ -62,6 +62,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 	private final JTextField separateScheduleLimit = new JTextField();
 	private final JFormattedTextField treeFontSize =
 		new JFormattedTextField(new DecimalFormat("###"));
+	private final JFormattedTextField soundTimerTime =
+		new JFormattedTextField(new DecimalFormat("#####"));
 
 	public ClientConfTab(Frame parent, StreamManager manager) {
 		super();
@@ -241,7 +243,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		JLabel label = new JLabel("表示方法：", JLabel.RIGHT);
 		label.setToolTipText("[標準]ではツールチップが消えない事がある。");
 		panel.add(label);
-		cb = new JComboBox(new String[]{"カスタム", "標準"});
+		cb = new JComboBox(new String[] { "カスタム", "標準" });
 		if ("false".equals(manager.getClientConf(
 			"xwife.applet.Applet.customTipLocation",
 			"false"))) {
@@ -390,7 +392,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		label = new JLabel("確認ダイアログの有無：");
 		label.setText("PLC書込みに関する全操作について。");
 		mainPanel.add(label);
-		cb = new JComboBox(new String[]{"する", "しない"});
+		cb = new JComboBox(new String[] { "する", "しない" });
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.applet.dialog.isConfirm",
 			"false"))) {
@@ -423,6 +425,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		treeFontSize(mainPanel);
 		alarmTableColumn(mainPanel);
 		screenShot(mainPanel);
+		soundTimer(mainPanel);
+		soundTimerTime(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -504,7 +508,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		JLabel label = new JLabel("TypeDモード：");
 		label.setToolTipText("TypeDで▲ボタンを押下したときの表示方法。");
 		mainPanel.add(label);
-		JComboBox cb = new JComboBox(new String[]{"前の状態を保持", "警報一覧を表示"});
+		JComboBox cb = new JComboBox(new String[] { "前の状態を保持", "警報一覧を表示" });
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.xwife.applet.typeDmode",
 			"false"))) {
@@ -534,7 +538,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		JLabel label = new JLabel("TypeDタブ同期：");
 		label.setToolTipText("TypeD警報一覧の選択タブを同期させるか。");
 		mainPanel.add(label);
-		JComboBox cb = new JComboBox(new String[]{"しない", "する"});
+		JComboBox cb = new JComboBox(new String[] { "しない", "する" });
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.xwife.applet.AppletD.tabsync",
 			"false"))) {
@@ -596,6 +600,50 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(button);
 	}
 
+	private void soundTimer(JPanel mainPanel) {
+		JLabel label = new JLabel("警報音タイマー：");
+		label.setToolTipText("警報音タイマーを使用して自動停止するかの設定");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "しない", "する" });
+		if ("false".equals(manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.soundTimer",
+			"false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("しない".equals(e.getItem())) {
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.alarm.soundTimer",
+							"false");
+					} else {
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.alarm.soundTimer",
+							"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void soundTimerTime(JPanel mainPanel) {
+		// 警報音タイマーで停止するまでの時間
+		mainPanel.add(new JLabel("警報音タイマー："));
+		JPanel panel = new JPanel(new GridLayout(1, 0));
+		soundTimerTime.setText(manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.soundTimerTime",
+			"5000"));
+		soundTimerTime.setInputVerifier(new NumberVerifier("数値"));
+		soundTimerTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
+		soundTimerTime.getDocument().addDocumentListener(this);
+		panel.add(soundTimerTime);
+		mainPanel.add(panel);
+	}
+
 	public void changedUpdate(DocumentEvent e) {
 		eventPaformed(e);
 	}
@@ -647,6 +695,10 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			manager.setClientConf(
 				"org.F11.scada.xwife.applet.pagetree.font",
 				treeFontSize.getText());
+		} else if (e.getDocument() == soundTimerTime.getDocument()) {
+			manager.setClientConf(
+				"org.F11.scada.xwife.applet.alarm.soundTimerTime",
+				soundTimerTime.getText());
 		}
 	}
 
