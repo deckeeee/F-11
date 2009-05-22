@@ -22,6 +22,7 @@
 package org.F11.scada.server.alarm.mail.send;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 
@@ -31,8 +32,14 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.DataProviderDoesNotSupportException;
+import jp.gr.javacons.jim.Manager;
+
 import org.F11.scada.EnvironmentManager;
 import org.F11.scada.Service;
+import org.F11.scada.data.WifeDataDigital;
+import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
 import org.F11.scada.server.alarm.mail.dao.AlarmEmailSentService;
 import org.apache.log4j.Logger;
@@ -105,28 +112,80 @@ public class TransportServiceImpl implements TransportService, Runnable,
 					try {
 						log.info("メール送信開始");
 						core.sendMessage(msg.getMessage(), getAddresses(msg
-								.getAddresses()));
+							.getAddresses()));
 						if (isAlarmEmailSent()) {
 							log.info("メール送信履歴開始");
 							sentService.setAlarmEmailSent(msg.getKey(), msg
-									.getAddresses());
+								.getAddresses());
 						}
 						log.info("メール送信成功");
 						ex = null;
+						if (isMailSendError()) {
+							setMailSendError(false);
+						}
 						break;
 					} catch (MessagingException e) {
 						ex = e;
 						log
-								.info("メール送信処理 (メールサーバーエラー) : リトライ(" + (i + 1)
-										+ ")");
+							.info("メール送信処理 (メールサーバーエラー) : リトライ("
+								+ (i + 1)
+								+ ")");
 						Thread.sleep(waitTime);
 						continue;
 					}
 				}
 				if (null != ex) {
 					log.error("メール送信処理 (メールサーバーエラー) 最大リトライ回数を超えました。", ex);
+					if (!isMailSendError()) {
+						setMailSendError(true);
+					}
 				}
 			} catch (InterruptedException e) {
+			}
+		}
+	}
+
+	private boolean isMailSendError() {
+		String mailErrorHolder =
+			EnvironmentManager.get("/server/mail/errorholder", "");
+		if (!"".equals(mailErrorHolder)) {
+			DataHolder dh =
+				Manager.getInstance().findDataHolder(mailErrorHolder);
+			if (dh != null) {
+				try {
+					WifeDataDigital digital = (WifeDataDigital) dh.getValue();
+					return digital.isOnOff(true);
+				} catch (ClassCastException e) {
+					log.error("ライフチェックにはデジタルタイプを指定してください ("
+						+ dh.getDataHolderName()
+						+ ")", e);
+				}
+			}
+		}
+		return false;
+	}
+
+	private void setMailSendError(boolean b) {
+		String mailErrorHolder =
+			EnvironmentManager.get("/server/mail/errorholder", "");
+		if (!"".equals(mailErrorHolder)) {
+			DataHolder dh =
+				Manager.getInstance().findDataHolder(mailErrorHolder);
+			if (dh != null) {
+				try {
+					WifeDataDigital digital = (WifeDataDigital) dh.getValue();
+					dh.setValue(
+						digital.valueOf(b),
+						new Date(),
+						WifeQualityFlag.GOOD);
+					dh.syncWrite();
+				} catch (DataProviderDoesNotSupportException e) {
+					e.printStackTrace();
+				} catch (ClassCastException e) {
+					log.error("ライフチェックにはデジタルタイプを指定してください ("
+						+ dh.getDataHolderName()
+						+ ")", e);
+				}
 			}
 		}
 	}
