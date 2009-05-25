@@ -55,16 +55,24 @@ public class PriorityController implements TableModelListener,
 	private AlarmTimer timer = new AlarmTimer();
 	/** クライアント設定 */
 	private final ClientConfiguration configuration;
+	/** ページ変更の有無 */
+	private boolean changePage;
 
 	public PriorityController(PageChanger pageChanger) {
-		this(pageChanger, new ClientConfiguration());
+		this(pageChanger, new ClientConfiguration(), true);
+	}
+
+	public PriorityController(PageChanger pageChanger, boolean changePage) {
+		this(pageChanger, new ClientConfiguration(), changePage);
 	}
 
 	PriorityController(
 			PageChanger pageChanger,
-			ClientConfiguration configuration) {
+			ClientConfiguration configuration,
+			boolean changePage) {
 		this.pageChanger = pageChanger;
 		this.configuration = configuration;
+		this.changePage = changePage;
 		currentAlarm = TableRowModel.INIT_ROW_MODEL;
 		isPriorityControl = getPriorityControl();
 	}
@@ -103,10 +111,10 @@ public class PriorityController implements TableModelListener,
 	}
 
 	private boolean isChangePage(TableModel model) {
-		return isPriorityControl
-			? WifeUtilities.isTrue(model.getValueAt(0, 1))
-				&& currentAlarm.comparePriority(new TableRowModel(model))
-			: WifeUtilities.isTrue(model.getValueAt(0, 1));
+		return isPriorityControl ? WifeUtilities.isTrue(model.getValueAt(0, 1))
+			&& currentAlarm.comparePriority(new TableRowModel(model))
+			&& changePage : WifeUtilities.isTrue(model.getValueAt(0, 1))
+			&& changePage;
 	}
 
 	private void clearPriority(TableModel model) {

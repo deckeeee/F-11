@@ -86,7 +86,7 @@ public class PriorityControllerTest extends TestCase {
 		PriorityController pc = new PriorityController(
 				changer,
 				new ClientConfiguration(
-						"/org/F11/scada/xwife/applet/alarm/PriorityControllerTest.xml"));
+						"/org/F11/scada/xwife/applet/alarm/PriorityControllerTest.xml"), true);
 
 		//•œ‹Œƒpƒ^[ƒ“
 		pc.tableChanged(getEvent(new TestTableModel("P1", "H1", ts, new Integer(3))));
