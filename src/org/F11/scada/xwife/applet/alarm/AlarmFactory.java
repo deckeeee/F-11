@@ -35,40 +35,55 @@ import org.F11.scada.xwife.applet.AbstractWifeApplet;
 
 public class AlarmFactory {
 	private static final String TYPE = "xwife.applet.Applet.alarm.table.type";
-	public JComponent getAlarm(AbstractWifeApplet wifeApplet) {
+
+	public JComponent getAlarm(AbstractWifeApplet wifeApplet, boolean changePage) {
 		int type = wifeApplet.getConfiguration().getInt(TYPE, 0);
 		switch (type) {
 		case 0:
-			return getAlarmTabPane(wifeApplet);
+			return getAlarmTabPane(wifeApplet, changePage);
 		case 1:
-			return getCareerPanel(wifeApplet);
+			return getCareerPanel(wifeApplet, changePage);
 		default:
-			throw new IllegalArgumentException("unknow type : " + type + ". see " + TYPE + " property in ClientConfiguration.xml.");
+			throw new IllegalArgumentException("unknow type : "
+				+ type
+				+ ". see "
+				+ TYPE
+				+ " property in ClientConfiguration.xml.");
 		}
 	}
-	
-	private JComponent getCareerPanel(AbstractWifeApplet wifeApplet) {
+
+	private JComponent getCareerPanel(
+			AbstractWifeApplet wifeApplet,
+			boolean changePage) {
 		CareerPanel careerPanel = new CareerPanel(wifeApplet);
 		AlarmStats newMsg = new AlarmStats();
 		careerPanel.addTableModelListener(newMsg);
-		careerPanel.addTableModelListener(new PriorityController(wifeApplet));
+		careerPanel.addTableModelListener(new PriorityController(
+			wifeApplet,
+			changePage));
 
 		return createAlarmPanel(wifeApplet, careerPanel, newMsg);
 	}
 
-	private JComponent getAlarmTabPane(AbstractWifeApplet wifeApplet) {
-		AlarmTabbedPane alarmTabPane = new AlarmTabbedPane(
-				wifeApplet, JTabbedPane.TOP);
+	private JComponent getAlarmTabPane(
+			AbstractWifeApplet wifeApplet,
+			boolean changePage) {
+		AlarmTabbedPane alarmTabPane =
+			new AlarmTabbedPane(wifeApplet, JTabbedPane.TOP);
 		AlarmStats newMsg = new AlarmStats();
 		alarmTabPane.addTableModelListener(newMsg);
-		PriorityController controller = new PriorityController(wifeApplet);
+		PriorityController controller =
+			new PriorityController(wifeApplet, changePage);
 		alarmTabPane.addTableModelListener(controller);
 		alarmTabPane.addCheckTableListener(controller);
 
 		return createAlarmPanel(wifeApplet, alarmTabPane, newMsg);
 	}
 
-	private JComponent createAlarmPanel(AbstractWifeApplet wifeApplet, JComponent alarmTabPane, AlarmStats newMsg) {
+	private JComponent createAlarmPanel(
+			AbstractWifeApplet wifeApplet,
+			JComponent alarmTabPane,
+			AlarmStats newMsg) {
 		JPanel panelNewAlarm = new JPanel(new BorderLayout());
 		panelNewAlarm.setMinimumSize(Globals.ZERO_DIMENSION);
 		JPanel alarmPanel = new JPanel();
@@ -79,9 +94,10 @@ public class AlarmFactory {
 		alarmPanel.setOpaque(true);
 		panelNewAlarm.add(alarmPanel, BorderLayout.NORTH);
 		panelNewAlarm.add(alarmTabPane, BorderLayout.CENTER);
-		panelNewAlarm.setPreferredSize(
-				new Dimension(wifeApplet.getMaximumSize().width,
-						wifeApplet.getConfiguration().getInt("xwife.applet.Applet.alarm.table.height", 180)));
+		panelNewAlarm.setPreferredSize(new Dimension(wifeApplet
+			.getMaximumSize().width, wifeApplet.getConfiguration().getInt(
+			"xwife.applet.Applet.alarm.table.height",
+			180)));
 		return panelNewAlarm;
 	}
 }

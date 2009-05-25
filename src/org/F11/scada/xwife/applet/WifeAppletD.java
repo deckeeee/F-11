@@ -86,7 +86,7 @@ public class WifeAppletD extends AbstractNewApplet {
 		protected void setPanelAlarmList() {
 			tab = new JTabbedPane();
 			AlarmFactory factory = new AlarmFactory();
-			JComponent alarm = factory.getAlarm(wifeApplet);
+			JComponent alarm = factory.getAlarm(wifeApplet, false);
 			tab.addTab("Œx•ñˆê——", alarm);
 
 			setTabSync(alarm);
@@ -205,7 +205,7 @@ public class WifeAppletD extends AbstractNewApplet {
 
 		protected JComponent getAlarmNewLine(AbstractWifeApplet wifeApplet) {
 			AlarmFactory factory = new AlarmFactory();
-			return factory.getAlarm(wifeApplet);
+			return factory.getAlarm(wifeApplet, true);
 		}
 	}
 
