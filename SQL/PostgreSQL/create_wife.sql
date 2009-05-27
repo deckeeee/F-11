@@ -48,6 +48,13 @@ CREATE TABLE point_table (
 	attribute1 varchar(255) NOT NULL,
 	attribute2 varchar(255) NOT NULL,
 	attribute3 varchar(255) NOT NULL,
+	point_flag BOOL NOT NULL default '1',
+	unit_flag BOOL NOT NULL default '1',
+	name_flag BOOL NOT NULL default '1',
+	unit_mark_flag BOOL NOT NULL default '1',
+	attribute1_flag BOOL NOT NULL default '1',
+	attribute2_flag BOOL NOT NULL default '1',
+	attribute3_flag BOOL NOT NULL default '1',
 	PRIMARY KEY (point)
 );
 CREATE INDEX point_attribute1_idx ON point_table(attribute1);
