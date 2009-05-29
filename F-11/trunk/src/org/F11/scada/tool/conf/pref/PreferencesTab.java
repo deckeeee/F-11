@@ -246,6 +246,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		serverUser(mainPanel);
 		serverPass(mainPanel);
 		pageChangeInterrupt(mainPanel);
+		attributeNDisplay(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -567,6 +568,38 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 						manager.setPreferences(
 							"/server/isPageChangeInterrupt",
 							"false");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void attributeNDisplay(JPanel mainPanel) {
+		JLabel label = new JLabel("属性n表示モード：");
+		label.setToolTipText("属性1,2,3を表示するかしないかを設定します。");
+		mainPanel.add(label);
+		final JComboBox cb = new JComboBox();
+		cb.addItem("属性n非表示");
+		cb.addItem("属性n表示");
+		String prefix =
+			manager.getPreferences("/server/alarm/attributen/enable", "false");
+		if ("false".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("属性n非表示".equals(e.getItem())) {
+						manager.setPreferences(
+							"/server/alarm/attributen/enable",
+							"false");
+					} else {
+						manager.setPreferences(
+							"/server/alarm/attributen/enable",
+							"true");
 					}
 				}
 			}
