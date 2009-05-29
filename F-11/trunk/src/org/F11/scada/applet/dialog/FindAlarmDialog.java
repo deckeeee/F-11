@@ -52,6 +52,7 @@ import org.F11.scada.applet.ClientConfiguration;
 import org.F11.scada.server.alarm.table.AttributeRecord;
 import org.F11.scada.server.alarm.table.FindAlarmCondition;
 import org.F11.scada.server.alarm.table.FindAlarmCondition.RadioStat;
+import org.F11.scada.xwife.applet.AttributeNColumnUtil;
 import org.F11.scada.xwife.applet.SortColumnUtil;
 
 /**
@@ -75,9 +76,9 @@ public class FindAlarmDialog extends JDialog {
 	private JList prioritySelectList;
 	private final List priorityList;
 	private final boolean isShowSortColumn;
-	private JTextField attribute1Field = new JTextField(20);
-	private JTextField attribute2Field = new JTextField(20);
-	private JTextField attribute3Field = new JTextField(20);
+	private JTextField attribute1Field;
+	private JTextField attribute2Field;
+	private JTextField attribute3Field;
 
 	/**
 	 * 
@@ -297,21 +298,26 @@ public class FindAlarmDialog extends JDialog {
 		setCheckRadioButtons(cond, mainPanel);
 		setUnitFields(cond, mainPanel);
 		setNameFields(cond, mainPanel);
-		setAttributeField(
-			cond.getAttribute1(),
-			mainPanel,
-			attribute1Field,
-			"属性1：");
-		setAttributeField(
-			cond.getAttribute2(),
-			mainPanel,
-			attribute2Field,
-			"属性2：");
-		setAttributeField(
-			cond.getAttribute3(),
-			mainPanel,
-			attribute3Field,
-			"属性3：");
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			attribute1Field = new JTextField(20);
+			setAttributeField(
+				cond.getAttribute1(),
+				mainPanel,
+				attribute1Field,
+				"属性1：");
+			attribute2Field = new JTextField(20);
+			setAttributeField(
+				cond.getAttribute2(),
+				mainPanel,
+				attribute2Field,
+				"属性2：");
+			attribute3Field = new JTextField(20);
+			setAttributeField(
+				cond.getAttribute3(),
+				mainPanel,
+				attribute3Field,
+				"属性3：");
+		}
 		setOkCancel(mainPanel);
 		return mainPanel;
 	}
@@ -509,9 +515,13 @@ public class FindAlarmDialog extends JDialog {
 				unitField.getText(),
 				nameField.getText(),
 				Arrays.asList(prioSels),
-				attribute1Field.getText(),
-				attribute2Field.getText(),
-				attribute3Field.getText());
+				getFieldText(attribute1Field),
+				getFieldText(attribute2Field),
+				getFieldText(attribute3Field));
 		return true;
+	}
+
+	private String getFieldText(JTextField field) {
+		return null != field ? field.getText() : "";
 	}
 }

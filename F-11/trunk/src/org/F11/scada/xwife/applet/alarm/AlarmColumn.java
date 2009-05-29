@@ -103,4 +103,13 @@ public class AlarmColumn {
 			"org.F11.scada.xwife.applet.alarm.dateSize",
 			DATE_SIZE);
 	}
+	
+	/**
+	 * ‘®«1, 2, 3‚Ì•
+	 * 
+	 * @return ‘®«1, 2, 3‚Ì•
+	 */
+	public int getAttributeNSize() {
+		return DEFAULT_SIZE;
+	}
 }

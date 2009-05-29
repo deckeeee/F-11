@@ -90,7 +90,8 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 				+ ", CASE WHEN s.bit_value = '1' THEN att.on_summary_color ELSE att.off_summary_color END AS alarm_color"
 				+ ", i.point, i.provider, i.holder, s.on_date, s.off_date, p.unit"
 				+ ", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname"
-				+ ", m.message,pri.name AS priorityname ";
+				+ ", m.message,pri.name AS priorityname "
+				+ ", p.attribute1, p.attribute2, p.attribute3 ";
 		StringBuffer sbBody = new StringBuffer();
 		sbBody
 			.append("FROM summary_table s, point_table p, item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id, message_table m, attribute_table att ");
@@ -414,6 +415,7 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 				+ ",h.point, h.provider, h.holder, h.on_date,h.off_date, p.unit"
 				+ ", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname"
 				+ ",pri.name AS priorityname"
+				+ ", p.attribute1, p.attribute2, p.attribute3"
 				+ ",CASE WHEN att.check_type = '0' THEN 'ÑüÑüÑüÑü' WHEN att.check_type = '1'"
 				+ " AND h.check_flag = '1' THEN 'ÅñÅñÅñÅñ' ELSE NULL END AS histry_check ";
 		StringBuffer sbBody = new StringBuffer();
@@ -647,7 +649,8 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 				+ ", i.point, i.provider, i.holder, att.sound_type, CASE WHEN c.bit_value='1' THEN i.on_sound_path ELSE i.off_sound_path END AS sound_path"
 				+ ", i.email_group_id, i.email_send_mode, c.entrydate,p.unit"
 				+ ", p.name AS kikiname, CASE WHEN att.message_mode THEN att.name ELSE NULL END AS attname"
-				+ ", m.message, pri.name AS priorityname ";
+				+ ", m.message, pri.name AS priorityname "
+				+ ", p.attribute1, p.attribute2, p.attribute3 ";
 		StringBuffer sbBody = new StringBuffer();
 		sbBody
 			.append("FROM point_table p,career_table c,item_table i LEFT JOIN priority_table pri ON i.auto_jump_priority = pri.id,message_table m,attribute_table att ");

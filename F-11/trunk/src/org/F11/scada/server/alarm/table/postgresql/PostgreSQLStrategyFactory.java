@@ -261,6 +261,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
 			insRow[model.getColumn("最新警報モード")] = new Integer(rs.getInt("new_info_mode"));
+			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
+			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
+			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
 			model.insertRow(0, insRow, key);
 		}
 
@@ -424,6 +427,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 				insRow[model.getColumn("確認")] = "────";
 			}
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
+			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
+			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
+			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
 		}
 
 		private void removeRow(
@@ -637,6 +643,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
+			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
+			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
+			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
 		}
 
 		private void removeRow(
@@ -805,6 +814,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
+			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
+			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
+			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
 		}
 
 		private void removeRow(
@@ -956,6 +968,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
+			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
+			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
+			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
 			if (rs.getBoolean("check_type")) {
 				insRow[model.getColumn("確認")] = null;
 			} else {

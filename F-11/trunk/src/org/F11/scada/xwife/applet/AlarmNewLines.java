@@ -50,16 +50,16 @@ class AlarmNewLines extends Box implements TableModelListener,
 		DataReferencerOwner, DataValueChangeListener {
 	private static final long serialVersionUID = -4880754153203969009L;
 	// private static Logger logger = Logger.getLogger(AlarmNewLines.class);
-	private static final FastDateFormat format = FastDateFormat
-			.getInstance("yyyy/MM/dd HH:mm:ss");
+	private static final FastDateFormat format =
+		FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss");
 	private final AlarmNewsConfig alarmNewsConfig;
 	private final JPanel[] panels;
 
 	private DataReferencer referencer;
 
 	/** DataHolderタイプ情報です。 */
-	private static final Class[][] WIFE_TYPE_INFO = new Class[][] { {
-			DataHolder.class, TableModel.class } };
+	private static final Class[][] WIFE_TYPE_INFO =
+		new Class[][] { { DataHolder.class, TableModel.class } };
 
 	/**
 	 * コンストラクタ
@@ -84,7 +84,7 @@ class AlarmNewLines extends Box implements TableModelListener,
 			label.addMouseListener(new PageJumpNewLines(model, wifeApplet, i));
 			panels[i].add(label, 0);
 			panels[i].setBorder(BorderFactory
-					.createBevelBorder(BevelBorder.LOWERED));
+				.createBevelBorder(BevelBorder.LOWERED));
 			panels[i].setBackground(alarmNewsConfig.getBackGroundColor());
 			panels[i].setOpaque(true);
 			this.add(panels[i]);
@@ -94,7 +94,9 @@ class AlarmNewLines extends Box implements TableModelListener,
 		updateNewLines(model);
 		model.addTableModelListener(new PriorityController(wifeApplet));
 
-		referencer = new DataReferencer(dataHolder.getDataProvider()
+		referencer =
+			new DataReferencer(dataHolder
+				.getDataProvider()
 				.getDataProviderName(), dataHolder.getDataHolderName());
 		referencer.connect(this);
 	}
@@ -110,9 +112,9 @@ class AlarmNewLines extends Box implements TableModelListener,
 			if (i < model.getRowCount()) {
 				final StringBuffer sb = new StringBuffer();
 				sb.append(format.format(model.getValueAt(i, 12)) + "　");
-				for (int j = 13, column = model.getColumnCount(); j < column - 2; j++) {
+				for (int j = 13, column = model.getColumnCount(); j < column - 1; j++) {
 					Object value = model.getValueAt(i, j);
-					if (null != value) {
+					if (AttributeNColumnUtil.isDisplayColumn(i, value)) {
 						sb.append(value + "　");
 					}
 				}

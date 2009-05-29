@@ -22,6 +22,7 @@
 package org.F11.scada.xwife.applet;
 
 import static org.F11.scada.util.TableUtil.getModelColumn;
+import static org.F11.scada.util.TableUtil.removeColumn;
 import static org.F11.scada.util.TableUtil.removeColumns;
 import static org.F11.scada.util.TableUtil.setColumnWidth;
 import static org.F11.scada.xwife.applet.SortColumnUtil.getShowSortColumn;
@@ -127,9 +128,9 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	protected JLabel unit;
 	protected JLabel name;
 	protected final boolean isShowSortColumn;
-	protected JLabel attribute1 = new JLabel();
-	protected JLabel attribute2 = new JLabel();
-	protected JLabel attribute3 = new JLabel();
+	protected JLabel attribute1;
+	protected JLabel attribute2;
+	protected JLabel attribute3;
 
 	/**
 	 * 日付、記号、状態のカラムのサイズです。
@@ -281,8 +282,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		labelHistCheck.setBackground(ColorFactory.getColor("white"));
 		labelHistCheck.setBorder(BorderFactory.createLoweredBevelBorder());
 		box.add(labelHistCheck);
-		box.add(Box.createHorizontalStrut(190));
-		setAttributeComponent(box, "属性1：", attribute1);
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			box.add(Box.createHorizontalStrut(190));
+			attribute1 = new JLabel();
+			setAttributeComponent(box, "属性1：", attribute1);
+		}
 		box.add(Box.createHorizontalGlue());
 		return box;
 	}
@@ -303,8 +307,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		unit.setBorder(BorderFactory.createLoweredBevelBorder());
 		setComponentSize(unit, 400, 20);
 		box.add(unit);
-		box.add(Box.createHorizontalStrut(8));
-		setAttributeComponent(box, "属性2：", attribute2);
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			box.add(Box.createHorizontalStrut(8));
+			attribute2 = new JLabel();
+			setAttributeComponent(box, "属性2：", attribute2);
+		}
 		box.add(Box.createHorizontalGlue());
 		return box;
 	}
@@ -318,8 +325,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		name.setBorder(BorderFactory.createLoweredBevelBorder());
 		setComponentSize(name, 400, 20);
 		box.add(name);
-		box.add(Box.createHorizontalStrut(8));
-		setAttributeComponent(box, "属性3：", attribute3);
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			box.add(Box.createHorizontalStrut(8));
+			attribute3 = new JLabel();
+			setAttributeComponent(box, "属性3：", attribute3);
+		}
 		box.add(Box.createHorizontalGlue());
 		return box;
 	}
@@ -536,9 +546,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		panel.add(panel1);
 		panelRet.add(panel);
 
-		setAttribute(panelRet, panel, attribute1, "属性1：");
-		setAttribute(panelRet, panel, attribute2, "属性2：");
-		setAttribute(panelRet, panel, attribute3, "属性3：");
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setAttribute(panelRet, panel, attribute1, "属性1：");
+			setAttribute(panelRet, panel, attribute2, "属性2：");
+			setAttribute(panelRet, panel, attribute3, "属性3：");
+		}
 
 		condition = new FindAlarmCondition();
 		updateAlarmConditionLabels();
@@ -614,9 +626,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		}
 		unit.setText(condition.getUnit());
 		name.setText(condition.getName());
-		attribute1.setText(condition.getAttribute1());
-		attribute2.setText(condition.getAttribute2());
-		attribute3.setText(condition.getAttribute3());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			attribute1.setText(condition.getAttribute1());
+			attribute2.setText(condition.getAttribute2());
+			attribute3.setText(condition.getAttribute3());
+		}
 	}
 
 	/**
@@ -659,7 +673,10 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				"名称",
 				"属性",
 				"警報・状態",
-				"種別" }, 0) {
+				"種別",
+				"属性1",
+				"属性2",
+				"属性3", }, 0) {
 				private static final long serialVersionUID =
 					-984023000372115422L;
 
@@ -685,6 +702,15 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		setColumnWidth(career, 3, alarmColumn.getAttributeSize());
 		setColumnWidth(career, 4, alarmColumn.getStatusSize());
 		removeSortColumn(career, 5, wifeApplet, alarmColumn.getSortSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(career, "属性1", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, "属性2", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, "属性3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(career, "属性1");
+			removeColumn(career, "属性2");
+			removeColumn(career, "属性3");
+		}
 
 		tabBase.add(new RowHeaderScrollPane(career, alarmDefine
 			.getAlarmConfig()
@@ -785,6 +811,9 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				"名称",
 				"属性",
 				"種別",
+				"属性1",
+				"属性2",
+				"属性3",
 				"確認" }, 0) {
 				private static final long serialVersionUID =
 					-46305358609411425L;
@@ -815,12 +844,21 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		}
 		tabBase.add(panel, BorderLayout.NORTH);
 
-		setColumnWidth(history, 0, alarmColumn.getDateSize());
-		setColumnWidth(history, 1, alarmColumn.getDateSize());
-		setColumnWidth(history, 2, alarmColumn.getUnitSize());
-		setColumnWidth(history, 4, alarmColumn.getAttributeSize());
-		setColumnWidth(history, 6, alarmColumn.getCheckSize());
+		setColumnWidth(history, "発生・運転", alarmColumn.getDateSize());
+		setColumnWidth(history, "復旧・停止", alarmColumn.getDateSize());
+		setColumnWidth(history, "記号", alarmColumn.getUnitSize());
+		setColumnWidth(history, "属性", alarmColumn.getAttributeSize());
+		setColumnWidth(history, "確認", alarmColumn.getCheckSize());
 		removeSortColumn(history, 5, wifeApplet, alarmColumn.getSortSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(history, "属性1", alarmColumn.getAttributeNSize());
+			setColumnWidth(history, "属性2", alarmColumn.getAttributeNSize());
+			setColumnWidth(history, "属性3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(history, "属性1");
+			removeColumn(history, "属性2");
+			removeColumn(history, "属性3");
+		}
 
 		tabBase.add(new RowHeaderScrollPane(history, alarmDefine
 			.getAlarmConfig()
@@ -929,7 +967,10 @@ public abstract class AbstractAlarmPanel extends JPanel {
 				"名称",
 				"属性",
 				"警報・状態",
-				"種別" }, 0) {
+				"種別",
+				"属性1",
+				"属性2",
+				"属性3", }, 0) {
 				private static final long serialVersionUID =
 					4104647228256893197L;
 
@@ -955,6 +996,15 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		setColumnWidth(summary, 4, alarmColumn.getAttributeSize());
 		setColumnWidth(summary, 5, alarmColumn.getStatusSize());
 		removeSortColumn(summary, 6, wifeApplet, alarmColumn.getSortSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(summary, "属性1", alarmColumn.getAttributeNSize());
+			setColumnWidth(summary, "属性2", alarmColumn.getAttributeNSize());
+			setColumnWidth(summary, "属性3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(summary, "属性1");
+			removeColumn(summary, "属性2");
+			removeColumn(summary, "属性3");
+		}
 
 		tabBase.add(new RowHeaderScrollPane(summary, alarmDefine
 			.getAlarmConfig()
