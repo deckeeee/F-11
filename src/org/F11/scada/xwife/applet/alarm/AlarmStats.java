@@ -32,12 +32,13 @@ import org.F11.scada.applet.ClientConfiguration;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmNewsConfig;
+import org.F11.scada.xwife.applet.AttributeNColumnUtil;
 import org.apache.commons.lang.time.FastDateFormat;
 
 public class AlarmStats extends JLabel implements TableModelListener {
 	private static final long serialVersionUID = -8893804481224965265L;
-	private static final FastDateFormat format = FastDateFormat
-			.getInstance("yyyy/MM/dd HH:mm:ss");
+	private static final FastDateFormat format =
+		FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss");
 	private final AlarmNewsConfig alarmNewsConfig;
 	private final boolean isUseNewInfoMode;
 
@@ -48,11 +49,12 @@ public class AlarmStats extends JLabel implements TableModelListener {
 	 */
 	public AlarmStats() {
 		super();
-		alarmNewsConfig = new AlarmDefine().getAlarmConfig()
-				.getAlarmNewsConfig();
+		alarmNewsConfig =
+			new AlarmDefine().getAlarmConfig().getAlarmNewsConfig();
 		setFont(alarmNewsConfig.getFontConfig().getFont());
 		ClientConfiguration configuration = new ClientConfiguration();
-		isUseNewInfoMode = configuration.getBoolean(
+		isUseNewInfoMode =
+			configuration.getBoolean(
 				"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode",
 				false);
 	}
@@ -62,15 +64,15 @@ public class AlarmStats extends JLabel implements TableModelListener {
 		if (isSetText(model)) {
 			final StringBuffer sb = new StringBuffer();
 			sb.append(format.format(model.getValueAt(0, 12)) + "Å@");
-			for (int i = 13; i < model.getColumnCount() - 2; i++) {
+			for (int i = 13; i < model.getColumnCount() - 1; i++) {
 				Object value = model.getValueAt(0, i);
-				if (null != value) {
+				if (AttributeNColumnUtil.isDisplayColumn(i, value)) {
 					sb.append(value + "Å@");
 				}
 			}
 			setText(sb.toString());
 			setForeground(ColorFactory
-					.getColor((String) model.getValueAt(0, 3)));
+				.getColor((String) model.getValueAt(0, 3)));
 		}
 	}
 
@@ -78,8 +80,11 @@ public class AlarmStats extends JLabel implements TableModelListener {
 		if (isUseNewInfoMode) {
 			Integer mode = (Integer) model.getValueAt(0, 18);
 			Boolean value = (Boolean) model.getValueAt(0, 11);
-			return (mode == 1 && !value) || (mode == 2 && value) || mode == 3
-					|| mode == 4 || mode == 5 ? true : false;
+			return (mode == 1 && !value)
+				|| (mode == 2 && value)
+				|| mode == 3
+				|| mode == 4
+				|| mode == 5 ? true : false;
 		} else {
 			return true;
 		}

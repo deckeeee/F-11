@@ -68,8 +68,17 @@ public abstract class TableUtil {
 		setWidth(tc, width);
 	}
 
+	public static void setColumnWidth(JTable table, String columnName, int width) {
+		TableColumn tc = table.getColumn(columnName);
+		setWidth(tc, width);
+	}
+
 	public static void removeColumn(JTable table, int column) {
 		table.removeColumn(table.getColumn(table.getColumnName(column)));
+	}
+
+	public static void removeColumn(JTable table, String columnName) {
+		table.removeColumn(table.getColumn(columnName));
 	}
 
 	public static int getModelColumn(MouseEvent e) {

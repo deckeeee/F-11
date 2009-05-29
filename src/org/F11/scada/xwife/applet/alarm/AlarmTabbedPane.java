@@ -21,6 +21,7 @@
 
 package org.F11.scada.xwife.applet.alarm;
 
+import static org.F11.scada.util.TableUtil.removeColumn;
 import static org.F11.scada.util.TableUtil.removeColumns;
 import static org.F11.scada.util.TableUtil.setColumnWidth;
 
@@ -38,6 +39,7 @@ import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmTableConfig;
 import org.F11.scada.server.alarm.table.AlarmTableModel;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
+import org.F11.scada.xwife.applet.AttributeNColumnUtil;
 import org.F11.scada.xwife.applet.SortColumnUtil;
 import org.F11.scada.xwife.applet.alarm.event.CheckTableListener;
 import org.F11.scada.xwife.server.AlarmDataProvider;
@@ -111,12 +113,21 @@ public class AlarmTabbedPane extends JTabbedPane {
 			tableHeader.setForeground(alarmTableConfig
 				.getHeaderForeGroundColor());
 
-			setColumnWidth(noncheck, 0, alarmColumn.getDateSize());
-			setColumnWidth(noncheck, 1, alarmColumn.getDateSize());
-			setColumnWidth(noncheck, 2, alarmColumn.getUnitSize());
-			setColumnWidth(noncheck, 4, alarmColumn.getAttributeSize());
-			setColumnWidth(noncheck, 5, alarmColumn.getSortSize());
-			setColumnWidth(noncheck, 6, alarmColumn.getCheckSize());
+			setColumnWidth(noncheck, "発生・運転", alarmColumn.getDateSize());
+			setColumnWidth(noncheck, "復旧・停止", alarmColumn.getDateSize());
+			setColumnWidth(noncheck, "記号", alarmColumn.getUnitSize());
+			setColumnWidth(noncheck, "属性", alarmColumn.getAttributeSize());
+			setColumnWidth(noncheck, "種別", alarmColumn.getSortSize());
+			setColumnWidth(noncheck, "確認", alarmColumn.getCheckSize());
+			if (AttributeNColumnUtil.isAttributeDisplay()) {
+				setColumnWidth(noncheck, "属性1", alarmColumn.getAttributeNSize());
+				setColumnWidth(noncheck, "属性2", alarmColumn.getAttributeNSize());
+				setColumnWidth(noncheck, "属性3", alarmColumn.getAttributeNSize());
+			} else {
+				removeColumn(noncheck, "属性1");
+				removeColumn(noncheck, "属性2");
+				removeColumn(noncheck, "属性3");
+			}
 
 			addTab(
 				"未確認",
@@ -155,6 +166,18 @@ public class AlarmTabbedPane extends JTabbedPane {
 				6,
 				wifeApplet,
 				alarmColumn.getSortSize());
+			if (AttributeNColumnUtil.isAttributeDisplay()) {
+				setColumnWidth(occurrence, "属性1", alarmColumn
+					.getAttributeNSize());
+				setColumnWidth(occurrence, "属性2", alarmColumn
+					.getAttributeNSize());
+				setColumnWidth(occurrence, "属性3", alarmColumn
+					.getAttributeNSize());
+			} else {
+				removeColumn(occurrence, "属性1");
+				removeColumn(occurrence, "属性2");
+				removeColumn(occurrence, "属性3");
+			}
 			addTab(
 				"未復旧",
 				null,
@@ -184,6 +207,15 @@ public class AlarmTabbedPane extends JTabbedPane {
 		setColumnWidth(summary, 5, alarmColumn.getStatusSize());
 		SortColumnUtil.removeSortColumn(summary, 6, wifeApplet, alarmColumn
 			.getSortSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(summary, "属性1", alarmColumn.getAttributeNSize());
+			setColumnWidth(summary, "属性2", alarmColumn.getAttributeNSize());
+			setColumnWidth(summary, "属性3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(summary, "属性1");
+			removeColumn(summary, "属性2");
+			removeColumn(summary, "属性3");
+		}
 		addTab("サマリ", null, new RowHeaderScrollPane(summary, wifeApplet), "サマリ");
 		setAlarmTableCellRenderer(summary);
 	}
@@ -203,11 +235,20 @@ public class AlarmTabbedPane extends JTabbedPane {
 		tableHeader.setBackground(alarmTableConfig.getHeaderBackGroundColor());
 		tableHeader.setForeground(alarmTableConfig.getHeaderForeGroundColor());
 
-		setColumnWidth(history, 0, alarmColumn.getDateSize());
-		setColumnWidth(history, 1, alarmColumn.getDateSize());
-		setColumnWidth(history, 2, alarmColumn.getUnitSize());
-		setColumnWidth(history, 4, alarmColumn.getAttributeSize());
-		setColumnWidth(history, 6, alarmColumn.getCheckSize());
+		setColumnWidth(history, "発生・運転", alarmColumn.getDateSize());
+		setColumnWidth(history, "復旧・停止", alarmColumn.getDateSize());
+		setColumnWidth(history, "記号", alarmColumn.getUnitSize());
+		setColumnWidth(history, "属性", alarmColumn.getAttributeSize());
+		setColumnWidth(history, "確認", alarmColumn.getCheckSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(history, "属性1", alarmColumn.getAttributeNSize());
+			setColumnWidth(history, "属性2", alarmColumn.getAttributeNSize());
+			setColumnWidth(history, "属性3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(history, "属性1");
+			removeColumn(history, "属性2");
+			removeColumn(history, "属性3");
+		}
 		SortColumnUtil.removeSortColumn(history, 5, wifeApplet, alarmColumn
 			.getSortSize());
 		addTab(
@@ -226,7 +267,7 @@ public class AlarmTabbedPane extends JTabbedPane {
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
 		removeColumns(career, 12);
-		career.removeColumn(career.getColumn(career.getColumnName(6)));
+		career.removeColumn(career.getColumn(career.getColumnName(9)));
 		career.setBackground(alarmTableConfig.getBackGroundColor());
 		JTableHeader tableHeader = career.getTableHeader();
 		tableHeader.setBackground(alarmTableConfig.getHeaderBackGroundColor());
@@ -238,6 +279,15 @@ public class AlarmTabbedPane extends JTabbedPane {
 		setColumnWidth(career, 4, alarmColumn.getStatusSize());
 		SortColumnUtil.removeSortColumn(career, 5, wifeApplet, alarmColumn
 			.getSortSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(career, "属性1", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, "属性2", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, "属性3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(career, "属性1");
+			removeColumn(career, "属性2");
+			removeColumn(career, "属性3");
+		}
 		addTab("履歴", null, new RowHeaderScrollPane(career, wifeApplet), "履歴");
 		setAlarmTableCellRenderer(career);
 	}

@@ -21,6 +21,7 @@
 
 package org.F11.scada.xwife.applet.alarm;
 
+import static org.F11.scada.util.TableUtil.removeColumn;
 import static org.F11.scada.util.TableUtil.removeColumns;
 import static org.F11.scada.util.TableUtil.setColumnWidth;
 import static org.F11.scada.xwife.applet.SortColumnUtil.removeSortColumn;
@@ -41,6 +42,7 @@ import jp.gr.javacons.jim.Manager;
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmTableConfig;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
+import org.F11.scada.xwife.applet.AttributeNColumnUtil;
 import org.F11.scada.xwife.server.AlarmDataProvider;
 
 public class CareerPanel extends JPanel {
@@ -66,7 +68,7 @@ public class CareerPanel extends JPanel {
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
 		removeColumns(career, 12);
-		career.removeColumn(career.getColumn(career.getColumnName(6)));
+		career.removeColumn(career.getColumn(career.getColumnName(9)));
 		career.setBackground(alarmTableConfig.getBackGroundColor());
 		JTableHeader tableHeader = career.getTableHeader();
 		tableHeader.setBackground(alarmTableConfig.getHeaderBackGroundColor());
@@ -76,8 +78,16 @@ public class CareerPanel extends JPanel {
 		setColumnWidth(career, 1, alarmColumn.getUnitSize());
 		setColumnWidth(career, 3, alarmColumn.getAttributeSize());
 		setColumnWidth(career, 4, alarmColumn.getStatusSize());
-		removeSortColumn(career, 5, wifeApplet, alarmColumn
-			.getSortSize());
+		removeSortColumn(career, 5, wifeApplet, alarmColumn.getSortSize());
+		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			setColumnWidth(career, "ëÆê´1", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, "ëÆê´2", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, "ëÆê´3", alarmColumn.getAttributeNSize());
+		} else {
+			removeColumn(career, "ëÆê´1");
+			removeColumn(career, "ëÆê´2");
+			removeColumn(career, "ëÆê´3");
+		}
 		JScrollPane sp = new JScrollPane(career);
 		add(sp, BorderLayout.CENTER);
 	}
