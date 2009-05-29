@@ -164,6 +164,7 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/isPageChangeInterrupt", "true"));
 		pw.println(getXmlProp("/server/alarm/print/enable", ""));
 		pw.println(getXmlProp("/server/alarm/attributen/enable", "false"));
+		pw.println(getXmlProp("/server/mail/errorholder", ""));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

@@ -60,6 +60,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private final JTextField communicateWaitTime = new JTextField();
 	private final JTextField serverUser = new JTextField();
 	private final JTextField serverPass = new JTextField();
+	private final JTextField mailErrorHolder = new JTextField();
 
 	public PreferencesTab(Frame parent, StreamManager manager) {
 		super();
@@ -247,6 +248,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		serverPass(mainPanel);
 		pageChangeInterrupt(mainPanel);
 		attributeNDisplay(mainPanel);
+		mailErrorHolder(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -607,6 +609,17 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(cb);
 	}
 
+	private void mailErrorHolder(JPanel mainPanel) {
+		JLabel comp = new JLabel("警報メール送信エラーホルダ：");
+		comp.setToolTipText("警報メール送信エラー発生時、ビットを立てるデジタルホルダを「プロバイダ_ホルダ」で設定します。");
+		mainPanel.add(comp);
+		mailErrorHolder.setText(manager.getPreferences(
+			"/server/mail/errorholder",
+			""));
+		mailErrorHolder.getDocument().addDocumentListener(this);
+		mainPanel.add(mailErrorHolder);
+	}
+
 	public void changedUpdate(DocumentEvent e) {
 		eventPaformed(e);
 	}
@@ -661,6 +674,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			manager.setPreferences("/server/user", serverUser.getText());
 		} else if (e.getDocument() == serverPass.getDocument()) {
 			manager.setPreferences("/server/password", serverPass.getText());
+		} else if (e.getDocument() == mailErrorHolder.getDocument()) {
+			manager.setPreferences("/server/mail/errorholder", mailErrorHolder
+				.getText());
 		}
 	}
 }
