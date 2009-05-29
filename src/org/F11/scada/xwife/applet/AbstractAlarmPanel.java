@@ -127,6 +127,9 @@ public abstract class AbstractAlarmPanel extends JPanel {
 	protected JLabel unit;
 	protected JLabel name;
 	protected final boolean isShowSortColumn;
+	protected JLabel attribute1 = new JLabel();
+	protected JLabel attribute2 = new JLabel();
+	protected JLabel attribute3 = new JLabel();
 
 	/**
 	 * 日付、記号、状態のカラムのサイズです。
@@ -278,6 +281,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		labelHistCheck.setBackground(ColorFactory.getColor("white"));
 		labelHistCheck.setBorder(BorderFactory.createLoweredBevelBorder());
 		box.add(labelHistCheck);
+		box.add(Box.createHorizontalStrut(190));
+		setAttributeComponent(box, "属性1：", attribute1);
 		box.add(Box.createHorizontalGlue());
 		return box;
 	}
@@ -298,6 +303,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		unit.setBorder(BorderFactory.createLoweredBevelBorder());
 		setComponentSize(unit, 400, 20);
 		box.add(unit);
+		box.add(Box.createHorizontalStrut(8));
+		setAttributeComponent(box, "属性2：", attribute2);
 		box.add(Box.createHorizontalGlue());
 		return box;
 	}
@@ -311,8 +318,20 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		name.setBorder(BorderFactory.createLoweredBevelBorder());
 		setComponentSize(name, 400, 20);
 		box.add(name);
+		box.add(Box.createHorizontalStrut(8));
+		setAttributeComponent(box, "属性3：", attribute3);
 		box.add(Box.createHorizontalGlue());
 		return box;
+	}
+
+	private void setAttributeComponent(Box box, String labelText, JLabel label) {
+		box.add(new JLabel(labelText));
+		label.setOpaque(true);
+		label.setBackground(ColorFactory.getColor("white"));
+		label.setBorder(BorderFactory.createLoweredBevelBorder());
+		setComponentSize(label, 400, 20);
+		box.add(label);
+		box.add(Box.createHorizontalGlue());
 	}
 
 	private Component getConditionButton() {
@@ -517,10 +536,28 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		panel.add(panel1);
 		panelRet.add(panel);
 
+		setAttribute(panelRet, panel, attribute1, "属性1：");
+		setAttribute(panelRet, panel, attribute2, "属性2：");
+		setAttribute(panelRet, panel, attribute3, "属性3：");
+
 		condition = new FindAlarmCondition();
 		updateAlarmConditionLabels();
 		panelRet.setBorder(BorderFactory.createTitledBorder("検索条件"));
 		return panelRet;
+	}
+
+	private void setAttribute(
+			Box panelRet,
+			JPanel panel,
+			JLabel label,
+			String labelText) {
+		JPanel panel1;
+		panel1 = new JPanel();
+		panel1.setBorder(BorderFactory.createLineBorder(Color.black));
+		panel1.add(new JLabel(labelText));
+		panel1.add(label);
+		panel.add(panel1);
+		panelRet.add(panel);
 	}
 
 	protected void updateAlarmConditionLabels() {
@@ -577,6 +614,9 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		}
 		unit.setText(condition.getUnit());
 		name.setText(condition.getName());
+		attribute1.setText(condition.getAttribute1());
+		attribute2.setText(condition.getAttribute2());
+		attribute3.setText(condition.getAttribute3());
 	}
 
 	/**

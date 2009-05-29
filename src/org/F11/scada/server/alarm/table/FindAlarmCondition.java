@@ -57,41 +57,52 @@ public class FindAlarmCondition implements Serializable {
 	private final String name;
 	/** 選択プライオリティ名のリスト */
 	private final List priorities;
+	/** 属性1 */
+	private final String attribute1;
+	/** 属性2 */
+	private final String attribute2;
+	/** 属性3 */
+	private final String attribute3;
 
-	private static final ClientConfiguration configuration = new ClientConfiguration();
+	private static final ClientConfiguration configuration =
+		new ClientConfiguration();
 
-	private static final Logger logger = Logger
-			.getLogger(FindAlarmCondition.class);
+	private static final Logger logger =
+		Logger.getLogger(FindAlarmCondition.class);
 
 	/**
 	 * 
 	 */
 	public FindAlarmCondition() {
 		this(
-				true,
-				getPreviousMonth(),
-				true,
-				Calendar.getInstance(),
-				getAttributes(),
-				getStatus(false),
-				getStatus(true),
-				getAttributeNames(),
-				"",
-				"",
-				getInitPriorities());
+			true,
+			getPreviousMonth(),
+			true,
+			Calendar.getInstance(),
+			getAttributes(),
+			getStatus(false),
+			getStatus(true),
+			getAttributeNames(),
+			"",
+			"",
+			getInitPriorities(),
+			"",
+			"",
+			"");
 	}
 
 	private static Calendar getPreviousMonth() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, configuration.getInt(
-				"xwife.applet.Applet.alarm.table.search",
-				1)
-				* -1);
+			"xwife.applet.Applet.alarm.table.search",
+			1)
+			* -1);
 		return calendar;
 	}
 
 	static int[] getAttributes() {
-		StringTokenizer st = new StringTokenizer(configuration.getString(
+		StringTokenizer st =
+			new StringTokenizer(configuration.getString(
 				"xwife.applet.Applet.alarm.table.search.attribute",
 				""), "|");
 		int[] atts = new int[st.countTokens()];
@@ -102,7 +113,8 @@ public class FindAlarmCondition implements Serializable {
 	}
 
 	static String[] getAttributeNames() {
-		StringTokenizer st = new StringTokenizer(configuration.getString(
+		StringTokenizer st =
+			new StringTokenizer(configuration.getString(
 				"xwife.applet.Applet.alarm.table.search.attributename",
 				""), "|");
 		String[] atts = new String[st.countTokens()];
@@ -115,11 +127,13 @@ public class FindAlarmCondition implements Serializable {
 	private static RadioStat getStatus(boolean isCheck) {
 		String status = null;
 		if (isCheck) {
-			status = configuration.getString(
+			status =
+				configuration.getString(
 					"xwife.applet.Applet.alarm.table.search.checkon",
 					"SELECTALL");
 		} else {
-			status = configuration.getString(
+			status =
+				configuration.getString(
 					"xwife.applet.Applet.alarm.table.search.alarmon",
 					"SELECTALL");
 		}
@@ -133,17 +147,19 @@ public class FindAlarmCondition implements Serializable {
 	}
 
 	private static List getInitPriorities() {
-		StringTokenizer st = new StringTokenizer(configuration.getString(
+		StringTokenizer st =
+			new StringTokenizer(configuration.getString(
 				"xwife.applet.Applet.alarm.table.search.priority",
 				""), "|");
-		StringTokenizer namest = new StringTokenizer(configuration.getString(
+		StringTokenizer namest =
+			new StringTokenizer(configuration.getString(
 				"xwife.applet.Applet.alarm.table.search.priorityname",
 				""), "|");
 		ArrayList priorities = new ArrayList(st.countTokens());
 		while (st.hasMoreTokens() && namest.hasMoreTokens()) {
 			priorities.add(new Priority(
-					Integer.parseInt(st.nextToken()),
-					namest.nextToken()));
+				Integer.parseInt(st.nextToken()),
+				namest.nextToken()));
 		}
 		return priorities;
 	}
@@ -159,7 +175,10 @@ public class FindAlarmCondition implements Serializable {
 			String[] selectKindString,
 			String unit,
 			String name,
-			List priorities) {
+			List priorities,
+			String attribute1,
+			String attribute2,
+			String attribute3) {
 		this.st_enable = st_enable;
 		this.st_calendar = st_calendar;
 		this.ed_enable = ed_enable;
@@ -171,6 +190,9 @@ public class FindAlarmCondition implements Serializable {
 		this.unit = unit;
 		this.name = name;
 		this.priorities = priorities;
+		this.attribute1 = attribute1;
+		this.attribute2 = attribute2;
+		this.attribute3 = attribute3;
 	}
 
 	public RadioStat getBitvalSelect() {
@@ -225,8 +247,18 @@ public class FindAlarmCondition implements Serializable {
 		return record;
 	}
 
-	
-	
+	public String getAttribute1() {
+		return attribute1;
+	}
+
+	public String getAttribute2() {
+		return attribute2;
+	}
+
+	public String getAttribute3() {
+		return attribute3;
+	}
+
 	public static class RadioStat implements Serializable {
 		private static final long serialVersionUID = -3602143712465744770L;
 		public static final RadioStat SELECTTRUE = new RadioStat(1);

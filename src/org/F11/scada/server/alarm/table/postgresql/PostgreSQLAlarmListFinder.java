@@ -125,6 +125,7 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 
 		setUnitCondition(cond, sbBody);
 		setNameCondition(cond, sbBody);
+		setAttributeCondition(cond, sbBody);
 
 		String orderStr;
 		switch (order) {
@@ -187,6 +188,12 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			index = setPriority(preSel, priList, index);
 			index = setUnitConditionValue(cond, preSel, index);
 			index = setNameConditionValue(cond, preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute1(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute2(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute3(), preSel, index);
 			rs = preSel.executeQuery();
 			if (rs.next()) {
 				maxrec = rs.getLong("count");
@@ -227,6 +234,12 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			index = setPriority(preSel, priList, index);
 			index = setUnitConditionValue(cond, preSel, index);
 			index = setNameConditionValue(cond, preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute1(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute2(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute3(), preSel, index);
 			preSel.setLong(index++, fac.getLimit());
 			preSel.setLong(index++, fac.getOffset());
 			rs = preSel.executeQuery();
@@ -315,6 +328,23 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		}
 	}
 
+	private void setAttributeCondition(
+			FindAlarmCondition cond,
+			StringBuffer sbBody) {
+		setAttribute(sbBody, "p.attribute1", cond.getAttribute1());
+		setAttribute(sbBody, "p.attribute2", cond.getAttribute2());
+		setAttribute(sbBody, "p.attribute3", cond.getAttribute3());
+	}
+
+	private void setAttribute(
+			StringBuffer sbBody,
+			String field,
+			String attribute) {
+		if (!AttributesUtil.isSpaceOrNull(attribute)) {
+			setLike(sbBody, field, attribute);
+		}
+	}
+
 	private int setUnitConditionValue(
 			FindAlarmCondition cond,
 			PreparedStatement preSel,
@@ -343,6 +373,16 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		String name = cond.getName();
 		if (!AttributesUtil.isSpaceOrNull(name)) {
 			index = setLikeValue(preSel, name, index);
+		}
+		return index;
+	}
+
+	private int setAttributeConditionValue(
+			String attribute,
+			PreparedStatement preSel,
+			int index) throws SQLException {
+		if (!AttributesUtil.isSpaceOrNull(attribute)) {
+			index = setLikeValue(preSel, attribute, index);
 		}
 		return index;
 	}
@@ -431,6 +471,7 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		}
 		setUnitCondition(cond, sbBody);
 		setNameCondition(cond, sbBody);
+		setAttributeCondition(cond, sbBody);
 
 		String orderStr;
 		switch (order) {
@@ -499,6 +540,12 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			index = setPriority(preSel, priList, index);
 			index = setUnitConditionValue(cond, preSel, index);
 			index = setNameConditionValue(cond, preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute1(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute2(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute3(), preSel, index);
 			rs = preSel.executeQuery();
 			if (rs.next()) {
 				maxrec = rs.getLong("count");
@@ -536,6 +583,12 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			index = setPriority(preSel, priList, index);
 			index = setUnitConditionValue(cond, preSel, index);
 			index = setNameConditionValue(cond, preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute1(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute2(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute3(), preSel, index);
 			preSel.setLong(index++, fac.getLimit());
 			preSel.setLong(index++, fac.getOffset());
 			rs = preSel.executeQuery();
@@ -628,6 +681,7 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 		}
 		setUnitCondition(cond, sbBody);
 		setNameCondition(cond, sbBody);
+		setAttributeCondition(cond, sbBody);
 
 		String orderStr;
 		switch (order) {
@@ -688,6 +742,12 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			index = setPriority(preSel, priList, index);
 			index = setUnitConditionValue(cond, preSel, index);
 			index = setNameConditionValue(cond, preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute1(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute2(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute3(), preSel, index);
 			rs = preSel.executeQuery();
 			if (rs.next()) {
 				maxrec = rs.getLong("count");
@@ -728,6 +788,12 @@ public class PostgreSQLAlarmListFinder implements AlarmListFinder {
 			index = setPriority(preSel, priList, index);
 			index = setUnitConditionValue(cond, preSel, index);
 			index = setNameConditionValue(cond, preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute1(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute2(), preSel, index);
+			index =
+				setAttributeConditionValue(cond.getAttribute3(), preSel, index);
 			preSel.setLong(index++, fac.getLimit());
 			preSel.setLong(index++, fac.getOffset());
 			rs = preSel.executeQuery();
