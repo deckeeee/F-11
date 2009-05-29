@@ -75,6 +75,9 @@ public class FindAlarmDialog extends JDialog {
 	private JList prioritySelectList;
 	private final List priorityList;
 	private final boolean isShowSortColumn;
+	private JTextField attribute1Field = new JTextField(20);
+	private JTextField attribute2Field = new JTextField(20);
+	private JTextField attribute3Field = new JTextField(20);
 
 	/**
 	 * 
@@ -102,11 +105,8 @@ public class FindAlarmDialog extends JDialog {
 			FindAlarmCondition cond,
 			AttributeRecord[] attris,
 			List priorityList) {
-		FindAlarmDialog dlg = new FindAlarmDialog(
-				frame,
-				cond,
-				attris,
-				priorityList);
+		FindAlarmDialog dlg =
+			new FindAlarmDialog(frame, cond, attris, priorityList);
 		dlg.show();
 		return dlg.ret_ok ? dlg.ret_cond : cond;
 	}
@@ -297,6 +297,21 @@ public class FindAlarmDialog extends JDialog {
 		setCheckRadioButtons(cond, mainPanel);
 		setUnitFields(cond, mainPanel);
 		setNameFields(cond, mainPanel);
+		setAttributeField(
+			cond.getAttribute1(),
+			mainPanel,
+			attribute1Field,
+			"属性1：");
+		setAttributeField(
+			cond.getAttribute2(),
+			mainPanel,
+			attribute2Field,
+			"属性2：");
+		setAttributeField(
+			cond.getAttribute3(),
+			mainPanel,
+			attribute3Field,
+			"属性3：");
 		setOkCancel(mainPanel);
 		return mainPanel;
 	}
@@ -417,6 +432,18 @@ public class FindAlarmDialog extends JDialog {
 		mainPanel.add(panel);
 	}
 
+	private void setAttributeField(
+			String textValue,
+			Box mainPanel,
+			JTextField field,
+			String label) {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel.add(new JLabel(label));
+		field.setText(textValue);
+		panel.add(field);
+		mainPanel.add(panel);
+	}
+
 	private void setOkCancel(JComponent mainPanel) {
 		Box box = Box.createHorizontalBox();
 		box.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -447,10 +474,10 @@ public class FindAlarmDialog extends JDialog {
 		int[] sels = kindList.getSelectedIndices();
 		if (sels.length <= 0) {
 			JOptionPane.showMessageDialog(
-					this,
-					"種別を１つ以上選択してください。",
-					"F-11 client error",
-					JOptionPane.ERROR_MESSAGE);
+				this,
+				"種別を１つ以上選択してください。",
+				"F-11 client error",
+				JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		int[] atid = new int[sels.length];
@@ -462,14 +489,15 @@ public class FindAlarmDialog extends JDialog {
 		Object[] prioSels = prioritySelectList.getSelectedValues();
 		if (prioSels.length <= 0) {
 			JOptionPane.showMessageDialog(
-					this,
-					"種別を１つ以上選択してください。",
-					"F-11 client error",
-					JOptionPane.ERROR_MESSAGE);
+				this,
+				"種別を１つ以上選択してください。",
+				"F-11 client error",
+				JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
-		ret_cond = new FindAlarmCondition(
+		ret_cond =
+			new FindAlarmCondition(
 				st_panel.isEnabled(),
 				st_panel.getCalendar(),
 				ed_panel.isEnabled(),
@@ -480,7 +508,10 @@ public class FindAlarmDialog extends JDialog {
 				atnm,
 				unitField.getText(),
 				nameField.getText(),
-				Arrays.asList(prioSels));
+				Arrays.asList(prioSels),
+				attribute1Field.getText(),
+				attribute2Field.getText(),
+				attribute3Field.getText());
 		return true;
 	}
 }
