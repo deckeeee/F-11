@@ -79,7 +79,7 @@ public class UnitSerachService implements InvokeHandler {
 				new BufferedReader(
 					new InputStreamReader(
 						UnitSerachService.class
-							.getResourceAsStream("/org/F11/scada/server/logging/Logging.xml"),
+							.getResourceAsStream("/resources/Logging.xml"),
 						"Windows-31J"));
 			digester.parse(xml);
 		} finally {

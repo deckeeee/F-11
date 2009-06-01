@@ -77,7 +77,7 @@ public class SeriesTable extends JTable implements Mediator, Colleague {
 		TableUtil.setColumnWidth(this, 0, model.getColumnName(0));
 		TableUtil.setColumnWidth(this, 1, model.getColumnName(1));
 		TableUtil.setColumnWidth(this, 2, model.getColumnName(2));
-		TableUtil.setColumnWidth(this, 3, 120);
+		TableUtil.setColumnWidth(this, 3, 200);
 		TableUtil.setColumnWidth(this, 5, 80);
 		TableUtil.setColumnWidth(this, 6, 80);
 		TableUtil.setColumnWidth(this, 7, 60);
