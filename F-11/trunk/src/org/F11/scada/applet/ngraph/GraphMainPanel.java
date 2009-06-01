@@ -96,7 +96,10 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
 		add(scrollBar, BorderLayout.SOUTH);
-		graphModel.setLogName("log_table_minute");
+		graphModel.setLogName(graphProperties
+			.getHorizontalScaleButtonProperty()
+			.get(0)
+			.getLogName());
 		visibleSet();
 	}
 
@@ -158,7 +161,7 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 	public JComponent getToolBar() {
 		return graphToolBar;
 	}
-	
+
 	public void start() {
 	}
 
