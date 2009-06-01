@@ -547,8 +547,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		panelRet.add(panel);
 
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
+			attribute1 = new JLabel();
 			setAttribute(panelRet, panel, attribute1, "‘®«1F");
+			attribute2 = new JLabel();
 			setAttribute(panelRet, panel, attribute2, "‘®«2F");
+			attribute3 = new JLabel();
 			setAttribute(panelRet, panel, attribute3, "‘®«3F");
 		}
 

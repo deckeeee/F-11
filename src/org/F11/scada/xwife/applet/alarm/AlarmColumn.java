@@ -110,6 +110,8 @@ public class AlarmColumn {
 	 * @return ‘®«1, 2, 3‚Ì•
 	 */
 	public int getAttributeNSize() {
-		return DEFAULT_SIZE;
+		return configuration.getInt(
+			"org.F11.scada.xwife.applet.alarm.attributeNSize",
+			DEFAULT_SIZE);
 	}
 }

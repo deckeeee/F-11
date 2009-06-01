@@ -58,6 +58,7 @@ public class AlarmTableColumn extends JDialog {
 	private final JTextField status = new JTextField();
 	private final JTextField sort = new JTextField();
 	private final JTextField date = new JTextField();
+	private final JTextField attributen = new JTextField();
 
 	public AlarmTableColumn(Frame frameParent, StreamManager manager) {
 		super(frameParent, "åxïÒàÍóó", true);
@@ -87,6 +88,7 @@ public class AlarmTableColumn extends JDialog {
 		setStatus(c, panel);
 		setSort(c, panel);
 		setDate(c, panel);
+		setAttributeN(c, panel);
 		return panel;
 	}
 
@@ -146,6 +148,14 @@ public class AlarmTableColumn extends JDialog {
 			"" + AlarmColumn.DATE_SIZE));
 	}
 
+	private void setAttributeN(GridBagConstraints c, JPanel panel) {
+		JLabel label = new JLabel("ëÆê´1,2,3ÅF");
+		addLabel(c, panel, label);
+		addTextArea(c, panel, attributen, manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.attributeNSize",
+			"" + AlarmColumn.DEFAULT_SIZE));
+	}
+
 	private Component getSouth() {
 		Box box = Box.createHorizontalBox();
 		box.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
@@ -181,6 +191,9 @@ public class AlarmTableColumn extends JDialog {
 				manager.setClientConf(
 					"org.F11.scada.xwife.applet.alarm.dateSize",
 					date.getText());
+				manager.setClientConf(
+					"org.F11.scada.xwife.applet.alarm.attributeNSize",
+					attribute.getText());
 				dispose();
 			}
 		});
