@@ -53,6 +53,7 @@ import org.F11.scada.server.frame.FrameDefineHandler;
 import org.F11.scada.server.frame.FrameDefineHandlerFactory;
 import org.F11.scada.server.frame.PageDefine;
 import org.F11.scada.server.frame.impl.FrameDefineHandlerFactoryImpl;
+import org.F11.scada.server.invoke.StringUtil;
 import org.F11.scada.server.register.HolderString;
 import org.F11.scada.util.ConcurrentHashSet;
 import org.F11.scada.util.ThreadUtil;
@@ -114,10 +115,10 @@ public class AppletFrameDefine {
 			SAXException {
 
 		this(
-				authenticationable,
-				changer,
-				proxyDefine,
-				new FrameDefineHandlerFactoryImpl());
+			authenticationable,
+			changer,
+			proxyDefine,
+			new FrameDefineHandlerFactoryImpl());
 	}
 
 	/**
@@ -231,30 +232,28 @@ public class AppletFrameDefine {
 			// パース
 			StringReader sr = null;
 			try {
-				F11Handler frameDef = new F11Handler(
-						authenticationable,
-						changer,
-						null);
-				XMLReader parser = XMLReaderFactory
-						.createXMLReader(EnvironmentManager.get(
-								"/org.xml.sax.driver",
-								""));
+				F11Handler frameDef =
+					new F11Handler(authenticationable, changer, null);
+				XMLReader parser =
+					XMLReaderFactory.createXMLReader(EnvironmentManager.get(
+						"/org.xml.sax.driver",
+						""));
 				parser.setContentHandler(frameDef);
 				sr = new StringReader(page.getSrcXml());
 				InputSource is = new InputSource(sr);
 				parser.parse(is);
 				pageMap = frameDef.getItemMap();
 
-				PageMapWrapper pageMapWrapper = (PageMapWrapper) cachePageMap
-						.remove(name);
+				PageMapWrapper pageMapWrapper =
+					(PageMapWrapper) cachePageMap.remove(name);
 				cacheHolderSet.removeAll(pageMapWrapper.pageDefine
-						.getDataHolders());
-				BasePane bp = (BasePane) pageMapWrapper.getPageMap().get(
-						ITEM_KEY_PANE);
+					.getDataHolders());
+				BasePane bp =
+					(BasePane) pageMapWrapper.getPageMap().get(ITEM_KEY_PANE);
 				bp.destroyPage();
 
 				cachePageMap.put(name, new PageMapWrapper(System
-						.currentTimeMillis(), pageMap, page));
+					.currentTimeMillis(), pageMap, page));
 				cacheHolderSet.addAll(page.getDataHolders());
 			} catch (Exception e) {
 				cachePageMap.remove(name);
@@ -383,14 +382,12 @@ public class AppletFrameDefine {
 		// パース
 		StringReader sr = null;
 		try {
-			F11Handler frameDef = new F11Handler(
-					authenticationable,
-					changer,
-					argv);
-			XMLReader parser = XMLReaderFactory
-					.createXMLReader(EnvironmentManager.get(
-							"/org.xml.sax.driver",
-							""));
+			F11Handler frameDef =
+				new F11Handler(authenticationable, changer, argv);
+			XMLReader parser =
+				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
+					"/org.xml.sax.driver",
+					""));
 			parser.setContentHandler(frameDef);
 			sr = new StringReader(page.getSrcXml());
 			InputSource is = new InputSource(sr);
@@ -400,7 +397,7 @@ public class AppletFrameDefine {
 			BasePane bp = (BasePane) pageMap.get(ITEM_KEY_PANE);
 			if (bp.isCache()) {
 				cachePageMap.put(name, new PageMapWrapper(System
-						.currentTimeMillis(), pageMap, page));
+					.currentTimeMillis(), pageMap, page));
 				cacheHolderSet.addAll(page.getDataHolders());
 			}
 			return pageMap;
@@ -426,7 +423,7 @@ public class AppletFrameDefine {
 				DataProvider dp = manager.getDataProvider(hs.getProvider());
 				DataHolder dh = dp.getDataHolder(hs.getHolder());
 				if (dh == null
-						|| Globals.ERR_HOLDER.equals(dh.getDataHolderName())) {
+					|| Globals.ERR_HOLDER.equals(dh.getDataHolderName())) {
 					continue;
 				}
 				try {
@@ -457,15 +454,16 @@ public class AppletFrameDefine {
 
 	private void addAlarmWriteHolder(Set holders) {
 		if (null != authenticationable) {
-			String value = authenticationable.getConfiguration().getString(
+			String value =
+				authenticationable.getConfiguration().getString(
 					"xwife.applet.Applet.alarmStopKey.write",
 					"");
 			if (!"".equals(value)) {
 				int p = value.indexOf('_');
 				if (0 < p) {
-					HolderString hs = new HolderString(
-							value.substring(0, p),
-							value.substring(p + 1));
+					HolderString hs =
+						new HolderString(value.substring(0, p), value
+							.substring(p + 1));
 					holders.remove(hs);
 				}
 			}
@@ -474,15 +472,16 @@ public class AppletFrameDefine {
 
 	private void addAlarmEventHolder(Set holders) {
 		if (null != authenticationable) {
-			String value = authenticationable.getConfiguration().getString(
+			String value =
+				authenticationable.getConfiguration().getString(
 					"xwife.applet.Applet.alarmStopKey.event",
 					"");
 			if (!"".equals(value)) {
 				int p = value.indexOf('_');
 				if (0 < p) {
-					HolderString hs = new HolderString(
-							value.substring(0, p),
-							value.substring(p + 1));
+					HolderString hs =
+						new HolderString(value.substring(0, p), value
+							.substring(p + 1));
 					holders.remove(hs);
 				}
 			}
@@ -541,16 +540,17 @@ public class AppletFrameDefine {
 
 		StringReader sr = null;
 		try {
-			XMLReader parser = XMLReaderFactory
-					.createXMLReader(EnvironmentManager.get(
-							"/org.xml.sax.driver",
-							""));
-			F11Handler frameDef = new F11Handler(
-					authenticationable,
-					changer,
-					null);
+			XMLReader parser =
+				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
+					"/org.xml.sax.driver",
+					""));
+			F11Handler frameDef =
+				new F11Handler(authenticationable, changer, null);
 			parser.setContentHandler(frameDef);
-			sr = new StringReader(statusBarPage.getSrcXml());
+			StringUtil util = new StringUtil();
+			sr =
+				new StringReader(util.replaceAllPointName(statusBarPage
+					.getSrcXml()));
 			InputSource is = new InputSource(sr);
 			parser.parse(is);
 			Map itemMap = frameDef.getItemMap();
