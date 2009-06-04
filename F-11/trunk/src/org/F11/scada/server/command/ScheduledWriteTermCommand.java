@@ -19,9 +19,10 @@
 
 package org.F11.scada.server.command;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
 
@@ -30,9 +31,10 @@ import org.F11.scada.server.alarm.DataValueChangeEventKey;
  * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class WriteTermCommand implements Command {
+public class ScheduledWriteTermCommand implements Command {
 	/** スレッドプール実行クラス */
-	private static Executor executor = Executors.newCachedThreadPool();
+	private static ScheduledExecutorService executor =
+		Executors.newScheduledThreadPool(1);
 
 	/** プロバイダ名 */
 	private String provider;
@@ -40,6 +42,8 @@ public class WriteTermCommand implements Command {
 	private String holder;
 	/** 書き込む値 */
 	private String value;
+	/** 遅延する時間 */
+	private Long delay;
 
 	public void setHolder(String holder) {
 		this.holder = holder;
@@ -51,6 +55,10 @@ public class WriteTermCommand implements Command {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public void setDelay(Long delay) {
+		this.delay = delay;
 	}
 
 	/**
@@ -68,13 +76,16 @@ public class WriteTermCommand implements Command {
 		if (null == value) {
 			throw new IllegalStateException("valueが設定されていません");
 		}
+		if (null == delay) {
+			throw new IllegalStateException("longが設定されていません");
+		}
 
 		try {
-			executor.execute(new WriteTermCommandTask(
+			executor.schedule(new WriteTermCommandTask(
 				evt,
 				provider,
 				holder,
-				value));
+				value), delay, TimeUnit.SECONDS);
 		} catch (RejectedExecutionException e) {
 		}
 	}
