@@ -33,6 +33,7 @@ import org.xml.sax.Attributes;
 
 /**
  * xpath /dialogmap/tenkeydialog 状態を表すクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class PfLeLaUDLimitDialogState implements State {
@@ -45,14 +46,15 @@ public class PfLeLaUDLimitDialogState implements State {
 
 	/**
 	 * 状態オブジェクトを生成します。
+	 * 
 	 * @param tagName タグ名称
 	 * @param atts タグ属性
 	 * @param 親の状態オブジェクト
 	 */
 	public PfLeLaUDLimitDialogState(
-		String tagName,
-		Attributes atts,
-		DialogMapState state) {
+			String tagName,
+			Attributes atts,
+			DialogMapState state) {
 		this.state = state;
 		logger = Logger.getLogger(getClass().getName());
 
@@ -74,15 +76,16 @@ public class PfLeLaUDLimitDialogState implements State {
 			dialog =
 				new PfUDLimitDialog(
 					(Frame) state.handler.window,
-					PfUDLimitDialog.LELA);
+					PfUDLimitDialog.LELA,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
 			dialog =
 				new PfUDLimitDialog(
 					(Dialog) state.handler.window,
-					PfUDLimitDialog.LELA);
+					PfUDLimitDialog.LELA,
+					state.handler.changer);
 		}
 		dialog.setSize(width, height);
-		//		dialog.setModal(true);
 	}
 
 	/*

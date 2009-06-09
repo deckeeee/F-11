@@ -43,6 +43,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.xml.sax.Attributes;
 
 /**
@@ -149,10 +150,8 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 		final ArrayList para = new ArrayList();
 		para.add(this.getClass());
 		para.add(this);
-		final WifeDialog dlg = getDialog(
-				frame,
-				(SymbolCollection) getParent(),
-				para);
+		final WifeDialog dlg =
+			getDialog(frame, (SymbolCollection) getParent(), para);
 		dlg.show();
 	}
 
@@ -169,9 +168,8 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 	}
 
 	public double getConvertMin() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return 0;
@@ -181,9 +179,8 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 	}
 
 	public double getConvertMax() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return 0;
@@ -196,9 +193,8 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 		if (pattern != null)
 			return pattern;
 
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return "0.0";
@@ -210,7 +206,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 	public WifeDialog getDialog(
 			Window window,
 			SymbolCollection collection,
-			java.util.List para) {
+			List para) {
 
 		String dialogId = getProperty("dlgname");
 		if (dialogId == null) {
@@ -218,7 +214,11 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 			dialogId = "1";
 		}
 
-		WifeDialog d = DialogFactory.get(window, dialogId);
+		WifeDialog d =
+			DialogFactory.get(
+				window,
+				dialogId,
+				(AbstractWifeApplet) authentication);
 		if (d == null)
 			System.out.println(this.getClass().getName() + "dialog null");
 		d.setListIterator(collection.listIterator(para));

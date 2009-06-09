@@ -307,20 +307,25 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			Session session) {
 		PageDefine pd = getPage(name, key);
 		List wdps = getWifeDataProviders(pd, session);
+		log.debug("page=" + name);
+		log.debug("1");
 		providerLock(wdps);
 		try {
+			log.debug("2");
 			checkUnregisterJim(session);
 			sendRequestDateMap.put(new Long(key), session);
-			if (log.isDebugEnabled()) {
-				log.debug("key="
-					+ getKeyString(key)
-					+ " value="
-					+ sendRequestDateMap.get(new Long(key)));
-			}
+//			if (log.isDebugEnabled()) {
+//				log.debug("key="
+//					+ getKeyString(key)
+//					+ " value="
+//					+ sendRequestDateMap.get(new Long(key)));
+//			}
 			clientPageMap.put(session, name);
 			registerJim(pd);
+			log.debug("3");
 		} finally {
 			providerUnlock(wdps, pd);
+			log.debug("4");
 		}
 		return pd;
 	}
@@ -389,10 +394,10 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			if (pageMap.containsKey(pname)) {
 				PageDefine clientPage = (PageDefine) pageMap.get(pname);
 				if (!clientPage.isCache()) {
-					log.debug("unregisterJim");
+//					log.debug("unregisterJim");
 					unregisterJim(session);
 				} else {
-					log.debug("not unregisterJim");
+//					log.debug("not unregisterJim");
 				}
 			}
 		}
@@ -769,12 +774,12 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	public synchronized void setSendRequestDateMap(Session session, long time) {
 		sendRequestDateMap.put(new Long(time), session);
-		if (log.isDebugEnabled()) {
-			log.debug("key="
-				+ getKeyString(time)
-				+ " value="
-				+ sendRequestDateMap.get(new Long(time)));
-		}
+//		if (log.isDebugEnabled()) {
+//			log.debug("key="
+//				+ getKeyString(time)
+//				+ " value="
+//				+ sendRequestDateMap.get(new Long(time)));
+//		}
 	}
 
 	public List getCachePages() {

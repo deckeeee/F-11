@@ -43,6 +43,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.xml.sax.Attributes;
 
 /**
@@ -150,7 +151,7 @@ public class TextPowerfactorSymbolEditable extends TextAnalogSymbol implements
 		para.add(this.getClass());
 		para.add(this);
 		WifeDialog dlg = getDialog(frame, (SymbolCollection) getParent(), para);
-//		dlg.selectAll();
+		// dlg.selectAll();
 		dlg.show();
 	}
 
@@ -167,9 +168,8 @@ public class TextPowerfactorSymbolEditable extends TextAnalogSymbol implements
 	}
 
 	public double getConvertMin() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return 0;
@@ -179,9 +179,8 @@ public class TextPowerfactorSymbolEditable extends TextAnalogSymbol implements
 	}
 
 	public double getConvertMax() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return 0;
@@ -194,9 +193,8 @@ public class TextPowerfactorSymbolEditable extends TextAnalogSymbol implements
 		if (pattern != null)
 			return pattern;
 
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog))
 			return "0.0";
@@ -209,7 +207,8 @@ public class TextPowerfactorSymbolEditable extends TextAnalogSymbol implements
 			Window window,
 			SymbolCollection collection,
 			java.util.List para) {
-		WifeDialog d = DialogFactory.get(window, "2");
+		WifeDialog d =
+			DialogFactory.get(window, "2", (AbstractWifeApplet) authentication);
 		if (d == null)
 			System.out.println(this.getClass().getName() + "dialog null");
 		d.setListIterator(collection.listIterator(para));

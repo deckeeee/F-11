@@ -22,6 +22,8 @@ package org.F11.scada.applet.schedule;
 
 import javax.swing.JComponent;
 
+import org.F11.scada.xwife.applet.PageChanger;
+
 /**
  * テーブル式のスケジュールクラスを生成する具象ファクトリークラスです。 ScheduleFactory
  * クラスから、インスタンス生成の際リファレンス機構を通じて、呼び出されます。
@@ -41,9 +43,10 @@ public class TableScheduleFactory extends ScheduleFactory {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		super(scheduleModel);
-		init(isSort, isNonTandT, pageId, isLenient);
+		init(isSort, isNonTandT, pageId, isLenient, changer);
 	}
 
 	/**
@@ -57,13 +60,16 @@ public class TableScheduleFactory extends ScheduleFactory {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
-		view = new TableScheduleView(
+			boolean isLenient,
+			PageChanger changer) {
+		view =
+			new TableScheduleView(
 				scheduleModel,
 				isSort,
 				isNonTandT,
 				pageId,
-				isLenient);
+				isLenient,
+				changer);
 	}
 
 	public JComponent createView() {

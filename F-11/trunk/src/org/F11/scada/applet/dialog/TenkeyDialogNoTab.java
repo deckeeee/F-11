@@ -34,6 +34,7 @@ import java.util.ListIterator;
 import javax.swing.JPanel;
 
 import org.F11.scada.applet.symbol.TenkeyEditable;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -48,8 +49,8 @@ public class TenkeyDialogNoTab extends AbstractTenkeyDialog {
 	 * 
 	 * @param frame 親のフレームです
 	 */
-	public TenkeyDialogNoTab(Frame frame) {
-		super(frame);
+	public TenkeyDialogNoTab(Frame frame, PageChanger changer) {
+		super(frame, changer);
 	}
 
 	/**
@@ -57,8 +58,8 @@ public class TenkeyDialogNoTab extends AbstractTenkeyDialog {
 	 * 
 	 * @param dialog 親のダイアログです
 	 */
-	public TenkeyDialogNoTab(Dialog dialog) {
-		super(dialog);
+	public TenkeyDialogNoTab(Dialog dialog, PageChanger changer) {
+		super(dialog, changer);
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class TenkeyDialogNoTab extends AbstractTenkeyDialog {
 		log.info("setManipulatePanel開始");
 		JPanel manipulatePanel = new JPanel(new GridLayout(6, 1));
 		OkButton okButton = new OkButton(this, "OK");
-		CancelButton cancelButton = new CancelButton(this, "Cancel");
+		CancelButton cancelButton = new CancelButton(this, "Cancel", changer);
 		manipulatePanel.add(okButton);
 		manipulatePanel.add(cancelButton);
 		keyPanel.add(manipulatePanel, BorderLayout.EAST);

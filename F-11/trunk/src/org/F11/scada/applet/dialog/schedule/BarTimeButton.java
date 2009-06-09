@@ -21,6 +21,7 @@
 
 package org.F11.scada.applet.dialog.schedule;
 
+import org.F11.scada.xwife.applet.PageChanger;
 
 /**
  * 時刻設定用のボタンクラスです
@@ -30,12 +31,17 @@ class BarTimeButton extends AbstractTimeButton {
 
 	/**
 	 * コンストラクタ
+	 * 
 	 * @param dialog スケジュール時刻設定ダイアログの参照
 	 * @param time 時間
 	 * @param hour 時間・分の種別
 	 */
-	BarTimeButton(AbstractScheduleDialog scheduleDialog, int time, boolean hour) {
-		super(scheduleDialog, time, hour);
+	BarTimeButton(
+			AbstractScheduleDialog scheduleDialog,
+			int time,
+			boolean hour,
+			PageChanger changer) {
+		super(scheduleDialog, time, hour, changer);
 	}
 
 	/**

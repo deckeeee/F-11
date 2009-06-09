@@ -46,6 +46,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
@@ -203,7 +204,11 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 			logger.warn("dialogId null");
 			dialogId = "3";
 		}
-		WifeDialog d = DialogFactory.get(window, dialogId);
+		WifeDialog d =
+			DialogFactory.get(
+				window,
+				dialogId,
+				(AbstractWifeApplet) authentication);
 		if (d == null) {
 			logger.warn(getClass().getName() + "dialog null");
 		}
@@ -288,8 +293,8 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 		}
 		super.disConnect();
 	}
-	
+
 	public void setGroupHolder(String id) {
-		//Dummy
+		// Dummy
 	}
 }

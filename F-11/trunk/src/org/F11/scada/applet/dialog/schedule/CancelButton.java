@@ -21,15 +21,19 @@
 
 package org.F11.scada.applet.dialog.schedule;
 
+import org.F11.scada.applet.dialog.ActionMapUtil;
+import org.F11.scada.xwife.applet.PageChanger;
+
 /**
  * CANCEL ボタンクラスです
  */
 class CancelButton extends AbstractScheduleButton {
 	private static final long serialVersionUID = -6361841021910640391L;
 
-	CancelButton(AbstractScheduleDialog scheduleDialog) {
+	CancelButton(AbstractScheduleDialog scheduleDialog, PageChanger changer) {
 		super(scheduleDialog);
 		init();
+		ActionMapUtil.setActionMap(this, changer);
 	}
 
 	private void init() {

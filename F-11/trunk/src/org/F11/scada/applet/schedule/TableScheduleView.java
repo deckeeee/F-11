@@ -51,6 +51,7 @@ import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.schedule.DefaultScheduleDialog;
 import org.F11.scada.applet.symbol.HandCursorListener;
 import org.F11.scada.applet.symbol.ReferencerOwnerSymbol;
+import org.F11.scada.xwife.applet.PageChanger;
 
 /**
  * テーブル式のスケジュールビュークラスです。
@@ -74,11 +75,12 @@ public class TableScheduleView {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		this.scheduleModel = scheduleModel;
 		this.isNonTandT = isNonTandT;
 		this.pageId = pageId;
-		init(isSort, isNonTandT, isLenient);
+		init(isSort, isNonTandT, isLenient, changer);
 	}
 
 	/**
@@ -90,26 +92,28 @@ public class TableScheduleView {
 	private void init(
 			boolean isSort,
 			final boolean isNonTandT,
-			boolean isLenient) {
-		TableScheduleModel model = new TableScheduleModel(
-				scheduleModel,
-				isNonTandT);
+			boolean isLenient,
+			PageChanger changer) {
+		TableScheduleModel model =
+			new TableScheduleModel(scheduleModel, isNonTandT);
 		table = new ScheduleTable(model, scheduleModel);
 		table.setRowSelectionAllowed(false);
 		table.setColumnSelectionAllowed(false);
 		table.addMouseListener(new ScheduleTableListener(
-				model,
-				isSort,
-				isNonTandT,
-				isLenient));
+			model,
+			isSort,
+			isNonTandT,
+			isLenient,
+			changer));
 		DefaultTableCellRenderer renderer = new ScheduleCellRenderer();
-		DefaultTableColumnModel dc = (DefaultTableColumnModel) table
-				.getColumnModel();
+		DefaultTableColumnModel dc =
+			(DefaultTableColumnModel) table.getColumnModel();
 		for (int i = 0; i < table.getColumnCount(); i++) {
 			TableColumn column = dc.getColumn(i);
 			column.setCellRenderer(renderer);
 		}
-		table.addMouseMotionListener(new TableHandCursorListener(scheduleModel));
+		table
+			.addMouseMotionListener(new TableHandCursorListener(scheduleModel));
 	}
 
 	/**
@@ -159,8 +163,8 @@ public class TableScheduleView {
 		private void createRowModels() {
 			rowModel = new ScheduleRowModel[scheduleModel.getPatternSize()];
 			for (int i = 0; i < rowModel.length; i++) {
-				rowModel[scheduleModel.getDayIndex(i)] = scheduleModel
-						.getScheduleRowModel(i);
+				rowModel[scheduleModel.getDayIndex(i)] =
+					scheduleModel.getScheduleRowModel(i);
 			}
 		}
 
@@ -178,8 +182,8 @@ public class TableScheduleView {
 
 		public int getRowCount() {
 			return isNonTandT
-					? scheduleModel.getPatternSize() - 2
-					: scheduleModel.getPatternSize();
+				? scheduleModel.getPatternSize() - 2
+				: scheduleModel.getPatternSize();
 		}
 
 		public int getColumnCount() {
@@ -241,12 +245,12 @@ public class TableScheduleView {
 				return this;
 			} else {
 				return super.getTableCellRendererComponent(
-						table,
-						value,
-						isSelected,
-						hasFocus,
-						row,
-						column);
+					table,
+					value,
+					isSelected,
+					hasFocus,
+					row,
+					column);
 			}
 		}
 
@@ -273,16 +277,19 @@ public class TableScheduleView {
 		private final boolean isSort;
 		private final boolean isNonTandT;
 		private final boolean isLenient;
+		private final PageChanger changer;
 
 		ScheduleTableListener(
 				TableScheduleModel tableScheduleModel,
 				boolean isSort,
 				boolean isNonTandT,
-				boolean isLenient) {
+				boolean isLenient,
+				PageChanger changer) {
 			this.tableScheduleModel = tableScheduleModel;
 			this.isSort = isSort;
 			this.isNonTandT = isNonTandT;
 			this.isLenient = isLenient;
+			this.changer = changer;
 		}
 
 		public void mousePressed(MouseEvent e) {
@@ -301,25 +308,32 @@ public class TableScheduleView {
 					}
 
 					Frame frame = WifeUtilities.getParentFrame(table);
-					TableScheduleModel model = (TableScheduleModel) table
-							.getModel();
-					dialog = new DefaultScheduleDialog(frame, model
-							.getScheduleRowModel(row), isSort, isLenient);
+					TableScheduleModel model =
+						(TableScheduleModel) table.getModel();
+					dialog =
+						new DefaultScheduleDialog(
+							frame,
+							model.getScheduleRowModel(row),
+							isSort,
+							isLenient,
+							changer);
 					dialog.pack();
 					// クリックされたセルより、ダイアログ表示位置を算出。
 					Rectangle r = table.getCellRect(row, column, false);
 					Point t = table.getLocationOnScreen();
 					r.translate(t.x, t.y);
-					r.translate(table.getColumnModel().getColumn(column)
-							.getWidth(), table.getRowHeight());
+					r.translate(table
+						.getColumnModel()
+						.getColumn(column)
+						.getWidth(), table.getRowHeight());
 
 					Dimension screenSize = frame.getToolkit().getScreenSize();
 
 					Rectangle dialogBounds = dialog.getBounds();
 					dialogBounds.setLocation(r.getLocation());
 					dialog.setLocation(WifeUtilities.getInScreenPoint(
-							screenSize,
-							dialogBounds.getBounds()));
+						screenSize,
+						dialogBounds.getBounds()));
 					dialog.show();
 				}
 			}

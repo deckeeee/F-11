@@ -36,23 +36,28 @@ import org.xml.sax.Attributes;
 
 /**
  * xpath /dialogmap/tenkeydialog 状態を表すクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class TenkeyDialogNoTabState implements State {
 	DialogMapState state;
 	TenkeyDialogNoTab dialog;
-	
+
 	private String dialogName;
-	
+
 	private static Logger logger;
 
 	/**
 	 * 状態オブジェクトを生成します。
+	 * 
 	 * @param tagName タグ名称
 	 * @param atts タグ属性
 	 * @param 親の状態オブジェクト
 	 */
-	public TenkeyDialogNoTabState(String tagName, Attributes atts, DialogMapState state) {
+	public TenkeyDialogNoTabState(
+			String tagName,
+			Attributes atts,
+			DialogMapState state) {
 		this.state = state;
 		logger = Logger.getLogger(getClass().getName());
 
@@ -65,15 +70,21 @@ public class TenkeyDialogNoTabState implements State {
 		if (atts.getValue("height") == null) {
 			throw new IllegalArgumentException("height is null");
 		}
-		
+
 		dialogName = atts.getValue("name");
 		int width = Integer.parseInt(atts.getValue("width"));
 		int height = Integer.parseInt(atts.getValue("height"));
 
 		if (state.handler.window instanceof Frame) {
-			dialog = new TenkeyDialogNoTab((Frame) state.handler.window);
+			dialog =
+				new TenkeyDialogNoTab(
+					(Frame) state.handler.window,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
-			dialog = new TenkeyDialogNoTab((Dialog) state.handler.window);
+			dialog =
+				new TenkeyDialogNoTab(
+					(Dialog) state.handler.window,
+					state.handler.changer);
 		}
 		if (null != atts.getValue("dialogMin")) {
 			dialog.setDialogMin(atts.getValue("dialogMin"));
@@ -82,7 +93,7 @@ public class TenkeyDialogNoTabState implements State {
 			dialog.setDialogMax(atts.getValue("dialogMax"));
 		}
 		dialog.setSize(width, height);
-//		dialog.setModal(true);
+		// dialog.setModal(true);
 	}
 
 	/*

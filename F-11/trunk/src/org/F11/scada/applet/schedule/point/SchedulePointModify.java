@@ -46,6 +46,7 @@ import javax.swing.SwingConstants;
 import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.WifeUtilities;
+import org.F11.scada.applet.dialog.ActionMapUtil;
 import org.F11.scada.applet.dialog.GraphicScheduleViewDialog;
 import org.F11.scada.applet.schedule.GraphicScheduleViewCreator;
 import org.F11.scada.applet.schedule.ScheduleModel;
@@ -55,6 +56,7 @@ import org.F11.scada.security.auth.Subject;
 import org.F11.scada.server.schedule.point.dto.ScheduleGroupDto;
 import org.F11.scada.server.schedule.point.dto.SchedulePointRowDto;
 import org.F11.scada.util.RmiErrorUtil;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.F11.scada.xwife.applet.WifeDataProviderProxy;
 import org.apache.log4j.Logger;
 
@@ -65,18 +67,21 @@ public class SchedulePointModify extends JDialog {
 	private final int row;
 	private final SchedulePointRowDto dto;
 	private SchedulePointRowDto dtoOld;
+	private final PageChanger changer;
 
 	public SchedulePointModify(
 			JDialog dialog,
 			SchedulePointTableModel model,
 			int row,
 			boolean isSeparateSchedule,
-			String pageId) {
+			String pageId,
+			PageChanger changer) {
 		super(dialog, "スケジュールNo.変更", true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.model = model;
 		this.row = row;
 		this.dto = model.getSchedulePointRowDto(row);
+		this.changer = changer;
 		init(dialog, isSeparateSchedule, pageId);
 		setSize(520, 200);
 		WifeUtilities.setCenter(this);
@@ -127,7 +132,10 @@ public class SchedulePointModify extends JDialog {
 	private JComponent getSortComp(SchedulePointRowDto rowDto) {
 		if (isSort()) {
 			JButton sortButton = new JButton("個別...");
-			sortButton.addActionListener(new SeparateSchedule(dto, this));
+			sortButton.addActionListener(new SeparateSchedule(
+				dto,
+				this,
+				changer));
 			return sortButton;
 		} else {
 			JLabel sortComp = new JLabel("無し");
@@ -166,7 +174,7 @@ public class SchedulePointModify extends JDialog {
 				ScheduleGroupSelect select =
 					new ScheduleGroupSelect(dialog, getScheduleGroupDto(
 						scheNoLabel,
-						scheName), pageId);
+						scheName), pageId, changer);
 				select.setVisible(true);
 				setScheduleGroup(select, scheNoLabel, scheName);
 			}
@@ -243,6 +251,7 @@ public class SchedulePointModify extends JDialog {
 				}
 			}
 		});
+		ActionMapUtil.setActionMap(cancelButton, changer);
 		buttonBox.add(modifyButton);
 		buttonBox.add(Box.createHorizontalStrut(5));
 		buttonBox.add(cancelButton);
@@ -255,10 +264,15 @@ public class SchedulePointModify extends JDialog {
 		private final SchedulePointRowDto rowDto;
 		private final JDialog dialog;
 		private final CheckPermissionUtil util;
+		private final PageChanger changer;
 
-		public SeparateSchedule(SchedulePointRowDto rowDto, JDialog dialog) {
+		public SeparateSchedule(
+				SchedulePointRowDto rowDto,
+				JDialog dialog,
+				PageChanger changer) {
 			this.rowDto = rowDto;
 			this.dialog = dialog;
+			this.changer = changer;
 			util = new CheckPermissionUtil(dialog);
 		}
 
@@ -266,7 +280,7 @@ public class SchedulePointModify extends JDialog {
 			try {
 				if (util.checkPermission(rowDto)) {
 					SeparateScheduleDialog schedule =
-						new SeparateScheduleDialog(dialog, rowDto);
+						new SeparateScheduleDialog(dialog, rowDto, changer);
 					schedule.setVisible(true);
 				}
 			} catch (RemoteException ex) {
@@ -276,10 +290,14 @@ public class SchedulePointModify extends JDialog {
 
 		private static class SeparateScheduleDialog extends JDialog {
 			private static final long serialVersionUID = 4439734054103881294L;
+			private final PageChanger changer;
 
-			SeparateScheduleDialog(JDialog dialog, SchedulePointRowDto rowDto)
-					throws RemoteException {
+			SeparateScheduleDialog(
+					JDialog dialog,
+					SchedulePointRowDto rowDto,
+					PageChanger changer) throws RemoteException {
 				super(dialog, rowDto.getName(), true);
+				this.changer = changer;
 				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				Container container = getContentPane();
 				container.add(
@@ -296,9 +314,9 @@ public class SchedulePointModify extends JDialog {
 				ScheduleModel model = new SeparateScheduleModel(rowDto, dialog);
 				GraphicScheduleViewDialog view =
 					new GraphicScheduleViewDialog(dialog, false, model
-						.getTopSize(), true);
+						.getTopSize(), true, null);
 				GraphicScheduleViewCreator creator =
-					view.createView(model, false, true);
+					view.createView(model, false, true, changer);
 				JComponent comp = creator.createView();
 				comp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 				return comp;
@@ -313,6 +331,7 @@ public class SchedulePointModify extends JDialog {
 						dispose();
 					}
 				});
+				ActionMapUtil.setActionMap(closeButton, changer);
 				box.add(Box.createHorizontalGlue());
 				box.add(closeButton);
 				return box;

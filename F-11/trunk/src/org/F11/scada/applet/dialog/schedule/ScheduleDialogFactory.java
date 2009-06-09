@@ -26,7 +26,11 @@ import java.awt.Frame;
 import javax.swing.JDialog;
 
 import org.F11.scada.applet.schedule.ScheduleRowModel;
+import org.F11.scada.xwife.applet.PageChanger;
 
 public interface ScheduleDialogFactory {
-	JDialog getScheduleDialog(Frame frame, ScheduleRowModel rowModel);
+	JDialog getScheduleDialog(
+			Frame frame,
+			ScheduleRowModel rowModel,
+			PageChanger changer);
 }

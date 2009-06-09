@@ -40,6 +40,7 @@ import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.applet.symbol.DigitalEditable;
 import org.F11.scada.applet.symbol.ScheduleEditable;
 import org.F11.scada.util.FontUtil;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -51,14 +52,17 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	private final Logger logger = Logger.getLogger(DigitalDialog.class);
 	/** デジタルボタンの参照 */
 	private DigitalEditable symbol;
+	/** ページ変更オブジェクト */
+	private final PageChanger changer;
 
 	/**
 	 * コンストラクタ。
 	 * 
 	 * @param frame 親のフレーム。
 	 */
-	public DigitalDialog(Frame frame) {
+	public DigitalDialog(Frame frame, PageChanger changer) {
 		super(frame);
+		this.changer = changer;
 		getContentPane().setLayout(null);
 	}
 
@@ -67,8 +71,9 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 * 
 	 * @param dialog 親ダイアログ。
 	 */
-	public DigitalDialog(Dialog dialog) {
+	public DigitalDialog(Dialog dialog, PageChanger changer) {
 		super(dialog);
+		this.changer = changer;
 		getContentPane().setLayout(null);
 	}
 
@@ -149,7 +154,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 			String schedule) {
 		logger.info("add開始");
 		DialogButton button =
-			DialogButton.createDialogButton(this, actionNo, schedule);
+			DialogButton.createDialogButton(this, actionNo, schedule, changer);
 		button.setText(text);
 		button.setBounds(rec);
 		if (null != ColorFactory.getColor(foreground)) {
@@ -194,13 +199,14 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		static public DialogButton createDialogButton(
 				DigitalDialog dialog,
 				int actionNo,
-				String schedule) {
+				String schedule,
+				PageChanger changer) {
 			logger.info("createDialogButton開始");
 			switch (actionNo) {
 			case 5:
-				return new ScheduleButton(dialog, actionNo, schedule);
+				return new ScheduleButton(dialog, actionNo, schedule, changer);
 			case 6:
-				return new CancelButton(dialog, actionNo);
+				return new CancelButton(dialog, actionNo, changer);
 			default:
 				return new SendButton(dialog, actionNo);
 			}
@@ -247,8 +253,12 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		 * @param dialog ボタンを追加するダイアログの参照
 		 * @param actionNo ボタンの指示動作
 		 */
-		public CancelButton(DigitalDialog dialog, int actionNo) {
+		public CancelButton(
+				DigitalDialog dialog,
+				int actionNo,
+				PageChanger changer) {
 			super(dialog, actionNo);
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		/**
@@ -262,13 +272,16 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 	private static class ScheduleButton extends DialogButton {
 		private final String scheduleDialogNo;
+		private final PageChanger changer;
 
 		public ScheduleButton(
 				DigitalDialog dialog,
 				int actionNo,
-				String schedule) {
+				String schedule,
+				PageChanger changer) {
 			super(dialog, actionNo);
 			this.scheduleDialogNo = schedule;
+			this.changer = changer;
 			if (null == schedule || "".equals(schedule)) {
 				throw new IllegalArgumentException(
 					"スケジュールダイアログNo(schedule属性)が設定されていません。");
@@ -277,7 +290,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 		@Override
 		public void pushButton() {
-			WifeDialog wd = DialogFactory.get(dialog, scheduleDialogNo);
+			WifeDialog wd = DialogFactory.get(dialog, scheduleDialogNo, changer);
 			wd.setListIterator(getIterator());
 			wd.setTitle(dialog.getTitle());
 			wd.show();

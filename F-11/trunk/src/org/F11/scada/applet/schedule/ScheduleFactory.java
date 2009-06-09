@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JComponent;
 
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -64,20 +65,31 @@ public abstract class ScheduleFactory {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		ScheduleFactory factory = null;
 		String realClassName = "org.F11.scada.applet.schedule." + viewClass;
 		logger.debug("Class Name : " + realClassName);
 
 		try {
 			Class factoryClass = Class.forName(realClassName);
-			Class[] param = { ScheduleModel.class, Boolean.TYPE, Boolean.TYPE,
-					String.class, Boolean.TYPE };
+			Class[] param =
+				{
+					ScheduleModel.class,
+					Boolean.TYPE,
+					Boolean.TYPE,
+					String.class,
+					Boolean.TYPE,
+					PageChanger.class };
 			Constructor constructor = factoryClass.getConstructor(param);
-			factory = (ScheduleFactory) constructor.newInstance(new Object[] {
-					scheduleModel, Boolean.valueOf(isSort),
-					Boolean.valueOf(isNonTandT), pageId,
-					Boolean.valueOf(isLenient) });
+			factory =
+				(ScheduleFactory) constructor.newInstance(new Object[] {
+					scheduleModel,
+					Boolean.valueOf(isSort),
+					Boolean.valueOf(isNonTandT),
+					pageId,
+					Boolean.valueOf(isLenient),
+					changer });
 		} catch (ClassNotFoundException ex) {
 			logger.warn("class not found = " + viewClass);
 		} catch (InvocationTargetException ex2) {

@@ -30,13 +30,13 @@ public class PointCommentDialogState implements State {
 	/**
 	 * 状態オブジェクトを生成します。
 	 * 
-	 * @param tagName
-	 *            タグ名称
-	 * @param atts
-	 *            タグ属性
+	 * @param tagName タグ名称
+	 * @param atts タグ属性
 	 * @param 親の状態オブジェクト
 	 */
-	public PointCommentDialogState(String tagName, Attributes atts,
+	public PointCommentDialogState(
+			String tagName,
+			Attributes atts,
 			DialogMapState state) {
 		this.state = state;
 		logger = Logger.getLogger(getClass().getName());
@@ -56,9 +56,15 @@ public class PointCommentDialogState implements State {
 		int height = Integer.parseInt(atts.getValue("height"));
 
 		if (state.handler.window instanceof Frame) {
-			dialog = new PointCommentDialog((Frame) state.handler.window);
+			dialog =
+				new PointCommentDialog(
+					(Frame) state.handler.window,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
-			dialog = new PointCommentDialog((Dialog) state.handler.window);
+			dialog =
+				new PointCommentDialog(
+					(Dialog) state.handler.window,
+					state.handler.changer);
 		}
 		dialog.setSize(width, height);
 	}

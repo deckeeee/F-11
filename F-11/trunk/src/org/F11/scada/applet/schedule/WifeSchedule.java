@@ -22,6 +22,8 @@ package org.F11.scada.applet.schedule;
 
 import javax.swing.JComponent;
 
+import org.F11.scada.xwife.applet.PageChanger;
+
 /**
  * スケジュール画面を作成するクラス。実装はファクトリークラスに委譲します。
  */
@@ -35,14 +37,16 @@ public class WifeSchedule {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		factory = ScheduleFactory.getFactory(
 				scheduleModel,
 				viewClass,
 				isSort,
 				isNonTandT,
 				pageId,
-				isLenient);
+				isLenient,
+				changer);
 	}
 
 	public JComponent getMainPanel() {

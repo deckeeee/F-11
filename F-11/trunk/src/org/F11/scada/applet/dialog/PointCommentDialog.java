@@ -41,6 +41,7 @@ import javax.swing.JTextArea;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.CommentEditable;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 public class PointCommentDialog extends WifeDialog {
@@ -48,14 +49,17 @@ public class PointCommentDialog extends WifeDialog {
 	private final Logger logger = Logger.getLogger(PointCommentDialog.class);
 	private JTextArea textArea;
 	private CommentEditable symbol;
+	private final PageChanger changer;
 
-	public PointCommentDialog(Dialog dialog) {
+	public PointCommentDialog(Dialog dialog, PageChanger changer) {
 		super(dialog);
+		this.changer = changer;
 		initComponents();
 	}
 
-	public PointCommentDialog(Frame frame) {
+	public PointCommentDialog(Frame frame, PageChanger changer) {
 		super(frame);
+		this.changer = changer;
 		initComponents();
 	}
 
@@ -123,6 +127,7 @@ public class PointCommentDialog extends WifeDialog {
 				dispose();
 			}
 		});
+		ActionMapUtil.setActionMap(cancelButton, changer);
 		buttonPanel.add(cancelButton);
 
 		gridBagConstraints = new GridBagConstraints();

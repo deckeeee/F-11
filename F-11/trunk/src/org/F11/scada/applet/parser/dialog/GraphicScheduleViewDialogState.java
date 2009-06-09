@@ -68,28 +68,32 @@ public class GraphicScheduleViewDialogState implements State {
 		dialogName = atts.getValue("name");
 		int width = Integer.parseInt(atts.getValue("width"));
 		int height = Integer.parseInt(atts.getValue("height"));
-		boolean isSort = Boolean.valueOf(atts.getValue("isSort"))
-				.booleanValue();
+		boolean isSort =
+			Boolean.valueOf(atts.getValue("isSort")).booleanValue();
 		String viewModeStr = atts.getValue("viewMode");
 		int viewMode = 2;
 		if (null != viewModeStr && !"".equals(viewModeStr)) {
 			viewMode = Integer.parseInt(viewModeStr);
 		}
-		boolean isLenient = Boolean.valueOf(atts.getValue("isLenient"))
-				.booleanValue();
+		boolean isLenient =
+			Boolean.valueOf(atts.getValue("isLenient")).booleanValue();
 
 		if (state.handler.window instanceof Frame) {
-			dialog = new GraphicScheduleViewDialog(
+			dialog =
+				new GraphicScheduleViewDialog(
 					(Frame) state.handler.window,
 					isSort,
 					viewMode,
-					isLenient);
+					isLenient,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
-			dialog = new GraphicScheduleViewDialog(
+			dialog =
+				new GraphicScheduleViewDialog(
 					(Dialog) state.handler.window,
 					isSort,
 					viewMode,
-					isLenient);
+					isLenient,
+					state.handler.changer);
 		}
 		dialog.setSize(width, height);
 	}

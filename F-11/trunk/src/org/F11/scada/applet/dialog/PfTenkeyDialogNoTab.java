@@ -55,6 +55,7 @@ import javax.swing.SpinnerNumberModel;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.GraphicManager;
 import org.F11.scada.applet.symbol.TenkeyEditable;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -89,6 +90,8 @@ public class PfTenkeyDialogNoTab extends WifeDialog implements ActionListener {
 	JRadioButton LA;
 	JRadioButton LE;
 
+	private final PageChanger changer;
+
 	/** ロギングクラスです */
 	private final Logger logger = Logger.getLogger(PfTenkeyDialogNoTab.class);
 
@@ -97,8 +100,13 @@ public class PfTenkeyDialogNoTab extends WifeDialog implements ActionListener {
 	 * 
 	 * @param frame 親のフレームです
 	 */
-	public PfTenkeyDialogNoTab(Frame frame, boolean le, boolean la) {
+	public PfTenkeyDialogNoTab(
+			Frame frame,
+			boolean le,
+			boolean la,
+			PageChanger changer) {
 		super(frame);
+		this.changer = changer;
 		init();
 		LE.setEnabled(le);
 		LA.setEnabled(la);
@@ -109,8 +117,13 @@ public class PfTenkeyDialogNoTab extends WifeDialog implements ActionListener {
 	 * 
 	 * @param dialog 親のダイアログです
 	 */
-	public PfTenkeyDialogNoTab(Dialog dialog, boolean le, boolean la) {
+	public PfTenkeyDialogNoTab(
+			Dialog dialog,
+			boolean le,
+			boolean la,
+			PageChanger changer) {
 		super(dialog);
+		this.changer = changer;
 		init();
 		LE.setEnabled(le);
 		LA.setEnabled(la);
@@ -312,7 +325,7 @@ public class PfTenkeyDialogNoTab extends WifeDialog implements ActionListener {
 		OkButton okButton = new OkButton(this, "OK");
 		// PreviousButton previousButton = new PreviousButton(this, "前項目");
 		// NextButton nextButton = new NextButton(this, "次項目");
-		CancelButton cancelButton = new CancelButton(this, "Cancel");
+		CancelButton cancelButton = new CancelButton(this, "Cancel", changer);
 		manipulatePanel.add(okButton);
 		// manipulatePanel.add(previousButton);
 		// manipulatePanel.add(nextButton);
@@ -525,9 +538,13 @@ public class PfTenkeyDialogNoTab extends WifeDialog implements ActionListener {
 	private static class CancelButton extends DialogButton {
 		private static final long serialVersionUID = 6480427425973585807L;
 
-		public CancelButton(PfTenkeyDialogNoTab dialog, String text) {
+		public CancelButton(
+				PfTenkeyDialogNoTab dialog,
+				String text,
+				PageChanger changer) {
 			super(dialog, text);
 			setInoutKeyMap("ESCAPE");
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		public void pushButton() {

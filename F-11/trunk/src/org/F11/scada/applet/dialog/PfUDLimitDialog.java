@@ -61,6 +61,7 @@ import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
 import org.F11.scada.data.ConvertValue;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -77,14 +78,16 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	private final boolean lela_mode;
 
 	/** 値ラベルの配列です */
-	private final String[] valueTitle = { "上限警報 ON :", "OFF :", "下限警報 ON :",
-			"OFF :" };
+	private final String[] valueTitle =
+		{ "上限警報 ON :", "OFF :", "下限警報 ON :", "OFF :" };
 	/** 値ボタンのリストです */
 	private List buttonList;
 	/** テンキーダイアログの参照です */
 	private WifeDialog tenkeyDialog;
 	/** 編集対象シンボル */
 	private Analog4Editable symbol;
+
+	private final PageChanger changer;
 
 	/** ロギングクラスです */
 	private final Logger logger = Logger.getLogger(PfUDLimitDialog.class);
@@ -94,9 +97,10 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * 
 	 * @param frame 親のフレームです
 	 */
-	public PfUDLimitDialog(Frame frame, boolean lela_mode) {
+	public PfUDLimitDialog(Frame frame, boolean lela_mode, PageChanger changer) {
 		super(frame);
 		this.lela_mode = lela_mode;
+		this.changer = changer;
 		init();
 	}
 
@@ -105,9 +109,10 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * 
 	 * @param dialog 親のダイアログです
 	 */
-	public PfUDLimitDialog(Dialog dialog, boolean lela_mode) {
+	public PfUDLimitDialog(Dialog dialog, boolean lela_mode, PageChanger changer) {
 		super(dialog);
 		this.lela_mode = lela_mode;
+		this.changer = changer;
 		init();
 	}
 
@@ -136,7 +141,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 			c.gridx = 0;
 			basePanel.add(panelL, c);
 
-			ValueButton b = new ValueButton(this, i);
+			ValueButton b = new ValueButton(this, i, changer);
 			buttonList.add(b);
 			JPanel panelB = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			panelB.add(b);
@@ -149,7 +154,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	private JComponent createButtonPanel() {
 		JComponent okButton = new OkButton(this, "OK");
-		JComponent cancelButton = new CancelButton(this, "Cancel");
+		JComponent cancelButton = new CancelButton(this, "Cancel", changer);
 
 		JPanel basePanel = new JPanel(new FlowLayout());
 		basePanel.add(okButton);
@@ -160,7 +165,9 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.applet.dialog.WifeDialog#setListIterator(java.util.ListIterator)
+	 * @see
+	 * org.F11.scada.applet.dialog.WifeDialog#setListIterator(java.util.ListIterator
+	 * )
 	 */
 	public void setListIterator(ListIterator listIterator) {
 		logger.info("setListIterator開始");
@@ -171,7 +178,8 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
 		logger.info("actionPerformed開始");
@@ -213,7 +221,8 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
+	 * @see
+	 * org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
 	 */
 	public ListIterator listIterator(List para) {
 		logger.info("setListIterator開始");
@@ -337,8 +346,8 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * アナログ４データ入力ダイアログのボタンの基底クラスです
 	 */
 	private abstract static class AbstractAnalog4Button extends JButton {
-		protected final Logger logger = Logger
-				.getLogger(AbstractAnalog4Button.class);
+		protected final Logger logger =
+			Logger.getLogger(AbstractAnalog4Button.class);
 		/** テンキーダイアログの参照です */
 		protected PfUDLimitDialog parent;
 
@@ -359,7 +368,8 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 		protected void setInoutKeyMap(String textValue) {
 			logger.info("setInoutKeyMap開始");
 			Action key = new AbstractAction(textValue) {
-				private static final long serialVersionUID = -8223926278688777598L;
+				private static final long serialVersionUID =
+					-8223926278688777598L;
 
 				public void actionPerformed(ActionEvent e) {
 					pushButton();
@@ -423,11 +433,12 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 	private final static class CancelButton extends AbstractAnalog4Button {
 		private static final long serialVersionUID = 7589251165930482319L;
 
-		CancelButton(PfUDLimitDialog parent, String title) {
+		CancelButton(PfUDLimitDialog parent, String title, PageChanger changer) {
 			super(parent);
 			addActionListener(this.parent);
 			setText(title);
 			setInoutKeyMap("ESCAPE");
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		/**
@@ -448,6 +459,8 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 		// ボタンのインデックス
 		private final int no;
 
+		private final PageChanger changer;
+
 		/**
 		 * コンストラクタ
 		 * 
@@ -455,9 +468,10 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * @param time 時間
 		 * @param hour 時間・分の種別
 		 */
-		ValueButton(PfUDLimitDialog parent, int no) {
+		ValueButton(PfUDLimitDialog parent, int no, PageChanger changer) {
 			super(parent);
 			this.no = no;
+			this.changer = changer;
 			init();
 			addMouseListener(new HandCursorListener());
 		}
@@ -490,28 +504,29 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 				List para) {
 			WifeDialog d;
 			logger.info("getDialog開始");
-			if (!"DECIMAL".equals(parent.symbol.getConvertValue()
-					.getValueType())) {
+			if (!"DECIMAL".equals(parent.symbol
+				.getConvertValue()
+				.getValueType())) {
 				if (parent.lela_mode) {
 					if (no < 2) {
-						d = DialogFactory.get(window, "8"); // La
+						d = DialogFactory.get(window, "8", changer); // La
 					} else {
-						d = DialogFactory.get(window, "9"); // Le
+						d = DialogFactory.get(window, "9", changer); // Le
 					}
 				} else {
 					if (no < 2) {
-						d = DialogFactory.get(window, "9"); // Le
+						d = DialogFactory.get(window, "9", changer); // Le
 					} else {
-						d = DialogFactory.get(window, "8"); // La
+						d = DialogFactory.get(window, "8", changer); // La
 					}
 				}
 				d.setTitle("力率上下限");
 			} else {
-				d = DialogFactory.get(window, "5");
+				d = DialogFactory.get(window, "5", changer);
 			}
 			if (d == null)
 				logger.warn(this.getClass().getName()
-						+ " : PfLe or PfLa TenkeyDialog null");
+					+ " : PfLe or PfLa TenkeyDialog null");
 			d.setListIterator(collection.listIterator(para));
 			return d;
 		}
@@ -542,10 +557,10 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 			logger.info("getValue開始");
 			String value = getText();
 			if ("DECIMAL"
-					.equals(parent.symbol.getConvertValue().getValueType())) {
+				.equals(parent.symbol.getConvertValue().getValueType())) {
 				double dvalue = Double.parseDouble(value);
 				if ((getConvertMax() < 0 && 0 < dvalue)
-						|| (0 < getConvertMin() && dvalue < 0)) {
+					|| (0 < getConvertMin() && dvalue < 0)) {
 					dvalue = 0 - dvalue;
 					DecimalFormat format = new DecimalFormat(getFormatString());
 					value = format.format(dvalue);
@@ -574,7 +589,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 			ConvertValue conv = parent.symbol.getConvertValue();
 			double min = conv.getConvertMin();
 			if ("DECIMAL"
-					.equals(parent.symbol.getConvertValue().getValueType())) {
+				.equals(parent.symbol.getConvertValue().getValueType())) {
 				if (no < 2) {
 					min = 0 - min;
 				}
@@ -591,7 +606,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 			ConvertValue conv = parent.symbol.getConvertValue();
 			double max = conv.getConvertMax();
 			if ("DECIMAL"
-					.equals(parent.symbol.getConvertValue().getValueType())) {
+				.equals(parent.symbol.getConvertValue().getValueType())) {
 				if (no < 2) {
 					max = 0 - max;
 				}
@@ -617,7 +632,8 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 			para.add(new Integer(this.parent.buttonList.indexOf(this)));
 			if (this.parent.tenkeyDialog != null)
 				this.parent.tenkeyDialog.dispose();
-			this.parent.tenkeyDialog = getDialog(this.parent, this.parent, para);
+			this.parent.tenkeyDialog =
+				getDialog(this.parent, this.parent, para);
 			this.parent.tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}

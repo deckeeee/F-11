@@ -27,6 +27,7 @@ import javax.swing.JDialog;
 
 import org.F11.scada.applet.dialog.schedule.BarScheduleDialog;
 import org.F11.scada.applet.dialog.schedule.ScheduleDialogFactory;
+import org.F11.scada.xwife.applet.PageChanger;
 
 /**
  * グラフィック式のスケジュールクラスを生成する具象ファクトリークラスです。 ScheduleFactory
@@ -45,10 +46,11 @@ public class BarSchedule2Factory extends ScheduleFactory {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		super(scheduleModel);
 		// バータイプは入力時刻チェック有り
-		init(isSort, isNonTandT, pageId, false);
+		init(isSort, isNonTandT, pageId, false, changer);
 	}
 
 	/**
@@ -58,13 +60,20 @@ public class BarSchedule2Factory extends ScheduleFactory {
 	 * @param isNonTandT
 	 * @param pageId
 	 */
-	private void init(boolean isSort, boolean isNonTandT, String pageId, boolean isLenient) {
-		view = new GraphicScheduleView(
+	private void init(
+			boolean isSort,
+			boolean isNonTandT,
+			String pageId,
+			boolean isLenient,
+			PageChanger changer) {
+		view =
+			new GraphicScheduleView(
 				scheduleModel,
 				new BarMatrixFactoryImpl(),
 				new ScheduleDialogFactoryImpl(isSort, isLenient),
 				isNonTandT,
-				pageId);
+				pageId,
+				changer);
 	}
 
 	public JComponent createView() {
@@ -90,8 +99,16 @@ public class BarSchedule2Factory extends ScheduleFactory {
 			this.isLenient = isLenient;
 		}
 
-		public JDialog getScheduleDialog(Frame frame, ScheduleRowModel rowModel) {
-			return new BarScheduleDialog(frame, rowModel, isSort, isLenient);
+		public JDialog getScheduleDialog(
+				Frame frame,
+				ScheduleRowModel rowModel,
+				PageChanger changer) {
+			return new BarScheduleDialog(
+				frame,
+				rowModel,
+				isSort,
+				isLenient,
+				changer);
 		}
 	}
 }

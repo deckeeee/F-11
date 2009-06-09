@@ -55,6 +55,7 @@ import javax.swing.SpinnerNumberModel;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.GraphicManager;
 import org.F11.scada.applet.symbol.TenkeyEditable;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -91,6 +92,8 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	JRadioButton LA;
 	JRadioButton LE;
 
+	private final PageChanger changer;
+
 	/** ロギングクラスです */
 	private static Logger logger = Logger.getLogger(PfTenkeyDialog.class);
 
@@ -99,8 +102,9 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * 
 	 * @param frame 親のフレームです
 	 */
-	public PfTenkeyDialog(Frame frame) {
+	public PfTenkeyDialog(Frame frame, PageChanger changer) {
 		super(frame);
+		this.changer = changer;
 		init();
 	}
 
@@ -109,8 +113,9 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * 
 	 * @param dialog 親のダイアログです
 	 */
-	public PfTenkeyDialog(Dialog dialog) {
+	public PfTenkeyDialog(Dialog dialog, PageChanger changer) {
 		super(dialog);
+		this.changer = changer;
 		init();
 	}
 
@@ -307,7 +312,7 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		OkButton okButton = new OkButton(this, "OK");
 		PreviousButton previousButton = new PreviousButton(this, "前項目");
 		NextButton nextButton = new NextButton(this, "次項目");
-		CancelButton cancelButton = new CancelButton(this, "Cancel");
+		CancelButton cancelButton = new CancelButton(this, "Cancel", changer);
 		manipulatePanel.add(okButton);
 		manipulatePanel.add(previousButton);
 		manipulatePanel.add(nextButton);
@@ -516,9 +521,13 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	private static class CancelButton extends DialogButton {
 		private static final long serialVersionUID = 8080821747782300763L;
 
-		public CancelButton(PfTenkeyDialog dialog, String text) {
+		public CancelButton(
+				PfTenkeyDialog dialog,
+				String text,
+				PageChanger changer) {
 			super(dialog, text);
 			setInoutKeyMap("ESCAPE");
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		public void pushButton() {

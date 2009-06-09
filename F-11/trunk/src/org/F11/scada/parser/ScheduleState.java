@@ -32,6 +32,7 @@ import org.F11.scada.applet.schedule.WifeSchedule;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.applet.symbol.SymbolProperty;
 import org.F11.scada.parser.Util.DisplayState;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -59,12 +60,12 @@ public class ScheduleState implements State {
 		logger = Logger.getLogger(getClass().getName());
 		this.pageState = pageState;
 
-		scheduleModel = new DefaultScheduleModel(
-				pageState.pagemapState.authenticationable);
+		scheduleModel =
+			new DefaultScheduleModel(pageState.pagemapState.authenticationable);
 		scheduleProperty = new SymbolProperty(atts);
 		isSort = Boolean.valueOf(atts.getValue("isSort")).booleanValue();
-		isNonTandT = Boolean.valueOf(atts.getValue("isNonTandT"))
-				.booleanValue();
+		isNonTandT =
+			Boolean.valueOf(atts.getValue("isNonTandT")).booleanValue();
 		isLenient = Boolean.valueOf(atts.getValue("isLenient")).booleanValue();
 	}
 
@@ -92,21 +93,23 @@ public class ScheduleState implements State {
 
 		String viewClass = scheduleProperty.getProperty("viewclass");
 		logger.info("page name=" + pageState.basePage.getPageName());
-		WifeSchedule schedule = new WifeSchedule(
+		WifeSchedule schedule =
+			new WifeSchedule(
 				scheduleModel,
 				viewClass,
 				isSort,
 				isNonTandT,
 				pageState.basePage.getPageName(),
-				isLenient);
+				isLenient,
+				(AbstractWifeApplet) pageState.pagemapState.authenticationable);
 		JComponent schpanel = schedule.getMainPanel();
-		Color color = ColorFactory.getColor(scheduleProperty
-				.getProperty("foreground"));
+		Color color =
+			ColorFactory.getColor(scheduleProperty.getProperty("foreground"));
 		if (color != null) {
 			schpanel.setForeground(color);
 		}
-		color = ColorFactory.getColor(scheduleProperty
-				.getProperty("background"));
+		color =
+			ColorFactory.getColor(scheduleProperty.getProperty("background"));
 		if (color != null) {
 			schpanel.setBackground(color);
 		}
