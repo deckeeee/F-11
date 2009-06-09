@@ -38,6 +38,8 @@ import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.ScheduleGroupListDialog;
 import org.F11.scada.applet.schedule.point.SchedulePointFinder;
 import org.F11.scada.applet.symbol.GraphicManager;
+import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.apache.log4j.Logger;
 
 /**
@@ -85,9 +87,11 @@ public class ScheduleToolBar extends JToolBar implements ActionListener,
 	 * 初期処理です。
 	 */
 	private void init() {
-		nextGroupButton = new JButton(GraphicManager
+		nextGroupButton =
+			new JButton(GraphicManager
 				.get("/toolbarButtonGraphics/navigation/Forward24.gif"));
-		previousGroupButton = new JButton(GraphicManager
+		previousGroupButton =
+			new JButton(GraphicManager
 				.get("/toolbarButtonGraphics/navigation/Back24.gif"));
 		listButton = new JButton(GraphicManager.get("/images/list.png"));
 		listButton.setPreferredSize(new Dimension(36, 36));
@@ -104,34 +108,35 @@ public class ScheduleToolBar extends JToolBar implements ActionListener,
 		nextGroupButton.setToolTipText("次のグループを表示します");
 		previousGroupButton.setToolTipText("前のグループを表示します");
 
-		JButton groupDuplicate = new JButton(GraphicManager
-				.get("/images/gdup.png"));
+		JButton groupDuplicate =
+			new JButton(GraphicManager.get("/images/gdup.png"));
 		groupDuplicate.setToolTipText("グループ複写");
 		groupDuplicate.setPreferredSize(new Dimension(36, 36));
 		groupDuplicate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (scheduleModel.isEditable()) {
-					GroupDuplicateDialog dialog = new GroupDuplicateDialog(
-							(Frame) SwingUtilities.getAncestorOfClass(
-									Frame.class,
-									ScheduleToolBar.this),
-							scheduleModel);
+					GroupDuplicateDialog dialog =
+						new GroupDuplicateDialog((Frame) SwingUtilities
+							.getAncestorOfClass(
+								Frame.class,
+								ScheduleToolBar.this), scheduleModel);
 					dialog.show();
 				}
 			}
 		});
 
-		JButton weekOfDayDuplicate = new JButton(GraphicManager
-				.get("/images/wdup.png"));
+		JButton weekOfDayDuplicate =
+			new JButton(GraphicManager.get("/images/wdup.png"));
 		weekOfDayDuplicate.setToolTipText("曜日間複写");
 		weekOfDayDuplicate.setPreferredSize(new Dimension(36, 36));
 		weekOfDayDuplicate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (scheduleModel.isEditable()) {
-					WeekOfDayDuplicateDialog dialog = new WeekOfDayDuplicateDialog(
+					WeekOfDayDuplicateDialog dialog =
+						new WeekOfDayDuplicateDialog(
 							(Frame) SwingUtilities.getAncestorOfClass(
-									Frame.class,
-									ScheduleToolBar.this),
+								Frame.class,
+								ScheduleToolBar.this),
 							scheduleModel,
 							isNonTandT);
 					dialog.show();
@@ -145,10 +150,15 @@ public class ScheduleToolBar extends JToolBar implements ActionListener,
 		kikiTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (scheduleModel.isEditable()) {
-					new SchedulePointFinder((Frame) SwingUtilities
-							.getAncestorOfClass(
-									Frame.class,
-									ScheduleToolBar.this), pageId);
+					AbstractWifeApplet wifeApplet = ComponentUtil.getAncestorOfClass(
+						AbstractWifeApplet.class,
+						ScheduleToolBar.this);
+					new SchedulePointFinder(
+						(Frame) SwingUtilities.getAncestorOfClass(
+							Frame.class,
+							ScheduleToolBar.this),
+						pageId,
+						wifeApplet);
 				}
 			}
 		});
@@ -207,7 +217,8 @@ public class ScheduleToolBar extends JToolBar implements ActionListener,
 	 * @return
 	 */
 	private String getDisplayGroupNo() {
-		return (scheduleModel.getGroupNo() + 1) + " : "
-				+ scheduleModel.getGroupName();
+		return (scheduleModel.getGroupNo() + 1)
+			+ " : "
+			+ scheduleModel.getGroupName();
 	}
 }

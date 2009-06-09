@@ -23,6 +23,7 @@ package org.F11.scada.applet.schedule;
 import javax.swing.JComponent;
 
 import org.F11.scada.applet.dialog.schedule.ScheduleDialogFactoryImpl;
+import org.F11.scada.xwife.applet.PageChanger;
 
 /**
  * グラフィック式のスケジュールクラスを生成する具象ファクトリークラスです。 ScheduleFactory
@@ -41,9 +42,10 @@ public class GraphicScheduleFactory extends ScheduleFactory {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		super(scheduleModel);
-		init(isSort, isNonTandT, pageId, isLenient);
+		init(isSort, isNonTandT, pageId, isLenient, changer);
 	}
 
 	/**
@@ -56,13 +58,16 @@ public class GraphicScheduleFactory extends ScheduleFactory {
 			boolean isSort,
 			boolean isNonTandT,
 			String pageId,
-			boolean isLenient) {
-		view = new GraphicScheduleView(
+			boolean isLenient,
+			PageChanger changer) {
+		view =
+			new GraphicScheduleView(
 				scheduleModel,
 				new BarMatrixFactoryImpl(),
 				new ScheduleDialogFactoryImpl(isSort, isLenient),
 				isNonTandT,
-				pageId);
+				pageId,
+				changer);
 	}
 
 	public JComponent createView() {

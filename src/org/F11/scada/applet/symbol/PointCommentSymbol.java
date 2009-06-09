@@ -42,6 +42,7 @@ import org.F11.scada.server.comment.PointCommentDto;
 import org.F11.scada.server.comment.PointCommentService;
 import org.F11.scada.util.ComponentUtil;
 import org.F11.scada.util.RmiUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.xml.sax.Attributes;
 
 /**
@@ -118,9 +119,8 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 	 */
 	public void this_mouseClicked(MouseEvent e) {
 		if (isEditable()) {
-			final Window wd = (Window) SwingUtilities.getAncestorOfClass(
-					Window.class,
-					this);
+			final Window wd =
+				(Window) SwingUtilities.getAncestorOfClass(Window.class, this);
 			final ArrayList para = new ArrayList();
 			para.add(getClass());
 			para.add(this);
@@ -137,7 +137,11 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 			Window window,
 			SymbolCollection collection,
 			List para) {
-		WifeDialog dialog = DialogFactory.get(window, dlgName);
+		WifeDialog dialog =
+			DialogFactory.get(
+				window,
+				dlgName,
+				(AbstractWifeApplet) authentication);
 		dialog.setListIterator(collection.listIterator(para));
 		dialog.setTitle(dlgTitle);
 		return dialog;
@@ -261,7 +265,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 
 	private PointCommentService lookup() {
 		return (PointCommentService) RmiUtil
-				.lookupServer(PointCommentService.class);
+			.lookupServer(PointCommentService.class);
 	}
 
 	private List createPointComments() {

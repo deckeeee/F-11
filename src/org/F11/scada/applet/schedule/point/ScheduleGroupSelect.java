@@ -40,20 +40,28 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.F11.scada.WifeUtilities;
+import org.F11.scada.applet.dialog.ActionMapUtil;
 import org.F11.scada.server.schedule.point.dto.ScheduleGroupDto;
 import org.F11.scada.util.RmiErrorUtil;
 import org.F11.scada.util.TableUtil;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 public class ScheduleGroupSelect extends JDialog {
 	private static final long serialVersionUID = 1365889797979478376L;
 	private final Logger logger = Logger.getLogger(ScheduleGroupSelect.class);
 	private ScheduleGroupDto dto;
+	private final PageChanger changer;
 
-	public ScheduleGroupSelect(JDialog dialog, ScheduleGroupDto dto, String pageId) {
+	public ScheduleGroupSelect(
+			JDialog dialog,
+			ScheduleGroupDto dto,
+			String pageId,
+			PageChanger changer) {
 		super(dialog, "グループ選択", true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.dto = dto;
+		this.changer = changer;
 		init(dialog, pageId);
 		WifeUtilities.setCenter(this);
 	}
@@ -77,10 +85,10 @@ public class ScheduleGroupSelect extends JDialog {
 		JButton modifyButton = new JButton("選択");
 		modifyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ScheduleGroupTableModel model = (ScheduleGroupTableModel) table
-						.getModel();
+				ScheduleGroupTableModel model =
+					(ScheduleGroupTableModel) table.getModel();
 				setScheduleGroupDto(model.getScheduleGroupDto(table
-						.getSelectedRow()));
+					.getSelectedRow()));
 				dispose();
 			}
 		});
@@ -90,6 +98,7 @@ public class ScheduleGroupSelect extends JDialog {
 				dispose();
 			}
 		});
+		ActionMapUtil.setActionMap(cancelButton, changer);
 		Box buttonBox = Box.createHorizontalBox();
 		buttonBox.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		buttonBox.add(Box.createHorizontalStrut(300));
@@ -115,15 +124,17 @@ public class ScheduleGroupSelect extends JDialog {
 		table.addMouseListener(new TableListener());
 
 		if (null != dto && 0 < table.getRowCount()) {
-			table.setRowSelectionInterval(dto.getGroupNo().intValue(), dto.getGroupNo().intValue());
+			table.setRowSelectionInterval(dto.getGroupNo().intValue(), dto
+				.getGroupNo()
+				.intValue());
 		}
 		return table;
 	}
 
 	private TableModel getModel(String pageId) throws RemoteException {
 		return null != dto
-				? new ScheduleGroupTableModelImpl(pageId, false)
-				: new ScheduleGroupTableModelImpl(pageId, true);
+			? new ScheduleGroupTableModelImpl(pageId, false)
+			: new ScheduleGroupTableModelImpl(pageId, true);
 	}
 
 	ScheduleGroupDto getScheduleGroupDto() {
@@ -139,8 +150,8 @@ public class ScheduleGroupSelect extends JDialog {
 			if (e.getClickCount() == 2) {
 				JTable table = (JTable) e.getSource();
 				int row = table.rowAtPoint(e.getPoint());
-				ScheduleGroupTableModel model = (ScheduleGroupTableModel) table
-						.getModel();
+				ScheduleGroupTableModel model =
+					(ScheduleGroupTableModel) table.getModel();
 				setScheduleGroupDto(model.getScheduleGroupDto(row));
 				dispose();
 			}

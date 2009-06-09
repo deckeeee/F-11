@@ -64,6 +64,7 @@ import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.ClientConfiguration;
+import org.F11.scada.applet.dialog.ActionMapUtil;
 import org.F11.scada.applet.symbol.GraphicManager;
 import org.F11.scada.security.AccessControlable;
 import org.F11.scada.security.auth.Subject;
@@ -74,6 +75,7 @@ import org.F11.scada.server.schedule.point.dto.ScheduleSearchDto;
 import org.F11.scada.util.AttributesUtil;
 import org.F11.scada.util.RmiErrorUtil;
 import org.F11.scada.util.TableUtil;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.F11.scada.xwife.applet.WifeDataProviderProxy;
 import org.apache.log4j.Logger;
 import org.seasar.dao.pager.PagerViewHelper;
@@ -89,16 +91,19 @@ public class SchedulePointFinder {
 	private JRadioButton groupConnect;
 	private JRadioButton groupNonConnect;
 	private final String pageId;
+	private final PageChanger changer;
 
-	public SchedulePointFinder(Frame frame, String pageId) {
-		this(frame, pageId, new SchedulePointTableModelImpl(frame));
+	public SchedulePointFinder(Frame frame, String pageId, PageChanger changer) {
+		this(frame, pageId, new SchedulePointTableModelImpl(frame), changer);
 	}
 
 	public SchedulePointFinder(
 			Frame frame,
 			String pageId,
-			SchedulePointTableModel model) {
+			SchedulePointTableModel model,
+			PageChanger changer) {
 		this.pageId = pageId;
+		this.changer = changer;
 		try {
 			SchedulePointDto dto = model.find(getInitDto());
 			searchDto = dto.getDto();
@@ -198,7 +203,7 @@ public class SchedulePointFinder {
 		groupSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ScheduleGroupSelect select =
-					new ScheduleGroupSelect(dialog, null, pageId);
+					new ScheduleGroupSelect(dialog, null, pageId, changer);
 				select.setVisible(true);
 				setScheduleGroup(select);
 			}
@@ -312,7 +317,8 @@ public class SchedulePointFinder {
 		table.addMouseListener(new TableListener(
 			dialog,
 			isSeparateSchedule(),
-			pageId));
+			pageId,
+			changer));
 		return table;
 	}
 
@@ -352,7 +358,8 @@ public class SchedulePointFinder {
 			table,
 			dialog,
 			isSeparateSchedule(),
-			pageId));
+			pageId,
+			changer));
 		box.add(modifyButton);
 		box.add(Box.createHorizontalStrut(5));
 		JButton closeButton = new JButton("•Â‚¶‚é");
@@ -361,6 +368,7 @@ public class SchedulePointFinder {
 				dialog.dispose();
 			}
 		});
+		ActionMapUtil.setActionMap(closeButton, changer);
 		box.add(closeButton);
 		return box;
 	}
@@ -477,12 +485,18 @@ public class SchedulePointFinder {
 		private final boolean isSeparateSchedule;
 		private final CheckPermissionUtil util;
 		private final String pageId;
+		private final PageChanger changer;
 
-		TableListener(JDialog dialog, boolean isSeparateSchedule, String pageId) {
+		TableListener(
+				JDialog dialog,
+				boolean isSeparateSchedule,
+				String pageId,
+				PageChanger changer) {
 			this.dialog = dialog;
 			this.isSeparateSchedule = isSeparateSchedule;
 			this.util = new CheckPermissionUtil(dialog);
 			this.pageId = pageId;
+			this.changer = changer;
 		}
 
 		public void mousePressed(MouseEvent e) {
@@ -498,7 +512,8 @@ public class SchedulePointFinder {
 							model,
 							row,
 							isSeparateSchedule,
-							pageId);
+							pageId,
+							changer);
 					modify.setVisible(true);
 				}
 			}
@@ -511,17 +526,20 @@ public class SchedulePointFinder {
 		private final boolean isSeparateSchedule;
 		private final CheckPermissionUtil util;
 		private final String pageId;
+		private final PageChanger changer;
 
 		ModifyAction(
 				JTable table,
 				JDialog dialog,
 				boolean isSeparateSchedule,
-				String pageId) {
+				String pageId,
+				PageChanger changer) {
 			this.table = table;
 			this.dialog = dialog;
 			this.isSeparateSchedule = isSeparateSchedule;
 			this.util = new CheckPermissionUtil(dialog);
 			this.pageId = pageId;
+			this.changer = changer;
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -536,7 +554,8 @@ public class SchedulePointFinder {
 							model,
 							row,
 							isSeparateSchedule,
-							pageId);
+							pageId,
+							changer);
 					modify.setVisible(true);
 				}
 			}

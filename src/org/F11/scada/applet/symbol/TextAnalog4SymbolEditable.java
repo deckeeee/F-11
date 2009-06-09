@@ -43,6 +43,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog4;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.xml.sax.Attributes;
 
@@ -134,7 +135,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 		para.add(this.getClass());
 		para.add(this);
 		WifeDialog dlg = getDialog(frame, (SymbolCollection) getParent(), para);
-//		dlg.selectAll();
+		// dlg.selectAll();
 		dlg.show();
 	}
 
@@ -142,15 +143,14 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 	 * ConvertValue‚ð•Ô‚µ‚Ü‚·
 	 */
 	public ConvertValue getConvertValue() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog4))
 			return null;
 
 		return (ConvertValue) dh
-				.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+			.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 	}
 
 	/**
@@ -160,15 +160,14 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 		if (pattern != null)
 			return pattern;
 
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog4))
 			return "0.0";
 
-		ConvertValue conv = (ConvertValue) dh
-				.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+		ConvertValue conv =
+			(ConvertValue) dh.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 		return conv.getPattern();
 	}
 
@@ -176,16 +175,15 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 	 * ƒVƒ“ƒ{ƒ‹‚Ì’l‚ð•Ô‚µ‚Ü‚·
 	 */
 	public String[] getValues() {
-		DataHolder dh = Manager.getInstance().findDataHolder(
-				providerName,
-				holderName);
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(providerName, holderName);
 		WifeData wd = (WifeData) dh.getValue();
 		if (!(wd instanceof WifeDataAnalog4))
 			return null;
 
 		WifeDataAnalog4 wa = (WifeDataAnalog4) wd;
-		ConvertValue conv = (ConvertValue) dh
-				.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+		ConvertValue conv =
+			(ConvertValue) dh.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 
 		double[] data = wa.doubleValues();
 		String[] ret = new String[data.length];
@@ -246,7 +244,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.F11.scada.applet.symbol.Editable#getDialog(java.awt.Window,
-	 *      org.F11.scada.applet.symbol.SymbolCollection, java.util.List)
+	 * org.F11.scada.applet.symbol.SymbolCollection, java.util.List)
 	 */
 	public WifeDialog getDialog(
 			Window window,
@@ -258,7 +256,11 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 			dialogId = "4";
 		}
 
-		WifeDialog d = DialogFactory.get(window, dialogId);
+		WifeDialog d =
+			DialogFactory.get(
+				window,
+				dialogId,
+				(AbstractWifeApplet) authentication);
 		if (d == null)
 			System.out.println(this.getClass().getName() + "dialog null");
 		d.setListIterator(collection.listIterator(para));

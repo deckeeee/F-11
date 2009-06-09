@@ -53,6 +53,7 @@ import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
 import org.F11.scada.util.FontUtil;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -74,6 +75,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	/** ロギングクラスです */
 	private final Logger logger =
 		Logger.getLogger(AbstractScheduleDialog.class);
+	private final PageChanger changer;
 
 	/**
 	 * コンストラクタ
@@ -83,10 +85,12 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	protected AbstractScheduleDialog(
 			Frame frame,
 			boolean isSort,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		super(frame);
 		this.isSort = isSort;
 		this.isLenient = isLenient;
+		this.changer = changer;
 		init();
 	}
 
@@ -98,10 +102,12 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	protected AbstractScheduleDialog(
 			Dialog dialog,
 			boolean isSort,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		super(dialog);
 		this.isSort = isSort;
 		this.isLenient = isLenient;
+		this.changer = changer;
 		init();
 	}
 
@@ -114,7 +120,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		JPanel subPanel = new JPanel(new BorderLayout());
 		JPanel manipulatePanel = new JPanel(new FlowLayout());
 		OkButton okButton = new OkButton(this, "OK");
-		CancelButton cancelButton = new CancelButton(this, "Cancel");
+		CancelButton cancelButton = new CancelButton(this, "Cancel", changer);
 		manipulatePanel.add(okButton);
 		manipulatePanel.add(cancelButton);
 		subPanel.add(manipulatePanel, BorderLayout.EAST);
@@ -153,11 +159,11 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	private void setDialogValue() {
 		logger.info("setDialogValue開始");
 		GraphicScheduleViewCreator view =
-			createView(symbol.getScheduleModel(), isSort, isLenient);
+			createView(symbol.getScheduleModel(), isSort, isLenient, changer);
 		JComponent viewPanel = view.createView();
 		getContentPane().add(viewPanel, BorderLayout.CENTER);
 
-		grupNoButton = new GroupNoButton(this, symbol.getValue());
+		grupNoButton = new GroupNoButton(this, symbol.getValue(), changer);
 		FontUtil.setFont("SansSerif", "PLAIN", 16, grupNoButton);
 		JLabel groupLabel = new JLabel("グループNo : ");
 		FontUtil.setFont("SansSerif", "PLAIN", 16, groupLabel);
@@ -168,7 +174,8 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	abstract public GraphicScheduleViewCreator createView(
 			ScheduleModel scheduleModel,
 			boolean isSort,
-			boolean isLenient);
+			boolean isLenient,
+			PageChanger changer);
 
 	/**
 	 * イテレーターをセットします
@@ -374,8 +381,12 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		private static final long serialVersionUID = 6331220843398896457L;
 		private final Logger logger = Logger.getLogger(CancelButton.class);
 
-		public CancelButton(AbstractScheduleDialog dialog, String text) {
+		public CancelButton(
+				AbstractScheduleDialog dialog,
+				String text,
+				PageChanger changer) {
 			super(dialog, text);
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		public void pushButton() {
@@ -394,6 +405,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		private final Logger logger = Logger.getLogger(GroupNoButton.class);
 		/** グループ番号 */
 		private String groupNo;
+		private final PageChanger changer;
 
 		/**
 		 * コンストラクタ
@@ -402,9 +414,13 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * @param time 時間
 		 * @param hour 時間・分の種別
 		 */
-		GroupNoButton(AbstractScheduleDialog scheduleDialog, String groupNo) {
+		GroupNoButton(
+				AbstractScheduleDialog scheduleDialog,
+				String groupNo,
+				PageChanger changer) {
 			super(scheduleDialog, groupNo);
 			this.groupNo = groupNo;
+			this.changer = changer;
 			init();
 		}
 
@@ -435,7 +451,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 				SymbolCollection collection,
 				List para) {
 			logger.info("getDialog開始");
-			WifeDialog d = DialogFactory.get(window, "1");
+			WifeDialog d = DialogFactory.get(window, "1", changer);
 			if (d == null)
 				logger.warn(this.getClass().getName()
 					+ " : scheduleDialog null");

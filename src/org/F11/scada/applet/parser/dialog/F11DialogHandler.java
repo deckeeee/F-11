@@ -30,22 +30,26 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.F11.scada.parser.State;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * ダイアログ定義を解析する、SAXハンドラークラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class F11DialogHandler extends DefaultHandler {
 	Window window;
 	Map dialogs;
+	PageChanger changer;
 
 	private Stack stack;
 
 	/**
 	 * Constructor for F11DialogHandler.
+	 * 
 	 * @param window ダイアログの親ウィンドゥの参照
 	 */
 	public F11DialogHandler(Window window) {
@@ -55,12 +59,19 @@ public class F11DialogHandler extends DefaultHandler {
 		dialogs = new HashMap();
 	}
 
+	public F11DialogHandler(Window window, PageChanger changer) {
+		super();
+		this.window = window;
+		this.changer = changer;
+		stack = new Stack();
+		dialogs = new HashMap();
+	}
+
 	public void startElement(
 			String uri,
 			String name,
 			String qualifiedName,
-			Attributes attributes)
-			throws SAXException {
+			Attributes attributes) throws SAXException {
 		if (name.equals("dialogmap")) {
 			stack.push(new DialogMapState(this));
 		} else {
@@ -77,6 +88,7 @@ public class F11DialogHandler extends DefaultHandler {
 
 	/**
 	 * 定義ファイルより作成したダイアログの Map インスタンスを返します。
+	 * 
 	 * @return ダイアログオブジェクト
 	 */
 	public Map getDialogs() {

@@ -32,12 +32,12 @@ import java.util.Map;
 
 import org.F11.scada.EnvironmentManager;
 import org.F11.scada.applet.parser.dialog.F11DialogHandler;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-
 
 /**
  * 定義ファイルよりダイアログを作成し管理します。
@@ -46,15 +46,17 @@ public class DialogFactory {
 	private static final Logger logger = Logger.getLogger(DialogFactory.class);
 	private Map dialogs;
 
-	private DialogFactory(Window window) {
-		F11DialogHandler dd = new F11DialogHandler(window);
+	private DialogFactory(Window window, PageChanger changer) {
+		F11DialogHandler dd = new F11DialogHandler(window, changer);
 		InputStream stream = null;
 		try {
 			XMLReader parser =
-				XMLReaderFactory.createXMLReader(
-					EnvironmentManager.get("/org.xml.sax.driver", ""));
+				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
+					"/org.xml.sax.driver",
+					""));
 			parser.setContentHandler(dd);
-			stream = getClass().getResource("/resources/Dialog.xml").openStream();
+			stream =
+				getClass().getResource("/resources/Dialog.xml").openStream();
 			InputSource is = new InputSource(stream);
 			parser.parse(is);
 		} catch (IOException e) {
@@ -78,9 +80,9 @@ public class DialogFactory {
 		return dialogs;
 	}
 
-	public static WifeDialog get(Window window, String name) {
+	public static WifeDialog get(Window window, String name, PageChanger changer) {
 		logger.info("get開始");
-		DialogFactory df = new DialogFactory(window);
+		DialogFactory df = new DialogFactory(window, changer);
 		return (WifeDialog) df.getDialogs().get(name);
 	}
 }

@@ -33,23 +33,28 @@ import org.xml.sax.Attributes;
 
 /**
  * xpath /dialogmap/tenkeydialog 状態を表すクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class UDLimitDialogState implements State {
 	DialogMapState state;
 	JDialog dialog;
-	
+
 	private String dialogName;
-	
+
 	private static Logger logger;
 
 	/**
 	 * 状態オブジェクトを生成します。
+	 * 
 	 * @param tagName タグ名称
 	 * @param atts タグ属性
 	 * @param 親の状態オブジェクト
 	 */
-	public UDLimitDialogState(String tagName, Attributes atts, DialogMapState state) {
+	public UDLimitDialogState(
+			String tagName,
+			Attributes atts,
+			DialogMapState state) {
 		this.state = state;
 		logger = Logger.getLogger(getClass().getName());
 
@@ -62,7 +67,7 @@ public class UDLimitDialogState implements State {
 		if (atts.getValue("height") == null) {
 			throw new IllegalArgumentException("height is null");
 		}
-		
+
 		dialogName = atts.getValue("name");
 		int width = Integer.parseInt(atts.getValue("width"));
 		int height = Integer.parseInt(atts.getValue("height"));
@@ -70,12 +75,22 @@ public class UDLimitDialogState implements State {
 		String titles = atts.getValue("titles");
 
 		if (state.handler.window instanceof Frame) {
-			dialog = new UDLimitDialog((Frame) state.handler.window, labels, titles);
+			dialog =
+				new UDLimitDialog(
+					(Frame) state.handler.window,
+					labels,
+					titles,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
-			dialog = new UDLimitDialog((Dialog) state.handler.window, labels, titles);
+			dialog =
+				new UDLimitDialog(
+					(Dialog) state.handler.window,
+					labels,
+					titles,
+					state.handler.changer);
 		}
 		dialog.setSize(width, height);
-//		dialog.setModal(true);
+		// dialog.setModal(true);
 	}
 
 	/*

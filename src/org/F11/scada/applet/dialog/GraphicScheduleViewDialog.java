@@ -26,6 +26,7 @@ import org.F11.scada.applet.schedule.GraphicScheduleViewCreator;
 import org.F11.scada.applet.schedule.GraphicSevenDayScheduleView;
 import org.F11.scada.applet.schedule.GraphicTwoDayScheduleView;
 import org.F11.scada.applet.schedule.ScheduleModel;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,8 +34,8 @@ import org.apache.log4j.Logger;
  */
 public class GraphicScheduleViewDialog extends AbstractScheduleDialog {
 	private static final long serialVersionUID = 2203009472569722346L;
-	private static final Logger logger = Logger
-			.getLogger(GraphicScheduleViewDialog.class);
+	private static final Logger logger =
+		Logger.getLogger(GraphicScheduleViewDialog.class);
 	private final int viewMode;
 
 	/**
@@ -46,8 +47,9 @@ public class GraphicScheduleViewDialog extends AbstractScheduleDialog {
 			Frame frame,
 			boolean isSort,
 			int viewMode,
-			boolean isLenient) {
-		super(frame, isSort, isLenient);
+			boolean isLenient,
+			PageChanger changer) {
+		super(frame, isSort, isLenient, changer);
 		this.viewMode = viewMode;
 		checkViewMode();
 	}
@@ -61,8 +63,9 @@ public class GraphicScheduleViewDialog extends AbstractScheduleDialog {
 			Dialog dialog,
 			boolean isSort,
 			int viewMode,
-			boolean isLenient) {
-		super(dialog, isSort, isLenient);
+			boolean isLenient,
+			PageChanger changer) {
+		super(dialog, isSort, isLenient, changer);
 		this.viewMode = viewMode;
 		checkViewMode();
 	}
@@ -76,24 +79,28 @@ public class GraphicScheduleViewDialog extends AbstractScheduleDialog {
 	public GraphicScheduleViewCreator createView(
 			ScheduleModel scheduleModel,
 			boolean isSort,
-			boolean isLenient) {
-		//TODO viewMode‚Í”pŽ~‚µ‚ÄScheduleModel#getTopSize‚ðŽg—p‚·‚×‚«?
+			boolean isLenient,
+			PageChanger changer) {
+		// TODO viewMode‚Í”pŽ~‚µ‚ÄScheduleModel#getTopSize‚ðŽg—p‚·‚×‚«?
 		switch (viewMode) {
 		case 2:
 			return new GraphicTwoDayScheduleView(
-					scheduleModel,
-					isSort,
-					isLenient);
+				scheduleModel,
+				isSort,
+				isLenient,
+				changer);
 		case 7:
 			return new GraphicSevenDayScheduleView(
-					scheduleModel,
-					isSort,
-					isLenient);
+				scheduleModel,
+				isSort,
+				isLenient,
+				changer);
 		default:
 			return new GraphicTwoDayScheduleView(
-					scheduleModel,
-					isSort,
-					isLenient);
+				scheduleModel,
+				isSort,
+				isLenient,
+				changer);
 		}
 	}
 }

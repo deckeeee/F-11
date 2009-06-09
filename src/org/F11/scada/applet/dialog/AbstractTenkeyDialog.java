@@ -54,6 +54,7 @@ import javax.swing.SpinnerNumberModel;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.symbol.GraphicManager;
 import org.F11.scada.applet.symbol.TenkeyEditable;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -73,14 +74,17 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	protected String dialogMin;
 	/** ダイアログ固有の入力最大値 */
 	protected String dialogMax;
+	/** ページ変更オブジェクト */
+	protected final PageChanger changer;
 
 	/**
 	 * コンストラクタ
 	 * 
 	 * @param frame 親のフレームです
 	 */
-	public AbstractTenkeyDialog(Frame frame) {
+	public AbstractTenkeyDialog(Frame frame, PageChanger changer) {
 		super(frame);
+		this.changer = changer;
 		init();
 	}
 
@@ -89,8 +93,9 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	 * 
 	 * @param dialog 親のダイアログです
 	 */
-	public AbstractTenkeyDialog(Dialog dialog) {
+	public AbstractTenkeyDialog(Dialog dialog, PageChanger changer) {
 		super(dialog);
+		this.changer = changer;
 		init();
 	}
 
@@ -503,9 +508,13 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	protected static class CancelButton extends DialogButton {
 		private static final long serialVersionUID = -954344042797555189L;
 
-		public CancelButton(SpinnerDialog dialog, String text) {
+		public CancelButton(
+				SpinnerDialog dialog,
+				String text,
+				PageChanger changer) {
 			super(dialog, text);
 			setInoutKeyMap("ESCAPE");
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		public void pushButton() {

@@ -61,6 +61,7 @@ import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
 import org.F11.scada.data.ConvertValue;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -82,6 +83,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	/** 各ダイアログのタイトル文字列 */
 	private String[] dialogTitles;
 
+	private final PageChanger changer;
+
 	/** ロギングクラスです */
 	private final Logger logger = Logger.getLogger(UDLimitDialog.class);
 
@@ -90,8 +93,13 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * 
 	 * @param frame 親のフレームです
 	 */
-	public UDLimitDialog(Frame frame, String labels, String titles) {
+	public UDLimitDialog(
+			Frame frame,
+			String labels,
+			String titles,
+			PageChanger changer) {
 		super(frame);
+		this.changer = changer;
 		setLabels(labels);
 		setTitles(titles);
 		init();
@@ -102,8 +110,13 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * 
 	 * @param dialog 親のダイアログです
 	 */
-	public UDLimitDialog(Dialog dialog, String labels, String titles) {
+	public UDLimitDialog(
+			Dialog dialog,
+			String labels,
+			String titles,
+			PageChanger changer) {
 		super(dialog);
+		this.changer = changer;
 		setLabels(labels);
 		setTitles(titles);
 		init();
@@ -131,8 +144,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	private String getLabels(String labels) {
 		logger.info("getLabels開始");
 		return (null == labels || "".equals(labels))
-				? "上限警報 ON :|OFF :|下限警報 ON :|OFF :"
-				: labels;
+			? "上限警報 ON :|OFF :|下限警報 ON :|OFF :"
+			: labels;
 	}
 
 	private void setTitles(String titles) {
@@ -145,8 +158,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	private String getTitles(String titles) {
 		return (null == titles || "".equals(titles))
-				? "上下限|上下限|上下限|上下限"
-				: titles;
+			? "上下限|上下限|上下限|上下限"
+			: titles;
 	}
 
 	private JComponent createValuePanel() {
@@ -164,7 +177,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 			c.gridx = 0;
 			basePanel.add(panelL, c);
 
-			ValueButton b = new ValueButton(this, dialogTitles[i]);
+			ValueButton b = new ValueButton(this, dialogTitles[i], changer);
 			buttonList.add(b);
 			JPanel panelB = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			panelB.add(b);
@@ -177,7 +190,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	private JComponent createButtonPanel() {
 		JComponent okButton = new OkButton(this, "OK");
-		JComponent cancelButton = new CancelButton(this, "Cancel");
+		JComponent cancelButton = new CancelButton(this, "Cancel", changer);
 
 		JPanel basePanel = new JPanel(new FlowLayout());
 		basePanel.add(okButton);
@@ -188,7 +201,9 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.applet.dialog.WifeDialog#setListIterator(java.util.ListIterator)
+	 * @see
+	 * org.F11.scada.applet.dialog.WifeDialog#setListIterator(java.util.ListIterator
+	 * )
 	 */
 	public void setListIterator(ListIterator listIterator) {
 		logger.info("setListIterator開始");
@@ -199,7 +214,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
 		logger.info("actionPerformed開始");
@@ -243,7 +259,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
+	 * @see
+	 * org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
 	 */
 	public ListIterator listIterator(List para) {
 		logger.info("listIterator開始");
@@ -367,7 +384,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * アナログ４データ入力ダイアログのボタンの基底クラスです
 	 */
 	private abstract static class AbstractAnalog4Button extends JButton {
-		protected final Logger logger = Logger.getLogger(AbstractAnalog4Button.class);
+		protected final Logger logger =
+			Logger.getLogger(AbstractAnalog4Button.class);
 		/** テンキーダイアログの参照です */
 		protected UDLimitDialog parent;
 
@@ -389,7 +407,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 			logger.info("setInoutKeyMap開始");
 			Action key = new AbstractAction(textValue) {
 
-				private static final long serialVersionUID = -7608204746374153424L;
+				private static final long serialVersionUID =
+					-7608204746374153424L;
 
 				public void actionPerformed(ActionEvent e) {
 					pushButton();
@@ -451,11 +470,12 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	private final static class CancelButton extends AbstractAnalog4Button {
 		private static final long serialVersionUID = 1902621274602131022L;
 
-		CancelButton(UDLimitDialog parent, String title) {
+		CancelButton(UDLimitDialog parent, String title, PageChanger changer) {
 			super(parent);
 			addActionListener(this.parent);
 			setText(title);
 			setInoutKeyMap("ESCAPE");
+			ActionMapUtil.setActionMap(this, changer);
 		}
 
 		/**
@@ -477,6 +497,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		private final String dialogTitle;
 
+		private final PageChanger changer;
+
 		/**
 		 * コンストラクタ
 		 * 
@@ -484,9 +506,13 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * @param time 時間
 		 * @param hour 時間・分の種別
 		 */
-		ValueButton(UDLimitDialog parent, String dialogTitle) {
+		ValueButton(
+				UDLimitDialog parent,
+				String dialogTitle,
+				PageChanger changer) {
 			super(parent);
 			this.dialogTitle = dialogTitle;
+			this.changer = changer;
 			init();
 			addMouseListener(new HandCursorListener());
 		}
@@ -518,12 +544,14 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 				SymbolCollection collection,
 				List para) {
 			logger.info("getDialog開始");
-			WifeDialog d = DialogFactory.get(window, parent.symbol
-					.getSecondDialogName());
+			WifeDialog d =
+				DialogFactory.get(
+					window,
+					parent.symbol.getSecondDialogName(),
+					changer);
 			if (d == null)
 				logger
-						.warn(this.getClass().getName()
-								+ " : UDLimitDialog null");
+					.warn(this.getClass().getName() + " : UDLimitDialog null");
 			d.setListIterator(collection.listIterator(para));
 			return d;
 		}
@@ -602,7 +630,8 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 			para.add(new Integer(this.parent.buttonList.indexOf(this)));
 			if (this.parent.tenkeyDialog != null)
 				this.parent.tenkeyDialog.dispose();
-			this.parent.tenkeyDialog = getDialog(this.parent, this.parent, para);
+			this.parent.tenkeyDialog =
+				getDialog(this.parent, this.parent, para);
 			this.parent.tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}

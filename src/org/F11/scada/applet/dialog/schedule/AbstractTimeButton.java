@@ -24,6 +24,7 @@ package org.F11.scada.applet.dialog.schedule;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Window;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,14 @@ import org.F11.scada.applet.symbol.HandCursorListener;
 import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
  * 時刻設定用のボタンクラスです
  */
-abstract class AbstractTimeButton extends AbstractScheduleButton implements TenkeyEditable {
+abstract class AbstractTimeButton extends AbstractScheduleButton implements
+		TenkeyEditable {
 	private static final long serialVersionUID = -7092769000804776115L;
 	protected static Logger logger = Logger.getLogger(AbstractTimeButton.class);
 	/** 時間 */
@@ -52,16 +55,24 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 	/** 時間・分の種別 */
 	protected boolean hour;
 
+	private final PageChanger changer;
+
 	/**
 	 * コンストラクタ
+	 * 
 	 * @param dialog スケジュール時刻設定ダイアログの参照
 	 * @param time 時間
 	 * @param hour 時間・分の種別
 	 */
-	AbstractTimeButton(AbstractScheduleDialog scheduleDialog, int time, boolean hour) {
+	AbstractTimeButton(
+			AbstractScheduleDialog scheduleDialog,
+			int time,
+			boolean hour,
+			PageChanger changer) {
 		super(scheduleDialog);
 		this.time = time;
 		this.hour = hour;
+		this.changer = changer;
 		init();
 		addMouseListener(new HandCursorListener());
 	}
@@ -70,7 +81,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 	 * 各初期化処理
 	 */
 	private void init() {
-		java.text.DecimalFormat fmt = new java.text.DecimalFormat(getFormatString());
+		DecimalFormat fmt = new DecimalFormat(getFormatString());
 		if (hour) {
 			setText(fmt.format((time / 100)));
 		} else {
@@ -86,13 +97,17 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 
 	/**
 	 * 編集する為のダイアログを返します。
+	 * 
 	 * @param window 親ウィンドウ
 	 * @param collection ベースクラスのインスタンス
 	 * @param 任意のパラメータリスト
 	 * @todo 任意のパラメータはもう少し、型を強制するべきかも。
 	 */
-	public WifeDialog getDialog(Window window, SymbolCollection collection, List para) {
-		WifeDialog  d = DialogFactory.get(window, "1");
+	public WifeDialog getDialog(
+			Window window,
+			SymbolCollection collection,
+			List para) {
+		WifeDialog d = DialogFactory.get(window, "1", changer);
 		if (d == null)
 			logger.warn(this.getClass().getName() + " : scheduleDialog null");
 		d.setListIterator(collection.listIterator(para));
@@ -110,11 +125,13 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 
 	/**
 	 * 設定ダイアログの左上の Point オブジェクトを設定します。
+	 * 
 	 * @param point 設定ダイアログの左上の Point
 	 */
 	public void setPoint(Point point) {
-		//	NOP
+		// NOP
 	}
+
 	/**
 	 * シンボルの値を返します
 	 */
@@ -151,8 +168,9 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 		para.add(new Integer(this.scheduleDialog.buttonList.indexOf(this)));
 		if (this.scheduleDialog.tenkeyDialog != null)
 			this.scheduleDialog.tenkeyDialog.dispose();
-		this.scheduleDialog.tenkeyDialog = getDialog(this.scheduleDialog, this.scheduleDialog, para);
-//		this.scheduleDialog.tenkeyDialog.selectAll();
+		this.scheduleDialog.tenkeyDialog =
+			getDialog(this.scheduleDialog, this.scheduleDialog, para);
+		// this.scheduleDialog.tenkeyDialog.selectAll();
 		this.scheduleDialog.tenkeyDialog.show();
 	}
 
@@ -172,6 +190,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 
 	/**
 	 * 書き込み先の追加はしない。
+	 * 
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 	 */
 	public void addDestination(Map atts) {
@@ -179,12 +198,15 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements Tenk
 
 	/**
 	 * 書き込み先の追加はしない。
+	 * 
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 	 */
 	public void addValueSetter(ValueSetter setter) {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {

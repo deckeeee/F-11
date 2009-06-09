@@ -31,14 +31,15 @@ public class PfLeTenkeyDialogState implements State {
 
 	/**
 	 * 状態オブジェクトを生成します。
+	 * 
 	 * @param tagName タグ名称
 	 * @param atts タグ属性
 	 * @param 親の状態オブジェクト
 	 */
 	public PfLeTenkeyDialogState(
-		String tagName,
-		Attributes atts,
-		DialogMapState state) {
+			String tagName,
+			Attributes atts,
+			DialogMapState state) {
 		this.state = state;
 		logger = Logger.getLogger(getClass().getName());
 
@@ -58,13 +59,21 @@ public class PfLeTenkeyDialogState implements State {
 
 		if (state.handler.window instanceof Frame) {
 			dialog =
-				new PfTenkeyDialogNoTab((Frame) state.handler.window, true, false);
+				new PfTenkeyDialogNoTab(
+					(Frame) state.handler.window,
+					true,
+					false,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
 			dialog =
-				new PfTenkeyDialogNoTab((Dialog) state.handler.window, true, false);
+				new PfTenkeyDialogNoTab(
+					(Dialog) state.handler.window,
+					true,
+					false,
+					state.handler.changer);
 		}
 		dialog.setSize(width, height);
-		//		dialog.setModal(true);
+		// dialog.setModal(true);
 	}
 
 	/*

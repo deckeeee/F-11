@@ -48,6 +48,7 @@ import org.F11.scada.applet.dialog.schedule.ScheduleDialogFactory;
 import org.F11.scada.applet.symbol.HandCursorListener;
 import org.F11.scada.applet.symbol.ReferencerOwnerSymbol;
 import org.F11.scada.applet.symbol.ScrollableBaseBox;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -76,6 +77,8 @@ public class GraphicScheduleView implements ActionListener,
 	/** ページID */
 	private final String pageId;
 
+	private final PageChanger changer;
+
 	/**
 	 * コンストラクタ
 	 * 
@@ -86,7 +89,8 @@ public class GraphicScheduleView implements ActionListener,
 			BarMatrixFactory factory,
 			ScheduleDialogFactory dialogFactory,
 			boolean isNonTandT,
-			String pageId) {
+			String pageId,
+			PageChanger changer) {
 		logger = Logger.getLogger(getClass().getName());
 		this.scheduleModel = scheduleModel;
 		this.factory = factory;
@@ -96,6 +100,7 @@ public class GraphicScheduleView implements ActionListener,
 		this.dialogFactory = dialogFactory;
 		this.isNonTandT = isNonTandT;
 		this.pageId = pageId;
+		this.changer = changer;
 	}
 
 	/**
@@ -224,7 +229,7 @@ public class GraphicScheduleView implements ActionListener,
 
 			dialog =
 				dialogFactory.getScheduleDialog(frame, matrixBarButton
-					.getScheduleRowModel());
+					.getScheduleRowModel(), changer);
 			dialog.pack();
 
 			Rectangle dialogBounds = dialog.getBounds();

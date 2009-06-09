@@ -44,6 +44,7 @@ import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.schedule.DefaultScheduleDialog;
 import org.F11.scada.applet.symbol.ScrollableBaseBox;
 import org.F11.scada.data.DefaultSchedulePattern;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -65,6 +66,7 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 	private final boolean isSort;
 	/** 入力時刻大小チェックの有無 */
 	private final boolean isLenient;
+	private final PageChanger changer;
 	/** ロギングオブジェクト */
 	private static Logger logger;
 
@@ -76,10 +78,12 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 	public GraphicTwoDayScheduleView(
 			ScheduleModel scheduleModel,
 			boolean isSort,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		this.scheduleModel = scheduleModel;
 		this.isSort = isSort;
 		this.isLenient = isLenient;
+		this.changer = changer;
 		logger = Logger.getLogger(getClass().getName());
 		init();
 	}
@@ -195,7 +199,7 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 
 			dialog =
 				new DefaultScheduleDialog(frame, matrixBarButton
-					.getScheduleRowModel(), isSort, isLenient);
+					.getScheduleRowModel(), isSort, isLenient, changer);
 			dialog.pack();
 
 			Rectangle dialogBounds = dialog.getBounds();

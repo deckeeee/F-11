@@ -42,6 +42,7 @@ import javax.swing.border.Border;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.schedule.DefaultScheduleDialog;
 import org.F11.scada.applet.symbol.ScrollableBaseBox;
+import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
@@ -61,6 +62,8 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 	private final boolean isSort;
 	/** 入力時間大小チェックの有無 */
 	private final boolean isLenient;
+	
+	private final PageChanger changer;
 	/** ロギングオブジェクト */
 	private Logger logger = Logger.getLogger(GraphicSevenDayScheduleView.class);
 
@@ -72,10 +75,12 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 	public GraphicSevenDayScheduleView(
 			ScheduleModel scheduleModel,
 			boolean isSort,
-			boolean isLenient) {
+			boolean isLenient,
+			PageChanger changer) {
 		this.scheduleModel = scheduleModel;
 		this.isSort = isSort;
 		this.isLenient = isLenient;
+		this.changer = changer;
 		init();
 	}
 
@@ -177,7 +182,7 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 
 			dialog =
 				new DefaultScheduleDialog(frame, matrixBarButton
-					.getScheduleRowModel(), isSort, isLenient);
+					.getScheduleRowModel(), isSort, isLenient, changer);
 			dialog.pack();
 
 			Rectangle dialogBounds = dialog.getBounds();

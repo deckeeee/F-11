@@ -46,6 +46,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
@@ -179,7 +180,11 @@ public class ImageSymbolEditable extends ImageSymbol implements
 			Window window,
 			SymbolCollection collection,
 			List para) {
-		WifeDialog d = DialogFactory.get(window, dlgName);
+		WifeDialog d =
+			DialogFactory.get(
+				window,
+				dlgName,
+				(AbstractWifeApplet) authentication);
 		d.setListIterator(collection.listIterator(para));
 		d.setTitle(dlgTitle);
 		return d;

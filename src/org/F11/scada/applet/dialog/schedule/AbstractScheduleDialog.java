@@ -46,11 +46,13 @@ import javax.swing.SwingConstants;
 import org.F11.scada.applet.dialog.WifeDialog;
 import org.F11.scada.applet.schedule.ScheduleRowModel;
 import org.F11.scada.applet.symbol.SymbolCollection;
+import org.F11.scada.xwife.applet.PageChanger;
 
 /**
  * スケジュール時刻設定ダイアログクラスです。
  */
-public abstract class AbstractScheduleDialog extends JDialog implements SymbolCollection, ActionListener {
+public abstract class AbstractScheduleDialog extends JDialog implements
+		SymbolCollection, ActionListener {
 	/** スケジュールデータの任意の一行を表すデータモデルです */
 	protected ScheduleRowModel model;
 	/** 時刻ボタンのリストです */
@@ -62,29 +64,45 @@ public abstract class AbstractScheduleDialog extends JDialog implements SymbolCo
 	/** 日付入力の大小チェックの有無 */
 	protected boolean isLenient;
 
+	protected final PageChanger changer;
+
 	/**
 	 * コンストラクタ
+	 * 
 	 * @param frame 親のフレームです
 	 * @param model スケジュールデータの任意の一行を表すデータモデル
 	 */
-	public AbstractScheduleDialog(Frame frame, ScheduleRowModel model, boolean isSort, boolean isLenient) {
+	public AbstractScheduleDialog(
+			Frame frame,
+			ScheduleRowModel model,
+			boolean isSort,
+			boolean isLenient,
+			PageChanger changer) {
 		super(frame);
 		this.model = model;
 		this.isSort = isSort;
 		this.isLenient = isLenient;
+		this.changer = changer;
 		init();
 	}
 
 	/**
 	 * コンストラクタ
+	 * 
 	 * @param dialog 親のダイアログです
 	 * @param model スケジュールデータの任意の一行を表すデータモデル
 	 */
-	public AbstractScheduleDialog(Dialog dialog, ScheduleRowModel model, boolean isSort, boolean isLenient) {
+	public AbstractScheduleDialog(
+			Dialog dialog,
+			ScheduleRowModel model,
+			boolean isSort,
+			boolean isLenient,
+			PageChanger changer) {
 		super(dialog);
 		this.model = model;
 		this.isSort = isSort;
 		this.isLenient = isLenient;
+		this.changer = changer;
 		init();
 	}
 
@@ -111,14 +129,18 @@ public abstract class AbstractScheduleDialog extends JDialog implements SymbolCo
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 
-		c.gridx = 1; c.gridy = 0;
-		c.gridwidth = 3; c.gridheight = 1;
-		c.weightx = 1.0; c.weighty = 1.0;
+		c.gridx = 1;
+		c.gridy = 0;
+		c.gridwidth = 3;
+		c.gridheight = 1;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 		c.insets = new Insets(20, 0, 10, 0);
 		JLabel onLabel = new JLabel("ON時刻");
 		timePanel.add(onLabel, c);
 
-		c.gridx = 5; c.gridy = 0;
+		c.gridx = 5;
+		c.gridy = 0;
 		c.insets = new Insets(20, 20, 10, 0);
 		JLabel offLabel = new JLabel("OFF時刻");
 		timePanel.add(offLabel, c);
@@ -136,43 +158,51 @@ public abstract class AbstractScheduleDialog extends JDialog implements SymbolCo
 	private void createRow(Container cont, int n) {
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1.0; c.weighty = 1.0;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 
 		int display = n + 1;
 		int insetSize = 1;
 		int insetBottom = 15;
 
-		c.gridx = 0; c.gridy = display;
+		c.gridx = 0;
+		c.gridy = display;
 		c.insets = new Insets(insetSize, insetSize, insetBottom, 20);
 		JLabel numLabel = new JLabel(display + "回目");
 		cont.add(numLabel, c);
 
-		c.gridx = 1; c.gridy = display;
+		c.gridx = 1;
+		c.gridy = display;
 		c.insets = new Insets(insetSize, insetSize, insetBottom, insetSize);
 		JButton b1 = createTimeButton(this, model.getOnTime(n), true);
 		cont.add(b1, c);
 
-		c.gridx = 2; c.gridy = display;
+		c.gridx = 2;
+		c.gridy = display;
 		JLabel onColon = new JLabel("：");
 		onColon.setHorizontalAlignment(SwingConstants.CENTER);
 		cont.add(onColon, c);
 
-		c.gridx = 3; c.gridy = display;
+		c.gridx = 3;
+		c.gridy = display;
 		JButton b2 = createTimeButton(this, model.getOnTime(n), false);
 		cont.add(b2, c);
 
-		c.gridx = 5; c.gridy = display;
+		c.gridx = 5;
+		c.gridy = display;
 		c.insets = new Insets(insetSize, 20, insetBottom, insetSize);
 		JButton b3 = createTimeButton(this, model.getOffTime(n), true);
 		cont.add(b3, c);
 
-		c.gridx = 6; c.gridy = display;
+		c.gridx = 6;
+		c.gridy = display;
 		c.insets = new Insets(insetSize, insetSize, insetBottom, insetSize);
 		JLabel offColon = new JLabel("：");
 		offColon.setHorizontalAlignment(SwingConstants.CENTER);
 		cont.add(offColon, c);
 
-		c.gridx = 7; c.gridy = display;
+		c.gridx = 7;
+		c.gridy = display;
 		JButton b4 = createTimeButton(this, model.getOffTime(n), false);
 		cont.add(b4, c);
 
@@ -184,9 +214,11 @@ public abstract class AbstractScheduleDialog extends JDialog implements SymbolCo
 		buttonList.add(b3);
 		buttonList.add(b4);
 	}
-	
+
 	abstract protected JButton createTimeButton(
-			AbstractScheduleDialog scheduleDialog, int time, boolean hour);
+			AbstractScheduleDialog scheduleDialog,
+			int time,
+			boolean hour);
 
 	/**
 	 * OK / CANCEL ボタンのコンポーネントを生成します。
@@ -199,23 +231,26 @@ public abstract class AbstractScheduleDialog extends JDialog implements SymbolCo
 		JButton okButton = createOkButton(this);
 		buttonBox.add(okButton);
 
-		CancelButton cancelButton = new CancelButton(this);
+		CancelButton cancelButton = new CancelButton(this, changer);
 		buttonBox.add(cancelButton);
 		return buttonBox;
 	}
-	
-	abstract protected JButton createOkButton(AbstractScheduleDialog scheduleDialog);
+
+	abstract protected JButton createOkButton(
+			AbstractScheduleDialog scheduleDialog);
 
 	/**
 	 * 各ボタンの処理を実行します。
 	 */
 	public void actionPerformed(ActionEvent evt) {
-		AbstractScheduleButton button = (AbstractScheduleButton)evt.getSource();
+		AbstractScheduleButton button =
+			(AbstractScheduleButton) evt.getSource();
 		button.pushButton();
 	}
 
 	/**
 	 * コンポーネント上の時刻シンボルイテレーターを返します。
+	 * 
 	 * @param para 任意のパラメーター
 	 */
 	public ListIterator listIterator(List para) {
@@ -237,11 +272,12 @@ public abstract class AbstractScheduleDialog extends JDialog implements SymbolCo
 
 		/**
 		 * コンストラクタ
+		 * 
 		 * @param para 任意のパラメーター
 		 */
 		ScheduleIterator(List para, List buttonList) {
 			symbols = new ArrayList(buttonList);
-			startIndex = ((Integer)para.get(0)).intValue();
+			startIndex = ((Integer) para.get(0)).intValue();
 		}
 
 		public boolean hasNext() {

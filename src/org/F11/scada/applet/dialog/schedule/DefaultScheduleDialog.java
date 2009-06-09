@@ -27,23 +27,37 @@ import java.awt.Frame;
 import javax.swing.JButton;
 
 import org.F11.scada.applet.schedule.ScheduleRowModel;
+import org.F11.scada.xwife.applet.PageChanger;
 
 public class DefaultScheduleDialog extends AbstractScheduleDialog {
 	private static final long serialVersionUID = -1101138034759981773L;
 
-	public DefaultScheduleDialog(Frame frame, ScheduleRowModel model, boolean isSort, boolean isLenient) {
-		super(frame, model, isSort, isLenient);
+	public DefaultScheduleDialog(
+			Frame frame,
+			ScheduleRowModel model,
+			boolean isSort,
+			boolean isLenient,
+			PageChanger changer) {
+		super(frame, model, isSort, isLenient, changer);
 	}
-	
-	public DefaultScheduleDialog(Dialog dialog, ScheduleRowModel model, boolean isSort, boolean isLenient) {
-		super(dialog, model, isSort, isLenient);
+
+	public DefaultScheduleDialog(
+			Dialog dialog,
+			ScheduleRowModel model,
+			boolean isSort,
+			boolean isLenient,
+			PageChanger changer) {
+		super(dialog, model, isSort, isLenient, changer);
 	}
 
 	protected JButton createOkButton(AbstractScheduleDialog scheduleDialog) {
 		return new DefaultOkButton(scheduleDialog, isSort, isLenient);
 	}
 
-	protected JButton createTimeButton(AbstractScheduleDialog scheduleDialog, int time, boolean hour) {
-		return new DefaultTimeButton(scheduleDialog, time, hour);
+	protected JButton createTimeButton(
+			AbstractScheduleDialog scheduleDialog,
+			int time,
+			boolean hour) {
+		return new DefaultTimeButton(scheduleDialog, time, hour, changer);
 	}
 }

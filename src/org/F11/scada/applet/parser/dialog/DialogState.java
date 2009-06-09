@@ -28,8 +28,6 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.util.Stack;
 
-import javax.swing.JDialog;
-
 import org.F11.scada.applet.dialog.DigitalDialog;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
@@ -38,18 +36,20 @@ import org.xml.sax.Attributes;
 
 /**
  * xpath /dialogmap/dialog 状態を表すクラスです。
+ * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class DialogState implements State {
 	DialogMapState state;
-	JDialog dialog;
-	
+	DigitalDialog dialog;
+
 	private String dialogName;
-	
+
 	private static Logger logger;
 
 	/**
 	 * 状態オブジェクトを生成します。
+	 * 
 	 * @param tagName タグ名称
 	 * @param atts タグ属性
 	 * @param 親の状態オブジェクト
@@ -63,7 +63,7 @@ public class DialogState implements State {
 		} else {
 			dialogName = atts.getValue("name");
 		}
-		
+
 		int width = 0;
 		int height = 0;
 		if (atts.getValue("width") == null) {
@@ -71,7 +71,7 @@ public class DialogState implements State {
 		} else {
 			width = Integer.parseInt(atts.getValue("width"));
 		}
-		
+
 		if (atts.getValue("height") == null) {
 			throw new IllegalArgumentException("height is null");
 		} else {
@@ -79,14 +79,17 @@ public class DialogState implements State {
 		}
 
 		if (state.handler.window instanceof Frame) {
-			dialog = new DigitalDialog((Frame) state.handler.window);
+			dialog =
+				new DigitalDialog(
+					(Frame) state.handler.window,
+					state.handler.changer);
 		} else if (state.handler.window instanceof Dialog) {
-			dialog = new DigitalDialog((Dialog) state.handler.window);
+			dialog =
+				new DigitalDialog(
+					(Dialog) state.handler.window,
+					state.handler.changer);
 		}
 		dialog.setSize(width, height);
-//		panel.setModal(true);
-//		panel = new JDialog();
-//		panel.getContentPane().setLayout(new AbsoluteLayout());
 	}
 
 	/*

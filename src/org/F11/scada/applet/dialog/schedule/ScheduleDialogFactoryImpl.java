@@ -26,6 +26,7 @@ import java.awt.Frame;
 import javax.swing.JDialog;
 
 import org.F11.scada.applet.schedule.ScheduleRowModel;
+import org.F11.scada.xwife.applet.PageChanger;
 
 public class ScheduleDialogFactoryImpl implements ScheduleDialogFactory {
 	private final boolean isSort;
@@ -36,7 +37,15 @@ public class ScheduleDialogFactoryImpl implements ScheduleDialogFactory {
 		this.isLenient = isLenient;
 	}
 
-	public JDialog getScheduleDialog(Frame frame, ScheduleRowModel rowModel) {
-		return new DefaultScheduleDialog(frame, rowModel, isSort, isLenient);
+	public JDialog getScheduleDialog(
+			Frame frame,
+			ScheduleRowModel rowModel,
+			PageChanger changer) {
+		return new DefaultScheduleDialog(
+			frame,
+			rowModel,
+			isSort,
+			isLenient,
+			changer);
 	}
 }
