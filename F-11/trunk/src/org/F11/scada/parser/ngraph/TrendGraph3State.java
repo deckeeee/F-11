@@ -105,11 +105,17 @@ public class TrendGraph3State implements State {
 	private boolean isCompositionMode;
 	/** 現在のスパン表示モード */
 	private boolean isAllSpanDisplayMode;
+	/** グループ番号 */
+	private final Object argv;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
 	 */
-	public TrendGraph3State(String tagName, Attributes atts, PageState pageState) {
+	public TrendGraph3State(
+			String tagName,
+			Attributes atts,
+			PageState pageState,
+			Object argv) {
 		seriesGroups = new ArrayList<SeriesGroup>();
 		this.pageState = pageState;
 		x = getValue(atts, "x", "0");
@@ -163,6 +169,7 @@ public class TrendGraph3State implements State {
 			Boolean.parseBoolean(getValue(atts, "compositionMode", "true"));
 		isAllSpanDisplayMode =
 			Boolean.parseBoolean(getValue(atts, "allSpanDisplayMode", "false"));
+		this.argv = argv;
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
@@ -188,6 +195,9 @@ public class TrendGraph3State implements State {
 			GraphProperties p = getGraphProperties();
 			p.setSeriesGroup(seriesGroups);
 			p.setHorizontalScaleButtonProperty(scaleButtonProperties);
+			if (null != argv) {
+				p.setGroupNo(getGroupNo(argv) - 1);
+			}
 			GraphMainPanel mainPanel = new GraphMainPanel(p);
 			if (x != null && y != null) {
 				mainPanel.setLocation(getNumber(x), getNumber(y));
@@ -230,6 +240,7 @@ public class TrendGraph3State implements State {
 		p.setVisibleVerticalString(isVisibleVerticalString);
 		p.setCompositionMode(isCompositionMode);
 		p.setAllSpanDisplayMode(isAllSpanDisplayMode);
+
 		return p;
 	}
 
@@ -245,4 +256,11 @@ public class TrendGraph3State implements State {
 		return Integer.parseInt(string);
 	}
 
+	private int getGroupNo(Object argv) {
+		try {
+			return Integer.parseInt((String) argv);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
 }

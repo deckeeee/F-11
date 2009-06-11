@@ -141,7 +141,7 @@ public class PageState implements State, SymbolContainerState {
 			stack.push(new BarGraph2State(tagName, atts, this));
 			setPageCache();
 		} else if (tagName.equals("trendgraph3")) {
-			stack.push(new TrendGraph3State(tagName, atts, this));
+			stack.push(new TrendGraph3State(tagName, atts, this, pagemapState.argv));
 			setPageCache();
 		} else {
 			logger.info("tagName:" + tagName);
