@@ -152,9 +152,14 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		} catch (NumberFormatException e) {
 		}
 		double minValue = getMinValue();
-		initialValue = Math.max(initialValue, minValue);
 		double maxValue = getMaxValue();
-		initialValue = Math.min(initialValue, maxValue);
+		if (minValue > maxValue) {
+			initialValue = Math.max(initialValue, maxValue);
+			initialValue = Math.min(initialValue, minValue);
+		} else {
+			initialValue = Math.max(initialValue, minValue);
+			initialValue = Math.min(initialValue, maxValue);
+		}
 		int max = format.getMaximumFractionDigits();
 		double stepSize = Math.pow(0.1, max);
 		if (minValue > maxValue) {
