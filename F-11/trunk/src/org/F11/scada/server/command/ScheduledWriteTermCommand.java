@@ -19,12 +19,15 @@
 
 package org.F11.scada.server.command;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
+import org.F11.scada.server.register.HolderString;
 
 /**
  * 指定されたパスにビット情報を出力するクラスです。
@@ -35,6 +38,8 @@ public class ScheduledWriteTermCommand implements Command {
 	/** スレッドプール実行クラス */
 	private static ScheduledExecutorService executor =
 		Executors.newScheduledThreadPool(1);
+	private static Map<HolderString, WriteTermCommandTask> map =
+		new ConcurrentHashMap<HolderString, WriteTermCommandTask>();
 
 	/** プロバイダ名 */
 	private String provider;
@@ -77,15 +82,17 @@ public class ScheduledWriteTermCommand implements Command {
 			throw new IllegalStateException("valueが設定されていません");
 		}
 		if (null == delay) {
-			throw new IllegalStateException("longが設定されていません");
+			throw new IllegalStateException("delayが設定されていません");
 		}
 
 		try {
-			executor.schedule(new WriteTermCommandTask(
-				evt,
-				provider,
-				holder,
-				value), delay, TimeUnit.SECONDS);
+			HolderString key = new HolderString(provider, holder);
+			if (!map.containsKey(key)) {
+				WriteTermCommandTask command =
+					new WriteTermCommandTask(evt, provider, holder, value, map);
+				map.put(key, command);
+				executor.schedule(command, delay, TimeUnit.SECONDS);
+			}
 		} catch (RejectedExecutionException e) {
 		}
 	}

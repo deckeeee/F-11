@@ -21,6 +21,7 @@
 package org.F11.scada.server.command;
 
 import java.util.Date;
+import java.util.Map;
 
 import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.Manager;
@@ -31,6 +32,7 @@ import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
+import org.F11.scada.server.register.HolderString;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 
@@ -53,6 +55,8 @@ public class WriteTermCommandTask implements Runnable {
 	private final String holder;
 	/** 書き込む値 */
 	private final String value;
+	/**  */
+	private Map<HolderString, WriteTermCommandTask> map;
 
 	/**
 	 * タスクを初期化します
@@ -68,6 +72,19 @@ public class WriteTermCommandTask implements Runnable {
 		this.provider = provider;
 		this.holder = holder;
 		this.value = value;
+	}
+
+	WriteTermCommandTask(
+			DataValueChangeEventKey evt,
+			String provider,
+			String holder,
+			String value,
+			Map<HolderString, WriteTermCommandTask> map) {
+		this.evt = evt;
+		this.provider = provider;
+		this.holder = holder;
+		this.value = value;
+		this.map = map;
 	}
 
 	/**
@@ -93,6 +110,7 @@ public class WriteTermCommandTask implements Runnable {
 				log.warn(provider + "_" + holder + " が登録されていません");
 			}
 		}
+		remove();
 	}
 
 	private void writeDigital(DataHolder dh, WifeData wd) {
@@ -125,5 +143,14 @@ public class WriteTermCommandTask implements Runnable {
 
 	private byte[] getSendData(String value) {
 		return Boolean.valueOf(value).booleanValue() ? TRUE_DATA : FALSE_DATA;
+	}
+
+	private void remove() {
+		if (null != map) {
+			HolderString key = new HolderString(provider, holder);
+			if (map.containsKey(key)) {
+				map.remove(key);
+			}
+		}
 	}
 }
