@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
@@ -34,64 +35,28 @@ import org.F11.scada.server.register.HolderString;
  * 
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class ScheduledWriteTermCommand implements Command {
+public class ScheduledOnlyFirstWrite extends AbstractScheduledCommand {
 	/** スレッドプール実行クラス */
 	private static ScheduledExecutorService executor =
 		Executors.newScheduledThreadPool(1);
-	private static Map<HolderString, WriteTermCommandTask> map =
-		new ConcurrentHashMap<HolderString, WriteTermCommandTask>();
+	private static Map<HolderString, ScheduledFuture<?>> map =
+		new ConcurrentHashMap<HolderString, ScheduledFuture<?>>();
 
-	/** プロバイダ名 */
-	private String provider;
-	/** ホルダ名 */
-	private String holder;
-	/** 書き込む値 */
-	private String value;
-	/** 遅延する時間 */
-	private Long delay;
-
-	public void setHolder(String holder) {
-		this.holder = holder;
-	}
-
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public void setDelay(Long delay) {
-		this.delay = delay;
-	}
-
-	/**
-	 * コマンドを実行します
-	 * 
-	 * @param evt データ変更イベント
-	 */
-	public void execute(DataValueChangeEventKey evt) {
-		if (null == provider) {
-			throw new IllegalStateException("providerが設定されていません");
-		}
-		if (null == holder) {
-			throw new IllegalStateException("holderが設定されていません");
-		}
-		if (null == value) {
-			throw new IllegalStateException("valueが設定されていません");
-		}
-		if (null == delay) {
-			throw new IllegalStateException("delayが設定されていません");
-		}
-
+	protected void schedule(DataValueChangeEventKey evt) {
 		try {
-			HolderString key = new HolderString(provider, holder);
+			HolderString key = new HolderString(getProvider(), getHolder());
 			if (!map.containsKey(key)) {
 				WriteTermCommandTask command =
-					new WriteTermCommandTask(evt, provider, holder, value, map);
-				map.put(key, command);
-				executor.schedule(command, delay, TimeUnit.SECONDS);
+					new WriteTermCommandTask(
+						evt,
+						getProvider(),
+						getHolder(),
+						getValue(),
+						map);
+				map.put(key, executor.schedule(
+					command,
+					getDelay(),
+					TimeUnit.SECONDS));
 			}
 		} catch (RejectedExecutionException e) {
 		}
