@@ -22,6 +22,7 @@ package org.F11.scada.server.command;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
 
 import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.Manager;
@@ -56,7 +57,7 @@ public class WriteTermCommandTask implements Runnable {
 	/** 書き込む値 */
 	private final String value;
 	/**  */
-	private Map<HolderString, WriteTermCommandTask> map;
+	private Map<HolderString, ScheduledFuture<?>> map;
 
 	/**
 	 * タスクを初期化します
@@ -79,7 +80,7 @@ public class WriteTermCommandTask implements Runnable {
 			String provider,
 			String holder,
 			String value,
-			Map<HolderString, WriteTermCommandTask> map) {
+			Map<HolderString, ScheduledFuture<?>> map) {
 		this.evt = evt;
 		this.provider = provider;
 		this.holder = holder;
