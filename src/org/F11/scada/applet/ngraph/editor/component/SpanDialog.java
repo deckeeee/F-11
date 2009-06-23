@@ -59,7 +59,6 @@ public class SpanDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		add(getCenter(), BorderLayout.CENTER);
 		add(getSouth(), BorderLayout.SOUTH);
-		// setSize(220, 150);
 		pack();
 		ComponentUtil.setCenter(JDialog.class, this);
 	}
@@ -102,7 +101,7 @@ public class SpanDialog extends JDialog {
 	private void setMaxSpinner() {
 		SpinnerNumberModel maxModel =
 			new SpinnerNumberModel(
-				seriesPropertyData.getMax().floatValue(),
+				getInitMax(),
 				Integer.MIN_VALUE,
 				Integer.MAX_VALUE,
 				NumberUtil.getStep(getFormat()));
@@ -110,6 +109,17 @@ public class SpanDialog extends JDialog {
 		SelectedFieldNumberEditor editor =
 			new SelectedFieldNumberEditor(maxSpinner, getFormat());
 		maxSpinner.setEditor(editor);
+	}
+
+	private float getInitMax() {
+		String s = seriesPropertyData.getConvert();
+		if ("LELA".equalsIgnoreCase(s)
+			|| "LALE".equalsIgnoreCase(s)
+			|| "DECIMAL".equalsIgnoreCase(s)) {
+			return 0F - seriesPropertyData.getMin();
+		} else {
+			return seriesPropertyData.getMax();
+		}
 	}
 
 	private Component getSouth() {

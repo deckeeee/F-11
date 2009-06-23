@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,19 +74,21 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (null != seriesPropertyDatas) {
+			SeriesPropertyData rowData = seriesPropertyDatas.get(rowIndex);
+			DecimalFormat f = new DecimalFormat(rowData.getVerticalFormat());
 			switch (columnIndex) {
 			case 0:
-				return seriesPropertyDatas.get(rowIndex).getColorObject();
+				return rowData.getColorObject();
 			case 1:
-				return seriesPropertyDatas.get(rowIndex).getMin();
+				return f.format(rowData.getMin());
 			case 2:
-				return seriesPropertyDatas.get(rowIndex).getMax();
+				return f.format(rowData.getMax());
 			case 3:
-				return seriesPropertyDatas.get(rowIndex).getUnit();
+				return rowData.getUnit();
 			case 4:
-				return seriesPropertyDatas.get(rowIndex).getName();
+				return rowData.getName();
 			case 5:
-				return seriesPropertyDatas.get(rowIndex).getMark();
+				return rowData.getMark();
 			default:
 				throw new IllegalStateException();
 			}

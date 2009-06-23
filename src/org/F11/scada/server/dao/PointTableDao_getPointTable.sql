@@ -11,6 +11,7 @@ SELECT
  ,a.convert_min min
  ,a.convert_max max
  ,a.format
+ ,a.convert_type convert
 FROM
  item_table i
   LEFT JOIN point_table p ON i.point = p.point

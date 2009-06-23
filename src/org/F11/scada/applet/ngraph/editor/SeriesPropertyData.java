@@ -31,7 +31,7 @@ import org.F11.scada.applet.symbol.ColorFactory;
  * ページ定義のシリーズプロパティー
  * 
  * @author maekawa
- *
+ * 
  */
 public class SeriesPropertyData implements Serializable {
 	private static final long serialVersionUID = 888380556791138788L;
@@ -46,6 +46,7 @@ public class SeriesPropertyData implements Serializable {
 	private Float max;
 	private String verticalFormat;
 	private String holder;
+	private String convert;
 
 	public SeriesPropertyData() {
 	}
@@ -62,6 +63,7 @@ public class SeriesPropertyData implements Serializable {
 		max = src.max;
 		verticalFormat = src.verticalFormat;
 		holder = src.holder;
+		convert = src.convert;
 	}
 
 	public Integer getIndex() {
@@ -153,6 +155,14 @@ public class SeriesPropertyData implements Serializable {
 		this.holder = holder;
 	}
 
+	public String getConvert() {
+		return convert;
+	}
+
+	public void setConvert(String convert) {
+		this.convert = convert;
+	}
+
 	public String getXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("        <series-property");
@@ -165,7 +175,8 @@ public class SeriesPropertyData implements Serializable {
 		sb.append(getAttribute("min", min));
 		sb.append(getAttribute("max", max));
 		sb.append(getAttribute("verticalFormat", verticalFormat));
-		sb.append(getAttribute("holder", holder)).append("/>\n");
+		sb.append(getAttribute("holder", holder));
+		sb.append(getAttribute("convert", convert)).append("/>\n");
 		return sb.toString();
 	}
 
