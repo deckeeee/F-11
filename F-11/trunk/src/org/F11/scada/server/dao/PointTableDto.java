@@ -38,6 +38,7 @@ public class PointTableDto implements Serializable {
 	private Float min;
 	private Float max;
 	private String format;
+	private String convert;
 
 	public Integer getPoint() {
 		return point;
@@ -135,6 +136,14 @@ public class PointTableDto implements Serializable {
 		this.format = format;
 	}
 
+	public String getConvert() {
+		return convert;
+	}
+
+	public void setConvert(String convert) {
+		this.convert = convert;
+	}
+
 	@Override
 	public String toString() {
 		return point
@@ -159,6 +168,8 @@ public class PointTableDto implements Serializable {
 			+ " "
 			+ max
 			+ " "
-			+ format;
+			+ format
+			+ " "
+			+ convert;
 	}
 }

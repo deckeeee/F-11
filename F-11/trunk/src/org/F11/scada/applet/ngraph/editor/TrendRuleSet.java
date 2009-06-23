@@ -81,7 +81,8 @@ public class TrendRuleSet extends RuleSetBase {
 			"verticalFormat",
 			"max",
 			"min",
-			"holder" };
+			"holder",
+			"convert" };
 	private static final String[] HORIZONTAL_SCALE_BUTTON_PROPERTY =
 		{
 			"buttonText",

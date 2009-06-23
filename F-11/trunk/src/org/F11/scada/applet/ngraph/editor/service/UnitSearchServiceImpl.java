@@ -82,7 +82,8 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 				pointTableDto.getMin(),
 				pointTableDto.getMax(),
 				pointTableDto.getFormat(),
-				pointTableDto.getProvider() + "_" + pointTableDto.getHolder()));
+				pointTableDto.getProvider() + "_" + pointTableDto.getHolder(),
+				pointTableDto.getConvert()));
 		}
 		return unitList;
 	}
@@ -97,7 +98,8 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 			Float min,
 			Float max,
 			String verticalFormat,
-			String holder) {
+			String holder,
+			String convert) {
 		SeriesPropertyData spd = new SeriesPropertyData();
 		spd.setIndex(index);
 		spd.setVisible(visible);
@@ -109,6 +111,7 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 		spd.setMax(max);
 		spd.setVerticalFormat(verticalFormat);
 		spd.setHolder(holder);
+		spd.setConvert(convert);
 		return spd;
 	}
 }
