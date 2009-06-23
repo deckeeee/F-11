@@ -22,7 +22,6 @@ package org.F11.scada.applet.ngraph.editor.component;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -35,16 +34,18 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import org.F11.scada.applet.ngraph.SelectedFieldNumberEditor;
 import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
+import org.F11.scada.applet.ngraph.util.NumberUtil;
 import org.F11.scada.util.ComponentUtil;
 
 /**
  * エディタのｽﾊﾟﾝ変更ダイアログ
  * 
  * @author maekawa
- *
+ * 
  */
 public class SpanDialog extends JDialog {
 	private static final long serialVersionUID = -8780547647715972052L;
@@ -58,7 +59,8 @@ public class SpanDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		add(getCenter(), BorderLayout.CENTER);
 		add(getSouth(), BorderLayout.SOUTH);
-		setSize(220, 150);
+		// setSize(220, 150);
+		pack();
 		ComponentUtil.setCenter(JDialog.class, this);
 	}
 
@@ -81,21 +83,32 @@ public class SpanDialog extends JDialog {
 	}
 
 	private void setMinSpinner() {
-		minSpinner = new JSpinner();
-		minSpinner.setPreferredSize(new Dimension(80, 20));
-		minSpinner.setMinimumSize(new Dimension(80, 20));
-		minSpinner.setMaximumSize(new Dimension(80, 20));
+		SpinnerNumberModel minModel =
+			new SpinnerNumberModel(
+				seriesPropertyData.getMin().floatValue(),
+				Integer.MIN_VALUE,
+				Integer.MAX_VALUE,
+				NumberUtil.getStep(getFormat()));
+		minSpinner = new JSpinner(minModel);
 		SelectedFieldNumberEditor editor =
-			new SelectedFieldNumberEditor(minSpinner, "0.0");
-		minSpinner.setValue(seriesPropertyData.getMin());
+			new SelectedFieldNumberEditor(minSpinner, getFormat());
 		minSpinner.setEditor(editor);
 	}
 
+	private String getFormat() {
+		return seriesPropertyData.getVerticalFormat().replaceAll("\\s", "");
+	}
+
 	private void setMaxSpinner() {
-		maxSpinner = new JSpinner();
+		SpinnerNumberModel maxModel =
+			new SpinnerNumberModel(
+				seriesPropertyData.getMax().floatValue(),
+				Integer.MIN_VALUE,
+				Integer.MAX_VALUE,
+				NumberUtil.getStep(getFormat()));
+		maxSpinner = new JSpinner(maxModel);
 		SelectedFieldNumberEditor editor =
-			new SelectedFieldNumberEditor(maxSpinner, "0.0");
-		maxSpinner.setValue(seriesPropertyData.getMax());
+			new SelectedFieldNumberEditor(maxSpinner, getFormat());
 		maxSpinner.setEditor(editor);
 	}
 

@@ -37,7 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.SpinnerNumberModel;
 
+import org.F11.scada.applet.ngraph.util.NumberUtil;
 import org.F11.scada.util.TableUtil;
 
 /**
@@ -97,7 +99,7 @@ public class ButtonTableCellEditor extends DefaultCellEditor {
 			d.setVisible(true);
 		}
 		isPushed = false;
-		return new String(displayLabel);
+		return displayLabel;
 	}
 
 	@Override
@@ -125,7 +127,7 @@ public class ButtonTableCellEditor extends DefaultCellEditor {
 			setResizable(false);
 			add(getCenter(), BorderLayout.CENTER);
 			add(getSouth(), BorderLayout.SOUTH);
-			setSize(250, 170);
+			pack();
 			setLocation(TableUtil.getDialogPoint(
 				table,
 				cellPoint.y,
@@ -150,25 +152,50 @@ public class ButtonTableCellEditor extends DefaultCellEditor {
 
 		private Component getMinSpinner() {
 			Box box = Box.createHorizontalBox();
-			minSpinner = new JSpinner();
+			SpinnerNumberModel minModel =
+				new SpinnerNumberModel(
+					getMin(),
+					Integer.MIN_VALUE,
+					Integer.MAX_VALUE,
+					NumberUtil.getStep(getFormat()));
+			minSpinner = new JSpinner(minModel);
 			SelectedFieldNumberEditor editor =
-				new SelectedFieldNumberEditor(minSpinner, "0.0");
+				new SelectedFieldNumberEditor(minSpinner, getFormat());
 			minSpinner.setEditor(editor);
-			minSpinner
-				.setValue(model.getSeriesProperties(cellPoint.y).getMin());
+			minSpinner.setValue(getMin());
 			box.add(new JLabel("最小値："));
 			box.add(minSpinner);
 			return box;
 		}
 
+		private float getMin() {
+			return model.getSeriesProperties(cellPoint.y).getMin();
+		}
+
+		private float getMax() {
+			return model.getSeriesProperties(cellPoint.y).getMax();
+		}
+
+		private String getFormat() {
+			return model
+				.getSeriesProperties(cellPoint.y)
+				.getVerticalFormat()
+				.replaceAll("\\s", "");
+		}
+
 		private Component getMaxSpinner() {
 			Box box = Box.createHorizontalBox();
-			maxSpinner = new JSpinner();
+			SpinnerNumberModel maxModel =
+				new SpinnerNumberModel(
+					getMax(),
+					Integer.MIN_VALUE,
+					Integer.MAX_VALUE,
+					NumberUtil.getStep(getFormat()));
+			maxSpinner = new JSpinner(maxModel);
 			SelectedFieldNumberEditor editor =
-				new SelectedFieldNumberEditor(maxSpinner, "0.0");
+				new SelectedFieldNumberEditor(maxSpinner, getFormat());
 			maxSpinner.setEditor(editor);
-			maxSpinner
-				.setValue(model.getSeriesProperties(cellPoint.y).getMax());
+			maxSpinner.setValue(getMax());
 			box.add(new JLabel("最大値："));
 			box.add(maxSpinner);
 			return box;

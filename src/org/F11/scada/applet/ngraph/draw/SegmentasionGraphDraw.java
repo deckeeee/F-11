@@ -27,9 +27,14 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.text.DecimalFormat;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.Manager;
+
 import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
 import org.F11.scada.applet.ngraph.SeriesProperties;
+import org.F11.scada.data.ConvertValue;
+import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.commons.collections.primitives.DoubleIterator;
 import org.apache.commons.collections.primitives.DoubleList;
 
@@ -113,12 +118,18 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 						drawSeriesIndex);
 				float max = p.getMax();
 				DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
-				String dateStr =
-					f
-						.format(max
-							- (i - drawSeriesIndex * 2)
-							* ((max - p.getMin())
-								/ properties.getVerticalCount() * getHalfVerticalCount()));
+				float number =
+					max
+						- (i - drawSeriesIndex * 2)
+						* ((max - p.getMin()) / properties.getVerticalCount() * getHalfVerticalCount());
+				DataHolder holder =
+					Manager.getInstance().findDataHolder(
+						p.getHolderString().getHolderId());
+				ConvertValue converter =
+					(ConvertValue) holder
+						.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+				double ref = converter.convertInputValueUnlimited(number);
+				String dateStr = converter.convertStringValueUnlimited(ref);
 				FontMetrics metrics = g.getFontMetrics();
 				if (p.isVisible()) {
 					g.setColor(p.getColor());
