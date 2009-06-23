@@ -179,6 +179,32 @@ public class SeriesProperties {
 		return referenceValue;
 	}
 
+	public String getReferenceValueString() {
+		if (null == referenceValue) {
+			return null;
+		} else {
+			Manager manager = Manager.getInstance();
+			DataHolder hd = manager.findDataHolder(holderString.getHolderId());
+			if (hd != null) {
+				Object obj = hd.getValue();
+				if (obj instanceof WifeDataAnalog) {
+					ConvertValue convertValue =
+						(ConvertValue) hd
+							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+					double ref =
+						convertValue.convertInputValueUnlimited(referenceValue);
+					return convertValue.convertStringValueUnlimited(ref);
+				} else {
+					logger.info("Class=" + obj.getClass().getName());
+					return null;
+				}
+			} else {
+				logger.info("Holder null");
+				return null;
+			}
+		}
+	}
+
 	/**
 	 * éQè∆ílÇê›íË
 	 * 
@@ -193,7 +219,7 @@ public class SeriesProperties {
 	 * 
 	 * @return åªç›íl
 	 */
-	public Float getNowValue() {
+	public String getNowValue() {
 		Manager manager = Manager.getInstance();
 		DataHolder hd = manager.findDataHolder(holderString.getHolderId());
 		if (hd != null) {
@@ -203,7 +229,9 @@ public class SeriesProperties {
 				ConvertValue convertValue =
 					(ConvertValue) hd
 						.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-				return (float) convertValue.convertDoubleValue(a.doubleValue());
+				// return (float)
+				// convertValue.convertDoubleValue(a.doubleValue());
+				return convertValue.convertStringValueUnlimited(a.doubleValue());
 			} else {
 				logger.info("Class=" + obj.getClass().getName());
 				return null;

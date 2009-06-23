@@ -139,11 +139,9 @@ public class SeriesTableModel extends AbstractTableModel implements
 		case 4:
 			return seriesPropertie.getName();
 		case REFERENCE_VALUE_COLUMN:
-			return format(seriesPropertie.getVerticalFormat(), seriesPropertie
-				.getReferenceValue());
+			return seriesPropertie.getReferenceValueString();
 		case NOW_VALUE_COUMN:
-			return format(seriesPropertie.getVerticalFormat(), seriesPropertie
-				.getNowValue());
+			return seriesPropertie.getNowValue();
 		case 7:
 			return seriesPropertie.getUnitMark();
 		default:
