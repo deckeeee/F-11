@@ -249,6 +249,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		pageChangeInterrupt(mainPanel);
 		attributeNDisplay(mainPanel);
 		mailErrorHolder(mainPanel);
+		alarmCsvWrite(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -618,6 +619,18 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			""));
 		mailErrorHolder.getDocument().addDocumentListener(this);
 		mainPanel.add(mailErrorHolder);
+	}
+
+	private void alarmCsvWrite(JPanel mainPanel) {
+		// Œx•ñˆê——ˆóšİ’è
+		mainPanel.add(new JLabel("Œx•ñ—š—ğCSVo—ÍF"));
+		JButton but = new JButton("Ú×");
+		but.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new AlarmCsvDialog(manager, frameParent).setVisible(true);
+			}
+		});
+		mainPanel.add(but);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
