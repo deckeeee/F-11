@@ -47,5 +47,6 @@ public class SmtpAuthTransportCore implements TransportCore {
 				.getServerPort(), environments.getUser(), environments
 				.getPassword());
 		transport.sendMessage(msg, addresses);
+		transport.close();
 	}
 }
