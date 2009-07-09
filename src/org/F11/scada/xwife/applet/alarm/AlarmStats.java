@@ -78,7 +78,7 @@ public class AlarmStats extends JLabel implements TableModelListener {
 
 	private boolean isSetText(TableModel model) {
 		if (isUseNewInfoMode) {
-			Integer mode = (Integer) model.getValueAt(0, 18);
+			Integer mode = (Integer) model.getValueAt(0, 21);
 			Boolean value = (Boolean) model.getValueAt(0, 11);
 			return (mode == 1 && !value)
 				|| (mode == 2 && value)
