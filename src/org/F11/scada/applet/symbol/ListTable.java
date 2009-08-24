@@ -115,7 +115,7 @@ public class ListTable extends JTable implements SymbolCollection,
 
 		if (o instanceof Editable) {
 			final Editable edit = (Editable) o;
-			if (edit.isEditable()) {
+			if (edit.isEditable() && edit.isVisible()) {
 				final SymbolCollection collec = (SymbolCollection) this;
 				if (dialog != null) {
 					dialog.dispose();
@@ -371,7 +371,7 @@ public class ListTable extends JTable implements SymbolCollection,
 				if (obj instanceof Editable || obj instanceof TrendJumpButton) {
 					if (obj instanceof Editable) {
 						Editable editable = (Editable) obj;
-						if (editable.isEditable()) {
+						if (editable.isEditable() && editable.isVisible()) {
 							comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
 						} else {
 							comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

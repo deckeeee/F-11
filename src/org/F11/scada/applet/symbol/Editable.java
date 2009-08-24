@@ -83,4 +83,11 @@ public interface Editable {
 	 * @return タブキー移動をするなら true を そうでないなら false を返します
 	 */
 	public boolean isTabkeyMove();
+	
+	/**
+	 * 表示中なら true を そうでないなら false を返します。
+	 * 
+	 * @return 表示中なら true を そうでないなら false を返します。
+	 */
+	boolean isVisible();
 }

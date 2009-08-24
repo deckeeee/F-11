@@ -568,4 +568,8 @@ public class DefaultScheduleModel implements ScheduleModel,
 	public void setDataSchedule(WifeDataSchedule schedule) {
 		dataSchedule = schedule;
 	}
+	
+	public boolean isVisible() {
+		return true;
+	}
 }
