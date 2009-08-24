@@ -1,200 +1,1271 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <f11:page_map xmlns:f11="http://www.F-11.org/scada">
-    <f11:page name="バーグラフ" width="1024" height="768">
+    <f11:page height="768" name="バーグラフ" width="1024">
         <f11:textsymbol background="gray" blink="false"
             font="Monospaced" font_size="24" font_style="plain"
             foreground="black" value="バーグラフ ：" visible="true" x="26" y="12"/>
-        <f11:bargraph2 x="0" y="0" width="1024" height="768">
-            <f11:modelselector x="195" y="12" font="Monospaced" font_style="bold" font_size="20" width="90" height="32" foreground="black" background="lightgrey">
-                <f11:bargraphmodel text="日 報" barcount="3" value="/images/base/barnip.png" class="org.F11.scada.applet.graph.bargraph2.NippoBarGraphModel">
+        <f11:bargraph2 height="768" width="1024" x="0" y="0">
+            <f11:modelselector background="lightgrey" font="Monospaced"
+                font_size="20" font_style="bold" foreground="black"
+                height="32" width="90" x="195" y="12">
+                <f11:bargraphmodel barcount="3"
+                    class="org.F11.scada.applet.graph.bargraph2.NippoBarGraphModel"
+                    text="日 報" value="/images/base/barnip.png">
                     <f11:handler>
                         <f11:name value="log_table_hour"/>
                     </f11:handler>
                     <f11:referencedate>
-                        <f11:textsymbol value="yyyy/MM/dd(EEE)" x="90" y="80" foreground="black" font="Monospaced" font_style="plain" font_size="20" width="215" height="28"/>
-                        <f11:changeperiodbutton x="14" y="76" width="36" height="36" value="/toolbarButtonGraphics/navigation/Back24.gif" period_offset="-7"/>
-                        <f11:changeperiodbutton x="50" y="76" width="36" height="36" value="/toolbarButtonGraphics/navigation/Back16.gif" period_offset="-1"/>
-                        <f11:changeperiodbutton x="308" y="76" width="36" height="36" value="/toolbarButtonGraphics/navigation/Forward16.gif" period_offset="1"/>
-                        <f11:changeperiodbutton x="344" y="76" width="36" height="36" value="/toolbarButtonGraphics/navigation/Forward24.gif" period_offset="7"/>
+                        <f11:textsymbol font="Monospaced" font_size="20"
+                            font_style="plain" foreground="black"
+                            height="28" value="yyyy/MM/dd(EEE)"
+                            width="215" x="90" y="80"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="-7"
+                            value="/toolbarButtonGraphics/navigation/Back24.gif"
+                            width="36" x="14" y="76"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="-1"
+                            value="/toolbarButtonGraphics/navigation/Back16.gif"
+                            width="36" x="50" y="76"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="1"
+                            value="/toolbarButtonGraphics/navigation/Forward16.gif"
+                            width="36" x="308" y="76"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="7"
+                            value="/toolbarButtonGraphics/navigation/Forward24.gif"
+                            width="36" x="344" y="76"/>
                     </f11:referencedate>
-                    <f11:graphview x="196" y="185" height="480" width="696">
+                    <f11:graphview height="480" width="696" x="196" y="185">
                         <f11:color>
                             <f11:name value="yellow"/>
                             <f11:name value="red"/>
                             <f11:name value="magenta"/>
                         </f11:color>
-                        <f11:focus top="5" left="1" botom="10" right="0" color="white" dash_line="16" dash_gap="4">
+                        <f11:focus botom="10" color="white" dash_gap="4"
+                            dash_line="16" left="1" right="0" top="5">
                             <f11:datetime>
-                                <!-- 1:00 ～ 24:00 -->
-                                <f11:textsymbol value="yyyy/MM/dd %H:00" x="600" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="128" height="16"/>
-                                <f11:textsymbol value="yyyy/MM/dd %H:00" x="600" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="128" height="16"/>
-                                <f11:textsymbol value="yyyy/MM/dd %H:00" x="600" y="107" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="128" height="16"/>
-                                <!-- 0:00 ～ 23:00 
-                                <f11:textsymbol value="yyyy/MM/dd HH:00" x="600" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="128" height="16"/>
-                                <f11:textsymbol value="yyyy/MM/dd HH:00" x="600" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="128" height="16"/>
-                                <f11:textsymbol value="yyyy/MM/dd HH:00" x="600" y="107" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="128" height="16"/>
-                                -->
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM/dd %H:00" width="128"
+                                    x="600" y="67"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM/dd %H:00" width="128"
+                                    x="600" y="87"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM/dd %H:00" width="128"
+                                    x="600" y="107"/>
                             </f11:datetime>
                             <f11:values>
-                                <f11:textsymbol x="800" y="67" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
-                                <f11:textsymbol x="800" y="87" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
-                                <f11:textsymbol x="800" y="107" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="67"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="87"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="107"/>
                             </f11:values>
                         </f11:focus>
                     </f11:graphview>
                     <f11:units>
-                        <f11:textsymbol value="%s" x="940" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                        <f11:textsymbol value="%s" x="940" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                        <f11:textsymbol value="%s" x="940" y="107" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                        <f11:textsymbol value="[%s]" x="24" y="131" foreground="yellow" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="67"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="87"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="107"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            height="16" value="[%s]" width="60" x="24" y="131"/>
                     </f11:units>
                     <f11:verticalscale>
-                        <f11:textsymbol value="1.0" x="0" y="180" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.9" x="0" y="228" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.8" x="0" y="276" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.7" x="0" y="324" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.6" x="0" y="372" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.5" x="0" y="420" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.4" x="0" y="468" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.3" x="0" y="516" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.2" x="0" y="564" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.1" x="0" y="612" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:textsymbol value="0.0" x="0" y="660" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="44" height="16"/>
-                        <f11:scalechangebutton value="変更" x="20" y="710" font="Monospaced" font_style="plain" font_size="12" width="58" height="26"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="1.0"
+                            width="44" x="0" y="180"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.9"
+                            width="44" x="0" y="228"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.8"
+                            width="44" x="0" y="276"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.7"
+                            width="44" x="0" y="324"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.6"
+                            width="44" x="0" y="372"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.5"
+                            width="44" x="0" y="420"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.4"
+                            width="44" x="0" y="468"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.3"
+                            width="44" x="0" y="516"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.2"
+                            width="44" x="0" y="564"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.1"
+                            width="44" x="0" y="612"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.0"
+                            width="44" x="0" y="660"/>
+                        <f11:scalechangebutton font="Monospaced"
+                            font_size="12" font_style="plain"
+                            height="26" value="変更" width="58" x="20" y="710"/>
                     </f11:verticalscale>
-                    <f11:textsymbol value="" x="515" y="68" opaque="true" background="yellow" width="28" height="14"/>
-                    <f11:textsymbol value="" x="515" y="88" opaque="true" background="red" width="28" height="14"/>
-                    <f11:textsymbol value="" x="515" y="108" opaque="true" background="magenta" width="28" height="14"/>
-                    <f11:textsymbol value="前々日" x="546" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                    <f11:textsymbol value="前日" x="546" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                    <f11:textsymbol value="本日" x="546" y="107" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                    <f11:textsymbol value="01" x="202" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="02" x="231" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="03" x="260" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="04" x="289" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="05" x="318" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="06" x="347" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="07" x="376" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="08" x="405" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="09" x="434" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="10" x="463" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="11" x="492" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="12" x="521" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="13" x="550" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="14" x="579" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="15" x="608" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="16" x="637" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="17" x="666" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="18" x="695" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="19" x="724" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="20" x="753" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="21" x="782" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="22" x="811" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="23" x="840" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="24" x="869" y="676" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="[時]" x="877" y="692" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
+                    <f11:textsymbol background="yellow" height="14"
+                        opaque="true" value="" width="28" x="515" y="68"/>
+                    <f11:textsymbol background="red" height="14"
+                        opaque="true" value="" width="28" x="515" y="88"/>
+                    <f11:textsymbol background="magenta" height="14"
+                        opaque="true" value="" width="28" x="515" y="108"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="前々日" width="60" x="546" y="67"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="前日" width="60" x="546" y="87"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="本日" width="60" x="546" y="107"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="01" width="30" x="202" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="02" width="30" x="231" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="03" width="30" x="260" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="04" width="30" x="289" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="05" width="30" x="318" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="06" width="30" x="347" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="07" width="30" x="376" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="08" width="30" x="405" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="09" width="30" x="434" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="10" width="30" x="463" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="11" width="30" x="492" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="12" width="30" x="521" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="13" width="30" x="550" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="14" width="30" x="579" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="15" width="30" x="608" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="16" width="30" x="637" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="17" width="30" x="666" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="18" width="30" x="695" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="19" width="30" x="724" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="20" width="30" x="753" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="21" width="30" x="782" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="22" width="30" x="811" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="23" width="30" x="840" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="24" width="30" x="869" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="[時]" width="60" x="877" y="692"/>
                 </f11:bargraphmodel>
-
-                <f11:bargraphmodel text="月 報" barcount="2" value="/images/base/bargep.png" class="org.F11.scada.applet.graph.bargraph2.GeppoBarGraphModel">
+                <f11:bargraphmodel barcount="2"
+                    class="org.F11.scada.applet.graph.bargraph2.GeppoBarGraphModel"
+                    text="月 報" value="/images/base/bargep.png">
                     <f11:handler>
                         <f11:name value="log_table_daily"/>
                     </f11:handler>
                     <f11:referencedate>
-                        <f11:textsymbol value="yyyy/MM" x="93" y="69" foreground="black" font="Monospaced" font_style="plain" font_size="20" width="119" height="28"/>
-                        <f11:changeperiodbutton x="17" y="65" width="36" height="36" value="/toolbarButtonGraphics/navigation/Back24.gif" period_offset="-6"/>
-                        <f11:changeperiodbutton x="53" y="65" width="36" height="36" value="/toolbarButtonGraphics/navigation/Back16.gif" period_offset="-1"/>
-                        <f11:changeperiodbutton x="216" y="65" width="36" height="36" value="/toolbarButtonGraphics/navigation/Forward16.gif" period_offset="1"/>
-                        <f11:changeperiodbutton x="252" y="65" width="36" height="36" value="/toolbarButtonGraphics/navigation/Forward24.gif" period_offset="6"/>
+                        <f11:textsymbol font="Monospaced" font_size="20"
+                            font_style="plain" foreground="black"
+                            height="28" value="yyyy/MM" width="119"
+                            x="93" y="69"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="-6"
+                            value="/toolbarButtonGraphics/navigation/Back24.gif"
+                            width="36" x="17" y="65"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="-1"
+                            value="/toolbarButtonGraphics/navigation/Back16.gif"
+                            width="36" x="53" y="65"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="1"
+                            value="/toolbarButtonGraphics/navigation/Forward16.gif"
+                            width="36" x="216" y="65"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="6"
+                            value="/toolbarButtonGraphics/navigation/Forward24.gif"
+                            width="36" x="252" y="65"/>
                     </f11:referencedate>
-                    <f11:graphview x="204" y="165" height="500" width="713">
+                    <f11:graphview height="500" width="713" x="204" y="165">
                         <f11:color>
                             <f11:name value="yellow"/>
                             <f11:name value="red"/>
                         </f11:color>
-                        <f11:focus top="5" left="1" botom="10" right="0" color="white" dash_line="16" dash_gap="4">
+                        <f11:focus botom="10" color="white" dash_gap="4"
+                            dash_line="16" left="1" right="0" top="5">
                             <f11:datetime>
-                                <f11:textsymbol value="yyyy/MM/dd" x="600" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="100" height="16"/>
-                                <f11:textsymbol value="yyyy/MM/dd" x="600" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="100" height="16"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM/dd" width="100"
+                                    x="600" y="67"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM/dd" width="100"
+                                    x="600" y="87"/>
                             </f11:datetime>
                             <f11:values>
-                                <f11:textsymbol x="800" y="67" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
-                                <f11:textsymbol x="800" y="87" foreground="black" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="135" height="16"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="67"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="87"/>
                             </f11:values>
                         </f11:focus>
                     </f11:graphview>
                     <f11:units>
-                        <f11:textsymbol value="%s" x="940" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                        <f11:textsymbol value="%s" x="940" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                        <f11:textsymbol value="[%s]" x="24" y="113" foreground="yellow" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="67"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="87"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            height="16" value="[%s]" width="60" x="24" y="113"/>
                     </f11:units>
                     <f11:verticalscale>
-                        <f11:textsymbol value="1.0" x="0" y="160" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.9" x="0" y="210" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.8" x="0" y="260" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.7" x="0" y="310" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.6" x="0" y="360" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.5" x="0" y="410" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.4" x="0" y="460" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.3" x="0" y="510" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.2" x="0" y="560" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.1" x="0" y="610" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:textsymbol value="0.0" x="0" y="660" foreground="yellow" h_aligin="right" font="Monospaced" font_style="plain" font_size="16" width="50" height="16"/>
-                        <f11:scalechangebutton value="変更" x="20" y="710" font="Monospaced" font_style="plain" font_size="12" width="58" height="26"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="1.0"
+                            width="50" x="0" y="160"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.9"
+                            width="50" x="0" y="210"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.8"
+                            width="50" x="0" y="260"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.7"
+                            width="50" x="0" y="310"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.6"
+                            width="50" x="0" y="360"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.5"
+                            width="50" x="0" y="410"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.4"
+                            width="50" x="0" y="460"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.3"
+                            width="50" x="0" y="510"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.2"
+                            width="50" x="0" y="560"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.1"
+                            width="50" x="0" y="610"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.0"
+                            width="50" x="0" y="660"/>
+                        <f11:scalechangebutton font="Monospaced"
+                            font_size="12" font_style="plain"
+                            height="26" value="変更" width="58" x="20" y="710"/>
                     </f11:verticalscale>
-                    <f11:textsymbol value="" x="515" y="68" opaque="true" background="yellow" width="28" height="14"/>
-                    <f11:textsymbol value="" x="515" y="88" opaque="true" background="red" width="28" height="14"/>
-                    <f11:textsymbol value="前月" x="546" y="67" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                    <f11:textsymbol value="本月" x="546" y="87" foreground="black" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
-                    <f11:textsymbol value="01" x="207" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="02" x="230" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="03" x="253" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="04" x="276" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="05" x="299" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="06" x="322" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="07" x="345" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="08" x="368" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="09" x="391" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="10" x="414" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="11" x="437" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="12" x="460" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="13" x="483" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="14" x="506" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="15" x="529" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="16" x="552" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="17" x="575" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="18" x="598" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="19" x="621" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="20" x="644" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="21" x="667" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="22" x="690" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="23" x="713" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="24" x="736" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="25" x="759" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="26" x="782" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="27" x="805" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="28" x="828" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="29" x="851" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="30" x="874" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="31" x="897" y="677" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="30" height="16"/>
-                    <f11:textsymbol value="[日]" x="890" y="693" foreground="white" font="Monospaced" font_style="plain" font_size="16" width="60" height="16"/>
+                    <f11:textsymbol background="yellow" height="14"
+                        opaque="true" value="" width="28" x="515" y="68"/>
+                    <f11:textsymbol background="red" height="14"
+                        opaque="true" value="" width="28" x="515" y="88"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="前月" width="60" x="546" y="67"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="本月" width="60" x="546" y="87"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="01" width="30" x="207" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="02" width="30" x="230" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="03" width="30" x="253" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="04" width="30" x="276" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="05" width="30" x="299" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="06" width="30" x="322" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="07" width="30" x="345" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="08" width="30" x="368" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="09" width="30" x="391" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="10" width="30" x="414" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="11" width="30" x="437" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="12" width="30" x="460" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="13" width="30" x="483" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="14" width="30" x="506" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="15" width="30" x="529" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="16" width="30" x="552" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="17" width="30" x="575" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="18" width="30" x="598" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="19" width="30" x="621" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="20" width="30" x="644" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="21" width="30" x="667" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="22" width="30" x="690" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="23" width="30" x="713" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="24" width="30" x="736" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="25" width="30" x="759" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="26" width="30" x="782" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="27" width="30" x="805" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="28" width="30" x="828" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="29" width="30" x="851" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="30" width="30" x="874" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="31" width="30" x="897" y="677"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="[日]" width="60" x="890" y="693"/>
+                </f11:bargraphmodel>
+                <f11:bargraphmodel barcount="2"
+                    class="org.F11.scada.applet.graph.bargraph2.NenpoBarGraphModel"
+                    text="年 報" value="/images/base/barnen.png">
+                    <f11:handler>
+                        <f11:name value="log_table_monthly"/>
+                    </f11:handler>
+                    <f11:referencedate>
+                        <f11:textsymbol font="Monospaced" font_size="20"
+                            font_style="plain" foreground="black"
+                            height="28" value="yyyy"
+                            width="215" x="90" y="80"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="-3"
+                            value="/toolbarButtonGraphics/navigation/Back24.gif"
+                            width="36" x="14" y="76"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="-1"
+                            value="/toolbarButtonGraphics/navigation/Back16.gif"
+                            width="36" x="50" y="76"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="1"
+                            value="/toolbarButtonGraphics/navigation/Forward16.gif"
+                            width="36" x="164" y="76"/>
+                        <f11:changeperiodbutton height="36"
+                            period_offset="3"
+                            value="/toolbarButtonGraphics/navigation/Forward24.gif"
+                            width="36" x="200" y="76"/>
+                    </f11:referencedate>
+                    <f11:graphview height="480" width="696" x="196" y="185">
+                        <f11:color>
+                            <f11:name value="yellow"/>
+                            <f11:name value="red"/>
+                        </f11:color>
+                        <f11:focus botom="10" color="white" dash_gap="4"
+                            dash_line="16" left="1" right="0" top="5">
+                            <f11:datetime>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM" width="128"
+                                    x="600" y="87"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" height="16"
+                                    value="yyyy/MM" width="128"
+                                    x="600" y="107"/>
+                            </f11:datetime>
+                            <f11:values>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="87"/>
+                                <f11:textsymbol font="Monospaced"
+                                    font_size="16" font_style="plain"
+                                    foreground="black" h_aligin="RIGHT"
+                                    height="16" width="135" x="800" y="107"/>
+                            </f11:values>
+                        </f11:focus>
+                    </f11:graphview>
+                    <f11:units>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="87"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="black"
+                            height="16" value="%s" width="60" x="940" y="107"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            height="16" value="[%s]" width="60" x="24" y="131"/>
+                    </f11:units>
+                    <f11:verticalscale>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="1.0"
+                            width="64" x="0" y="180"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.9"
+                            width="64" x="0" y="228"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.8"
+                            width="64" x="0" y="276"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.7"
+                            width="64" x="0" y="324"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.6"
+                            width="64" x="0" y="372"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.5"
+                            width="64" x="0" y="420"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.4"
+                            width="64" x="0" y="468"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.3"
+                            width="64" x="0" y="516"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.2"
+                            width="64" x="0" y="564"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.1"
+                            width="64" x="0" y="612"/>
+                        <f11:textsymbol font="Monospaced" font_size="16"
+                            font_style="plain" foreground="yellow"
+                            h_aligin="RIGHT" height="16" value="0.0"
+                            width="64" x="0" y="660"/>
+                        <f11:scalechangebutton font="Monospaced"
+                            font_size="12" font_style="plain"
+                            height="26" value="変更" width="58" x="20" y="710"/>
+                    </f11:verticalscale>
+                    <f11:textsymbol background="yellow" height="14"
+                        opaque="true" value="" width="28" x="515" y="88"/>
+                    <f11:textsymbol background="red" height="14"
+                        opaque="true" value="" width="28" x="515" y="108"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="前年" width="60" x="546" y="87"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="black"
+                        height="16" value="本年" width="60" x="546" y="107"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="01" width="30" x="216" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="02" width="30" x="274" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="03" width="30" x="332" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="04" width="30" x="390" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="05" width="30" x="448" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="06" width="30" x="506" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="07" width="30" x="564" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="08" width="30" x="622" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="09" width="30" x="680" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="10" width="30" x="738" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="11" width="30" x="796" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="12" width="30" x="854" y="676"/>
+                    <f11:textsymbol font="Monospaced" font_size="16"
+                        font_style="plain" foreground="white"
+                        height="16" value="[月]" width="60" x="877" y="692"/>
                 </f11:bargraphmodel>
             </f11:modelselector>
-
-            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
-                <f11:barprop minimums="0" maximums="200" holder="P1_D_501_BcdSingle"/>
-                <f11:barprop minimums="0" maximums="2000" holder="P1_D_521_BcdSingle"/>
-            </f11:barseries>
-            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
-                <f11:barprop minimums="0" maximums="200" holder="P1_D_503_BcdSingle"/>
-                <f11:barprop minimums="0" maximums="2000" holder="P1_D_523_BcdSingle"/>
-            </f11:barseries>
             <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
-                <f11:barprop minimums="0" maximums="200" holder="P1_D_520_BcdSingle"/>
-                <f11:barprop minimums="0" maximums="2000" holder="P1_D_500_BcdSingle"/>
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="100" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="1000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="2000" minimums="0"/>
             </f11:barseries>
             <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
-                <f11:barprop minimums="0" maximums="200" holder="P1_D_522_BcdSingle"/>
-                <f11:barprop minimums="0" maximums="2000" holder="P1_D_502_BcdSingle"/>
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="120" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="1200" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(0_unit) $(0_name)" unitmark="$(36_unit_mark)">
+                <f11:barprop holder="P1_D_500_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_520_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_530_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(1_unit) $(1_name)" unitmark="$(37_unit_mark)">
+                <f11:barprop holder="P1_D_501_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_521_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_531_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(2_unit) $(2_name)" unitmark="$(38_unit_mark)">
+                <f11:barprop holder="P1_D_502_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_522_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_532_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(3_unit) $(3_name)" unitmark="$(39_unit_mark)">
+                <f11:barprop holder="P1_D_503_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_523_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_533_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(4_unit) $(4_name)" unitmark="$(40_unit_mark)">
+                <f11:barprop holder="P1_D_504_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_524_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_534_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(5_unit) $(5_name)" unitmark="$(41_unit_mark)">
+                <f11:barprop holder="P1_D_505_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_525_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_535_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(6_unit) $(6_name)" unitmark="$(42_unit_mark)">
+                <f11:barprop holder="P1_D_506_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_526_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_536_BcdSingle" maximums="20000" minimums="0"/>
+            </f11:barseries>
+            <f11:barseries name="$(7_unit) $(7_name)" unitmark="$(43_unit_mark)">
+                <f11:barprop holder="P1_D_507_BcdSingle" maximums="200" minimums="0"/>
+                <f11:barprop holder="P1_D_527_BcdSingle" maximums="2000" minimums="0"/>
+                <f11:barprop holder="P1_D_537_BcdSingle" maximums="20000" minimums="0"/>
             </f11:barseries>
         </f11:bargraph2>
     </f11:page>
