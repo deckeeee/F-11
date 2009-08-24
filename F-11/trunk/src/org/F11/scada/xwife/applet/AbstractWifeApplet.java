@@ -210,6 +210,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		logger.info("Stand Alone Mode : " + this.isStandalone);
 
 		session = new Session();
+		logger.info("SessionID : " + session.toString());
 		history = new PageHistoryImpl();
 		configuration = new ClientConfiguration();
 		splashScreen = new SplashScreen(this, configuration);
@@ -232,7 +233,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 			Runtime runtime = Runtime.getRuntime();
 			runtime.addShutdownHook(new Thread() {
 				public void run() {
-					logger.info("JavaVMÇ™í‚é~ÇµÇ‹ÇµÇΩÅB");
+					logger.info("JavaVMÇ™í‚é~ÇµÇ‹ÇµÇΩÅB SessionID:" + session.toString());
 				}
 			});
 		}
