@@ -367,4 +367,8 @@ public class SeparateScheduleModel implements ScheduleModel {
 	public void setDataSchedule(WifeDataSchedule schedule) {
 		dataSchedule = schedule;
 	}
+	
+	public boolean isVisible() {
+		return true;
+	}
 }
