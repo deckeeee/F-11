@@ -80,7 +80,7 @@ public class DemandGraph extends JPanel {
 			Color stringColor,
 			boolean colorSetting) {
 		super(new BorderLayout());
-		view = new DemandGraphView(pmodel, gmodel, alarmTimeMode, colorSetting);
+		view = new DemandGraphView(pmodel, gmodel, alarmTimeMode, colorSetting, stringColor);
 		add(view, BorderLayout.CENTER);
 		VerticallyScale vs =
 			VerticallyScale.createRightStringScale(pmodel, 0, stringColor);
@@ -123,6 +123,9 @@ public class DemandGraph extends JPanel {
 		private final boolean alarmTimeMode;
 
 		private final boolean colorSetting;
+		
+		private final Color stringColor;
+
 
 		/**
 		 * コンストラクタ
@@ -134,7 +137,8 @@ public class DemandGraph extends JPanel {
 				GraphPropertyModel graphPropertyModel,
 				GraphModel graphModel,
 				boolean alarmTimeMode,
-				boolean colorSetting) {
+				boolean colorSetting,
+				Color stringColor) {
 			super();
 			logger = Logger.getLogger(getClass().getName());
 			this.graphModel = graphModel;
@@ -143,6 +147,7 @@ public class DemandGraph extends JPanel {
 			this.graphPropertyModel.addPropertyChangeListener(this);
 			this.alarmTimeMode = alarmTimeMode;
 			this.colorSetting = colorSetting;
+			this.stringColor = stringColor;
 			graphColors = graphPropertyModel.getColors();
 			setDoubleBuffered(true);
 			changeDisplayData();
@@ -274,7 +279,7 @@ public class DemandGraph extends JPanel {
 						+ graphPropertyModel.getScaleOneHeightPixel());
 					// 目盛りの下に日付と時間を描画
 					Date timestamp = (Date) it.next();
-					g2d.setColor(ColorFactory.getColor("white"));
+					g2d.setColor(stringColor);
 					String timeString = timeFormat.format(timestamp);
 					strWidth = metrics.stringWidth(timeString);
 					g2d.drawString(timeString, i - strWidth / 2, baseOrigin.y
