@@ -133,5 +133,15 @@ public class TrendRuleSetTest extends TestCase {
 		assertEquals(new Long(18000000), hbp.getHorizontalLineSpan());
 		assertEquals(new Long(60000), hbp.getRecordeSpan());
 		assertEquals("log_table_minute", hbp.getLogName());	
+		
+		PageChangeButton pageChangeButton = page.getPageChangeButton();
+		assertNotNull(pageChangeButton);
+		assertEquals(new Integer(1110), pageChangeButton.getX());
+		assertEquals(new Integer(40), pageChangeButton.getY());
+		assertEquals(Boolean.TRUE, pageChangeButton.getOpaque());
+		assertEquals(new Integer(69), pageChangeButton.getWidth());
+		assertEquals(new Integer(20), pageChangeButton.getHeight());
+		assertEquals("/images/pb_main.png", pageChangeButton.getValue());
+		assertEquals("main", pageChangeButton.getChangeto());
 	}
 }

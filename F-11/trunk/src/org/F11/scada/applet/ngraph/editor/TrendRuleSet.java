@@ -93,6 +93,23 @@ public class TrendRuleSet extends RuleSetBase {
 			"horizontalLineSpan",
 			"recordeSpan",
 			"logName", };
+	private static final String PAGE_CHENGE_BUTTON =
+		"org.F11.scada.applet.ngraph.editor.PageChangeButton";
+	private static final String[] PAGE_CHENGE_BUTTON_ATTRIBUTE =
+		{
+			"changeto",
+			"value",
+			"x",
+			"y",
+			"tooltiptext",
+			"opaque",
+			"foreground",
+			"background",
+			"font",
+			"font_style",
+			"font_size",
+			"width",
+			"height", };
 
 	public void addRuleInstances(Digester digester) {
 		digester.addSetProperties("*/page", PAGE_ATTRIBUTE, PAGE_ATTRIBUTE);
@@ -137,5 +154,15 @@ public class TrendRuleSet extends RuleSetBase {
 				"*/trendgraph3/horizontalScaleButton/horizontalScaleButton-property",
 				HORIZONTAL_SCALE_BUTTON_PROPERTY,
 				HORIZONTAL_SCALE_BUTTON_PROPERTY);
+
+		digester.addObjectCreate("*/pagechangebutton", PAGE_CHENGE_BUTTON);
+		digester.addSetNext(
+			"*/pagechangebutton",
+			"setPageChangeButton",
+			PAGE_CHENGE_BUTTON);
+		digester.addSetProperties(
+			"*/pagechangebutton",
+			PAGE_CHENGE_BUTTON_ATTRIBUTE,
+			PAGE_CHENGE_BUTTON_ATTRIBUTE);
 	}
 }

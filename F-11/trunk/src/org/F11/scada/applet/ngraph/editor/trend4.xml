@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page_map>
 	<page width="1028" height="800" name="TRND0004" value="/images/base/back.png">
+		<pagechangebutton x="1110" y="40" opaque="true" width="69" height="20" value="/images/pb_main.png" changeto="main" />
+
 		<trendgraph3
 			x="0"
 			y="0"
