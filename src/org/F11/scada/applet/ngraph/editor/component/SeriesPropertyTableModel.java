@@ -167,7 +167,7 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 	private void resetIndexAndColor() {
 		int i = 0;
 		for (SeriesPropertyData spd : seriesPropertyDatas) {
-			spd.setColor(colorMap.get(i % 6));
+			spd.setColor(colorMap.get(i % colorMap.size()));
 			spd.setIndex(i++);
 		}
 	}

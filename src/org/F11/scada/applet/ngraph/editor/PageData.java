@@ -28,7 +28,7 @@ import java.io.Serializable;
  * 定義ファイルのページプロパティー
  * 
  * @author maekawa
- *
+ * 
  */
 public class PageData implements Serializable {
 	private static final long serialVersionUID = -4675764103764679678L;
@@ -37,6 +37,7 @@ public class PageData implements Serializable {
 	private String name;
 	private String value;
 	private Trend3Data trend3Data;
+	private PageChangeButton pageChangeButton;
 
 	public Integer getWidth() {
 		return width;
@@ -78,11 +79,20 @@ public class PageData implements Serializable {
 		this.trend3Data = trend3Data;
 	}
 
+	public PageChangeButton getPageChangeButton() {
+		return pageChangeButton;
+	}
+
+	public void setPageChangeButton(PageChangeButton pageChangeButton) {
+		this.pageChangeButton = pageChangeButton;
+	}
+
 	public String getXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<page_map>\n");
 		sb.append("  <page").append(getAttributes()).append(">\n");
+		sb.append(pageChangeButton.getXmlString());
 		sb.append(trend3Data.getXmlString());
 		sb.append("  </page>\n");
 		sb.append("</page_map>\n");
