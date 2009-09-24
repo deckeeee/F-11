@@ -484,11 +484,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("Žg—p‚µ‚È‚¢".equals(e.getItem()))
 						manager.setPreferences(
-							"/server/systemtime/testMode",
+							"/server/formula/isUseFormula",
 							"false");
 					else
 						manager.setPreferences(
-							"/server/systemtime/testMode",
+							"/server/formula/isUseFormula",
 							"true");
 				}
 			}
