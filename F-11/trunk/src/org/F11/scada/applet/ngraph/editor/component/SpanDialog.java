@@ -42,7 +42,7 @@ import org.F11.scada.applet.ngraph.util.NumberUtil;
 import org.F11.scada.util.ComponentUtil;
 
 /**
- * エディタのｽﾊﾟﾝ変更ダイアログ
+ * エディタのｽｹｰﾙ変更ダイアログ
  * 
  * @author maekawa
  * 
@@ -67,7 +67,7 @@ public class SpanDialog extends JDialog {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		JPanel panel2 = new JPanel(new GridBagLayout());
-		panel2.setBorder(BorderFactory.createTitledBorder("ｽﾊﾟﾝ入力"));
+		panel2.setBorder(BorderFactory.createTitledBorder("ｽｹｰﾙ入力"));
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		panel2.add(new JLabel("最小値："), c);

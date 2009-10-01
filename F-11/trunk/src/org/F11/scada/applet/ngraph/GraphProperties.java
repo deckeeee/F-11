@@ -40,9 +40,9 @@ import org.F11.scada.applet.ngraph.model.GraphModel;
 public class GraphProperties {
 	/** このプロパティーのリスナー */
 	private final PropertyChangeSupport changeSupport;
-	/** ｽﾊﾟﾝ全表示の横幅ピクセル数 */
+	/** ｽｹｰﾙ全表示の横幅ピクセル数 */
 	private int horizontalForAllSpanMode;
-	/** ｽﾊﾟﾝ略表示の横幅ピクセル数 */
+	/** ｽｹｰﾙ略表示の横幅ピクセル数 */
 	private int horizontalForSelectSpanMode;
 	/** 横目盛の数 */
 	private int horizontalCount;
@@ -488,18 +488,18 @@ public class GraphProperties {
 	}
 
 	/**
-	 * ｽﾊﾟﾝ全表示の横幅ピクセル数を返します
+	 * ｽｹｰﾙ全表示の横幅ピクセル数を返します
 	 * 
-	 * @return ｽﾊﾟﾝ全表示の横幅ピクセル数を返します
+	 * @return ｽｹｰﾙ全表示の横幅ピクセル数を返します
 	 */
 	public int getHorizontalForAllSpanMode() {
 		return horizontalForAllSpanMode;
 	}
 
 	/**
-	 * ｽﾊﾟﾝ略表示の横幅ピクセル数を返します
+	 * ｽｹｰﾙ略表示の横幅ピクセル数を返します
 	 * 
-	 * @return ｽﾊﾟﾝ略表示の横幅ピクセル数を返します
+	 * @return ｽｹｰﾙ略表示の横幅ピクセル数を返します
 	 */
 	public int getHorizontalForSelectSpanMode() {
 		return horizontalForSelectSpanMode;

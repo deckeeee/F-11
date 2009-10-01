@@ -50,6 +50,8 @@ import org.apache.log4j.Logger;
  */
 public class GraphMainPanel extends JPanel implements Mediator, Service {
 	private static final long serialVersionUID = -2337555152897226798L;
+	/** 最大表示行数 6行 + ヘッダ */
+	private static final int MAX_ROW_COUNT = 7;
 	private final Logger logger = Logger.getLogger(GraphMainPanel.class);
 	private GraphStatusBar statusBar;
 	private GraphProperties graphProperties;
@@ -86,8 +88,8 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		seriesPane = new JScrollPane(seriesTable);
 		seriesPane.setPreferredSize(new Dimension(
 			graphView.getPreferredSize().width,
-			Math.round(seriesTable.getPreferredSize().height
-				+ seriesTable.getRowHeight()
+			Math.round(seriesTable.getRowHeight()
+				* MAX_ROW_COUNT
 				+ seriesTable.getRowMargin()
 				* 2.5F)));
 		JPanel northPanel = new JPanel(new BorderLayout());

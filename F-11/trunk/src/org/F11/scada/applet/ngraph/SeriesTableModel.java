@@ -51,7 +51,7 @@ public class SeriesTableModel extends AbstractTableModel implements
 	/** 現在値の列 */
 	public static final int NOW_VALUE_COUMN = 6;
 	private final String[] titles =
-		new String[] { "表示", "色", "ｽﾊﾟﾝ", "記号", "機器名称", "参照値", "現在値", "単位" };
+		new String[] { "表示", "色", "ｽｹｰﾙ", "記号", "機器名称", "参照値", "現在値", "単位" };
 	private final GraphProperties graphProperties;
 
 	public SeriesTableModel(GraphProperties graphProperties) {

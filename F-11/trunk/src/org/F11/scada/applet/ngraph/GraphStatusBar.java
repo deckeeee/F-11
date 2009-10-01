@@ -89,10 +89,10 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 	}
 
 	private Component getChangeVerticalMode() {
-		JButton button = new JButton("ｽﾊﾟﾝ略表示");
+		JButton button = new JButton("ｽｹｰﾙ略表示");
 		button.setMargin(BUTTON_INSETS);
 		verticalModeListener =
-			new VerticalModeListener(this, "ｽﾊﾟﾝ略表示", "ｽﾊﾟﾝ全表示");
+			new VerticalModeListener(this, "ｽｹｰﾙ略表示", "ｽｹｰﾙ全表示");
 		button.addActionListener(verticalModeListener);
 		return button;
 	}
