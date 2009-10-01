@@ -116,7 +116,7 @@ public class ButtonTableCellEditor extends DefaultCellEditor {
 	 */
 	private class SpanSetDialog extends JDialog {
 		private static final long serialVersionUID = -6379477132804798664L;
-		private static final String SPAN_LABEL = "Ω ﬂ›ïœçX";
+		private static final String SPAN_LABEL = "Ωπ∞ŸïœçX";
 		private JSpinner minSpinner;
 		private JSpinner maxSpinner;
 

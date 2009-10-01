@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
@@ -43,6 +44,7 @@ import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
  */
 public class SeriesPropertyTableModel extends AbstractTableModel implements
 		MouseListener, KeyListener {
+	private static final int MAX_SERIES = 8;
 	private static final long serialVersionUID = -5850823694570225954L;
 	private static final String[] titles =
 		{ "", "最小値", "最大値", "記号", "機器名称", "単位" };
@@ -186,10 +188,14 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 	}
 
 	public void insertRow(SeriesPropertyData seriesPropertyData) {
-		seriesPropertyDatas.add(seriesPropertyData);
-		resetIndexAndColor();
-		fireTableRowsInserted(seriesPropertyDatas.size(), seriesPropertyDatas
-			.size());
+		if (seriesPropertyDatas.size() < MAX_SERIES) {
+			seriesPropertyDatas.add(seriesPropertyData);
+			resetIndexAndColor();
+			fireTableRowsInserted(seriesPropertyDatas.size(), seriesPropertyDatas
+				.size());
+		} else {
+			JOptionPane.showMessageDialog(null, "1グループの登録は" + MAX_SERIES + "シリーズまでです。");
+		}
 	}
 
 	public void commit() {

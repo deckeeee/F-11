@@ -68,7 +68,6 @@ public class SeriesTable extends JTable implements Mediator, Colleague {
 		setColorCellRenderer();
 		setDoubleCellRenderer(5);
 		setDoubleCellRenderer(6);
-		setUnitMarkCellRenderer();
 		setButtonRenderer();
 		JTableHeader header = getTableHeader();
 		header.setFont(font);
@@ -80,7 +79,7 @@ public class SeriesTable extends JTable implements Mediator, Colleague {
 		TableUtil.setColumnWidth(this, 3, 200);
 		TableUtil.setColumnWidth(this, 5, 80);
 		TableUtil.setColumnWidth(this, 6, 80);
-		TableUtil.setColumnWidth(this, 7, 60);
+		TableUtil.setColumnWidth(this, 7, 120);
 		setRowSelectionInterval(0, 0);
 	}
 
@@ -102,23 +101,6 @@ public class SeriesTable extends JTable implements Mediator, Colleague {
 			}
 		};
 		TableColumn column = getColumn(getModel().getColumnName(columnNo));
-		column.setCellRenderer(renderer);
-	}
-
-	private void setUnitMarkCellRenderer() {
-		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-			private static final long serialVersionUID = 950013017797970834L;
-
-			@Override
-			protected void setValue(Object value) {
-				if (value instanceof String) {
-					super.setValue(String.format("[%s]", value));
-				} else {
-					super.setValue("[---]");
-				}
-			}
-		};
-		TableColumn column = getColumn(getModel().getColumnName(7));
 		column.setCellRenderer(renderer);
 	}
 

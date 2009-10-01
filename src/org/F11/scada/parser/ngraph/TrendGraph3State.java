@@ -55,9 +55,9 @@ public class TrendGraph3State implements State {
 	private String y;
 	private String width;
 	private String height;
-	/** ｽﾊﾟﾝ全表示の横幅ピクセル数 */
+	/** ｽｹｰﾙ全表示の横幅ピクセル数 */
 	private int horizontalForAllSpanMode;
-	/** ｽﾊﾟﾝ略表示の横幅ピクセル数 */
+	/** ｽｹｰﾙ略表示の横幅ピクセル数 */
 	private int horizontalForSelectSpanMode;
 	/** 日付表示フォーマット */
 	private String dateFormat;

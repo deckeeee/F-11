@@ -97,7 +97,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	private Button unitCancelButton = new Button("ｷｬﾝｾﾙ", this);
 	private Button unitUpdateButton = new Button("更新", this);
 	private Button unitDeleteButton = new Button("削除", this);
-	private Button unitSpanButton = new Button("ｽﾊﾟﾝ変更", this);
+	private Button unitSpanButton = new Button("ｽｹｰﾙ変更", this);
 	private Button searchButton = new Button("検索", this);
 	private Button searchInsertButton = new Button("登録", this);
 	private JComboBox searchUnit = new JComboBox();
@@ -550,7 +550,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				if (0 <= selectedRow) {
 					SeriesPropertyData data =
 						searchTableModel.getRow(selectedRow);
-					unitTableModel.insertRow(data);
+					unitTableModel.insertRow(new SeriesPropertyData(data));
 				}
 			}
 		});
