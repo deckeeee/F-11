@@ -194,7 +194,7 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 			fireTableRowsInserted(seriesPropertyDatas.size(), seriesPropertyDatas
 				.size());
 		} else {
-			JOptionPane.showMessageDialog(null, "1グループの登録は" + MAX_SERIES + "シリーズまでです。");
+			JOptionPane.showMessageDialog(null, "1グループの登録は" + MAX_SERIES + "ポイントまでです。");
 		}
 	}
 
