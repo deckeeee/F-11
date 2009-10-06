@@ -92,7 +92,9 @@ public class PageData implements Serializable {
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<page_map>\n");
 		sb.append("  <page").append(getAttributes()).append(">\n");
-		sb.append(pageChangeButton.getXmlString());
+		if (null != pageChangeButton) {
+			sb.append(pageChangeButton.getXmlString());
+		}
 		sb.append(trend3Data.getXmlString());
 		sb.append("  </page>\n");
 		sb.append("</page_map>\n");
@@ -106,5 +108,15 @@ public class PageData implements Serializable {
 		sb.append(getAttribute("name", name));
 		sb.append(getAttribute("value", value));
 		return sb.toString();
+	}
+	
+	public boolean isWriteOk() {
+		boolean ret = true;
+		for (SeriesData sd : trend3Data.getSeriesDatas()) {
+			if (0 >= sd.getSeriesProperties().size()) {
+				 ret = false;
+			}
+		}
+		return ret;
 	}
 }

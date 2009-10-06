@@ -189,12 +189,16 @@ public class EditorMainPanel extends JDialog implements Mediator {
 	}
 
 	private void setUnitUpdateButton() {
-		unitUpdateButton.setEnabled(false);
 		unitUpdateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Button b = (Button) e.getSource();
-				b.performMediator();
-				writePage();
+				if (page.isWriteOk()) {
+					unitUpdateButton.setEnabled(false);
+					Button b = (Button) e.getSource();
+					b.performMediator();
+					writePage();
+				} else {
+					JOptionPane.showMessageDialog(null, "ポイントを登録してください。");
+				}
 			}
 		});
 	}
