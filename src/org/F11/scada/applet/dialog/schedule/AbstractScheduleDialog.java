@@ -43,7 +43,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.F11.scada.applet.dialog.WifeDialog;
 import org.F11.scada.applet.schedule.ScheduleRowModel;
 import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.xwife.applet.PageChanger;
@@ -57,8 +56,6 @@ public abstract class AbstractScheduleDialog extends JDialog implements
 	protected ScheduleRowModel model;
 	/** 時刻ボタンのリストです */
 	protected List buttonList;
-	/** テンキーダイアログの参照です */
-	protected WifeDialog tenkeyDialog;
 	/** 日付データのソート有無 */
 	protected boolean isSort;
 	/** 日付入力の大小チェックの有無 */

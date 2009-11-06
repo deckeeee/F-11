@@ -67,8 +67,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	private JPanel groupNoPanel;
 	/** グループ番号ボタンです */
 	private JButton grupNoButton;
-	/** テンキーダイアログの参照 */
-	private WifeDialog tenkeyDialog;
 
 	private final boolean isSort;
 	private final boolean isLenient;
@@ -526,11 +524,9 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 			logger.info("pushButton開始");
 			List para = new ArrayList();
 			para.add(new Integer(0));
-			if (this.dialog.tenkeyDialog != null)
-				this.dialog.tenkeyDialog.dispose();
-			this.dialog.tenkeyDialog =
+			WifeDialog tenkeyDialog =
 				getDialog(this.dialog, this.dialog, para);
-			this.dialog.tenkeyDialog.show();
+			tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}
 

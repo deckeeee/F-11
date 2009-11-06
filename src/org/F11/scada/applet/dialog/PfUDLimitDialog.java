@@ -82,8 +82,6 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 		{ "上限警報 ON :", "OFF :", "下限警報 ON :", "OFF :" };
 	/** 値ボタンのリストです */
 	private List buttonList;
-	/** テンキーダイアログの参照です */
-	private WifeDialog tenkeyDialog;
 	/** 編集対象シンボル */
 	private Analog4Editable symbol;
 
@@ -630,11 +628,9 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 			logger.info("pushButton開始");
 			List para = new ArrayList();
 			para.add(new Integer(this.parent.buttonList.indexOf(this)));
-			if (this.parent.tenkeyDialog != null)
-				this.parent.tenkeyDialog.dispose();
-			this.parent.tenkeyDialog =
+			WifeDialog tenkeyDialog =
 				getDialog(this.parent, this.parent, para);
-			this.parent.tenkeyDialog.show();
+			tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}
 

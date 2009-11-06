@@ -166,12 +166,10 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 	public void pushButton() {
 		List para = new ArrayList();
 		para.add(new Integer(this.scheduleDialog.buttonList.indexOf(this)));
-		if (this.scheduleDialog.tenkeyDialog != null)
-			this.scheduleDialog.tenkeyDialog.dispose();
-		this.scheduleDialog.tenkeyDialog =
+		WifeDialog tenkeyDialog =
 			getDialog(this.scheduleDialog, this.scheduleDialog, para);
 		// this.scheduleDialog.tenkeyDialog.selectAll();
-		this.scheduleDialog.tenkeyDialog.show();
+		tenkeyDialog.show();
 	}
 
 	public void setEditable(boolean[] editable) {

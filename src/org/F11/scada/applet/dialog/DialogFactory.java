@@ -83,6 +83,7 @@ public class DialogFactory {
 	public static WifeDialog get(Window window, String name, PageChanger changer) {
 		logger.info("getŠJŽn");
 		DialogFactory df = new DialogFactory(window, changer);
-		return (WifeDialog) df.getDialogs().get(name);
+		WifeDialog wifeDialog = (WifeDialog) df.getDialogs().get(name);
+		return wifeDialog;
 	}
 }
