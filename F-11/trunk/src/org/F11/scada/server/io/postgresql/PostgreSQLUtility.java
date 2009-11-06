@@ -202,7 +202,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 									+ wd.getClass().getName());
 						}
 					} catch (BCDConvertException e) {
-						logger.error("BCD変換エラー発生、初期値をログに書き込みます", e);
+						logger.error("BCD変換エラー発生、初期値をログに書き込みます。"
+							+ item.getProvider()
+							+ "_"
+							+ item.getHolder(), e);
 						if (wd instanceof WifeDataAnalog) {
 							values.add(new Double(0));
 						} else if (wd instanceof WifeDataDigital) {

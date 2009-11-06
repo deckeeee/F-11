@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.data.BCDConvertException;
@@ -56,8 +57,6 @@ import org.F11.scada.server.register.impl.RegisterUtil;
 import org.apache.commons.collections.primitives.ArrayDoubleList;
 import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -92,8 +91,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#createConvertValue(java.util.Collection,
-	 *      java.lang.String)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#createConvertValue(java.util
+	 * .Collection, java.lang.String)
 	 */
 	public ConvertValue[] createConvertValue(
 			Collection holders,
@@ -108,8 +108,11 @@ public final class ItemUtilImpl implements ItemUtil {
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			ConvertValue convertValue = RegisterUtil.getConvertValue(item);
-			int column = columnManager.getColumnIndex(tablename, item
-					.getProvider(), item.getHolder());
+			int column =
+				columnManager.getColumnIndex(
+					tablename,
+					item.getProvider(),
+					item.getHolder());
 			convertValues[column] = convertValue;
 		}
 		return convertValues;
@@ -118,8 +121,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#getItems(java.util.Collection,
-	 *      java.util.Map)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#getItems(java.util.Collection
+	 * , java.util.Map)
 	 */
 	public Item[] getItems(Collection holders, Map itemPool) {
 		if (itemPool.containsKey(holders)) {
@@ -134,8 +138,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#getItem(org.F11.scada.server.register.HolderString,
-	 *      java.util.Map)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#getItem(org.F11.scada.server
+	 * .register.HolderString, java.util.Map)
 	 */
 	public Item getItem(HolderString dataHolder, Map itemPool) {
 		if (itemPool.containsKey(dataHolder)) {
@@ -150,7 +155,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#getItemMap(org.F11.scada.server.entity.Item[])
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#getItemMap(org.F11.scada.
+	 * server.entity.Item[])
 	 */
 	public Map getItemMap(Item[] items) {
 		HashMap map = new HashMap();
@@ -171,8 +178,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#createHolderValue(java.util.Collection,
-	 *      java.lang.String)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#createHolderValue(java.util
+	 * .Collection, java.lang.String)
 	 */
 	public DoubleList createHolderValue(Collection dataHolders, String tableName) {
 		Item[] items = getItems(dataHolders, itemPool);
@@ -190,8 +198,8 @@ public final class ItemUtilImpl implements ItemUtil {
 					commands.add(wc);
 				}
 				Environment environment = EnvironmentMap.get(provider);
-				Communicater communicater = communicaterFactory
-						.createCommunicator(environment);
+				Communicater communicater =
+					communicaterFactory.createCommunicator(environment);
 				communicater.addReadCommand(commands);
 				SyncReadWrapper wrapper = new SyncReadWrapper();
 				Map bytedataMap = wrapper.syncRead(communicater, commands);
@@ -204,9 +212,8 @@ public final class ItemUtilImpl implements ItemUtil {
 		Item[] manageSortedItems = columnManager.sortLogging(items, tableName);
 
 		DoubleList values = new ArrayDoubleList(items.length);
-		ConvertValue[] convertValues = createConvertValue(
-				dataHolders,
-				tableName);
+		ConvertValue[] convertValues =
+			createConvertValue(dataHolders, tableName);
 		for (int i = 0; i < manageSortedItems.length; i++) {
 			Item item = manageSortedItems[i];
 			Map bytedataMap = (Map) providerBytedataMap.get(item.getProvider());
@@ -220,15 +227,20 @@ public final class ItemUtilImpl implements ItemUtil {
 					wd = wd.valueOf(data);
 				} else {
 					if (log.isDebugEnabled()) {
-						log.debug(item.getProvider() + " " + item.getHolder()
-								+ ": byte(" + WifeUtilities.toString(data)
-								+ ")" + " command : " + wc);
+						log.debug(item.getProvider()
+							+ " "
+							+ item.getHolder()
+							+ ": byte("
+							+ WifeUtilities.toString(data)
+							+ ")"
+							+ " command : "
+							+ wc);
 					}
 				}
 				if (wd instanceof WifeDataAnalog) {
 					WifeDataAnalog wda = (WifeDataAnalog) wd;
 					values.add(convertValues[i].convertDoubleValue(wda
-							.doubleValue()));
+						.doubleValue()));
 				} else if (wd instanceof WifeDataDigital) {
 					WifeDataDigital wdd = (WifeDataDigital) wd;
 					if (wdd.isOnOff(true)) {
@@ -238,11 +250,14 @@ public final class ItemUtilImpl implements ItemUtil {
 					}
 				} else {
 					throw new IllegalArgumentException(
-							"value is not WifeDataDigital and WifeDataAnalog! : "
-									+ wd.getClass().getName());
+						"value is not WifeDataDigital and WifeDataAnalog! : "
+							+ wd.getClass().getName());
 				}
 			} catch (BCDConvertException e) {
-				log.error("BCD変換エラー発生、初期値をログに書き込みます", e);
+				log.error("BCD変換エラー発生、初期値をログに書き込みます。"
+					+ item.getProvider()
+					+ "_"
+					+ item.getHolder(), e);
 				values.add(0);
 				continue;
 			}
@@ -254,8 +269,10 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#createDateHolderValuesMap(java.util.Collection,
-	 *      java.lang.String, org.F11.scada.server.entity.MultiRecordDefine)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#createDateHolderValuesMap
+	 * (java.util.Collection, java.lang.String,
+	 * org.F11.scada.server.entity.MultiRecordDefine)
 	 */
 	public Map createDateHolderValuesMap(
 			Collection dataHolders,
@@ -263,11 +280,14 @@ public final class ItemUtilImpl implements ItemUtil {
 			MultiRecordDefine multiRecordDefine) {
 		Map timeMap = new HashMap();
 		byte[] srcBytes = null;
-		int byteRecSize = multiRecordDefine.getWordLength()
-				/ multiRecordDefine.getRecordCount() * 2;
+		int byteRecSize =
+			multiRecordDefine.getWordLength()
+				/ multiRecordDefine.getRecordCount()
+				* 2;
 		try {
 			List commands = new ArrayList();
-			WifeCommand wc = new WifeCommand(
+			WifeCommand wc =
+				new WifeCommand(
 					multiRecordDefine.getProvider(),
 					0,
 					0,
@@ -275,10 +295,10 @@ public final class ItemUtilImpl implements ItemUtil {
 					multiRecordDefine.getComMemoryAddress(),
 					multiRecordDefine.getWordLength());
 			commands.add(wc);
-			Environment environment = EnvironmentMap.get(multiRecordDefine
-					.getProvider());
-			Communicater communicater = communicaterFactory
-					.createCommunicator(environment);
+			Environment environment =
+				EnvironmentMap.get(multiRecordDefine.getProvider());
+			Communicater communicater =
+				communicaterFactory.createCommunicator(environment);
 			communicater.addReadCommand(commands);
 			Map bytedataMap = communicater.syncRead(commands, false);
 			srcBytes = (byte[]) bytedataMap.get(wc);
@@ -295,40 +315,42 @@ public final class ItemUtilImpl implements ItemUtil {
 				continue;
 			}
 
-			Item[] manageSortedItems = columnManager.sortLogging(
-					items,
-					tableName);
+			Item[] manageSortedItems =
+				columnManager.sortLogging(items, tableName);
 
 			DoubleList values = new ArrayDoubleList(items.length);
-			ConvertValue[] convertValues = createConvertValue(
-					dataHolders,
-					tableName);
+			ConvertValue[] convertValues =
+				createConvertValue(dataHolders, tableName);
 			for (int i = 0; i < manageSortedItems.length; i++) {
 				Item item = manageSortedItems[i];
 				WifeData wd = WifeDataUtil.getWifeData(item);
 				if (multiRecordDefine.getComMemoryKinds() != item
-						.getComMemoryKinds()
-						|| multiRecordDefine.getComMemoryAddress() > item
-								.getComMemoryAddress()
-						|| multiRecordDefine.getComMemoryAddress()
-								+ byteRecSize < item.getComMemoryAddress()
-								+ wd.getWordSize()) {
+					.getComMemoryKinds()
+					|| multiRecordDefine.getComMemoryAddress() > item
+						.getComMemoryAddress()
+					|| multiRecordDefine.getComMemoryAddress() + byteRecSize < item
+						.getComMemoryAddress()
+						+ wd.getWordSize()) {
 					throw new IllegalArgumentException("多レコード データ定義がブロック範囲外です。"
-							+ item.getProvider() + " " + item.getHolder());
+						+ item.getProvider()
+						+ " "
+						+ item.getHolder());
 				}
-				int byteOffset = recno
+				int byteOffset =
+					recno
 						* byteRecSize
 						+ (int) (item.getComMemoryAddress() - multiRecordDefine
-								.getComMemoryAddress()) * 2;
+							.getComMemoryAddress())
+						* 2;
 				byte[] data = new byte[wd.getWordSize() * 2];
 				System.arraycopy(srcBytes, byteOffset, data, 0, wd
-						.getWordSize() * 2);
+					.getWordSize() * 2);
 				try {
 					wd = wd.valueOf(data);
 					if (wd instanceof WifeDataAnalog) {
 						WifeDataAnalog wda = (WifeDataAnalog) wd;
 						values.add(convertValues[i].convertDoubleValue(wda
-								.doubleValue()));
+							.doubleValue()));
 					} else if (wd instanceof WifeDataDigital) {
 						WifeDataDigital wdd = (WifeDataDigital) wd;
 						if (wdd.isOnOff(true)) {
@@ -338,8 +360,8 @@ public final class ItemUtilImpl implements ItemUtil {
 						}
 					} else {
 						throw new IllegalArgumentException(
-								"value is not WifeDataDigital and WifeDataAnalog! : "
-										+ wd.getClass().getName());
+							"value is not WifeDataDigital and WifeDataAnalog! : "
+								+ wd.getClass().getName());
 					}
 				} catch (BCDConvertException e) {
 					log.error("BCD変換エラー発生、初期値をログに書き込みます", e);
@@ -357,32 +379,27 @@ public final class ItemUtilImpl implements ItemUtil {
 			return null;
 		}
 
-		int year = Integer.parseInt(WifeUtilities
-				.toString(srcBytes, pos + 0, 2));
-		int month = Integer.parseInt(WifeUtilities.toString(
-				srcBytes,
-				pos + 2,
-				1)) - 1;
-		int date = Integer.parseInt(WifeUtilities
-				.toString(srcBytes, pos + 3, 1));
-		int hour = Integer.parseInt(WifeUtilities
-				.toString(srcBytes, pos + 5, 1));
-		int minute = Integer.parseInt(WifeUtilities.toString(
-				srcBytes,
-				pos + 6,
-				1));
-		int second = Integer.parseInt(WifeUtilities.toString(
-				srcBytes,
-				pos + 7,
-				1));
+		int year =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 0, 2));
+		int month =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 2, 1)) - 1;
+		int date =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 3, 1));
+		int hour =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 5, 1));
+		int minute =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 6, 1));
+		int second =
+			Integer.parseInt(WifeUtilities.toString(srcBytes, pos + 7, 1));
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		cal.set(year, month, date, hour, minute, second);
-		if (cal.get(Calendar.YEAR) != year || cal.get(Calendar.MONTH) != month
-				|| cal.get(Calendar.DATE) != date
-				|| cal.get(Calendar.HOUR_OF_DAY) != hour
-				|| cal.get(Calendar.MINUTE) != minute
-				|| cal.get(Calendar.SECOND) != second) {
+		if (cal.get(Calendar.YEAR) != year
+			|| cal.get(Calendar.MONTH) != month
+			|| cal.get(Calendar.DATE) != date
+			|| cal.get(Calendar.HOUR_OF_DAY) != hour
+			|| cal.get(Calendar.MINUTE) != minute
+			|| cal.get(Calendar.SECOND) != second) {
 			return null;
 		}
 		return new Timestamp(cal.getTimeInMillis());
@@ -391,8 +408,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#createConvertValueMap(java.util.Collection,
-	 *      java.lang.String)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#createConvertValueMap(java
+	 * .util.Collection, java.lang.String)
 	 */
 	public Map createConvertValueMap(Collection holders, String tableTame) {
 		HashMap map = new HashMap(holders.size());
@@ -423,7 +441,9 @@ public final class ItemUtilImpl implements ItemUtil {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.F11.scada.server.io.postgresql.ItemUtil#createConvertValueMap(java.util.Collection)
+	 * @see
+	 * org.F11.scada.server.io.postgresql.ItemUtil#createConvertValueMap(java
+	 * .util.Collection)
 	 */
 	public Map createConvertValueMap(Collection holders) {
 		HashMap map = new HashMap(holders.size());
@@ -433,10 +453,11 @@ public final class ItemUtilImpl implements ItemUtil {
 				HolderString hs1 = (HolderString) o1;
 				HolderString hs2 = (HolderString) o2;
 
-				int providerComp = hs1.getProvider().compareTo(
-						hs2.getProvider());
-				return providerComp != 0 ? providerComp : hs1.getHolder()
-						.compareTo(hs2.getHolder());
+				int providerComp =
+					hs1.getProvider().compareTo(hs2.getProvider());
+				return providerComp != 0 ? providerComp : hs1
+					.getHolder()
+					.compareTo(hs2.getHolder());
 			}
 		};
 

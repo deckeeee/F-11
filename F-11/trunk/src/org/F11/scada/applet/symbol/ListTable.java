@@ -57,7 +57,6 @@ import org.apache.log4j.Logger;
 public class ListTable extends JTable implements SymbolCollection,
 		ReferencerOwnerSymbol, ActionListener {
 	private static final long serialVersionUID = -704161366081491152L;
-	private WifeDialog dialog;
 	private static Logger log = Logger.getLogger(ListTable.class);
 	private static boolean isCustomTipLocation;
 	static {
@@ -117,14 +116,11 @@ public class ListTable extends JTable implements SymbolCollection,
 			final Editable edit = (Editable) o;
 			if (edit.isEditable() && edit.isVisible()) {
 				final SymbolCollection collec = (SymbolCollection) this;
-				if (dialog != null) {
-					dialog.dispose();
-				}
 				List para = new ArrayList();
 				para.add(edit.getClass());
 				para.add(new Integer(row));
 				para.add(new Integer(column));
-				dialog = edit.getDialog(frame, collec, para);
+				WifeDialog dialog = edit.getDialog(frame, collec, para);
 				// dialog.selectAll();
 				dialog.show();
 			}
