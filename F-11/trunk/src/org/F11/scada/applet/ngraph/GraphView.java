@@ -725,8 +725,9 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		private PropertyChangeEvent event;
 		private SortedMap<Date, LogData> mainMap =
 			new TreeMap<Date, LogData>(new ReverseDateComparator());
-		
-		private final Logger logger = Logger.getLogger(GraphModelListener.class);
+
+		private final Logger logger =
+			Logger.getLogger(GraphModelListener.class);
 
 		GraphModelListener(Mediator mediator) {
 			this.mediator = mediator;
@@ -739,10 +740,10 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 		public synchronized void performColleagueChange(GraphChangeEvent e) {
 			GraphView view = e.getView();
-			int maxRecord = view.getModel().getMaxRecord() + 1;
 			if (GraphModel.INITIALIZE.equals(event.getPropertyName())) {
 				List<LogData> logDatas = (List<LogData>) event.getNewValue();
 				mainMap.clear();
+				Arrays.fill(view.getDisplayDatas(), LogData.ZERO);
 				for (LogData logData : logDatas) {
 					mainMap.put(logData.getDate(), logData);
 				}
@@ -752,27 +753,29 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			} else {
 				LogData logData = (LogData) event.getNewValue();
 				mainMap.put(logData.getDate(), logData);
-				MapUtil.trimSortedMap(mainMap, maxRecord);
+				MapUtil.trimSortedMap(
+					mainMap,
+					view.getModel().getMaxRecord() + 1);
 				setDisplayDatas(view);
 			}
 			view.repaint();
-//			printMainMap();
+			// printMainMap();
 		}
 
-//		private void printMainMap() {
-//			logger.info("printMainMap>>");
-//			int i = 0;
-//			for (Map.Entry<Date, LogData> entry : mainMap.entrySet()) {
-//				Date date = entry.getKey();
-//				logger.info(date);
-//				i++;
-//				if (i >= 10) {
-//					break;
-//				}
-//			}
-//			logger.info("printMainMap<<");
-//			ThreadUtil.printSS();
-//		}
+		// private void printMainMap() {
+		// logger.info("printMainMap>>");
+		// int i = 0;
+		// for (Map.Entry<Date, LogData> entry : mainMap.entrySet()) {
+		// Date date = entry.getKey();
+		// logger.info(date);
+		// i++;
+		// if (i >= 10) {
+		// break;
+		// }
+		// }
+		// logger.info("printMainMap<<");
+		// ThreadUtil.printSS();
+		// }
 
 		private void setDisplayDatas(GraphView view) {
 			LogData[] displayDatas = view.getDisplayDatas();

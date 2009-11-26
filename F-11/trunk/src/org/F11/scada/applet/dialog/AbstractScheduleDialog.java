@@ -74,6 +74,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	private final Logger logger =
 		Logger.getLogger(AbstractScheduleDialog.class);
 	private final PageChanger changer;
+	private GraphicScheduleViewCreator view;
 
 	/**
 	 * コンストラクタ
@@ -143,6 +144,9 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	}
 
 	public void dispose() {
+		if (null != view) {
+			view.disConnect();
+		}
 		setDefaultFocus();
 		super.dispose();
 	}
@@ -156,8 +160,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 */
 	private void setDialogValue() {
 		logger.info("setDialogValue開始");
-		GraphicScheduleViewCreator view =
-			createView(symbol.getScheduleModel(), isSort, isLenient, changer);
+		view = createView(symbol.getScheduleModel(), isSort, isLenient, changer);
 		JComponent viewPanel = view.createView();
 		getContentPane().add(viewPanel, BorderLayout.CENTER);
 

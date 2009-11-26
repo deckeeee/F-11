@@ -89,7 +89,8 @@ public class DefaultGraphModel extends AbstractGraphModel {
 			SortedMap<Timestamp, DoubleList> map =
 				valueListHandler.getInitialData(
 					getLogName(),
-					getHolderStrings());
+					getHolderStrings(),
+					graphProperties.getMaxRecord());
 			list = convertLogDataList(map);
 		} catch (RemoteException e) {
 			serverError(e);

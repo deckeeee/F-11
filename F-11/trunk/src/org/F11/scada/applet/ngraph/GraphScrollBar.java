@@ -41,15 +41,15 @@ public class GraphScrollBar extends JScrollBar {
 		int maxRecord = view.getModel().getMaxRecord();
 		// min は表示可能なレコード数
 		GraphProperties p = view.getGraphProperties();
-		setValues(
-			maxRecord,
-			0,
-			getMin(p),
-			maxRecord);
+		setValues(maxRecord, 0, getMin(p), maxRecord);
 	}
 
 	private int getMin(GraphProperties p) {
-		//TODO 60000のマジックナンバーは駄目だろ。recordeSpanを持ってくるべし
-		return (int) (p.getHorizontalLineSpan() / 60000);
+		long recordeSpan =
+			p
+				.getHorizontalScaleButtonProperty()
+				.get(p.getGroupNo())
+				.getRecordeSpan();
+		return (int) (p.getHorizontalLineSpan() / recordeSpan) + 1;
 	}
 }

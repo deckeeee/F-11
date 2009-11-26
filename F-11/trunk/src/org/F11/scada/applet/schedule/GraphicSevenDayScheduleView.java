@@ -56,8 +56,6 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 	private JComponent[] bars;
 	/** 時刻変更ボタンのリストです */
 	private MatrixBarButton[] buttons;
-	/** 時刻変更用ダイアログの参照です */
-	private JDialog dialog;
 	/** 設定時刻のソート有無 */
 	private final boolean isSort;
 	/** 入力時間大小チェックの有無 */
@@ -175,12 +173,7 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 			MatrixBarButton matrixBarButton = (MatrixBarButton) evt.getSource();
 			Frame frame = WifeUtilities.getParentFrame(matrixBarButton);
 			Dimension screenSize = frame.getToolkit().getScreenSize();
-
-			if (dialog != null) {
-				dialog.dispose();
-			}
-
-			dialog =
+			JDialog dialog =
 				new DefaultScheduleDialog(frame, matrixBarButton
 					.getScheduleRowModel(), isSort, isLenient, changer);
 			dialog.pack();
@@ -203,5 +196,9 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 		for (int i = 0; i < bars.length; i++) {
 			bars[i].repaint();
 		}
+	}
+	
+	public void disConnect() {
+		scheduleModel.disConnect();
 	}
 }

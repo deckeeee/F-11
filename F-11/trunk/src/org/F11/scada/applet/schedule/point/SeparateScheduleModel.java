@@ -60,12 +60,13 @@ public class SeparateScheduleModel implements ScheduleModel {
 	private final JDialog dialog;
 
 	/** スケジュールモデル変更イベント名 */
-	private static final String SCHEDULE_MODEL_CHANGE = "org.F11.scada.applet.schedule.point.SeparateScheduleModel.SCHEDULE_MODEL_CHANGE";
+	private static final String SCHEDULE_MODEL_CHANGE =
+		"org.F11.scada.applet.schedule.point.SeparateScheduleModel.SCHEDULE_MODEL_CHANGE";
 
 	public SeparateScheduleModel(SchedulePointRowDto rowDto, JDialog dialog)
 			throws RemoteException {
 		this((SchedulePointService) RmiUtil
-				.lookupServer(SchedulePointService.class), rowDto, dialog);
+			.lookupServer(SchedulePointService.class), rowDto, dialog);
 	}
 
 	public SeparateScheduleModel(
@@ -87,9 +88,9 @@ public class SeparateScheduleModel implements ScheduleModel {
 		try {
 			SchedulePointUtil.setLoggingField(rowDto);
 			schedulePointService.updateSeperateSchedule(
-					rowDto,
-					new Date(),
-					dataSchedule);
+				rowDto,
+				new Date(),
+				dataSchedule);
 		} catch (RemoteException e) {
 			RmiErrorUtil.error(logger, e, dialog);
 		}
@@ -199,7 +200,7 @@ public class SeparateScheduleModel implements ScheduleModel {
 		if (changeSupport == null)
 			changeSupport = new SwingPropertyChangeSupport(this);
 		changeSupport
-				.addPropertyChangeListener(SCHEDULE_MODEL_CHANGE, listener);
+			.addPropertyChangeListener(SCHEDULE_MODEL_CHANGE, listener);
 	}
 
 	/**
@@ -211,8 +212,8 @@ public class SeparateScheduleModel implements ScheduleModel {
 		if (changeSupport == null)
 			return;
 		changeSupport.removePropertyChangeListener(
-				SCHEDULE_MODEL_CHANGE,
-				listener);
+			SCHEDULE_MODEL_CHANGE,
+			listener);
 	}
 
 	/**
@@ -225,9 +226,9 @@ public class SeparateScheduleModel implements ScheduleModel {
 		if (changeSupport == null)
 			return;
 		changeSupport.firePropertyChange(
-				SCHEDULE_MODEL_CHANGE,
-				oldValue,
-				newValue);
+			SCHEDULE_MODEL_CHANGE,
+			oldValue,
+			newValue);
 	}
 
 	/**
@@ -344,6 +345,13 @@ public class SeparateScheduleModel implements ScheduleModel {
 	 * @see org.F11.scada.applet.schedule.ScheduleModel#disConnect()
 	 */
 	public void disConnect() {
+		if (null != changeSupport) {
+			PropertyChangeListener[] liteners =
+				changeSupport.getPropertyChangeListeners();
+			for (PropertyChangeListener l : liteners) {
+				changeSupport.removePropertyChangeListener(l);
+			}
+		}
 	}
 
 	public void duplicateGroup(int[] dest) {
@@ -367,7 +375,7 @@ public class SeparateScheduleModel implements ScheduleModel {
 	public void setDataSchedule(WifeDataSchedule schedule) {
 		dataSchedule = schedule;
 	}
-	
+
 	public boolean isVisible() {
 		return true;
 	}
