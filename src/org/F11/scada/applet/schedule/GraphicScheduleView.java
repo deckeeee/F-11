@@ -64,8 +64,6 @@ public class GraphicScheduleView implements ActionListener,
 	private final JComponent[] bars;
 	/** 時刻変更ボタンのリストです */
 	private final MatrixBarButton[] buttons;
-	/** 時刻変更用ダイアログの参照です */
-	private JDialog dialog;
 	/** ロギングオブジェクト */
 	private static Logger logger;
 	/** バーコンポーネントのファクトリー * */
@@ -222,12 +220,7 @@ public class GraphicScheduleView implements ActionListener,
 			MatrixBarButton matrixBarButton = (MatrixBarButton) evt.getSource();
 			Frame frame = WifeUtilities.getParentFrame(matrixBarButton);
 			Dimension screenSize = frame.getToolkit().getScreenSize();
-
-			if (dialog != null) {
-				dialog.dispose();
-			}
-
-			dialog =
+			JDialog dialog =
 				dialogFactory.getScheduleDialog(frame, matrixBarButton
 					.getScheduleRowModel(), changer);
 			dialog.pack();

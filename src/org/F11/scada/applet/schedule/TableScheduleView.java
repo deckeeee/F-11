@@ -272,7 +272,6 @@ public class TableScheduleView {
 	 * テーブルのクリックを監視する、マウスリスナークラスです。 項目部分をクリックしたときに、時間編集用のダイアログを表示します。
 	 */
 	private static class ScheduleTableListener extends MouseAdapter {
-		private JDialog dialog;
 		private TableScheduleModel tableScheduleModel;
 		private final boolean isSort;
 		private final boolean isNonTandT;
@@ -303,14 +302,10 @@ public class TableScheduleView {
 				Object o = table.getValueAt(row, column);
 
 				if (o instanceof String) {
-					if (dialog != null) {
-						dialog.dispose();
-					}
-
 					Frame frame = WifeUtilities.getParentFrame(table);
 					TableScheduleModel model =
 						(TableScheduleModel) table.getModel();
-					dialog =
+					JDialog dialog =
 						new DefaultScheduleDialog(
 							frame,
 							model.getScheduleRowModel(row),

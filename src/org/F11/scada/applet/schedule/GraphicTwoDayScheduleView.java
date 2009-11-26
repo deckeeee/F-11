@@ -60,8 +60,6 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 	private JComponent[] bars;
 	/** 時刻変更ボタンのリストです */
 	private MatrixBarButton[] buttons;
-	/** 時刻変更用ダイアログの参照です */
-	private JDialog dialog;
 	/** スケジュール時刻データのソート有無 */
 	private final boolean isSort;
 	/** 入力時刻大小チェックの有無 */
@@ -192,12 +190,7 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 			MatrixBarButton matrixBarButton = (MatrixBarButton) evt.getSource();
 			Frame frame = WifeUtilities.getParentFrame(matrixBarButton);
 			Dimension screenSize = frame.getToolkit().getScreenSize();
-
-			if (dialog != null) {
-				dialog.dispose();
-			}
-
-			dialog =
+			JDialog dialog =
 				new DefaultScheduleDialog(frame, matrixBarButton
 					.getScheduleRowModel(), isSort, isLenient, changer);
 			dialog.pack();
@@ -219,5 +212,9 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 		for (int i = 0; i < bars.length; i++) {
 			bars[i].repaint();
 		}
+	}
+	
+	public void disConnect() {
+		scheduleModel.disConnect();
 	}
 }

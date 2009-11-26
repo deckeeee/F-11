@@ -311,7 +311,7 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 				horizontalForSelectSpanMode,
 				horizontalLineSpan,
 				logName);
-			int min = (int) (horizontalLineSpan / recordeSpan);
+			int min = (int) (horizontalLineSpan / recordeSpan) + 1;
 			int maxRecord = e.getProperties().getMaxRecord();
 			e.getScrollBar().setMinimum(Math.min(min, maxRecord));
 		}
