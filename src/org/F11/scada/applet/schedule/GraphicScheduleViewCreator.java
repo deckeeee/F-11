@@ -34,9 +34,4 @@ public interface GraphicScheduleViewCreator {
 	 * @return 個別スケジュールのグラフィックビューを生成します。
 	 */
 	JComponent createView();
-	
-	/**
-	 * シンボルの切断等、後処理
-	 */
-	void disConnect();
 }

@@ -213,8 +213,4 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 			bars[i].repaint();
 		}
 	}
-	
-	public void disConnect() {
-		scheduleModel.disConnect();
-	}
 }
