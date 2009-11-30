@@ -34,4 +34,9 @@ public interface GraphicScheduleViewCreator {
 	 * @return 個別スケジュールのグラフィックビューを生成します。
 	 */
 	JComponent createView();
+	
+	/**
+	 * プロパティ変更リスナーを削除します。
+	 */
+	void removePropertyChangeListeners();
 }

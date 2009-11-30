@@ -345,6 +345,10 @@ public class SeparateScheduleModel implements ScheduleModel {
 	 * @see org.F11.scada.applet.schedule.ScheduleModel#disConnect()
 	 */
 	public void disConnect() {
+		removePropertyChangeListeners();
+	}
+	
+	public void removePropertyChangeListeners() {
 		if (null != changeSupport) {
 			PropertyChangeListener[] liteners =
 				changeSupport.getPropertyChangeListeners();
