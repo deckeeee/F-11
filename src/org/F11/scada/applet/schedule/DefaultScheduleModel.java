@@ -482,15 +482,19 @@ public class DefaultScheduleModel implements ScheduleModel,
 		}
 		flagReferencerList.clear();
 
+		removePropertyChangeListeners();
+		if (null != authentication) {
+			authentication.removeEditable(this);
+		}
+	}
+
+	public void removePropertyChangeListeners() {
 		if (changeSupport != null) {
 			PropertyChangeListener[] listeners =
 				changeSupport.getPropertyChangeListeners();
 			for (int i = 0; i < listeners.length; i++) {
 				changeSupport.removePropertyChangeListener(listeners[i]);
 			}
-		}
-		if (null != authentication) {
-			authentication.removeEditable(this);
 		}
 	}
 

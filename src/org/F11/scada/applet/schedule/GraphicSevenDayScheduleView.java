@@ -197,4 +197,8 @@ public class GraphicSevenDayScheduleView implements ActionListener,
 			bars[i].repaint();
 		}
 	}
+	
+	public void removePropertyChangeListeners() {
+		scheduleModel.removePropertyChangeListeners();
+	}
 }

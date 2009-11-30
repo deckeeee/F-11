@@ -213,4 +213,8 @@ public class GraphicTwoDayScheduleView implements ActionListener,
 			bars[i].repaint();
 		}
 	}
+	
+	public void removePropertyChangeListeners() {
+		scheduleModel.removePropertyChangeListeners();
+	}
 }

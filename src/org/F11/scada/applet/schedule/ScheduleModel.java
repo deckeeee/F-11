@@ -124,6 +124,11 @@ public interface ScheduleModel extends Editable {
 	public void removePropertyChangeListener(PropertyChangeListener listener);
 
 	/**
+	 * プロパティ変更リスナーを削除します。
+	 */
+	void removePropertyChangeListeners();
+
+	/**
 	 * グループを追加します。
 	 * 
 	 * @param dataProvider
