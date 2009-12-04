@@ -114,8 +114,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 * 初期処理です。
 	 */
 	private void init() {
-		logger.info("init開始");
-
 		JPanel subPanel = new JPanel(new BorderLayout());
 		JPanel manipulatePanel = new JPanel(new FlowLayout());
 		OkButton okButton = new OkButton(this, "OK");
@@ -134,7 +132,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 * このダイアログを表示します。
 	 */
 	public void show() {
-		logger.info("show開始");
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
 		setLocation(WifeUtilities.getInScreenPoint(screenSize, dialogBounds));
@@ -152,15 +149,14 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	}
 
 	public void selectAll() {
-		logger.info("selectAll開始");
 	}
 
 	/**
 	 * 編集可能アナログオブジェクトを設定します。
 	 */
 	private void setDialogValue() {
-		logger.info("setDialogValue開始");
-		view = createView(symbol.getScheduleModel(), isSort, isLenient, changer);
+		view =
+			createView(symbol.getScheduleModel(), isSort, isLenient, changer);
 		JComponent viewPanel = view.createView();
 		getContentPane().add(viewPanel, BorderLayout.CENTER);
 
@@ -184,7 +180,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
-		logger.info("setListIterator開始");
 		symbol = (ScheduleEditable) listIterator.next();
 	}
 
@@ -192,7 +187,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 * 各ボタンの押下時の動作を処理します。
 	 */
 	public void actionPerformed(ActionEvent e) {
-		logger.info("actionPerformed開始");
 		((DialogButton) e.getSource()).pushButton();
 	}
 
@@ -202,7 +196,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 	 * @param para 任意のパラメーター
 	 */
 	public ListIterator listIterator(List para) {
-		logger.info("listIterator開始");
 		List list = new ArrayList();
 		list.add(grupNoButton);
 		return new ScheduleIterator(para, list);
@@ -233,12 +226,10 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		}
 
 		public boolean hasNext() {
-			logger.info("hasNext開始");
 			return true;
 		}
 
 		public Object next() {
-			logger.info("next開始");
 			if (listIterator == null)
 				listIterator = symbols.listIterator(startIndex);
 
@@ -261,12 +252,10 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		}
 
 		public boolean hasPrevious() {
-			logger.info("hasPrevious開始");
 			return true;
 		}
 
 		public Object previous() {
-			logger.info("previous開始");
 			if (listIterator == null)
 				listIterator = symbols.listIterator(symbols.size());
 			if (!isPreviousMode) {
@@ -288,7 +277,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		}
 
 		public int nextIndex() {
-			logger.info("nextIndex開始");
 			int index = listIterator.nextIndex();
 			if (isPreviousMode && index == symbols.size()) {
 				ListIterator lit = symbols.listIterator();
@@ -298,7 +286,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		}
 
 		public int previousIndex() {
-			logger.info("previousIndex開始");
 			int index = listIterator.previousIndex();
 			if (!isPreviousMode && index < 0) {
 				ListIterator lit = symbols.listIterator(symbols.size());
@@ -367,7 +354,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		}
 
 		public void pushButton() {
-			logger.info("pushButton開始");
 			dialog.symbol.getScheduleModel().setValue();
 			dialog.symbol.getScheduleModel().writeData();
 			dialog.symbol.setValue(dialog.grupNoButton.getText());
@@ -391,7 +377,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		}
 
 		public void pushButton() {
-			logger.info("pushButton開始");
 			dialog.symbol.getScheduleModel().undoData();
 			dialog.dispose();
 		}
@@ -429,7 +414,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * 各初期化処理
 		 */
 		private void init() {
-			logger.info("init開始");
 			DecimalFormat fmt = new DecimalFormat(getFormatString());
 			setText(fmt.format(new Integer(groupNo)));
 			Border bb = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -451,7 +435,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 				Window window,
 				SymbolCollection collection,
 				List para) {
-			logger.info("getDialog開始");
 			WifeDialog d = DialogFactory.get(window, "1", changer);
 			if (d == null)
 				logger.warn(this.getClass().getName()
@@ -464,7 +447,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * 設定ダイアログの左上の Point オブジェクトを返します。
 		 */
 		public Point getPoint() {
-			logger.info("getPoint開始");
 			Point p = this.getLocationOnScreen();
 			p.y += getSize().height;
 			return p;
@@ -476,7 +458,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * @param point 設定ダイアログの左上の Point
 		 */
 		public void setPoint(Point point) {
-			logger.info("setPoint開始");
 			// NOP
 		}
 
@@ -484,7 +465,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * シンボルの値を返します
 		 */
 		public String getValue() {
-			logger.info("getValue開始");
 			return getText();
 		}
 
@@ -492,7 +472,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * シンボルに値を設定します
 		 */
 		public void setValue(String value) {
-			logger.info("setValue開始");
 			setText(value);
 		}
 
@@ -500,7 +479,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * 最小値を返します
 		 */
 		public double getConvertMin() {
-			logger.info("getConvertMin開始");
 			return dialog.symbol.getConvertValue().getConvertMin();
 		}
 
@@ -508,7 +486,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * 最大値を返します
 		 */
 		public double getConvertMax() {
-			logger.info("getConvertMax開始");
 			return dialog.symbol.getConvertValue().getConvertMax();
 		}
 
@@ -516,7 +493,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * 数値表示フォーマット文字列を返します
 		 */
 		public String getFormatString() {
-			logger.info("getFormatString開始");
 			return dialog.symbol.getConvertValue().getPattern();
 		}
 
@@ -524,21 +500,17 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * 時刻修正ボタンが押下された時の処理を記述します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			List para = new ArrayList();
 			para.add(new Integer(0));
-			WifeDialog tenkeyDialog =
-				getDialog(this.dialog, this.dialog, para);
+			WifeDialog tenkeyDialog = getDialog(this.dialog, this.dialog, para);
 			tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}
 
 		public void setEditable(boolean[] editable) {
-			logger.info("setEditable開始");
 		}
 
 		public boolean isEditable() {
-			logger.info("isEditable開始");
 			return true;
 		}
 
@@ -546,7 +518,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * @see org.F11.scada.applet.symbol.Editable#getDestinations()
 		 */
 		public String[] getDestinations() {
-			logger.info("getDestinations開始");
 			return new String[0];
 		}
 
@@ -556,7 +527,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 		 */
 		public void addDestination(Map atts) {
-			logger.info("addDestination開始");
 		}
 
 		/**
@@ -565,7 +535,6 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 		 */
 		public void addValueSetter(ValueSetter setter) {
-			logger.info("addValueSetter開始");
 		}
 
 		/*
@@ -574,14 +543,11 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 		 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 		 */
 		public boolean isTabkeyMove() {
-			logger.info("isTabkeyMove開始");
 			return isVisible();
 		}
 
 		public String getDialogTitle() {
-			logger.info("getDialogTitle開始");
 			return "グループNo.";
 		}
 	}
-
 }

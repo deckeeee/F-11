@@ -111,7 +111,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	 * このダイアログを表示します。
 	 */
 	public void show() {
-		logger.info("ダイアログ表示開始");
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
 		setLocation(WifeUtilities.getInScreenPoint(screenSize, dialogBounds));
@@ -122,7 +121,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	}
 
 	public void selectAll() {
-		logger.info("selectAll開始");
 		JFormattedTextField text = getEditor().getTextField();
 		text.requestFocusInWindow();
 		text.selectAll();
@@ -132,7 +130,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	 * 編集可能アナログオブジェクトを設定します。
 	 */
 	public void setDialogValue() {
-		logger.info("setDialogValue開始");
 		String formatString = symbol.getFormatString();
 		DecimalFormat format = new DecimalFormat(formatString);
 		setSpinnerModel(format);
@@ -203,7 +200,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	 * 初期処理です。
 	 */
 	protected void init() {
-		logger.info("init開始");
 		Box displayBox = Box.createHorizontalBox();
 
 		spinner = new JSpinner();
@@ -306,32 +302,26 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 	 * 各ボタンの押下時の動作を処理します。
 	 */
 	public void actionPerformed(ActionEvent e) {
-		logger.info("actionPerformed開始");
 		((DialogButton) e.getSource()).pushButton();
 	}
 
 	public JSpinner.NumberEditor getEditor() {
-		logger.info("getEditor開始");
 		return (JSpinner.NumberEditor) spinner.getEditor();
 	}
 
 	public void setSymbol(TenkeyEditable symbol) {
-		logger.info("setSymbol開始");
 		this.symbol = symbol;
 	}
 
 	public Object getValue() {
-		logger.info("getValue開始");
 		return spinner.getValue();
 	}
 
 	public void setValue(String value) {
-		logger.info("setValue開始");
 		symbol.setValue(value);
 	}
 
 	public boolean hasSymbol() {
-		logger.info("hasSymbol開始");
 		return null != symbol;
 	}
 
@@ -380,8 +370,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		 * @param textValue 対応づけるキー(VK_ここの部分)
 		 */
 		protected void setInoutKeyMap(String textValue) {
-			logger.info("setInoutKeyMap開始");
-
 			Action key = new AbstractAction(textValue) {
 				private static final long serialVersionUID =
 					998365883073322803L;
@@ -411,7 +399,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		 * @return KeyStroke の処理に依存しています。
 		 */
 		protected KeyStroke getKeyStroke(String textValue) {
-			logger.info("setInoutKeyMap開始");
 			return KeyStroke.getKeyStroke(textValue);
 		}
 
@@ -445,7 +432,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		 * 但し、テキストフィールドが選択されている時は、選択部分を削除してその位置に、 ボタンのテキストを挿入します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			JSpinner.NumberEditor editer = dialog.getEditor();
 			JFormattedTextField field = editer.getTextField();
 			try {
@@ -469,7 +455,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		 * @return KeyStroke の処理に依存しています。
 		 */
 		protected KeyStroke getKeyStroke(String textValue) {
-			logger.info("getKeyStroke開始");
 			return KeyStroke.getKeyStroke("typed " + textValue);
 		}
 	}
@@ -489,8 +474,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		}
 
 		public void pushButton() {
-			logger.info("pushButton開始");
-
 			if (ConfirmUtil.isConfirm((Component) dialog)) {
 				try {
 					action.doAction();
@@ -545,7 +528,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		 * 前項目のセル内容を判定して、セル内容を反映させたテンキーダイアログを表示します。 テンプレートメソッドです。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			if (ConfirmUtil.isConfirm((Component) dialog)) {
 				try {
 					action.doAction();
@@ -594,8 +576,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		 * 次項目のセルの座標を算出します。最大セルの次は table の原点座標を算出します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
-
 			if (ConfirmUtil.isConfirm((Component) dialog)) {
 				try {
 					action.doAction();
@@ -635,8 +615,6 @@ public abstract class AbstractTenkeyDialog extends WifeDialog implements
 		}
 
 		void doAction() throws ParseException {
-			logger.info("doAction開始");
-
 			JSpinner.NumberEditor editer = dialog.getEditor();
 			JFormattedTextField field = editer.getTextField();
 			field.commitEdit();

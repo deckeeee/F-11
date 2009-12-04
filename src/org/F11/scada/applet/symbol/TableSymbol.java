@@ -21,18 +21,23 @@
 package org.F11.scada.applet.symbol;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.log4j.Logger;
+
 /**
  * 一覧表示するテーブルクラスです。
+ * 
  * @author Youhei Horikawa <hori@users.sourceforge.jp>
  */
 public class TableSymbol extends AbstractTableModel {
 	private static final long serialVersionUID = -438063889776159013L;
 	private List colTitles = new ArrayList();
 	private List rows = new ArrayList();
+	private Logger logger = Logger.getLogger(TableSymbol.class);
 
 	public TableSymbol() {
 	}
@@ -52,6 +57,9 @@ public class TableSymbol extends AbstractTableModel {
 		int firstRow = rows.size();
 		rows.add(rowData);
 		fireTableRowsInserted(firstRow, firstRow + 1);
+		if (colTitles.size() < rowData.size()) {
+			logger.info("over column rowData = " + rowData.size());
+		}
 	}
 
 	/**
@@ -60,22 +68,41 @@ public class TableSymbol extends AbstractTableModel {
 	public int getRowCount() {
 		return rows.size();
 	}
+
 	public int getColumnCount() {
 		return colTitles.size();
 	}
+
 	public String getColumnName(int columnIndex) {
-		return (String)colTitles.get(columnIndex);
+		return (String) colTitles.get(columnIndex);
 	}
+
 	public Class getColumnClass(int columnIndex) {
 		return getValueAt(0, columnIndex).getClass();
 	}
+
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
+
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return ((List)rows.get(rowIndex)).get(columnIndex);
+		return ((List) rows.get(rowIndex)).get(columnIndex);
 	}
+
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		throw new UnsupportedOperationException();
+	}
+
+	public void disConnect() {
+		for (Iterator it = rows.iterator(); it.hasNext();) {
+			List row = (List) it.next();
+			for (Iterator it2 = row.iterator(); it2.hasNext();) {
+				Object obj = (Object) it2.next();
+				if (obj instanceof ReferencerOwnerSymbol) {
+					ReferencerOwnerSymbol symbol = (ReferencerOwnerSymbol) obj;
+					symbol.disConnect();
+				}
+			}
+		}
 	}
 }

@@ -846,7 +846,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 			public void run() {
 				try {
-					logger.info("session : " + applet.session);
+//					logger.info("session : " + applet.session);
 					if (null != argv) {
 						final Map pageMap =
 							applet.frameDef.getPage(

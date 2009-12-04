@@ -83,12 +83,10 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
-		logger.info("setListIterator開始");
 		symbol = (DigitalEditable) listIterator.next();
 	}
 
 	public void show() {
-		logger.info("show開始");
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
 		setLocation(WifeUtilities.getInScreenPoint(screenSize, dialogBounds));
@@ -112,20 +110,17 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 * @see java.awt.Dialog#dispose()
 	 */
 	public void dispose() {
-		logger.info("dispose開始");
 		setDefaultFocus();
 		super.dispose();
 	}
 
 	public void selectAll() {
-		logger.info("selectAll開始");
 	}
 
 	/**
 	 * 押されたボタンの動作を実行します。
 	 */
 	public void actionPerformed(ActionEvent e) {
-		logger.info("actionPerformed開始");
 		DialogButton button = (DialogButton) e.getSource();
 		button.pushButton();
 	}
@@ -152,7 +147,6 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 			String fontStyle,
 			String fontSize,
 			String schedule) {
-		logger.info("add開始");
 		DialogButton button =
 			DialogButton.createDialogButton(this, actionNo, schedule, changer);
 		button.setText(text);
@@ -201,7 +195,6 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 				int actionNo,
 				String schedule,
 				PageChanger changer) {
-			logger.info("createDialogButton開始");
 			switch (actionNo) {
 			case 5:
 				return new ScheduleButton(dialog, actionNo, schedule, changer);
@@ -233,7 +226,6 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		 * デジタルボタンの指示動作を実行します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			if (ConfirmUtil.isConfirm(dialog)) {
 				dialog.symbol.pushButton(actionNo);
 				dialog.dispose();
@@ -265,7 +257,6 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		 * デジタルボタンの指示動作を実行します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			dialog.dispose();
 		}
 	}

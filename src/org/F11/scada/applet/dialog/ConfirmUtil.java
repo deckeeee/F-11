@@ -32,7 +32,6 @@ public abstract class ConfirmUtil {
 	private static final Logger logger = Logger.getLogger(ConfirmUtil.class);
 
 	public static boolean isConfirm(Component component) {
-		logger.info("isConfirm開始");
 		if (isConfirm()) {
 			String[] option = { "OK", "CANCEL" };
 			return JOptionPane.OK_OPTION == JOptionPane.showOptionDialog(
@@ -50,7 +49,6 @@ public abstract class ConfirmUtil {
 	}
 
 	private static boolean isConfirm() {
-		logger.info("isConfirm開始");
 		ClientConfiguration configuration = new ClientConfiguration();
 		return configuration.getBoolean(
 				"org.F11.scada.applet.dialog.isConfirm",

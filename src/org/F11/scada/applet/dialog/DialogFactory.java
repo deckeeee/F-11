@@ -76,12 +76,10 @@ public class DialogFactory {
 	}
 
 	public Map getDialogs() {
-		logger.info("getDialogs開始");
 		return dialogs;
 	}
 
 	public static WifeDialog get(Window window, String name, PageChanger changer) {
-		logger.info("get開始");
 		DialogFactory df = new DialogFactory(window, changer);
 		WifeDialog wifeDialog = (WifeDialog) df.getDialogs().get(name);
 		return wifeDialog;

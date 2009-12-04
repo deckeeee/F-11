@@ -334,18 +334,8 @@ public class ListTable extends JTable implements SymbolCollection,
 
 	public void disConnect() {
 		timer.removeActionListener(this);
-		for (int i = 0, row = getRowCount(); i < row; i++) {
-			for (int j = 0, column = getColumnCount(); j < column; j++) {
-				Object obj = getValueAt(i, j);
-				if (obj instanceof ReferencerOwnerSymbol) {
-					ReferencerOwnerSymbol symbol = (ReferencerOwnerSymbol) obj;
-					if (log.isDebugEnabled()) {
-						log.debug("disConnect : " + symbol);
-					}
-					symbol.disConnect();
-				}
-			}
-		}
+		TableSymbol model = (TableSymbol) getModel();
+		model.disConnect();
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -84,7 +84,6 @@ public class TenkeyDialog extends AbstractTenkeyDialog {
 	 * @see java.awt.Dialog#dispose()
 	 */
 	public void dispose() {
-		log.info("dispose開始");
 		KeyboardFocusManager kfm = KeyboardFocusManager
 				.getCurrentKeyboardFocusManager();
 		kfm.setDefaultFocusTraversalKeys(
@@ -103,14 +102,12 @@ public class TenkeyDialog extends AbstractTenkeyDialog {
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
-		log.info("setListIterator開始");
 		this.listIterator = listIterator;
 		// 一つ目のシンボルを設定します。
 		symbol = (TenkeyEditable) listIterator.next();
 	}
 
 	public ListIterator listIterator() {
-		log.info("listIterator開始");
 		return listIterator;
 	}
 
@@ -118,7 +115,6 @@ public class TenkeyDialog extends AbstractTenkeyDialog {
 	 * 初期処理です。
 	 */
 	protected void setManipulatePanel(JPanel keyPanel) {
-		log.info("setManipulatePanel開始");
 		JPanel manipulatePanel = new JPanel(new GridLayout(6, 1));
 		final OkButton okButton = new OkButton(this, "OK");
 		PreviousButton previousButton = new PreviousButton(this, "前項目");
