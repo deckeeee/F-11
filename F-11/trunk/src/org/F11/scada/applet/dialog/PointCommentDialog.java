@@ -67,26 +67,22 @@ public class PointCommentDialog extends WifeDialog {
 	}
 
 	public void setListIterator(ListIterator listIterator) {
-		logger.info("setListIterator開始");
 		symbol = (CommentEditable) listIterator.next();
 		textArea.setText(symbol.getComment());
 	}
 
 	private void setDialogLocation() {
-		logger.info("setDialogLocation開始");
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
 		setLocation(WifeUtilities.getInScreenPoint(screenSize, dialogBounds));
 	}
 
 	public void show() {
-		logger.info("show開始");
 		setDialogLocation();
 		super.show();
 	}
 
 	private void initComponents() {
-		logger.info("initComponents開始");
 		GridBagConstraints gridBagConstraints;
 
 		JScrollPane scrollPane = new JScrollPane();

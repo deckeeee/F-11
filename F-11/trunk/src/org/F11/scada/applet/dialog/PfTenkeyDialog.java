@@ -123,7 +123,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * このダイアログを表示します。
 	 */
 	public void show() {
-		logger.info("show開始");
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
 		setLocation(WifeUtilities.getInScreenPoint(screenSize, dialogBounds));
@@ -134,7 +133,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	}
 
 	public void selectAll() {
-		logger.info("selectAll開始");
 		JSpinner.NumberEditor editer =
 			(JSpinner.NumberEditor) spinner.getEditor();
 		JFormattedTextField text = editer.getTextField();
@@ -148,7 +146,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * @see java.awt.Dialog#dispose()
 	 */
 	public void dispose() {
-		logger.info("dispose開始");
 		KeyboardFocusManager kfm =
 			KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		kfm.setDefaultFocusTraversalKeys(
@@ -167,7 +164,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
-		logger.info("setListIterator開始");
 		this.listIterator = listIterator;
 		// 一つ目のシンボルを設定します。
 		symbol = (TenkeyEditable) listIterator.next();
@@ -177,7 +173,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * 編集可能アナログオブジェクトを設定します。
 	 */
 	public void setDialogValue() {
-		logger.info("setDialogValue開始");
 		double initialValue =
 			Double.parseDouble(symbol.getValue().substring(2));
 		double minValue =
@@ -212,7 +207,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * 初期処理です。
 	 */
 	private void init() {
-		logger.info("init開始");
 		Box displayBox = Box.createHorizontalBox();
 
 		spinner = new JSpinner();
@@ -338,7 +332,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 	 * 各ボタンの押下時の動作を処理します。
 	 */
 	public void actionPerformed(ActionEvent e) {
-		logger.info("actionPerformed開始");
 		((DialogButton) e.getSource()).pushButton();
 	}
 
@@ -387,8 +380,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		 * @param textValue 対応づけるキー(VK_ここの部分)
 		 */
 		protected void setInoutKeyMap(String textValue) {
-			logger.info("setInoutKeyMap開始");
-
 			// define action
 			Action key = new AbstractAction(textValue) {
 				private static final long serialVersionUID =
@@ -420,7 +411,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		 * @return KeyStroke の処理に依存しています。
 		 */
 		protected KeyStroke getKeyStroke(String textValue) {
-			logger.info("getKeyStroke開始");
 			return KeyStroke.getKeyStroke(textValue);
 		}
 
@@ -453,7 +443,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		 * 但し、テキストフィールドが選択されている時は、選択部分を削除してその位置に、 ボタンのテキストを挿入します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			JSpinner.NumberEditor editer =
 				(JSpinner.NumberEditor) dialog.spinner.getEditor();
 			JFormattedTextField field = editer.getTextField();
@@ -496,9 +485,7 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		}
 
 		public void pushButton() {
-			logger.info("pushButton開始");
 			if (ConfirmUtil.isConfirm((Component) dialog)) {
-				PfTenkeyDialog.logger.debug("OK Pressed");
 				try {
 					action.doAction();
 				} catch (ParseException e) {
@@ -531,7 +518,6 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		}
 
 		public void pushButton() {
-			logger.info("pushButton開始");
 			dialog.dispose();
 		}
 	}
@@ -553,9 +539,7 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		 * 前項目のセル内容を判定して、セル内容を反映させたテンキーダイアログを表示します。 テンプレートメソッドです。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			if (ConfirmUtil.isConfirm((Component) dialog)) {
-				logger.debug("PreviousButton Pressed");
 				try {
 					action.doAction();
 				} catch (ParseException e) {
@@ -590,9 +574,7 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		 * 次項目のセルの座標を算出します。最大セルの次は table の原点座標を算出します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			if (ConfirmUtil.isConfirm((Component) dialog)) {
-				PfTenkeyDialog.logger.debug("NextButton Pressed");
 				try {
 					action.doAction();
 				} catch (ParseException e) {
@@ -620,14 +602,12 @@ public class PfTenkeyDialog extends WifeDialog implements ActionListener {
 		}
 
 		void doAction() throws ParseException {
-			logger.info("doAction開始");
 			JSpinner.NumberEditor editer =
 				(JSpinner.NumberEditor) dialog.spinner.getEditor();
 			JFormattedTextField field = editer.getTextField();
 			field.commitEdit();
 
 			String value = field.getText();
-			PfTenkeyDialog.logger.debug("Value : " + value);
 			if (dialog.symbol == null) {
 				PfTenkeyDialog.logger.warn("Remote TenkeyEditable is null");
 				return;

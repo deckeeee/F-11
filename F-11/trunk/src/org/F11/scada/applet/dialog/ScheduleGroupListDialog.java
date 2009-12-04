@@ -74,7 +74,6 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 	}
 
 	private void init() {
-		log.info("init開始");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		int currentGroup = scheduleModel.getGroupNo();
 		Object[] o = new Object[scheduleModel.getGroupNoMax()];
@@ -124,7 +123,6 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 	}
 
 	private void setSize() {
-		log.info("setSize開始");
 		ClientConfiguration configuration = new ClientConfiguration();
 		setSize(configuration.getInt(
 			"xwife.applet.Applet.schedule.dialog.width",
@@ -134,21 +132,18 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent evt) {
-		log.info("actionPerformed開始");
 		JButton button = (JButton) evt.getSource();
 		if (button == okButton) {
 			pushOkButton(list.getSelectedIndex());
 		} else if (button == cancelButton) {
 			dispose();
 		} else {
-			log.equals("???");
+			log.error("想定外のアクションイベントです: source=" + button.getClass().getName());
 		}
 	}
 
 	private void pushOkButton(int index) {
-		log.info("pushOkButton開始");
 		if (JListUtil.hasSelected(this, index)) {
-			log.debug("選択された項目 : " + index);
 			scheduleModel.setGroupNo(index);
 			dispose();
 		}
@@ -166,7 +161,6 @@ public class ScheduleGroupListDialog extends JDialog implements ActionListener {
 		}
 
 		public void mouseReleased(MouseEvent e) {
-			logger.info("mouseReleased開始");
 			if (e.getClickCount() == 2) {
 				int index = dialog.list.locationToIndex(e.getPoint());
 				dialog.pushOkButton(index);

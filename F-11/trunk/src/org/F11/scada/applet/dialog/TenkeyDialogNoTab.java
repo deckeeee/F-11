@@ -68,7 +68,6 @@ public class TenkeyDialogNoTab extends AbstractTenkeyDialog {
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
-		log.info("setListIterator開始");
 		// 一つ目のシンボルを設定します。
 		symbol = (TenkeyEditable) listIterator.next();
 	}
@@ -81,7 +80,6 @@ public class TenkeyDialogNoTab extends AbstractTenkeyDialog {
 	 * 初期処理です。
 	 */
 	protected void setManipulatePanel(JPanel keyPanel) {
-		log.info("setManipulatePanel開始");
 		JPanel manipulatePanel = new JPanel(new GridLayout(6, 1));
 		OkButton okButton = new OkButton(this, "OK");
 		CancelButton cancelButton = new CancelButton(this, "Cancel", changer);

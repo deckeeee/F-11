@@ -356,7 +356,7 @@ public class AppletFrameDefine {
 	}
 
 	private Map getPage(String name, long editTime, Session session, Object argv) {
-		logger.info("getPage start");
+		logger.info("getPage start : name=" + name + " session=" + session);
 		PageDefine page = getPageDefine(name, editTime, session);
 
 		if (page == null) {
@@ -375,7 +375,7 @@ public class AppletFrameDefine {
 		} finally {
 			providerUnlock(wdps, page);
 		}
-		logger.info("getPage   end");
+		logger.info("getPage   end : name=" + name + " session=" + session);
 
 		// logger.debug(page.getDataHolders());
 

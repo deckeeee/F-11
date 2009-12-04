@@ -124,14 +124,12 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * 初期処理です。
 	 */
 	private void init() {
-		logger.info("init開始");
 		buttonList = new ArrayList();
 		getContentPane().add(createValuePanel(), BorderLayout.CENTER);
 		getContentPane().add(createButtonPanel(), BorderLayout.SOUTH);
 	}
 
 	private void setLabels(String labels) {
-		logger.info("setLabels開始");
 		StringTokenizer st = new StringTokenizer(getLabels(labels), "|");
 		valueTitle = new String[st.countTokens()];
 		for (int i = 0; st.hasMoreTokens(); i++) {
@@ -140,7 +138,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	}
 
 	private String getLabels(String labels) {
-		logger.info("getLabels開始");
 		return (null == labels || "".equals(labels))
 			? "上限警報 ON :|OFF :|下限警報 ON :|OFF :"
 			: labels;
@@ -204,7 +201,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * )
 	 */
 	public void setListIterator(ListIterator listIterator) {
-		logger.info("setListIterator開始");
 		// 一つ目のシンボルを設定します。
 		symbol = (Analog4Editable) listIterator.next();
 	}
@@ -216,13 +212,11 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
-		logger.info("actionPerformed開始");
 		AbstractAnalog4Button button = (AbstractAnalog4Button) e.getSource();
 		button.pushButton();
 	}
 
 	private void setValue() {
-		logger.info("setValue開始");
 		String values[] = new String[buttonList.size()];
 		int i = 0;
 		for (Iterator it = buttonList.iterator(); it.hasNext(); i++) {
@@ -235,7 +229,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * このダイアログを表示します。
 	 */
 	public void show() {
-		logger.info("show開始");
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
 		setLocation(WifeUtilities.getInScreenPoint(screenSize, dialogBounds));
@@ -261,7 +254,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 	 * org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
 	 */
 	public ListIterator listIterator(List para) {
-		logger.info("listIterator開始");
 		return new Analog4Iterator(para, buttonList);
 	}
 
@@ -294,7 +286,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		}
 
 		public Object next() {
-			logger.info("next開始");
 			if (listIterator == null)
 				listIterator = symbols.listIterator(startIndex);
 
@@ -321,7 +312,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		}
 
 		public Object previous() {
-			logger.info("previous開始");
 			if (listIterator == null)
 				listIterator = symbols.listIterator(symbols.size());
 			if (!isPreviousMode) {
@@ -343,7 +333,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		}
 
 		public int nextIndex() {
-			logger.info("nextIndex開始");
 			int index = listIterator.nextIndex();
 			if (isPreviousMode && index == symbols.size()) {
 				ListIterator lit = symbols.listIterator();
@@ -353,7 +342,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		}
 
 		public int previousIndex() {
-			logger.info("previousIndex開始");
 			int index = listIterator.previousIndex();
 			if (!isPreviousMode && index < 0) {
 				ListIterator lit = symbols.listIterator(symbols.size());
@@ -402,7 +390,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * @param textValue 対応づけるキー(VK_ここの部分)
 		 */
 		protected void setInoutKeyMap(String textValue) {
-			logger.info("setInoutKeyMap開始");
 			Action key = new AbstractAction(textValue) {
 
 				private static final long serialVersionUID =
@@ -429,7 +416,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * @return KeyStroke の処理に依存しています。
 		 */
 		protected KeyStroke getKeyStroke(String textValue) {
-			logger.info("getKeyStroke開始");
 			return KeyStroke.getKeyStroke(textValue);
 		}
 
@@ -456,7 +442,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * ボタンが押下された時の処理を記述します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			this.parent.setValue();
 			this.parent.dispose();
 		}
@@ -480,7 +465,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * ボタンが押下された時の処理を記述します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			this.parent.dispose();
 		}
 	}
@@ -519,7 +503,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * 各初期化処理
 		 */
 		private void init() {
-			logger.info("init開始");
 			Border bb = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 			Border eb = BorderFactory.createEmptyBorder(1, 3, 1, 3);
 			setBorder(new CompoundBorder(bb, eb));
@@ -541,7 +524,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 				Window window,
 				SymbolCollection collection,
 				List para) {
-			logger.info("getDialog開始");
 			WifeDialog d =
 				DialogFactory.get(
 					window,
@@ -558,7 +540,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * 設定ダイアログの左上の Point オブジェクトを返します。
 		 */
 		public Point getPoint() {
-			logger.info("getPoint開始");
 			Point p = this.getLocationOnScreen();
 			p.y += getSize().height;
 			return p;
@@ -577,7 +558,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * シンボルの値を返します
 		 */
 		public String getValue() {
-			logger.info("getValue開始");
 			return getText();
 		}
 
@@ -585,7 +565,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * シンボルに値を設定します
 		 */
 		public void setValue(String value) {
-			logger.info("setValue開始");
 			ConvertValue conv = parent.symbol.getConvertValue();
 			double in = conv.convertInputValue(value);
 			setVisible(false);
@@ -597,7 +576,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * 最小値を返します
 		 */
 		public double getConvertMin() {
-			logger.info("getConvertMin開始");
 			ConvertValue conv = parent.symbol.getConvertValue();
 			return conv.getConvertMin();
 		}
@@ -606,7 +584,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * 最大値を返します
 		 */
 		public double getConvertMax() {
-			logger.info("getConvertMax開始");
 			ConvertValue conv = parent.symbol.getConvertValue();
 			return conv.getConvertMax();
 		}
@@ -615,7 +592,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * 数値表示フォーマット文字列を返します
 		 */
 		public String getFormatString() {
-			logger.info("getFormatString開始");
 			return parent.symbol.getFormatString();
 		}
 
@@ -623,7 +599,6 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		 * 値修正ボタンが押下された時の処理を記述します。
 		 */
 		public void pushButton() {
-			logger.info("pushButton開始");
 			List para = new ArrayList();
 			para.add(new Integer(this.parent.buttonList.indexOf(this)));
 			WifeDialog tenkeyDialog =
