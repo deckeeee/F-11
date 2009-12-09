@@ -46,6 +46,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
@@ -53,7 +54,7 @@ import org.xml.sax.Attributes;
 
 /**
  * 編集可能なイメージグラフィックを表示するシンボルクラスです。
- * 
+ *
  * @author Youhei Horikawa <hori@users.sourceforge.jp>
  */
 public class ImageSymbolEditable extends ImageSymbol implements
@@ -82,7 +83,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 
 	/**
 	 * Constructor for ImageSymbolEditable.
-	 * 
+	 *
 	 * @param property
 	 * @param authentication
 	 */
@@ -96,7 +97,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 
 	/**
 	 * Constructor for ImageSymbolEditable.
-	 * 
+	 *
 	 * @param property
 	 */
 	public ImageSymbolEditable(SymbolProperty property) {
@@ -187,6 +188,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 				(AbstractWifeApplet) authentication);
 		d.setListIterator(collection.listIterator(para));
 		d.setTitle(dlgTitle);
+		logger.info(MemoryLogUtil.getMemory(dlgTitle));
 		return d;
 	}
 
@@ -226,7 +228,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 	/**
 	 * ベースシステムのユーザー認証により Subject が変更されたときにディスパッチされます。
 	 * 編集可能なシンボルが保持している、データプロバイダ名＋データホルダー名をアンダーバー で結合した文字列配列を返します。
-	 * 
+	 *
 	 * @return データプロバイダ名＋データホルダー名をアンダーバーで結合した文字列配列
 	 */
 	public String[] getDestinations() {
@@ -247,7 +249,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 
 	/**
 	 * ボタン名称を設定します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 	 */
 	public void addDestination(Map atts) {
@@ -257,7 +259,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 
 	/**
 	 * シンボルに指示動作パターンを追加します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Attributes)
 	 */
 	public void addValueSetter(ValueSetter setter) {
@@ -267,7 +269,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {

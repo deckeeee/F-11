@@ -40,6 +40,7 @@ import org.F11.scada.applet.symbol.HandCursorListener;
 import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
@@ -59,7 +60,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param dialog スケジュール時刻設定ダイアログの参照
 	 * @param time 時間
 	 * @param hour 時間・分の種別
@@ -97,7 +98,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 
 	/**
 	 * 編集する為のダイアログを返します。
-	 * 
+	 *
 	 * @param window 親ウィンドウ
 	 * @param collection ベースクラスのインスタンス
 	 * @param 任意のパラメータリスト
@@ -111,6 +112,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 		if (d == null)
 			logger.warn(this.getClass().getName() + " : scheduleDialog null");
 		d.setListIterator(collection.listIterator(para));
+		logger.info(MemoryLogUtil.getMemory(getDialogTitle()));
 		return d;
 	}
 
@@ -125,7 +127,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 
 	/**
 	 * 設定ダイアログの左上の Point オブジェクトを設定します。
-	 * 
+	 *
 	 * @param point 設定ダイアログの左上の Point
 	 */
 	public void setPoint(Point point) {
@@ -188,7 +190,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 
 	/**
 	 * 書き込み先の追加はしない。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 	 */
 	public void addDestination(Map atts) {
@@ -196,7 +198,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 
 	/**
 	 * 書き込み先の追加はしない。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 	 */
 	public void addValueSetter(ValueSetter setter) {
@@ -204,7 +206,7 @@ abstract class AbstractTimeButton extends AbstractScheduleButton implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {

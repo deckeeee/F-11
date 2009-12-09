@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 package org.F11.scada.applet.dialog;
 
@@ -61,12 +61,13 @@ import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
 import org.F11.scada.data.ConvertValue;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
  * 力率専用４データ入力ダイアログクラスです
- * 
+ *
  * @author hori
  */
 public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
@@ -92,7 +93,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param frame 親のフレームです
 	 */
 	public PfUDLimitDialog(Frame frame, boolean lela_mode, PageChanger changer) {
@@ -104,7 +105,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param dialog 親のダイアログです
 	 */
 	public PfUDLimitDialog(Dialog dialog, boolean lela_mode, PageChanger changer) {
@@ -161,7 +162,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.applet.dialog.WifeDialog#setListIterator(java.util.ListIterator
 	 * )
@@ -173,7 +174,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -214,7 +215,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
 	 */
@@ -238,7 +239,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param para 任意のパラメーター
 		 */
 		Analog4Iterator(List para, List buttonList) {
@@ -342,7 +343,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog スケジュールダイアログの参照
 		 */
 		protected AbstractAnalog4Button(PfUDLimitDialog parent) {
@@ -351,7 +352,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * このボタンに対応づけるキーマップを定義します。
-		 * 
+		 *
 		 * @param textValue 対応づけるキー(VK_ここの部分)
 		 */
 		protected void setInoutKeyMap(String textValue) {
@@ -376,7 +377,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * テンキーとそれ以外で微妙に異なるので、数字キーはサブクラスでオーバーライドします。
-		 * 
+		 *
 		 * @return KeyStroke の処理に依存しています。
 		 */
 		protected KeyStroke getKeyStroke(String textValue) {
@@ -448,7 +449,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog スケジュール時刻設定ダイアログの参照
 		 * @param time 時間
 		 * @param hour 時間・分の種別
@@ -476,7 +477,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 編集する為のダイアログを返します。
-		 * 
+		 *
 		 * @param window 親ウィンドウ
 		 * @param collection ベースクラスのインスタンス
 		 * @param 任意のパラメータリスト
@@ -493,19 +494,24 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 				if (parent.lela_mode) {
 					if (no < 2) {
 						d = DialogFactory.get(window, "8", changer); // La
+						logger.info(MemoryLogUtil.getMemory("力率上下限"));
 					} else {
 						d = DialogFactory.get(window, "9", changer); // Le
+						logger.info(MemoryLogUtil.getMemory("力率上下限"));
 					}
 				} else {
 					if (no < 2) {
 						d = DialogFactory.get(window, "9", changer); // Le
+						logger.info(MemoryLogUtil.getMemory("力率上下限"));
 					} else {
 						d = DialogFactory.get(window, "8", changer); // La
+						logger.info(MemoryLogUtil.getMemory("力率上下限"));
 					}
 				}
 				d.setTitle("力率上下限");
 			} else {
 				d = DialogFactory.get(window, "5", changer);
+				logger.info(MemoryLogUtil.getMemory(getDialogTitle()));
 			}
 			if (d == null)
 				logger.warn(this.getClass().getName()
@@ -525,7 +531,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 設定ダイアログの左上の Point オブジェクトを設定します。
-		 * 
+		 *
 		 * @param point 設定ダイアログの左上の Point
 		 */
 		public void setPoint(Point point) {
@@ -627,7 +633,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 書き込み先の追加はしない。
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 		 */
 		public void addDestination(Map atts) {
@@ -635,7 +641,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 書き込み先の追加はしない。
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 		 */
 		public void addValueSetter(ValueSetter setter) {
@@ -643,7 +649,7 @@ public class PfUDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 		 */
 		public boolean isTabkeyMove() {

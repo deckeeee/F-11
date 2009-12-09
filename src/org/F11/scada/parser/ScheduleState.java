@@ -38,7 +38,7 @@ import org.xml.sax.Attributes;
 
 /**
  * XPath=/page_map/schedule 状態を表すクラスです。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class ScheduleState implements State {
@@ -92,7 +92,7 @@ public class ScheduleState implements State {
 		}
 
 		String viewClass = scheduleProperty.getProperty("viewclass");
-		logger.info("page name=" + pageState.basePage.getPageName());
+//		logger.info("page name=" + pageState.basePage.getPageName());
 		WifeSchedule schedule =
 			new WifeSchedule(
 				scheduleModel,

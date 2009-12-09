@@ -46,6 +46,7 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
@@ -78,7 +79,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param property SymbolProperty オブジェクト
 	 * @param authentication
 	 */
@@ -138,7 +139,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * マウスクリックイベント
-	 * 
+	 *
 	 * @param e マウスイベントオブジェクト
 	 */
 	public void this_mouseClicked(java.awt.event.MouseEvent e) {
@@ -201,7 +202,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 			List para) {
 		String dialogId = getProperty("dlgname");
 		if (dialogId == null) {
-			logger.warn("dialogId null");
+			logger.warn("dialogId が null なので3に設定します。");
 			dialogId = "3";
 		}
 		WifeDialog d =
@@ -214,7 +215,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 		}
 		d.setListIterator(collection.listIterator(para));
 		d.setTitle(dlgTitle);
-
+		logger.info(MemoryLogUtil.getMemory(dlgTitle));
 		return d;
 	}
 
@@ -250,7 +251,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * 書き込み先の追加はしない。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Attributes)
 	 */
 	public void addDestination(Map params) {
@@ -258,7 +259,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * 書き込み先を設定します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Attributes)
 	 */
 	public void addValueSetter(ValueSetter setter) {
@@ -273,7 +274,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {
@@ -282,7 +283,7 @@ public class TextScheduleSymbolEditable extends TextAnalogSymbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.TextAnalogSymbol#disConnect()
 	 */
 	public void disConnect() {

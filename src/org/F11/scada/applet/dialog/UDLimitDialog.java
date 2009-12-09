@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 package org.F11.scada.applet.dialog;
 
@@ -61,12 +61,13 @@ import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
 import org.F11.scada.data.ConvertValue;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
  * アナログ４データ入力ダイアログクラスです
- * 
+ *
  * @author hori
  */
 public class UDLimitDialog extends WifeDialog implements SymbolCollection,
@@ -88,7 +89,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param frame 親のフレームです
 	 */
 	public UDLimitDialog(
@@ -105,7 +106,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param dialog 親のダイアログです
 	 */
 	public UDLimitDialog(
@@ -195,7 +196,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.applet.dialog.WifeDialog#setListIterator(java.util.ListIterator
 	 * )
@@ -207,7 +208,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -249,7 +250,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.applet.symbol.SymbolCollection#listIterator(java.util.List)
 	 */
@@ -273,7 +274,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param para 任意のパラメーター
 		 */
 		Analog4Iterator(List para, List buttonList) {
@@ -377,7 +378,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog スケジュールダイアログの参照
 		 */
 		protected AbstractAnalog4Button(UDLimitDialog parent) {
@@ -386,7 +387,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * このボタンに対応づけるキーマップを定義します。
-		 * 
+		 *
 		 * @param textValue 対応づけるキー(VK_ここの部分)
 		 */
 		protected void setInoutKeyMap(String textValue) {
@@ -412,7 +413,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * テンキーとそれ以外で微妙に異なるので、数字キーはサブクラスでオーバーライドします。
-		 * 
+		 *
 		 * @return KeyStroke の処理に依存しています。
 		 */
 		protected KeyStroke getKeyStroke(String textValue) {
@@ -483,7 +484,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog スケジュール時刻設定ダイアログの参照
 		 * @param time 時間
 		 * @param hour 時間・分の種別
@@ -514,25 +515,25 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 編集する為のダイアログを返します。
-		 * 
+		 *
 		 * @param window 親ウィンドウ
 		 * @param collection ベースクラスのインスタンス
 		 * @param 任意のパラメータリスト
 		 * @todo 任意のパラメータはもう少し、型を強制するべきかも。
 		 */
 		public WifeDialog getDialog(
-				Window window,
-				SymbolCollection collection,
-				List para) {
+			Window window,
+			SymbolCollection collection,
+			List para) {
 			WifeDialog d =
-				DialogFactory.get(
-					window,
-					parent.symbol.getSecondDialogName(),
-					changer);
+				DialogFactory.get(window, parent.symbol.getSecondDialogName(),
+						changer);
 			if (d == null)
 				logger
-					.warn(this.getClass().getName() + " : UDLimitDialog null");
+						.warn(this.getClass().getName()
+							+ " : UDLimitDialog null");
 			d.setListIterator(collection.listIterator(para));
+			logger.info(MemoryLogUtil.getMemory(getDialogTitle()));
 			return d;
 		}
 
@@ -547,7 +548,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 設定ダイアログの左上の Point オブジェクトを設定します。
-		 * 
+		 *
 		 * @param point 設定ダイアログの左上の Point
 		 */
 		public void setPoint(Point point) {
@@ -601,8 +602,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 		public void pushButton() {
 			List para = new ArrayList();
 			para.add(new Integer(this.parent.buttonList.indexOf(this)));
-			WifeDialog tenkeyDialog =
-				getDialog(this.parent, this.parent, para);
+			WifeDialog tenkeyDialog = getDialog(this.parent, this.parent, para);
 			tenkeyDialog.show();
 			// logger.info("" + buttonList.indexOf(evt.getSource()));
 		}
@@ -623,7 +623,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 書き込み先の追加はしない。
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 		 */
 		public void addDestination(Map atts) {
@@ -631,7 +631,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/**
 		 * 書き込み先の追加はしない。
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 		 */
 		public void addValueSetter(ValueSetter setter) {
@@ -639,7 +639,7 @@ public class UDLimitDialog extends WifeDialog implements SymbolCollection,
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 		 */
 		public boolean isTabkeyMove() {

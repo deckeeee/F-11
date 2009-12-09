@@ -43,18 +43,21 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 /**
  * 編集可能なアナログ値シンボルです。ユーザー承認で true が戻された場合に、 テンキーダイアログを表示します。ユーザー承認で false
  * が戻された場合は、 クリックを無視しテンキーダイアログを表示しません。
- * 
+ *
  * @author Youhei Horikawa <hori@users.sourceforge.jp>
  */
 public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 		TenkeyEditable {
 	private static final long serialVersionUID = -5915497980060573755L;
+	private final Logger logger = Logger.getLogger(TextAnalogSymbolEditable.class);
 	/** ダイアログ表示位置 */
 	private Point dialogPoint;
 	/** 編集可能フラグ */
@@ -70,7 +73,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * Constructor for TextAnalogSymbolEditable.
-	 * 
+	 *
 	 * @param property SymbolProperty オブジェクト
 	 * @param authentication
 	 */
@@ -85,7 +88,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * Constructor for TextAnalogSymbolEditable.
-	 * 
+	 *
 	 * @param property SymbolProperty オブジェクト
 	 */
 	public TextAnalogSymbolEditable(SymbolProperty property) {
@@ -97,7 +100,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * Constructor for TextAnalogSymbolEditable.
-	 * 
+	 *
 	 * @param dataProviderName プロバイダ名
 	 * @param dataHolderName ホルダ名
 	 */
@@ -139,7 +142,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * マウスクリックイベント
-	 * 
+	 *
 	 * @param e マウスイベントオブジェクト
 	 */
 	public void this_mouseClicked(java.awt.event.MouseEvent e) {
@@ -210,7 +213,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 		String dialogId = getProperty("dlgname");
 		if (dialogId == null) {
-			System.out.println("dialogId null");
+			logger.warn("dialogId が null なので1に設定します。");
 			dialogId = "1";
 		}
 
@@ -223,6 +226,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 			System.out.println(this.getClass().getName() + "dialog null");
 		d.setListIterator(collection.listIterator(para));
 		d.setTitle(dlgTitle);
+		logger.info(MemoryLogUtil.getMemory(dlgTitle));
 		return d;
 	}
 
@@ -261,7 +265,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * 書き込み先の追加はしない。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Attributes)
 	 */
 	public void addDestination(Map atts) {
@@ -269,7 +273,7 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/**
 	 * 書き込み先を設定します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Attributes)
 	 */
 	public void addValueSetter(ValueSetter setter) {
@@ -284,13 +288,13 @@ public class TextAnalogSymbolEditable extends TextAnalogSymbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {
 		String dialogId = getProperty("dlgname");
 		if (dialogId == null) {
-			System.out.println("dialogId null");
+			logger.warn("dialogId が null なので1に設定します。");
 			dialogId = "1";
 		}
 
