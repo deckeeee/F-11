@@ -41,18 +41,20 @@ import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.server.comment.PointCommentDto;
 import org.F11.scada.server.comment.PointCommentService;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.util.RmiUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 /**
  * ポイントコメントを入力するシンボルクラスです。
- * 
+ *
  * @author maekawa
  */
 public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
-
 	private static final long serialVersionUID = -879506438434994435L;
+	private final Logger logger = Logger.getLogger(PointCommentSymbol.class);
 	/** ダイアログ表示位置 */
 	private Point dialogPoint;
 	/** 編集可能フラグ */
@@ -71,7 +73,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 
 	/**
 	 * Constructor for ImageSymbolEditable.
-	 * 
+	 *
 	 * @param property
 	 * @param authentication
 	 */
@@ -85,7 +87,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 
 	/**
 	 * Constructor for ImageSymbolEditable.
-	 * 
+	 *
 	 * @param property
 	 */
 	private PointCommentSymbol(SymbolProperty property) {
@@ -144,6 +146,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 				(AbstractWifeApplet) authentication);
 		dialog.setListIterator(collection.listIterator(para));
 		dialog.setTitle(dlgTitle);
+		logger.info(MemoryLogUtil.getMemory(dlgTitle));
 		return dialog;
 	}
 
@@ -183,7 +186,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 	/**
 	 * ベースシステムのユーザー認証により Subject が変更されたときにディスパッチされます。
 	 * 編集可能なシンボルが保持している、データプロバイダ名＋データホルダー名をアンダーバー で結合した文字列配列を返します。
-	 * 
+	 *
 	 * @return データプロバイダ名＋データホルダー名をアンダーバーで結合した文字列配列
 	 */
 	public String[] getDestinations() {
@@ -192,7 +195,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 
 	/**
 	 * ボタン名称を設定します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 	 */
 	public void addDestination(Map atts) {
@@ -223,7 +226,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 
 	/**
 	 * シンボルに指示動作パターンを追加します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Attributes)
 	 */
 	public void addValueSetter(ValueSetter setter) {
@@ -234,7 +237,7 @@ public class PointCommentSymbol extends ImageSymbol implements CommentEditable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {

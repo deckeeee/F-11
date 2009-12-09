@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 package org.F11.scada.applet.dialog;
 
@@ -53,6 +53,7 @@ import org.F11.scada.applet.symbol.SymbolCollection;
 import org.F11.scada.applet.symbol.TenkeyEditable;
 import org.F11.scada.applet.symbol.ValueSetter;
 import org.F11.scada.util.FontUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
@@ -78,7 +79,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param frame 親のフレームです
 	 */
 	protected AbstractScheduleDialog(
@@ -95,7 +96,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param dialog 親のダイアログです
 	 */
 	protected AbstractScheduleDialog(
@@ -176,7 +177,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 	/**
 	 * イテレーターをセットします
-	 * 
+	 *
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
@@ -192,7 +193,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 	/**
 	 * コンポーネント上の時刻シンボルイテレーターを返します。
-	 * 
+	 *
 	 * @param para 任意のパラメーター
 	 */
 	public ListIterator listIterator(List para) {
@@ -217,7 +218,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param para 任意のパラメーター
 		 */
 		ScheduleIterator(List para, List buttonList) {
@@ -319,7 +320,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * テキスト表示ボタンを作成するコンストラクタです。
-		 * 
+		 *
 		 * @param dialog 親ダイアログの参照
 		 * @param text ボタンに表示するテキスト
 		 */
@@ -395,7 +396,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog スケジュール時刻設定ダイアログの参照
 		 * @param time 時間
 		 * @param hour 時間・分の種別
@@ -425,7 +426,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * 編集する為のダイアログを返します。
-		 * 
+		 *
 		 * @param window 親ウィンドウ
 		 * @param collection ベースクラスのインスタンス
 		 * @param 任意のパラメータリスト
@@ -440,6 +441,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 				logger.warn(this.getClass().getName()
 					+ " : scheduleDialog null");
 			d.setListIterator(collection.listIterator(para));
+			logger.info(MemoryLogUtil.getMemory(getDialogTitle()));
 			return d;
 		}
 
@@ -454,7 +456,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * 設定ダイアログの左上の Point オブジェクトを設定します。
-		 * 
+		 *
 		 * @param point 設定ダイアログの左上の Point
 		 */
 		public void setPoint(Point point) {
@@ -523,7 +525,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * 書き込み先の追加はしない。
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 		 */
 		public void addDestination(Map atts) {
@@ -531,7 +533,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/**
 		 * 書き込み先の追加はしない。
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 		 */
 		public void addValueSetter(ValueSetter setter) {
@@ -539,7 +541,7 @@ abstract public class AbstractScheduleDialog extends WifeDialog implements
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 		 */
 		public boolean isTabkeyMove() {

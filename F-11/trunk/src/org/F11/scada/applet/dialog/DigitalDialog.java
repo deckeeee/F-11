@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/applet/dialog/DigitalDialog.java,v 1.5.2.11 2007/07/31 08:27:48 frdm Exp $
  * $Revision: 1.5.2.11 $
  * $Date: 2007/07/31 08:27:48 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -40,6 +40,7 @@ import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.applet.symbol.DigitalEditable;
 import org.F11.scada.applet.symbol.ScheduleEditable;
 import org.F11.scada.util.FontUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
@@ -57,7 +58,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 	/**
 	 * コンストラクタ。
-	 * 
+	 *
 	 * @param frame 親のフレーム。
 	 */
 	public DigitalDialog(Frame frame, PageChanger changer) {
@@ -68,7 +69,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 	/**
 	 * コンストラクタ。
-	 * 
+	 *
 	 * @param dialog 親ダイアログ。
 	 */
 	public DigitalDialog(Dialog dialog, PageChanger changer) {
@@ -79,7 +80,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 	/**
 	 * イテレーターをセットします
-	 * 
+	 *
 	 * @param listIterator 編集可能シンボルのイテレーター
 	 */
 	public void setListIterator(ListIterator listIterator) {
@@ -106,7 +107,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 	/**
 	 * 終了する時にフォーカストラバースをデフォルトに戻します。
-	 * 
+	 *
 	 * @see java.awt.Dialog#dispose()
 	 */
 	public void dispose() {
@@ -127,7 +128,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 	/**
 	 * ダイアログにボタンを追加します。
-	 * 
+	 *
 	 * @param text ボタン名称
 	 * @param 指示動作番号
 	 * @param rec ボタンの大きさと配置位置
@@ -174,7 +175,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 		/**
 		 * アイコンボタンを作成するコンストラクタです。
-		 * 
+		 *
 		 * @param dialog 親ダイアログの参照
 		 * @param actionNo ボタンに割り当てる指示動作番号
 		 */
@@ -214,7 +215,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog ボタンを追加するダイアログの参照
 		 * @param actionNo ボタンの指示動作
 		 */
@@ -241,7 +242,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog ボタンを追加するダイアログの参照
 		 * @param actionNo ボタンの指示動作
 		 */
@@ -284,6 +285,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 			WifeDialog wd = DialogFactory.get(dialog, scheduleDialogNo, changer);
 			wd.setListIterator(getIterator());
 			wd.setTitle(dialog.getTitle());
+			logger.info(MemoryLogUtil.getMemory(dialog.getTitle()));
 			wd.show();
 			dialog.dispose();
 		}

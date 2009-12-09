@@ -43,8 +43,10 @@ import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog4;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.util.ComponentUtil;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.server.WifeDataProvider;
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 /**
@@ -53,6 +55,7 @@ import org.xml.sax.Attributes;
 public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 		Analog4Editable {
 	private static final long serialVersionUID = 82128533692496767L;
+	private final Logger logger = Logger.getLogger(TextAnalog4SymbolEditable.class);
 	/** ダイアログ表示位置 */
 	private Point dialogPoint;
 	/** 編集可能フラグ */
@@ -70,7 +73,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/**
 	 * Constructor for TextAnalog4Symbol.
-	 * 
+	 *
 	 * @param property SymbolProperty オブジェクト
 	 */
 	public TextAnalog4SymbolEditable(
@@ -83,7 +86,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/**
 	 * Constructor for TextAnalog4Symbol.
-	 * 
+	 *
 	 * @param property SymbolProperty オブジェクト
 	 */
 	public TextAnalog4SymbolEditable(SymbolProperty property) {
@@ -123,7 +126,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/**
 	 * マウスクリックイベント
-	 * 
+	 *
 	 * @param e マウスイベントオブジェクト
 	 */
 	public void this_mouseClicked(java.awt.event.MouseEvent e) {
@@ -207,7 +210,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/**
 	 * 書き込み先の追加はしない。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addDestination(Attributes)
 	 */
 	public void addDestination(Map params) {
@@ -215,7 +218,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/**
 	 * 書き込み先を設定します。
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#addElement(Attributes)
 	 */
 	public void addValueSetter(ValueSetter setter) {
@@ -242,7 +245,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#getDialog(java.awt.Window,
 	 * org.F11.scada.applet.symbol.SymbolCollection, java.util.List)
 	 */
@@ -252,7 +255,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 			List para) {
 		String dialogId = getProperty("dlgname");
 		if (dialogId == null) {
-			System.out.println("dialogId null");
+			logger.warn("dialogId が null なので4に設定します。");
 			dialogId = "4";
 		}
 
@@ -265,12 +268,13 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 			System.out.println(this.getClass().getName() + "dialog null");
 		d.setListIterator(collection.listIterator(para));
 		d.setTitle(dlgTitle);
+		logger.info(MemoryLogUtil.getMemory(dlgTitle));
 		return d;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#getPoint()
 	 */
 	public Point getPoint() {
@@ -279,7 +283,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isEditable()
 	 */
 	public boolean isEditable() {
@@ -288,7 +292,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#setEditable(boolean[])
 	 */
 	public void setEditable(boolean[] editable) {
@@ -302,7 +306,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#setPoint(java.awt.Point)
 	 */
 	public void setPoint(Point point) {
@@ -325,7 +329,7 @@ public class TextAnalog4SymbolEditable extends TextAnalog4Symbol implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 	 */
 	public boolean isTabkeyMove() {

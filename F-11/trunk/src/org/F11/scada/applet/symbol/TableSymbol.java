@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 一覧表示するテーブルクラスです。
- * 
+ *
  * @author Youhei Horikawa <hori@users.sourceforge.jp>
  */
 public class TableSymbol extends AbstractTableModel {
@@ -57,9 +57,6 @@ public class TableSymbol extends AbstractTableModel {
 		int firstRow = rows.size();
 		rows.add(rowData);
 		fireTableRowsInserted(firstRow, firstRow + 1);
-		if (colTitles.size() < rowData.size()) {
-			logger.info("over column rowData = " + rowData.size());
-		}
 	}
 
 	/**

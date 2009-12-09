@@ -67,7 +67,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * ページオブジェクトを管理するクラスです。 読み込まれていないページを RMI経由で取得します。
- * 
+ *
  * @author hori
  */
 public class AppletFrameDefine {
@@ -179,7 +179,7 @@ public class AppletFrameDefine {
 
 	/**
 	 * RMI経由で更新されたページ定義を取得し、パースします。
-	 * 
+	 *
 	 * @param name ページ名称
 	 * @throws SAXException
 	 * @throws IOException
@@ -200,7 +200,7 @@ public class AppletFrameDefine {
 
 	/**
 	 * RMI経由で更新されたページ定義を取得し、パースします。
-	 * 
+	 *
 	 * @param name ページ名称
 	 * @throws SAXException
 	 * @throws IOException
@@ -356,7 +356,7 @@ public class AppletFrameDefine {
 	}
 
 	private Map getPage(String name, long editTime, Session session, Object argv) {
-		logger.info("getPage start : name=" + name + " session=" + session);
+		logger.info(String.format("getPage start : %-30s %s", name, session));
 		PageDefine page = getPageDefine(name, editTime, session);
 
 		if (page == null) {
@@ -375,7 +375,7 @@ public class AppletFrameDefine {
 		} finally {
 			providerUnlock(wdps, page);
 		}
-		logger.info("getPage   end : name=" + name + " session=" + session);
+		logger.info(String.format("getPage   end : %-30s %s", name, session));
 
 		// logger.debug(page.getDataHolders());
 
@@ -497,7 +497,7 @@ public class AppletFrameDefine {
 
 	/**
 	 * ステータスバーオブジェクトを返します。
-	 * 
+	 *
 	 * @return ステータスバーオブジェクト
 	 */
 	public JComponent getStatusBar() {
@@ -575,7 +575,7 @@ public class AppletFrameDefine {
 
 	/**
 	 * ユーザー毎のメニューツリーを返します。 指定ユーザーにメニュー定義が無ければ、デフォルトのメニューツリーを返します。
-	 * 
+	 *
 	 * @param user ユーザー名
 	 * @return メニューツリーの定義
 	 * @throws RemoteException

@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/applet/dialog/DialogFactory.java,v 1.6.2.2 2007/07/12 09:41:33 frdm Exp $
  * $Revision: 1.6.2.2 $
  * $Date: 2007/07/12 09:41:33 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.F11.scada.EnvironmentManager;
 import org.F11.scada.applet.parser.dialog.F11DialogHandler;
+import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
@@ -52,8 +53,7 @@ public class DialogFactory {
 		try {
 			XMLReader parser =
 				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
-					"/org.xml.sax.driver",
-					""));
+						"/org.xml.sax.driver", ""));
 			parser.setContentHandler(dd);
 			stream =
 				getClass().getResource("/resources/Dialog.xml").openStream();
