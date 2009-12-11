@@ -51,7 +51,7 @@ import org.F11.scada.server.dao.ItemDao;
 
 /**
  * FrameDefineManagerのテストケース
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class FrameDefineManagerTest extends TestCase {
@@ -89,7 +89,7 @@ public class FrameDefineManagerTest extends TestCase {
 
 	/**
 	 * Constructor for FrameDefineManagerTest.
-	 * 
+	 *
 	 * @param name
 	 */
 	public FrameDefineManagerTest(String name) {
@@ -163,7 +163,7 @@ public class FrameDefineManagerTest extends TestCase {
 
 	private static class TestHolderRegisterBuilder implements HolderRegisterBuilder {
 		private final Logger logger = Logger.getLogger(TestHolderRegisterBuilder.class);
-		
+
 		public TestHolderRegisterBuilder() {
 		}
 
@@ -218,6 +218,9 @@ public class FrameDefineManagerTest extends TestCase {
 			return item;
 		}
 
+		public int updateJumpPage(String page, String provider, String holder) {
+			return 0;
+		}
 	}
 
 	private static class TestItemUtil implements ItemUtil {

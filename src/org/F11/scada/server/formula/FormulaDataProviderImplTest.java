@@ -198,6 +198,9 @@ public class FormulaDataProviderImplTest extends TestCase {
 			return null;
 		}
 
+		public int updateJumpPage(String page, String provider, String holder) {
+			return 0;
+		}
 	}
 
 	class TestHolderRegisterBuilder implements HolderRegisterBuilder {

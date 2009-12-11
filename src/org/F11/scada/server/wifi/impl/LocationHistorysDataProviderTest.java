@@ -58,7 +58,7 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
     private ItemDao itemDao;
     private HolderRegisterBuilder builder;
     private SendRequestSupport support;
-    
+
     private static Logger logger = Logger.getLogger(LocationHistorysDataProviderTest.class);
 
     /**
@@ -82,11 +82,11 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
     protected void tearDown() throws Exception {
         TestUtil.crearJIM();
     }
-    
+
     public void testLocationHistorysDataProvider() throws Exception {
         provider = new LocationHistorysDataProvider("P1", 1000, terminals, dao, alarm, itemDao, builder);
         provider.setSendRequestSupport(support);
-        
+
         DataHolder dh = TestUtil.createDigitalHolder("H1");
         TestDataValueChangeListener listener = new TestDataValueChangeListener();
         dh.addDataValueChangeListener(listener);
@@ -96,7 +96,7 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
         sleep(10000);
 
         provider.stop();
-        
+
         List evts = listener.getEvents();
         boolean isTrue = false;
         for (Iterator i = evts.iterator(); i.hasNext();) {
@@ -111,13 +111,13 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
             }
         }
     }
-    
+
     private void sleep(long time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {}
     }
-    
+
     static class TestLocationHistorysDao implements LocationHistorysDao {
         private int count;
 
@@ -125,7 +125,7 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
                 Timestamp timestamp) {
             return getLocationHistorys();
         }
-        
+
         private List getLocationHistorys() {
             ArrayList list = new ArrayList();
             list.add(getLocationHistory());
@@ -149,11 +149,11 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
             logger.info(l);
             return l;
         }
-        
+
         public void insertLocationHistorys(LocationHistorys historys) {}
     }
-    
-    
+
+
     static class TestAlarmReferencer extends DefaultTableModel implements AlarmReferencer {
         private static final long serialVersionUID = 4854836433719625071L;
 		public boolean addDataStore(AlarmDataStore store) {
@@ -167,7 +167,7 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
         public void removeReferencer(DataReferencer dr) {
         }
     }
-    
+
     static class TestItemDao implements ItemDao {
         public Item getItem(HolderString holderString) {
             return null;
@@ -184,20 +184,23 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
 		public Item[] getNoSystemItems() {
 			return null;
 		}
+		public int updateJumpPage(String page, String provider, String holder) {
+			return 0;
+		}
     }
-    
+
     static class TestHolderRegisterBuilder implements HolderRegisterBuilder {
         public void register(Item[] items) {
         }
         public void unregister(Item[] items) {
         }
     }
-    
+
     static class TestSendRequestSupport implements SendRequestSupport {
         public void setSendRequestDateMap(Session session, long time) {
         }
     }
-    
+
     static class TestDataValueChangeListener implements DataValueChangeListener {
         private ArrayList evts = new ArrayList();
 
@@ -205,7 +208,7 @@ public class LocationHistorysDataProviderTest extends S2TestCase {
             logger.info(evt);
             evts.add(evt);
         }
-        
+
         List getEvents() {
             return evts;
         }

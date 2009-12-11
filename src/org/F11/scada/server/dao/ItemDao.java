@@ -25,26 +25,42 @@ import org.F11.scada.server.register.HolderString;
 
 /**
  * item_tableのDaoです。
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public interface ItemDao {
-    public static final Class BEAN = Item.class;
+	public static final Class BEAN = Item.class;
 
-    public Item[] getSystemItems(String provider, boolean system);
-    public static final String getSystemItems_QUERY = "item_table.provider = ? AND item_table.system = ? ORDER BY item_table.point, item_table.provider, item_table.holder";
-    
-    public Item getItem(HolderString holderString);
-    
-    Item selectItem(String provider, String holder);
-    public static final String selectItem_QUERY = "item_table.provider = ? AND item_table.holder = ? ORDER BY item_table.point, item_table.provider, item_table.holder";
+	public Item[] getSystemItems(String provider, boolean system);
 
-    int updateItem(Item item);
+	public static final String getSystemItems_QUERY =
+		"item_table.provider = ? AND item_table.system = ? ORDER BY item_table.point, item_table.provider, item_table.holder";
 
-    /**
-     * システム属性の無いアイテム定義を取得します。
-     * 
-     * @return システム属性の無いアイテム定義を取得します。
-     */
-    public Item[] getNoSystemItems();
-    public static final String getNoSystemItems_QUERY = "item_table.system = '0' ORDER BY item_table.point, item_table.provider, item_table.holder";
+	public Item getItem(HolderString holderString);
+
+	Item selectItem(String provider, String holder);
+
+	public static final String selectItem_QUERY =
+		"item_table.provider = ? AND item_table.holder = ? ORDER BY item_table.point, item_table.provider, item_table.holder";
+
+	int updateItem(Item item);
+
+	/**
+	 * システム属性の無いアイテム定義を取得します。
+	 *
+	 * @return システム属性の無いアイテム定義を取得します。
+	 */
+	public Item[] getNoSystemItems();
+
+	public static final String getNoSystemItems_QUERY =
+		"item_table.system = '0' ORDER BY item_table.point, item_table.provider, item_table.holder";
+
+	/**
+	 * ジャンプページを更新します
+	 */
+	int updateJumpPage(String page, String provider, String holder);
+
+	static final String updateJumpPage_SQL =
+		"UPDATE item_table SET jump_path = ?, auto_jump_flag = '1'" +
+		" WHERE system = '1' AND data_type = 0 AND provider = ? AND holder = ?";
 }
