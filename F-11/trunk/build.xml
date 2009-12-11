@@ -3,6 +3,7 @@
 	<property name="src" value="." />
 	<property name="catsrc" value="cat/src" />
 	<property name="wizerdsrc" value="wizerd/src" />
+	<property name="hellosrc" value="hello/src" />
 	<property name="build" value="build" />
 	<property name="dist"  value="dist" />
 	<property name="lib"  value="lib" />
@@ -93,6 +94,14 @@
 				<include name="**/*.txt"/>
 				<include name="**/*.sql"/>
 			</fileset>
+			<fileset dir="${hellosrc}">
+				<include name="**/resources/*"/>
+				<include name="**/*.dicon"/>
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+				<include name="**/*.txt"/>
+				<include name="**/*.sql"/>
+			</fileset>
 		</copy>
 
 		<jar jarfile="${lib}/F-11.jar">
@@ -105,10 +114,10 @@
 		<copy file="${lib}/F-11.jar" todir="${appletlib}" />
 		<copy file="${lib}/F-11.jar" todir="${f-11editlib}" />
 		<copy file="${lib}/F-11.jar" todir="${f-11toollib}" />
-		
+
 		<delete file="${lib}/F-11.jar" />
 	</target>
-	
+
 	<target name="build" depends="compile,dist" />
 
 	<target name="clean">
@@ -116,7 +125,7 @@
 		<delete dir="${classes}" />
 		<delete file="${lib}/resources.jar"/>
 	</target>
-	
+
 	<target name="Javadoc">
 		<javadoc packagenames="org.F11.*"
 				sourcepath="src"
@@ -127,7 +136,7 @@
 			<classpath refid="compile.classpath"/>
 		</javadoc>
 	</target>
-	
+
 	<target name="cleanJavadoc">
 		<delete dir="${docs}/${Javadoc}" />
 	</target>

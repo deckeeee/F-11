@@ -55,7 +55,7 @@ public class ItemDaoTest extends S2DaoTestCase {
     	Item update = itemDao.selectItem("P2", "D_1900000_Digital");
     	update.setSystem(true);
     	itemDao.updateItem(update);
-    	
+
         Item[] items = itemDao.getSystemItems("P2", true);
         assertNotNull(items);
         assertEquals(1, items.length);
@@ -87,7 +87,7 @@ public class ItemDaoTest extends S2DaoTestCase {
             assertTrue(items[i].isSystem());
         }
     }
-    
+
     public void testGetItemTx() throws Exception {
     	Item update = itemDao.selectItem("P2", "D_1900000_Digital");
     	update.setSystem(true);
@@ -128,5 +128,9 @@ public class ItemDaoTest extends S2DaoTestCase {
             logger.info(items[i]);
             assertFalse(items[i].isSystem());
         }
+    }
+
+    public void testUpdateJumpPage() {
+    	itemDao.updateJumpPage("test", "P1", "D_1900000_Digital");
     }
 }
