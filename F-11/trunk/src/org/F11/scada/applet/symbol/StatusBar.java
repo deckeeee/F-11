@@ -157,4 +157,8 @@ public class StatusBar extends Box implements CompositeProperty,
 			setVisible(timer.isShowTime());
 		}
 	}
+
+	public void disConnect() {
+		timer.removeActionListener(this);
+	}
 }

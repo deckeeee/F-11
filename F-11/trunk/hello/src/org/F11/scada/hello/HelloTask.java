@@ -53,8 +53,8 @@ import org.xml.sax.SAXException;
  */
 public class HelloTask extends Task<Void, Void> {
 	private final Log log = LogFactory.getLog(HelloTask.class);
-	/** ファイルとページ構成オブジェクトのマップ */
-	private Map<File, PageFileStruct> pageMap;
+	/** ページ名とページ構成オブジェクトのマップ */
+	private Map<String, PageFileStruct> pageMap;
 
 	public HelloTask(Application application, JTextField fileField)
 			throws IOException,
@@ -88,19 +88,20 @@ public class HelloTask extends Task<Void, Void> {
 		return filelistMap;
 	}
 
-	private Map<File, PageFileStruct> getPageMap(Map<File, Integer> filelistMap)
-		throws IOException,
-		SAXException {
-		Map<File, PageFileStruct> pageMap =
-			new LinkedHashMap<File, PageFileStruct>();
+	private Map<String, PageFileStruct> getPageMap(
+		Map<File, Integer> filelistMap) throws IOException, SAXException {
+		Map<String, PageFileStruct> pageMap =
+			new LinkedHashMap<String, PageFileStruct>();
 		for (Map.Entry<File, Integer> entry : filelistMap.entrySet()) {
 			BufferedInputStream in = null;
 			try {
 				in =
 					new BufferedInputStream(new FileInputStream(entry.getKey()));
 				Map<String, PageDefine> map = PageDefineUtil.parse(in);
-				pageMap.put(entry.getKey(), new PageFileStruct(
-						entry.getValue(), map));
+				for (Map.Entry<String, PageDefine> pEntry : map.entrySet()) {
+					pageMap.put(pEntry.getKey(), new PageFileStruct(entry
+							.getValue(), pEntry.getKey(), pEntry.getValue()));
+				}
 			} finally {
 				if (in != null) {
 					in.close();
@@ -117,10 +118,8 @@ public class HelloTask extends Task<Void, Void> {
 		Map<HolderString, Integer> holderMap =
 			new HashMap<HolderString, Integer>();
 		int i = 0;
-		for (Map.Entry<File, PageFileStruct> entry : pageMap.entrySet()) {
-			setMessage("Page : "
-				+ entry.getKey().getAbsolutePath()
-				+ " を処理中です。");
+		for (Map.Entry<String, PageFileStruct> entry : pageMap.entrySet()) {
+			setMessage("Page : " + entry.getKey() + " を処理中です。");
 			setProgress(i, 0, pageMap.size());
 			for (HolderString hs : entry.getValue().getHolders()) {
 				Integer priority = entry.getValue().getPriority();
@@ -156,27 +155,16 @@ public class HelloTask extends Task<Void, Void> {
 
 	private static class PageFileStruct {
 		private final Integer priority;
-		private final Map<String, PageDefine> pageMap;
 		private final String pageName;
 		private final PageDefine pageDefine;
 
-		public PageFileStruct(Integer priority, Map<String, PageDefine> pageMap) {
+		public PageFileStruct(
+				Integer priority,
+				String pageName,
+				PageDefine pageDefine) {
 			this.priority = priority;
-			this.pageMap = pageMap;
-			Set<String> keyset = pageMap.keySet();
-			PageDefine pd = null;
-			String pn = null;
-			if (keyset.isEmpty()) {
-				throw new IllegalArgumentException();
-			} else {
-				for (String string : keyset) {
-					pd = pageMap.get(string);
-					pn = string;
-					break;
-				}
-			}
-			pageDefine = pd;
-			pageName = pn;
+			this.pageDefine = pageDefine;
+			this.pageName = pageName;
 		}
 
 		public Integer getPriority() {
@@ -190,6 +178,5 @@ public class HelloTask extends Task<Void, Void> {
 		public String getPageName() {
 			return pageName;
 		}
-
 	}
 }

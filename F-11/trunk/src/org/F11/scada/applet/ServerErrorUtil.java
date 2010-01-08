@@ -60,7 +60,7 @@ public final class ServerErrorUtil {
 				if (sound != null) {
 					ERROR_SOUND = sound;
 				}
-				
+
 			} else {
 				log.info("サーバーコネクションエラーが定義されていません、「" + ERROR_MESSAGE + "」を使用します");
 			}
@@ -71,14 +71,14 @@ public final class ServerErrorUtil {
 	}
 
 	private static Object[] CAREER_MESSAGE =
-		{"", Boolean.FALSE, "0", "RED", "", "", "", new Integer(0), "", "", "", Boolean.TRUE, "TIMESTAMP", "", ERROR_MESSAGE, "発生"};
+		{"", Boolean.FALSE, "0", "RED", "", "", "", new Integer(0), "", "", "", Boolean.TRUE, "TIMESTAMP", "", ERROR_MESSAGE, "", "発生"};
 	private static Object[] HISTORY_MESSAGE =
-		{"", Boolean.FALSE, "0", "RED", "", "", "", "TIMESTAMP", null, "", ERROR_MESSAGE, "────"};
+		{"", Boolean.FALSE, "0", "RED", "", "", "", "TIMESTAMP", null, "", ERROR_MESSAGE, "", "", "", "", "", "────"};
 	private static Object[] SUMMARY_MESSAGE =
-		{"", Boolean.FALSE, "0", "RED", "", "", "", "TIMESTAMP", null, "", ERROR_MESSAGE, "発生"};
+		{"", Boolean.FALSE, "0", "RED", "", "", "", "TIMESTAMP", null, "", ERROR_MESSAGE, "", "発生"};
 
 	private static Object[] CAREER_MESSAGE_OFF =
-		{"", Boolean.FALSE, "0", "BLACK", "", "", "", new Integer(0), "", "", "",  Boolean.FALSE, "TIMESTAMP", "", ERROR_MESSAGE, "復旧"};
+		{"", Boolean.FALSE, "0", "BLACK", "", "", "", new Integer(0), "", "", "",  Boolean.FALSE, "TIMESTAMP", "", ERROR_MESSAGE, "", "復旧"};
 	//ジャンプパス,自動ジャンプ,優先順位,表示色,point,provider,holder,サウンドタイプ,サウンドパス,Emailグループ,Emailモード,onoff,日時,記号,名称,警報・状態
 //	private static Object[] HISTORY_MESSAGE_OFF =
 //		{"", Boolean.FALSE, "0", "BLACK", "", "", "", "TIMESTAMP", null, "", ERROR_MESSAGE, "────"};
@@ -123,7 +123,7 @@ public final class ServerErrorUtil {
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 		return model;
 	}
-	
+
 	public static void display() {
 		JTabbedPane tab = new JTabbedPane();
 		tab.addTab("履歴", new JScrollPane(new JTable(getAlarmTableModel(AlarmDataProvider.CAREER))));
@@ -135,7 +135,7 @@ public final class ServerErrorUtil {
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	/**
 	 * RemoteException 例外を生成します。
 	 * @param curse 元になる例外
@@ -166,7 +166,7 @@ public final class ServerErrorUtil {
 		row = searchRow(model, ERROR_MESSAGE, 10, true);
 		if (row >= 0) {
 			model.setValueAt(now, row, 8);
-			model.setValueAt("復旧", row, 11);
+			model.setValueAt("復旧", row, 12);
 			model.setValueAt("BLACK", row, 3);
 		}
 	}

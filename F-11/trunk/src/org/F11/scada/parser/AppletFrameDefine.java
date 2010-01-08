@@ -47,6 +47,7 @@ import org.F11.scada.applet.DataProviderProxy;
 import org.F11.scada.applet.DataProviderProxyDefineable;
 import org.F11.scada.applet.ServerErrorUtil;
 import org.F11.scada.applet.symbol.BasePane;
+import org.F11.scada.applet.symbol.StatusBar;
 import org.F11.scada.parser.tree.TreeDefine;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.server.frame.FrameDefineHandler;
@@ -111,14 +112,12 @@ public class AppletFrameDefine {
 	public AppletFrameDefine(
 			Authenticationable authenticationable,
 			PageChanger changer,
-			DataProviderProxyDefineable proxyDefine) throws IOException,
+			DataProviderProxyDefineable proxyDefine)
+			throws IOException,
 			SAXException {
 
-		this(
-			authenticationable,
-			changer,
-			proxyDefine,
-			new FrameDefineHandlerFactoryImpl());
+		this(authenticationable, changer, proxyDefine,
+				new FrameDefineHandlerFactoryImpl());
 	}
 
 	/**
@@ -129,7 +128,8 @@ public class AppletFrameDefine {
 			PageChanger changer,
 			DataProviderProxyDefineable proxyDefine,
 			FrameDefineHandlerFactory frameDefineHandlerFactory)
-			throws IOException, SAXException {
+			throws IOException,
+			SAXException {
 
 		this.authenticationable = authenticationable;
 		this.changer = changer;
@@ -160,9 +160,9 @@ public class AppletFrameDefine {
 	}
 
 	private void lookup()
-			throws MalformedURLException,
-			RemoteException,
-			NotBoundException {
+		throws MalformedURLException,
+		RemoteException,
+		NotBoundException {
 		handler = frameDefineHandlerFactory.getFrameDefineHandler();
 	}
 
@@ -236,8 +236,7 @@ public class AppletFrameDefine {
 					new F11Handler(authenticationable, changer, null);
 				XMLReader parser =
 					XMLReaderFactory.createXMLReader(EnvironmentManager.get(
-						"/org.xml.sax.driver",
-						""));
+							"/org.xml.sax.driver", ""));
 				parser.setContentHandler(frameDef);
 				sr = new StringReader(page.getSrcXml());
 				InputSource is = new InputSource(sr);
@@ -247,13 +246,13 @@ public class AppletFrameDefine {
 				PageMapWrapper pageMapWrapper =
 					(PageMapWrapper) cachePageMap.remove(name);
 				cacheHolderSet.removeAll(pageMapWrapper.pageDefine
-					.getDataHolders());
+						.getDataHolders());
 				BasePane bp =
 					(BasePane) pageMapWrapper.getPageMap().get(ITEM_KEY_PANE);
 				bp.destroyPage();
 
 				cachePageMap.put(name, new PageMapWrapper(System
-					.currentTimeMillis(), pageMap, page));
+						.currentTimeMillis(), pageMap, page));
 				cacheHolderSet.addAll(page.getDataHolders());
 			} catch (Exception e) {
 				cachePageMap.remove(name);
@@ -386,8 +385,7 @@ public class AppletFrameDefine {
 				new F11Handler(authenticationable, changer, argv);
 			XMLReader parser =
 				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
-					"/org.xml.sax.driver",
-					""));
+						"/org.xml.sax.driver", ""));
 			parser.setContentHandler(frameDef);
 			sr = new StringReader(page.getSrcXml());
 			InputSource is = new InputSource(sr);
@@ -397,7 +395,7 @@ public class AppletFrameDefine {
 			BasePane bp = (BasePane) pageMap.get(ITEM_KEY_PANE);
 			if (bp.isCache()) {
 				cachePageMap.put(name, new PageMapWrapper(System
-					.currentTimeMillis(), pageMap, page));
+						.currentTimeMillis(), pageMap, page));
 				cacheHolderSet.addAll(page.getDataHolders());
 			}
 			return pageMap;
@@ -456,14 +454,13 @@ public class AppletFrameDefine {
 		if (null != authenticationable) {
 			String value =
 				authenticationable.getConfiguration().getString(
-					"xwife.applet.Applet.alarmStopKey.write",
-					"");
+						"xwife.applet.Applet.alarmStopKey.write", "");
 			if (!"".equals(value)) {
 				int p = value.indexOf('_');
 				if (0 < p) {
 					HolderString hs =
 						new HolderString(value.substring(0, p), value
-							.substring(p + 1));
+								.substring(p + 1));
 					holders.remove(hs);
 				}
 			}
@@ -474,14 +471,13 @@ public class AppletFrameDefine {
 		if (null != authenticationable) {
 			String value =
 				authenticationable.getConfiguration().getString(
-					"xwife.applet.Applet.alarmStopKey.event",
-					"");
+						"xwife.applet.Applet.alarmStopKey.event", "");
 			if (!"".equals(value)) {
 				int p = value.indexOf('_');
 				if (0 < p) {
 					HolderString hs =
 						new HolderString(value.substring(0, p), value
-							.substring(p + 1));
+								.substring(p + 1));
 					holders.remove(hs);
 				}
 			}
@@ -501,6 +497,11 @@ public class AppletFrameDefine {
 	 * @return ステータスバーオブジェクト
 	 */
 	public JComponent getStatusBar() {
+		logger.info("getStatusBar");
+		if (statusBar instanceof StatusBar) {
+			StatusBar bar = (StatusBar) statusBar;
+			bar.disConnect();
+		}
 		statusBar = new JPanel();
 		if (serverError != null) {
 			return statusBar;
@@ -542,15 +543,14 @@ public class AppletFrameDefine {
 		try {
 			XMLReader parser =
 				XMLReaderFactory.createXMLReader(EnvironmentManager.get(
-					"/org.xml.sax.driver",
-					""));
+						"/org.xml.sax.driver", ""));
 			F11Handler frameDef =
 				new F11Handler(authenticationable, changer, null);
 			parser.setContentHandler(frameDef);
 			StringUtil util = new StringUtil();
 			sr =
 				new StringReader(util.replaceAllPointName(statusBarPage
-					.getSrcXml()));
+						.getSrcXml()));
 			InputSource is = new InputSource(sr);
 			parser.parse(is);
 			Map itemMap = frameDef.getItemMap();

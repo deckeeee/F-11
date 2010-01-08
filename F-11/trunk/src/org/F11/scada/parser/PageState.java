@@ -42,7 +42,7 @@ import org.xml.sax.Attributes;
 
 /**
  * XPath=/page_map/page 状態を表すクラスです。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class PageState implements State, SymbolContainerState {
@@ -53,12 +53,10 @@ public class PageState implements State, SymbolContainerState {
 	BasePane basePage;
 	JComponent toolBar;
 
-	private static final String ITEM_KEY_PANE = "PANE";
-	private static final String ITEM_KEY_TOOLBAR = "TOOLBAR";
 	private static final boolean isGraphCache;
 	static {
-		String graphCache = EnvironmentManager
-				.get("/server/graphcache", "true");
+		String graphCache =
+			EnvironmentManager.get("/server/graphcache", "true");
 		isGraphCache = Boolean.valueOf(graphCache).booleanValue();
 	}
 
@@ -111,10 +109,12 @@ public class PageState implements State, SymbolContainerState {
 			stack.push(new CalendarState(tagName, atts, this));
 		} else if (tagName.equals("trendgraph")) {
 			// 自動キャッシュを有効にした場合、PageXmlCacheRuleSetにルールを追加すること
-			stack.push(new TrendGraphState(tagName, atts, this, pagemapState.argv));
+			stack.push(new TrendGraphState(tagName, atts, this,
+					pagemapState.argv));
 			setPageCache();
 		} else if (tagName.equals("trendgraph2")) {
-			stack.push(new TrendGraph2State(tagName, atts, this, pagemapState.argv));
+			stack.push(new TrendGraph2State(tagName, atts, this,
+					pagemapState.argv));
 			setPageCache();
 		} else if (tagName.equals("bargraph")) {
 			stack.push(new BarGraphState(tagName, atts, this));
@@ -141,7 +141,8 @@ public class PageState implements State, SymbolContainerState {
 			stack.push(new BarGraph2State(tagName, atts, this));
 			setPageCache();
 		} else if (tagName.equals("trendgraph3")) {
-			stack.push(new TrendGraph3State(tagName, atts, this, pagemapState.argv));
+			stack.push(new TrendGraph3State(tagName, atts, this,
+					pagemapState.argv));
 			setPageCache();
 		} else {
 			logger.info("tagName:" + tagName);
@@ -164,11 +165,12 @@ public class PageState implements State, SymbolContainerState {
 		if (tagName.equals("page")) {
 			stack.pop();
 
-			pagemapState.itemMap.put(ITEM_KEY_PANE, basePage);
+			pagemapState.itemMap.put(AppletFrameDefine.ITEM_KEY_PANE, basePage);
 			if (toolBar == null) {
 				toolBar = createToolBar();
 			}
-			pagemapState.itemMap.put(ITEM_KEY_TOOLBAR, toolBar);
+			pagemapState.itemMap.put(AppletFrameDefine.ITEM_KEY_TOOLBAR,
+					toolBar);
 			basePage = null;
 		} else {
 			logger.debug("tagName:" + tagName);
@@ -183,7 +185,7 @@ public class PageState implements State, SymbolContainerState {
 
 	/**
 	 * ベースにシンボルを追加します。
-	 * 
+	 *
 	 * @param comp コンポーネントオブジェクト
 	 */
 	public void addPageSymbol(JComponent comp) {
@@ -192,7 +194,7 @@ public class PageState implements State, SymbolContainerState {
 
 	/**
 	 * 認証オブジェクトを返します。
-	 * 
+	 *
 	 * @return 認証オブジェクト
 	 */
 	public Authenticationable getAuthenticationable() {
@@ -201,7 +203,7 @@ public class PageState implements State, SymbolContainerState {
 
 	/**
 	 * ツールバーオブジェクトを設定します。
-	 * 
+	 *
 	 * @param comp ツールバーオブジェクト
 	 */
 	public void setToolBar(JComponent comp) {
@@ -210,7 +212,7 @@ public class PageState implements State, SymbolContainerState {
 
 	/**
 	 * ページ切替オブジェクトを返します。
-	 * 
+	 *
 	 * @return ページ切替オブジェクト
 	 */
 	public PageChanger getPageChanger() {

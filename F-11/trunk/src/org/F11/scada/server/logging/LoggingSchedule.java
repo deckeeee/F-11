@@ -70,7 +70,8 @@ public abstract class LoggingSchedule {
 			60L);
 	/** 1分毎ロギング月出力スケジュール */
 	public static final LoggingSchedule ONEHOURMONTHOUT = new HourSchedule();
-	
+	public static final LoggingSchedule ONEHOURMONTHOUT2 = new HourSchedule();
+
 	/** 1月分/月ロギング出力スケジュール(吉本専用) */
 	public static final LoggingSchedule MONTHLYMONTHOUT = new MonthlySchedule();
 
@@ -95,7 +96,7 @@ public abstract class LoggingSchedule {
 	/**
 	 * TimerTask をスケジュールします。 ロギングの間隔は各スケジュールクラスの間隔になります。具体的には、MinuteSchedule は
 	 * 秒が 0 になる毎、HourSchedule は分が 0 になる毎にロギングを開始します。
-	 * 
+	 *
 	 * @param task TimerTask
 	 */
 	abstract public void add(TimerTask task);
@@ -110,7 +111,7 @@ public abstract class LoggingSchedule {
 	 * offset は各スケジュール毎に単位が異なります。ロギングスケジュールの単位の、下を 表す単位が offset の単位となります。具体的には
 	 * MinuteSchedule では秒のオフセットを指定し、 HourSchedule では分のオフセットを指定します。
 	 * </p>
-	 * 
+	 *
 	 * @param task タスク
 	 * @param offset オフセット
 	 */
@@ -125,7 +126,7 @@ public abstract class LoggingSchedule {
 	 * <p>
 	 * offset はどのスケジュールでもミリ秒を指定します。
 	 * </p>
-	 * 
+	 *
 	 * @param task タスク
 	 * @param offset オフセット
 	 */
@@ -133,7 +134,7 @@ public abstract class LoggingSchedule {
 
 	/**
 	 * オフセット値のチェックをします。
-	 * 
+	 *
 	 * @param offset オフセット値
 	 */
 	abstract protected void checkOffset(int offset);
@@ -356,7 +357,7 @@ public abstract class LoggingSchedule {
 			cal.set(Calendar.MILLISECOND, offset);
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
-		
+
 		private int toMinute(int offset) {
 			return offset / 60000;
 		}
@@ -593,7 +594,7 @@ public abstract class LoggingSchedule {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.F11.scada.server.logging.LoggingSchedule#add(java.util.TimerTask,
 		 *      int)
 		 */
@@ -761,7 +762,7 @@ public abstract class LoggingSchedule {
 
 	/**
 	 * テストメインクラス
-	 * 
+	 *
 	 * @param argv コマンド引数
 	 */
 	public static void main(String[] argv) {
