@@ -47,6 +47,8 @@ public class CsvScheduleFactory {
 			return new MinuteHourOutSchedule();
 		} else if ("ONEHOURMONTHOUT".equalsIgnoreCase(name)) {
 			return new OneHourMonthOutSchedule();
+		} else if ("ONEHOURMONTHOUT2".equalsIgnoreCase(name)) {
+			return new OneHourMonthOut2Schedule();
 		} else if ("GODA01".equals(name)) {
 			return new GODA01Schedule();
 		} else if (name.startsWith("GODA")) {
@@ -60,9 +62,9 @@ public class CsvScheduleFactory {
 
 	private boolean isTenminute(String name) {
 		return "TENMINUTE".equalsIgnoreCase(name)
-				|| "QMINUTE".equalsIgnoreCase(name)
-				|| "FIVEMINUTE".equalsIgnoreCase(name)
-				|| "THIRTYMINUTE".equalsIgnoreCase(name)
-				|| "SIXTYMINUTE".equalsIgnoreCase(name);
+			|| "QMINUTE".equalsIgnoreCase(name)
+			|| "FIVEMINUTE".equalsIgnoreCase(name)
+			|| "THIRTYMINUTE".equalsIgnoreCase(name)
+			|| "SIXTYMINUTE".equalsIgnoreCase(name);
 	}
 }

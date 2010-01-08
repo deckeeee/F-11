@@ -487,7 +487,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	/**
 	 * 編集可能シンボルをリスナー登録します。リスナー登録されたシンボルは、ユーザー認証
 	 * が行われてユーザーが変更された場合に、自分自身の編集可能フラグを更新します。
-	 * 
+	 *
 	 * @param symbol 編集可能シンボルオブジェクト
 	 */
 	public void addEditable(Editable symbol) {
@@ -499,7 +499,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 編集可能シンボルをリスナーから削除します。
-	 * 
+	 *
 	 * @param symbol 編集可能シンボルオブジェクト
 	 */
 	public void removeEditable(Editable symbol) {
@@ -548,7 +548,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 設定されている画面ロックモードの状態を返します。
-	 * 
+	 *
 	 * @return ロックモードなら true、そうでないなら false
 	 */
 	public boolean isDisplayLock() {
@@ -557,7 +557,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 画面ロックモードを設定します。
-	 * 
+	 *
 	 * @param isDisplayLock 画面ロックする場合は true、そうでない場合は false
 	 */
 	public void setDisplayLock(boolean isDisplayLock) {
@@ -647,7 +647,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	private void treeClicker() {
 		if (isTreeClick
 			|| configuration.getBoolean("test.enable.treeclicker", false)) {
-			new TreeClicker();
+			new TreeClicker(tree);
 		}
 	}
 
@@ -693,7 +693,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 操作ツリーからkeyを検索し、存在すればTreePathを返します。
-	 * 
+	 *
 	 * @param key キー文字列
 	 * @return 検索結果のTreePath。検索文字列が存在しなければnullを返します。
 	 */
@@ -750,7 +750,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param pageMap ページマップオブジェクト
 		 * @param session セッション情報
 		 */
@@ -911,7 +911,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 指定されたURLの音源をループ再生します
-	 * 
+	 *
 	 * @param path
 	 */
 	public void playAlarm(String path) {
@@ -972,7 +972,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 設定されている再生禁止モードの状態を返します。
-	 * 
+	 *
 	 * @return 再生禁止モードなら true、そうでないなら false
 	 */
 	public boolean isAlarmSoundLock() {
@@ -981,7 +981,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 再生禁止モードを設定します。
-	 * 
+	 *
 	 * @param isDisplayLock 再生禁止する場合は true、そうでない場合は false
 	 */
 	public void setAlarmSoundLock(boolean isAlarmSoundLock) {
@@ -990,7 +990,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * このオブジェクトがアプリケーションとして、起動されている かどうかを返します。
-	 * 
+	 *
 	 * @return アプリケーションとして起動されている場合は true を そうでない場合は false を返します。
 	 */
 	public boolean isStandAlone() {
@@ -1005,7 +1005,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * 閉じるボタンの挙動を設定します。
-	 * 
+	 *
 	 * @param frame 親フレーム
 	 */
 	protected static void setCloseAction(JFrame frame, AbstractWifeApplet applet) {
@@ -1019,7 +1019,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	/**
 	 * ClientConfiguration.xmlの設定より、閉じるボタンの挙動を返します。
-	 * 
+	 *
 	 * @return ClientConfiguration.xmlの設定より、閉じるボタンの挙動を返します。
 	 */
 	protected static boolean isClose(AbstractWifeApplet applet) {
@@ -1074,7 +1074,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	public void setAppletTypeC(boolean isAppletTypeC) {
 		this.isAppletTypeC = isAppletTypeC;
 	}
-	
+
 	public String getLogoutUser() {
 		return logoutuser;
 	}

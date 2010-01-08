@@ -34,6 +34,7 @@ import java.util.Enumeration;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JTree;
 import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -46,11 +47,11 @@ import org.apache.log4j.Logger;
 
 /**
  * 一定期間でサーバーページアクセスを巡回するクラスです。
- * 
- * Tree.txtの内容よりページのリストを生成し、1時間毎に順次ページの取得処理を
- * 実行します。
- * 
+ *
+ * Tree.txtの内容よりページのリストを生成し、1時間毎に順次ページの取得処理を 実行します。
+ *
  * ※全くアクセスがないとサーバーが止まる現象の対処の為作成
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class TreeClicker extends JFrame implements Service {
@@ -59,18 +60,23 @@ public class TreeClicker extends JFrame implements Service {
 	private FrameDefineHandler handler;
 	/** スケジュールタイマー */
 	private Timer timer;
-	
+
 	private int maxNodeCount;
-	
+	/** クライアントのツリー */
+	private final JTree tree;
+
 	/** Logging API */
 	private static Logger log = Logger.getLogger(TreeClicker.class);
 
 	/**
 	 * 巡回クラスを初期化します。
+	 *
+	 * @param tree
 	 */
-	public TreeClicker() {
+	public TreeClicker(PageTree tree) {
+		this.tree = tree;
 		init();
-	    start();
+		start();
 		createTimer(new KeyClickTask());
 	}
 
@@ -78,7 +84,8 @@ public class TreeClicker extends JFrame implements Service {
 		JButton start = new JButton("Start");
 		start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(timer != null) {
+				if (timer != null) {
+					expandAll(tree);
 					createTree();
 					timer.restart();
 				}
@@ -87,7 +94,7 @@ public class TreeClicker extends JFrame implements Service {
 		JButton stop = new JButton("Stop");
 		stop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(timer != null) {
+				if (timer != null) {
 					timer.stop();
 				}
 			}
@@ -101,12 +108,21 @@ public class TreeClicker extends JFrame implements Service {
 		setVisible(true);
 	}
 
+	private void expandAll(JTree tree) {
+		int row = 0;
+		while (row < tree.getRowCount()) {
+			tree.expandRow(row);
+			row++;
+		}
+	}
+
 	public void start() {
 	}
 
 	private void createTimer(ActionListener l) {
 		ClientConfiguration configuration = new ClientConfiguration();
-		int intervalTime = configuration.getInt("test.treeclick.interval", 5000);
+		int intervalTime =
+			configuration.getInt("test.treeclick.interval", 5000);
 		log.info("intervalTime : " + intervalTime);
 		timer = new Timer(intervalTime, l);
 	}
@@ -119,7 +135,8 @@ public class TreeClicker extends JFrame implements Service {
 			} catch (Exception e) {
 				try {
 					Thread.sleep(Globals.RMI_CONNECTION_RETRY_WAIT_TIME);
-				} catch (InterruptedException e1) {}
+				} catch (InterruptedException e1) {
+				}
 				continue;
 			}
 		}
@@ -127,11 +144,16 @@ public class TreeClicker extends JFrame implements Service {
 	}
 
 	public void stop() {
-	    timer.stop();
+		timer.stop();
 	}
 
-	private void lookup() throws MalformedURLException, RemoteException, NotBoundException {
-		handler = (FrameDefineHandler) Naming.lookup(WifeUtilities.createRmiFrameDefineManager());
+	private void lookup()
+		throws MalformedURLException,
+		RemoteException,
+		NotBoundException {
+		handler =
+			(FrameDefineHandler) Naming.lookup(WifeUtilities
+					.createRmiFrameDefineManager());
 	}
 
 	/**
@@ -140,28 +162,25 @@ public class TreeClicker extends JFrame implements Service {
 	private void createSelectTree() {
 		maxNodeCount = 0;
 		try {
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) handler
-					.getMenuTreeRoot("").getRootNode();
+			DefaultMutableTreeNode root =
+				(DefaultMutableTreeNode) handler.getMenuTreeRoot("")
+						.getRootNode();
 			for (Enumeration e = root.depthFirstEnumeration(); e
 					.hasMoreElements();) {
-				DefaultMutableTreeNode n = (DefaultMutableTreeNode) e
-						.nextElement();
-				if (n.isLeaf()) {
-					maxNodeCount++;
-				} else {
-					maxNodeCount += 2;
-				}
+				DefaultMutableTreeNode n =
+					(DefaultMutableTreeNode) e.nextElement();
+				maxNodeCount++;
 			}
 		} catch (RemoteException ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	private class KeyClickTask implements ActionListener {
 		private boolean isNext = true;
 		private Robot robot;
 		private int pageCount;
-		
+
 		KeyClickTask() {
 			try {
 				robot = new Robot();
@@ -172,8 +191,8 @@ public class TreeClicker extends JFrame implements Service {
 
 		public void actionPerformed(ActionEvent e) {
 			if (isNext) {
-				robot.keyPress(KeyEvent.VK_RIGHT);
-				robot.keyRelease(KeyEvent.VK_RIGHT);
+				robot.keyPress(KeyEvent.VK_DOWN);
+				robot.keyRelease(KeyEvent.VK_DOWN);
 				pageCount++;
 				if (pageCount >= maxNodeCount) {
 					isNext = false;

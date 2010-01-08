@@ -32,10 +32,10 @@ import org.xml.sax.Attributes;
 
 /**
  * xpath /page_map/statusbar 状態を表すクラスです。
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class StatusbarState implements State, SymbolContainerState {
-	private static final String ITEM_KEY_STATUSBAR = "STATUSBAR";
 	private static Logger logger;
 
 	private PagemapState pagemapState;
@@ -54,7 +54,6 @@ public class StatusbarState implements State, SymbolContainerState {
 		this.pagemapState = pagemapState;
 		statusBar = new StatusBar();
 	}
-
 
 	/*
 	 * @see org.F11.scada.parser.State#add(String, Attributes, Stack)
@@ -86,7 +85,8 @@ public class StatusbarState implements State, SymbolContainerState {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Pop : " + DisplayState.toString(tagName, stack));
 			}
-			pagemapState.itemMap.put(ITEM_KEY_STATUSBAR, statusBar);
+			pagemapState.itemMap.put(AppletFrameDefine.ITEM_KEY_STATUSBAR,
+					statusBar);
 			statusBar = null;
 			stack.pop();
 		} else {
@@ -96,14 +96,16 @@ public class StatusbarState implements State, SymbolContainerState {
 
 	/**
 	 * ベースにシンボルを追加します。
+	 *
 	 * @param comp コンポーネントオブジェクト
-	 */	
+	 */
 	public void addPageSymbol(JComponent comp) {
 		statusBar.addPageSymbol(comp);
 	}
-	
+
 	/**
 	 * 認証オブジェクトを返します。
+	 *
 	 * @return 認証オブジェクト
 	 */
 	public Authenticationable getAuthenticationable() {
@@ -112,6 +114,7 @@ public class StatusbarState implements State, SymbolContainerState {
 
 	/**
 	 * ページ切替オブジェクトを返します。
+	 *
 	 * @return ページ切替オブジェクト
 	 */
 	public PageChanger getPageChanger() {
