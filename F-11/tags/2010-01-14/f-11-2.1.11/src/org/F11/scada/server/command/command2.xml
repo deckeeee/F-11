@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE command-provider PUBLIC "-//F-11 2.0//DTD F11 Command Configuration//EN" 
+	"http://f-11.sourceforge.jp/dtds/command20.dtd">
+<command-provider>
+	<command provider="P1" holder="H1">
+		<class className="org.F11.scada.server.command.TestCommand"/>
+	</command>
+
+	<expression value="P1_H2">
+		<class className="org.F11.scada.server.command.TestCommand"/>
+	</expression>
+</command-provider>
