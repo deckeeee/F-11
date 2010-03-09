@@ -39,11 +39,11 @@ public class WifeAppletB extends AbstractNewApplet {
 	private static final long serialVersionUID = 6329341038621031829L;
 
 	public WifeAppletB() throws RemoteException {
-		this(false);
+		this(false, false);
 	}
 
-	public WifeAppletB(boolean isStandalone) throws RemoteException {
-		super(isStandalone);
+	public WifeAppletB(boolean isStandalone, boolean soundoffAtStarted) throws RemoteException {
+		super(isStandalone, soundoffAtStarted);
 	}
 
 	protected JComponent createAlarmComponent(
@@ -101,9 +101,17 @@ public class WifeAppletB extends AbstractNewApplet {
 	// Main ÉÅÉ\ÉbÉh
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
+		boolean sound = false;
+		if (args != null) {
+			for (int i = 0; i < args.length; i++) {
+				if ("-nosound".equalsIgnoreCase(args[i])) {
+					sound = true;
+				}
+			}
+		}
 		WifeAppletB applet = null;
 		try {
-			applet = new WifeAppletB(true);
+			applet = new WifeAppletB(true, sound);
 		} catch (RemoteException e) {
 			JOptionPane.showInternalMessageDialog(
 					frame,

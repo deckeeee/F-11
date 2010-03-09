@@ -50,17 +50,18 @@ public class WifeAppletD extends AbstractNewApplet {
 	private static final long serialVersionUID = -5167263979547337541L;
 
 	public WifeAppletD() throws RemoteException {
-		this(false);
+		this(false, false);
 	}
 
-	public WifeAppletD(boolean isStandalone) throws RemoteException {
-		super(isStandalone);
+	public WifeAppletD(boolean isStandalone, boolean soundoffAtStarted)
+			throws RemoteException {
+		super(isStandalone, soundoffAtStarted);
 		setAppletTypeC(true);
 	}
 
 	protected JComponent createAlarmComponent(
-			AbstractNewApplet applet,
-			String alarmDefPath) {
+		AbstractNewApplet applet,
+		String alarmDefPath) {
 		return new AlarmPanel(applet, alarmDefPath);
 	}
 
@@ -114,16 +115,13 @@ public class WifeAppletD extends AbstractNewApplet {
 
 		private void setTabSync(JComponent alarm) {
 			if (wifeApplet.configuration.getBoolean(
-				"org.F11.scada.xwife.applet.AppletD.tabsync",
-				false)) {
+					"org.F11.scada.xwife.applet.AppletD.tabsync", false)) {
 				AlarmTabbedPane tab1 =
 					(AlarmTabbedPane) ComponentUtil.getChildrenComponent(
-						AlarmTabbedPane.class,
-						panelNewAlarm);
+							AlarmTabbedPane.class, panelNewAlarm);
 				AlarmTabbedPane tab2 =
 					(AlarmTabbedPane) ComponentUtil.getChildrenComponent(
-						AlarmTabbedPane.class,
-						alarm);
+							AlarmTabbedPane.class, alarm);
 				tab1.addChangeListener(new TabSyncListener(tab2));
 				tab2.addChangeListener(new TabSyncListener(tab1));
 			}
@@ -137,7 +135,7 @@ public class WifeAppletD extends AbstractNewApplet {
 				final Component loggingFinder =
 					new OperationLoggingFinder(loggingTableModel);
 				tabbedPane.addTab("操作ログ", null, new OperationLoggingTable(
-					loggingTableModel), "操作ログ");
+						loggingTableModel), "操作ログ");
 
 				tabbedPane.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent e) {
@@ -175,11 +173,10 @@ public class WifeAppletD extends AbstractNewApplet {
 			logger.debug("changeAlarmPanel");
 			if (panelAlarmList.isVisible()) {
 				panelAlarmList.setVisible(false);
-				logger.info(dimension);
 				panelNewAlarm.setMinimumSize(dimension);
 				panelNewAlarm.setVisible(true);
 				wifeApplet.mainSplit.setDividerLocation(wifeApplet.mainSplit
-					.getMaximumDividerLocation());
+						.getMaximumDividerLocation());
 				panelNewAlarm.setMinimumSize(Globals.ZERO_DIMENSION);
 			} else {
 				if (null == dimension) {
@@ -188,8 +185,7 @@ public class WifeAppletD extends AbstractNewApplet {
 				panelAlarmList.setVisible(true);
 				panelNewAlarm.setVisible(false);
 				if (wifeApplet.configuration.getBoolean(
-					"org.F11.scada.xwife.applet.typeDmode",
-					false)) {
+						"org.F11.scada.xwife.applet.typeDmode", false)) {
 					tab.setSelectedIndex(0);
 				}
 
@@ -211,9 +207,9 @@ public class WifeAppletD extends AbstractNewApplet {
 
 	/**
 	 * 複数のタブペインの選択インデックスを同期するリスナーです。
-	 * 
+	 *
 	 * @author maekawa
-	 * 
+	 *
 	 */
 	private static class TabSyncListener implements ChangeListener {
 		/** 同期するタブペイン */
@@ -221,7 +217,7 @@ public class WifeAppletD extends AbstractNewApplet {
 
 		/**
 		 * 同期するリスナーを生成します。
-		 * 
+		 *
 		 * @param pane 同期するタブペイン
 		 */
 		TabSyncListener(JTabbedPane pane) {
@@ -237,17 +233,24 @@ public class WifeAppletD extends AbstractNewApplet {
 	// Main メソッド
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
+		boolean sound = false;
+		if (args != null) {
+			for (int i = 0; i < args.length; i++) {
+				if ("-nosound".equalsIgnoreCase(args[i])) {
+					sound = true;
+				}
+			}
+		}
 		WifeAppletD applet = null;
 		try {
-			applet = new WifeAppletD(true);
+			applet = new WifeAppletD(true, sound);
 		} catch (RemoteException e) {
-			JOptionPane.showInternalMessageDialog(
-				frame,
-				ServerErrorUtil.ERROR_MESSAGE,
-				ServerErrorUtil.ERROR_MESSAGE,
-				JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showInternalMessageDialog(frame,
+					ServerErrorUtil.ERROR_MESSAGE,
+					ServerErrorUtil.ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 		setCloseAction(frame, applet);
+
 		frame.setTitle(getTitle());
 		frame.getContentPane().add(applet, BorderLayout.CENTER);
 		try {
@@ -257,9 +260,8 @@ public class WifeAppletD extends AbstractNewApplet {
 		}
 		applet.start();
 		applet.setFrameBounds(frame);
-		if (applet.configuration.getBoolean(
-			"xwife.applet.Applet.maximized",
-			false)) {
+		if (applet.configuration.getBoolean("xwife.applet.Applet.maximized",
+				false)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 		frame.setVisible(true);

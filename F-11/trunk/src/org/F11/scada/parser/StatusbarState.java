@@ -72,6 +72,8 @@ public class StatusbarState implements State, SymbolContainerState {
 			stack.push(new SymbolAnalog4EditableState(tagName, atts, this));
 		} else if ("programexecutebutton".equalsIgnoreCase(tagName)) {
 			stack.push(new ProgramExecuteButtonState(tagName, atts, this));
+		} else if ("openurlbutton".equalsIgnoreCase(tagName)) {
+			stack.push(new OpenURLButtonState(tagName, atts, this));
 		} else {
 			logger.info("tagName:" + tagName);
 		}

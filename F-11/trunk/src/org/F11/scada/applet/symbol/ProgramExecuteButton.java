@@ -23,26 +23,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
+ * 指定されたコマンド文字列を実行するボタンです。
+ *
  * @author hori
  */
-public class ProgramExecuteButton extends AbstractButtonSymbol implements ActionListener {
+public class ProgramExecuteButton extends AbstractButtonSymbol implements
+		ActionListener {
 	private static final long serialVersionUID = 3075226566674211599L;
-	private List params;
+	private final Logger logger = Logger.getLogger(ProgramExecuteButton.class);
+	private final List<String> params;
 
 	/**
-	 * @param text
-	 * @param icon
+	 * 定義文字列を実行コマンドとして設定します。
+	 *
+	 * @param property プロパティ
 	 */
 	public ProgramExecuteButton(SymbolProperty property) {
 		super(property);
-
-		params = new ArrayList();
+		params = new ArrayList<String>();
 		params.add(property.getProperty("command"));
-		this.addActionListener(this);
+		addActionListener(this);
 	}
 
 	public void addExecParam(String param) {
@@ -50,17 +55,11 @@ public class ProgramExecuteButton extends AbstractButtonSymbol implements Action
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		String[] execParams = new String[params.size()];
-		int i = 0;
-		for (Iterator it = params.iterator(); it.hasNext();i++) {
-			execParams[i] = (String)it.next();
-		}
+		String[] execParams = params.toArray(new String[0]);
 		try {
-			/* Process excel = */ Runtime.getRuntime().exec(execParams);
-			//excel.waitFor();
-		} catch (IOException ev) {
-			ev.printStackTrace();
-		//} catch (InterruptedException ev) {
+			Runtime.getRuntime().exec(execParams);
+		} catch (IOException ex) {
+			logger.error("プログラム実行時にエラーが発生:", ex);
 		}
 	}
 }

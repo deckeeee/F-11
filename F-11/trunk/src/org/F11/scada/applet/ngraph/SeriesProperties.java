@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -27,15 +27,16 @@ import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.data.ConvertValue;
 import org.F11.scada.data.WifeDataAnalog;
+import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.server.register.HolderString;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 
 /**
  * シリーズ個々のプロパティー
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class SeriesProperties {
 	private final Logger logger = Logger.getLogger(SeriesProperties.class);
@@ -64,7 +65,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズのインデックス
-	 * 
+	 *
 	 * @return シリーズのインデックス
 	 */
 	public int getIndex() {
@@ -73,7 +74,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズのインデックスを設定します
-	 * 
+	 *
 	 * @param index シリーズのインデックス
 	 */
 	public void setIndex(int index) {
@@ -82,7 +83,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの色
-	 * 
+	 *
 	 * @return シリーズの色
 	 */
 	public Color getColor() {
@@ -91,7 +92,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの色を設定します。
-	 * 
+	 *
 	 * @param color シリーズの色
 	 */
 	public void setColor(Color color) {
@@ -100,7 +101,7 @@ public class SeriesProperties {
 
 	/**
 	 * 縦スケールの目盛数値表示フォーマット
-	 * 
+	 *
 	 * @return 縦スケールの目盛数値表示フォーマット
 	 */
 	public String getVerticalFormat() {
@@ -109,7 +110,7 @@ public class SeriesProperties {
 
 	/**
 	 * 縦スケールの目盛数値表示フォーマットを設定
-	 * 
+	 *
 	 * @param verticalFormat 縦スケールの目盛数値表示フォーマット
 	 */
 	public void setVerticalFormat(String verticalFormat) {
@@ -118,7 +119,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの表示・非表示
-	 * 
+	 *
 	 * @return シリーズの表示・非表示
 	 */
 	public Boolean isVisible() {
@@ -127,7 +128,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの表示・非表示を設定
-	 * 
+	 *
 	 * @param visible シリーズの表示・非表示
 	 */
 	public void setVisible(Boolean visible) {
@@ -136,7 +137,7 @@ public class SeriesProperties {
 
 	/**
 	 * 機器番号
-	 * 
+	 *
 	 * @return 機器番号
 	 */
 	public String getUnit() {
@@ -145,7 +146,7 @@ public class SeriesProperties {
 
 	/**
 	 * 機器番号を設定
-	 * 
+	 *
 	 * @param unit 機器番号
 	 */
 	public void setUnit(String unit) {
@@ -154,7 +155,7 @@ public class SeriesProperties {
 
 	/**
 	 * 機器名称
-	 * 
+	 *
 	 * @return 機器名称
 	 */
 	public String getName() {
@@ -163,7 +164,7 @@ public class SeriesProperties {
 
 	/**
 	 * 機器名称を設定
-	 * 
+	 *
 	 * @param name 機器名称
 	 */
 	public void setName(String name) {
@@ -172,7 +173,7 @@ public class SeriesProperties {
 
 	/**
 	 * 参照値
-	 * 
+	 *
 	 * @return 参照値
 	 */
 	public Float getReferenceValue() {
@@ -190,10 +191,12 @@ public class SeriesProperties {
 				if (obj instanceof WifeDataAnalog) {
 					ConvertValue convertValue =
 						(ConvertValue) hd
-							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+								.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 					double ref =
 						convertValue.convertInputValueUnlimited(referenceValue);
 					return convertValue.convertStringValueUnlimited(ref);
+				} else if (obj instanceof WifeDataDigital) {
+					return referenceValue == 1.0F ? "ON" : "OFF";
 				} else {
 					logger.info("Class=" + obj.getClass().getName());
 					return null;
@@ -207,7 +210,7 @@ public class SeriesProperties {
 
 	/**
 	 * 参照値を設定
-	 * 
+	 *
 	 * @param referenceValue 参照値
 	 */
 	public void setReferenceValue(Float referenceValue) {
@@ -216,7 +219,7 @@ public class SeriesProperties {
 
 	/**
 	 * 現在値
-	 * 
+	 *
 	 * @return 現在値
 	 */
 	public String getNowValue() {
@@ -228,10 +231,12 @@ public class SeriesProperties {
 				WifeDataAnalog a = (WifeDataAnalog) obj;
 				ConvertValue convertValue =
 					(ConvertValue) hd
-						.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-				// return (float)
-				// convertValue.convertDoubleValue(a.doubleValue());
-				return convertValue.convertStringValueUnlimited(a.doubleValue());
+							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+				return convertValue
+						.convertStringValueUnlimited(a.doubleValue());
+			} else if (obj instanceof WifeDataDigital) {
+				WifeDataDigital d = (WifeDataDigital) obj;
+				return d.isOnOff(true) ? "ON" : "OFF";
 			} else {
 				logger.info("Class=" + obj.getClass().getName());
 				return null;
@@ -244,7 +249,7 @@ public class SeriesProperties {
 
 	/**
 	 * 単位名称
-	 * 
+	 *
 	 * @return 単位名称
 	 */
 	public String getUnitMark() {
@@ -253,7 +258,7 @@ public class SeriesProperties {
 
 	/**
 	 * 単位名称を設定
-	 * 
+	 *
 	 * @param unitMark 単位名称
 	 */
 	public void setUnitMark(String unitMark) {
@@ -262,7 +267,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの表示最大値
-	 * 
+	 *
 	 * @return シリーズの表示最大値
 	 */
 	public float getMax() {
@@ -271,7 +276,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの表示最大値を設定
-	 * 
+	 *
 	 * @param max シリーズの表示最大値
 	 */
 	public void setMax(float max) {
@@ -280,7 +285,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの表示最小値
-	 * 
+	 *
 	 * @return シリーズの表示最小値
 	 */
 	public float getMin() {
@@ -289,7 +294,7 @@ public class SeriesProperties {
 
 	/**
 	 * シリーズの表示最小値を設定
-	 * 
+	 *
 	 * @param min シリーズの表示最小値
 	 */
 	public void setMin(float min) {
@@ -298,7 +303,7 @@ public class SeriesProperties {
 
 	/**
 	 * このシリーズが参照しているホルダを返します
-	 * 
+	 *
 	 * @return このシリーズが参照しているホルダを返します
 	 */
 	public HolderString getHolderString() {
@@ -307,7 +312,7 @@ public class SeriesProperties {
 
 	/**
 	 * このシリーズが参照しているホルダを設定します
-	 * 
+	 *
 	 * @param holderString このシリーズが参照しているホルダを設定します
 	 */
 	public void setHolderString(HolderString holderString) {

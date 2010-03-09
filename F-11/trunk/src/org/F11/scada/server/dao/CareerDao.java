@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.dao;
@@ -30,4 +30,7 @@ public interface CareerDao {
 	final String getCareer_ARGS = "startdate, enddate";
 	final String getCareer_SQL_FILE = null;
 	List<CareerDto> getCareer(String startdate, String enddate);
+	final String getPinpointCareer_ARGS = "holders, limit";
+	final String getPinpointCareer_SQL_FILE = null;
+	List<CareerDto> getPinpointCareer(String holders, String limit);
 }

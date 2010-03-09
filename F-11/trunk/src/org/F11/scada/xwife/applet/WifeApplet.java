@@ -58,20 +58,21 @@ public class WifeApplet extends AbstractWifeApplet {
 	 * アプレットを初期化します。ユーザー主体情報もここで初期化されます。
 	 */
 	public WifeApplet() throws RemoteException {
-		this(false);
+		this(false, false);
 	}
 
-	public WifeApplet(boolean isStandalone) throws RemoteException {
-		super(isStandalone);
+	public WifeApplet(boolean isStandalone, boolean soundoffAtStarted)
+			throws RemoteException {
+		super(isStandalone, soundoffAtStarted);
 	}
 
 	protected void lookup()
-			throws MalformedURLException,
-			RemoteException,
-			NotBoundException {
+		throws MalformedURLException,
+		RemoteException,
+		NotBoundException {
 		accessControl =
 			(AccessControlable) Naming.lookup(WifeUtilities
-				.createRmiActionControl());
+					.createRmiActionControl());
 	}
 
 	protected void layoutContainer() throws IOException, SAXException {
@@ -89,8 +90,7 @@ public class WifeApplet extends AbstractWifeApplet {
 		mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		spane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
 		spane.setDividerLocation(configuration.getInt(
-			"xwife.applet.Applet.treeWidth",
-			150));
+				"xwife.applet.Applet.treeWidth", 150));
 		spane.setDividerSize(10);
 		spane.setOneTouchExpandable(true);
 		spane.add(treePanel);
@@ -128,14 +128,13 @@ public class WifeApplet extends AbstractWifeApplet {
 
 		JPanel LogoAndToolBarsPanel = new JPanel(new BorderLayout());
 		LogoFactory logoFactory = new LogoFactory();
-		LogoAndToolBarsPanel.add(logoFactory.getLogo(), BorderLayout.EAST);
+		LogoAndToolBarsPanel.add(logoFactory.getLogo(this), BorderLayout.EAST);
 		LogoAndToolBarsPanel.add(toolBarsPanel, BorderLayout.CENTER);
 		getContentPane().add(LogoAndToolBarsPanel, BorderLayout.NORTH);
 
 		mainSplit.setOneTouchExpandable(true);
 		mainSplit.setDividerLocation(configuration.getInt(
-			"xwife.applet.Applet.treeHeight",
-			775));
+				"xwife.applet.Applet.treeHeight", 775));
 		mainSplit.setDividerSize(10);
 		getContentPane().add(mainSplit);
 
@@ -153,15 +152,21 @@ public class WifeApplet extends AbstractWifeApplet {
 	// Main メソッド
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
+		boolean sound = false;
+		if (args != null) {
+			for (int i = 0; i < args.length; i++) {
+				if ("-nosound".equalsIgnoreCase(args[i])) {
+					sound = true;
+				}
+			}
+		}
 		WifeApplet applet = null;
 		try {
-			applet = new WifeApplet(true);
+			applet = new WifeApplet(true, sound);
 		} catch (RemoteException e) {
-			JOptionPane.showInternalMessageDialog(
-				frame,
-				ServerErrorUtil.ERROR_MESSAGE,
-				ServerErrorUtil.ERROR_MESSAGE,
-				JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showInternalMessageDialog(frame,
+					ServerErrorUtil.ERROR_MESSAGE,
+					ServerErrorUtil.ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 		setCloseAction(frame, applet);
 		frame.setTitle(getTitle());
@@ -173,9 +178,8 @@ public class WifeApplet extends AbstractWifeApplet {
 		}
 		applet.start();
 		applet.setFrameBounds(frame);
-		if (applet.configuration.getBoolean(
-			"xwife.applet.Applet.maximized",
-			false)) {
+		if (applet.configuration.getBoolean("xwife.applet.Applet.maximized",
+				false)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 		frame.setVisible(true);

@@ -87,6 +87,12 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		symbol = (DigitalEditable) listIterator.next();
 	}
 
+	/**
+	 * ダイアログを表示
+	 *
+	 * @see java.awt.Dialog#show()
+	 */
+	@Override
 	public void show() {
 		Rectangle dialogBounds = getBounds();
 		dialogBounds.setLocation(symbol.getPoint());
@@ -130,24 +136,25 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 * ダイアログにボタンを追加します。
 	 *
 	 * @param text ボタン名称
-	 * @param 指示動作番号
+	 * @param actionNo 指示動作番号
 	 * @param rec ボタンの大きさと配置位置
 	 * @param foreground 文字色
 	 * @param background 背景色
 	 * @param font フォント名
 	 * @param fontStyle フォントスタイル
 	 * @param fontSize フォントサイズ
+	 * @param schedule スケジュールダイアログ番号(※現在はスケジュール以外にも使用している)
 	 */
 	public void add(
-			String text,
-			int actionNo,
-			Rectangle rec,
-			String foreground,
-			String background,
-			String font,
-			String fontStyle,
-			String fontSize,
-			String schedule) {
+		String text,
+		int actionNo,
+		Rectangle rec,
+		String foreground,
+		String background,
+		String font,
+		String fontStyle,
+		String fontSize,
+		String schedule) {
 		DialogButton button =
 			DialogButton.createDialogButton(this, actionNo, schedule, changer);
 		button.setText(text);
@@ -166,6 +173,7 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 	 * ダイアログに表示するボタンの基底クラスです。
 	 */
 	static abstract class DialogButton extends JButton {
+		private static final long serialVersionUID = 355442905678592887L;
 		protected static final Logger logger =
 			Logger.getLogger(DialogButton.class);
 		/** 親ダイアログの参照です。 */
@@ -191,12 +199,29 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		 */
 		abstract public void pushButton();
 
+		/**
+		 * 指定されたアクションNo別にボタンを生成する。
+		 * <ul>
+		 * <li>4:ピンポイント履歴</li>
+		 * <li>5:個別スケジュール</li>
+		 * <li>6:キャンセルボタン</li>
+		 * <li>21～:データ送信ボタン</li>
+		 * </ul>
+		 *
+		 * @param dialog 親ダイアログ
+		 * @param actionNo アクションNo
+		 * @param schedule スケジュールダイアログ番号(※現在はスケジュール以外にも使用している)
+		 * @param changer 親アプレット(警報音停止にて使用)
+		 * @return デジタルダイアログ用のボタンを生成します。
+		 */
 		static public DialogButton createDialogButton(
-				DigitalDialog dialog,
-				int actionNo,
-				String schedule,
-				PageChanger changer) {
+			DigitalDialog dialog,
+			int actionNo,
+			String schedule,
+			PageChanger changer) {
 			switch (actionNo) {
+			// ピンポイント履歴もScheduleButton同様の動きで、ダイアログを表示するので利用している。
+			case 4:
 			case 5:
 				return new ScheduleButton(dialog, actionNo, schedule, changer);
 			case 6:
@@ -262,7 +287,14 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 		}
 	}
 
+	/**
+	 * 個別スケジュールボタンです。但し、現在はスケジュール以外にも、他のダイアログの経由ボタンとして使用しています。
+	 *
+	 * @author maekawa
+	 *
+	 */
 	private static class ScheduleButton extends DialogButton {
+		private static final long serialVersionUID = -6340768556603260036L;
 		private final String scheduleDialogNo;
 		private final PageChanger changer;
 
@@ -276,13 +308,14 @@ public class DigitalDialog extends WifeDialog implements ActionListener {
 			this.changer = changer;
 			if (null == schedule || "".equals(schedule)) {
 				throw new IllegalArgumentException(
-					"スケジュールダイアログNo(schedule属性)が設定されていません。");
+						"スケジュールダイアログNo(schedule属性)が設定されていません。");
 			}
 		}
 
 		@Override
 		public void pushButton() {
-			WifeDialog wd = DialogFactory.get(dialog, scheduleDialogNo, changer);
+			WifeDialog wd =
+				DialogFactory.get(dialog, scheduleDialogNo, changer);
 			wd.setListIterator(getIterator());
 			wd.setTitle(dialog.getTitle());
 			logger.info(MemoryLogUtil.getMemory(dialog.getTitle()));

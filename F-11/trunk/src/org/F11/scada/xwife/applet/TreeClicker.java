@@ -19,10 +19,8 @@
 
 package org.F11.scada.xwife.applet;
 
-import java.awt.AWTException;
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -178,28 +176,17 @@ public class TreeClicker extends JFrame implements Service {
 
 	private class KeyClickTask implements ActionListener {
 		private boolean isNext = true;
-		private Robot robot;
 		private int pageCount;
-
-		KeyClickTask() {
-			try {
-				robot = new Robot();
-			} catch (AWTException e) {
-				e.printStackTrace();
-			}
-		}
 
 		public void actionPerformed(ActionEvent e) {
 			if (isNext) {
-				robot.keyPress(KeyEvent.VK_DOWN);
-				robot.keyRelease(KeyEvent.VK_DOWN);
+				RobotUtil.getInstance().keyClick(KeyEvent.VK_DOWN);
 				pageCount++;
 				if (pageCount >= maxNodeCount) {
 					isNext = false;
 				}
 			} else {
-				robot.keyPress(KeyEvent.VK_UP);
-				robot.keyRelease(KeyEvent.VK_UP);
+				RobotUtil.getInstance().keyClick(KeyEvent.VK_UP);
 				pageCount--;
 				if (pageCount < 0) {
 					isNext = true;

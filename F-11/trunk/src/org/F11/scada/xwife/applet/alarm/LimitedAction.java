@@ -21,6 +21,6 @@
 
 package org.F11.scada.xwife.applet.alarm;
 
-interface LimitedAction {
+public interface LimitedAction {
 	void setCheck(boolean b);
 }

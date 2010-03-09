@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import org.F11.scada.Service;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.applet.symbol.GraphicManager;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 
 /**
  * F-11のロゴと日時を表示するクラスです。
@@ -48,10 +49,10 @@ public class Logo extends JPanel implements Runnable, Service {
 
 	private Thread thread;
 
-	public Logo() {
+	public Logo(AbstractWifeApplet applet) {
 		setLayout(new FlowLayout(FlowLayout.LEFT, H_GAP, 0));
 		logoImage = new LogoImage();
-		logoTime = new LogoTime();
+		logoTime = new LogoTime(applet);
 		add(logoTime);
 		add(logoImage);
 
@@ -154,19 +155,5 @@ public class Logo extends JPanel implements Runnable, Service {
 				}
 			}
 		}
-	}
-
-	/*
-	 * テスト用メイン
-	 */
-	public static void main(String[] argv) {
-		JFrame frame = new JFrame();
-		Logo logo = new Logo();
-		//		logo.setUserName("maekawa");
-		frame.getContentPane().add(logo);
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
 	}
 }

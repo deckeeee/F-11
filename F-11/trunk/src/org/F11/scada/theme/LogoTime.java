@@ -31,8 +31,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.F11.scada.Service;
 import org.F11.scada.util.ThreadUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.apache.commons.lang.time.DateFormatUtils;
-
 
 /**
  * 時刻と日付を表示するクラスです。
@@ -40,26 +40,36 @@ import org.apache.commons.lang.time.DateFormatUtils;
 public class LogoTime extends Box implements Runnable, Service {
 	private static final long serialVersionUID = -2850619238706853016L;
 
-	private final JLabel timeLabel= new JLabel();
-	private final JLabel dateLabel= new JLabel();
+	private final JLabel timeLabel = new JLabel();
+	private final JLabel dateLabel = new JLabel();
 
 	private Thread thread;
+	private boolean isViewWeek;
 
-	public LogoTime() {
-		super(BoxLayout.Y_AXIS);		
+	public LogoTime(AbstractWifeApplet applet) {
+		super(BoxLayout.Y_AXIS);
+		setIsViewWeek(applet);
 		timeLabel.setFont(new Font("Dialog", Font.BOLD, 20));
-		timeLabel.setBorder(new EmptyBorder(0,0,0,0));
+		timeLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
 		timeLabel.setAlignmentX(Box.CENTER_ALIGNMENT);
 		dateLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		dateLabel.setBorder(new EmptyBorder(0,0,0,0));
+		dateLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
 		dateLabel.setAlignmentX(Box.CENTER_ALIGNMENT);
 
 		updateTime();
 
 		add(timeLabel);
 		add(dateLabel);
-		
+
 		start();
+	}
+
+	private void setIsViewWeek(AbstractWifeApplet applet) {
+		if (null != applet) {
+			isViewWeek =
+				applet.getConfiguration().getBoolean(
+						"org.F11.scada.xwife.applet.isViewWeek", false);
+		}
 	}
 
 	public void start() {
@@ -82,11 +92,15 @@ public class LogoTime extends Box implements Runnable, Service {
 			public void run() {
 				Date today = new Date();
 				timeLabel.setText(DateFormatUtils.format(today, "HH:mm:ss"));
-				dateLabel.setText(DateFormatUtils.format(today, "yyyy/MM/dd"));
+				dateLabel.setText(DateFormatUtils.format(today, getFormat()));
+			}
+
+			private String getFormat() {
+				return isViewWeek ? "yyyy/MM/dd' ('E')'" : "yyyy/MM/dd";
 			};
 		});
 	}
-	
+
 	public void run() {
 		Thread ct = Thread.currentThread();
 		while (ct == thread) {

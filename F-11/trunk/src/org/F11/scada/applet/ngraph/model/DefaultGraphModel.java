@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.model;
 
+import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -64,11 +65,8 @@ public class DefaultGraphModel extends AbstractGraphModel {
 		if (0 < logData.size()) {
 			shutdown();
 			service = Executors.newScheduledThreadPool(1);
-			service.scheduleAtFixedRate(
-				getLoggingTask(logData),
-				getInitialDelay(),
-				60,
-				TimeUnit.SECONDS);
+			service.scheduleAtFixedRate(getLoggingTask(logData),
+					getInitialDelay(), 60, TimeUnit.SECONDS);
 			changeSupport.firePropertyChange(INITIALIZE, null, logData);
 		}
 	}
@@ -87,10 +85,8 @@ public class DefaultGraphModel extends AbstractGraphModel {
 		List<LogData> list = Collections.emptyList();
 		try {
 			SortedMap<Timestamp, DoubleList> map =
-				valueListHandler.getInitialData(
-					getLogName(),
-					getHolderStrings(),
-					graphProperties.getMaxRecord());
+				valueListHandler.getInitialData(getLogName(),
+						getHolderStrings(), graphProperties.getMaxRecord());
 			list = convertLogDataList(map);
 		} catch (RemoteException e) {
 			serverError(e);
@@ -108,7 +104,7 @@ public class DefaultGraphModel extends AbstractGraphModel {
 	}
 
 	private List<LogData> convertLogDataList(
-			SortedMap<Timestamp, DoubleList> map) {
+		SortedMap<Timestamp, DoubleList> map) {
 		ArrayList<LogData> list = new ArrayList<LogData>(map.size());
 		for (Map.Entry<Timestamp, DoubleList> entry : map.entrySet()) {
 			list.add(new LogData(entry.getKey(), entry.getValue()));
@@ -119,11 +115,9 @@ public class DefaultGraphModel extends AbstractGraphModel {
 	private void serverError(RemoteException e) {
 		String errorMessage = "データ取り込みにてサーバーでエラーが発生しました。\n";
 		logger.error(errorMessage, e);
-		JOptionPane.showMessageDialog(
-			null,
-			errorMessage + printStackTrace(e.getStackTrace()),
-			"サーバーエラー",
-			JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, errorMessage
+			+ printStackTrace(e.getStackTrace()), "サーバーエラー",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	private String printStackTrace(StackTraceElement[] stackTrace) {
@@ -163,10 +157,8 @@ public class DefaultGraphModel extends AbstractGraphModel {
 		public void run() {
 			try {
 				Map<Timestamp, DoubleList> map =
-					valueListHandler.getUpdateLoggingData(
-						getLogName(),
-						currentTimestamp,
-						getHolderStrings());
+					valueListHandler.getUpdateLoggingData(getLogName(),
+							currentTimestamp, getHolderStrings());
 				performPropertyChange(map);
 				setCurrentTimestamp(map);
 			} catch (RemoteException e) {
@@ -176,10 +168,8 @@ public class DefaultGraphModel extends AbstractGraphModel {
 
 		private void performPropertyChange(Map<Timestamp, DoubleList> map) {
 			for (Map.Entry<Timestamp, DoubleList> entry : map.entrySet()) {
-				changeSupport.firePropertyChange(
-					GraphModel.VALUE_CHANGE,
-					null,
-					new LogData(entry.getKey(), entry.getValue()));
+				changeSupport.firePropertyChange(GraphModel.VALUE_CHANGE, null,
+						new LogData(entry.getKey(), entry.getValue()));
 			}
 		}
 

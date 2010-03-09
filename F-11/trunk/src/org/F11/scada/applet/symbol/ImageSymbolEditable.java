@@ -45,6 +45,7 @@ import org.F11.scada.data.ConvertValue;
 import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
 import org.F11.scada.security.auth.login.Authenticationable;
+import org.F11.scada.server.register.HolderString;
 import org.F11.scada.util.ComponentUtil;
 import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
@@ -78,6 +79,10 @@ public class ImageSymbolEditable extends ImageSymbol implements
 	/** グループ書込み対象ホルダ指定 */
 	private String grProviderName;
 	private String grHolderName;
+	/** ピンポイント履歴表示対象ホルダ */
+	private List<HolderString> pinpointHolders;
+	/** ピンポイント履歴データ抽出件数 */
+	private int limit;
 
 	private final Logger logger = Logger.getLogger(ImageSymbolEditable.class);
 
@@ -178,14 +183,12 @@ public class ImageSymbolEditable extends ImageSymbol implements
 	 *      SymbolCollection, List)
 	 */
 	public WifeDialog getDialog(
-			Window window,
-			SymbolCollection collection,
-			List para) {
+		Window window,
+		SymbolCollection collection,
+		List para) {
 		WifeDialog d =
-			DialogFactory.get(
-				window,
-				dlgName,
-				(AbstractWifeApplet) authentication);
+			DialogFactory.get(window, dlgName,
+					(AbstractWifeApplet) authentication);
 		d.setListIterator(collection.listIterator(para));
 		d.setTitle(dlgTitle);
 		logger.info(MemoryLogUtil.getMemory(dlgTitle));
@@ -312,7 +315,7 @@ public class ImageSymbolEditable extends ImageSymbol implements
 			return null;
 
 		return (ConvertValue) dh
-			.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+				.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 	}
 
 	public ScheduleModel getScheduleModel() {
@@ -348,5 +351,24 @@ public class ImageSymbolEditable extends ImageSymbol implements
 			throw new IllegalArgumentException("dataHolderIDが指定されていません : "
 				+ dataHolderID);
 		}
+	}
+
+	public List<HolderString> getPinpointHolders() {
+		return pinpointHolders;
+	}
+
+	public void addPinpointHolder(HolderString pinpointHolder) {
+		if (null == pinpointHolders) {
+			pinpointHolders = new ArrayList<HolderString>();
+		}
+		pinpointHolders.add(pinpointHolder);
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
 	}
 }

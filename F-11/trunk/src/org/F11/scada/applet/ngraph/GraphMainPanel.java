@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -44,9 +44,9 @@ import org.apache.log4j.Logger;
 
 /**
  * トレンドグラフのメインパネル 各コンポーネントのメデエイターにもなっている
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class GraphMainPanel extends JPanel implements Mediator, Service {
 	private static final long serialVersionUID = -2337555152897226798L;
@@ -78,7 +78,7 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		centerPanel.add(statusBar, BorderLayout.NORTH);
 		centerPanel.add(graphView, BorderLayout.CENTER);
 		seriesModel = new SeriesTableModel(graphProperties);
-		graphView.setSeriesMaxCount(seriesModel.getRowCount());
+		graphView.setSeriesMaxCount(seriesModel.getMaxRow());
 		seriesModel.addTableModelListener(new ChangeTableModelListener(
 			graphView));
 		graphView.addPropertyChangeListener(
@@ -168,10 +168,14 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 	}
 
 	public void stop() {
+		for (TableModelListener l : seriesModel.getTableModelListeners()) {
+			seriesModel.removeTableModelListener(l);
+		}
+		seriesModel.shutdown();
 		graphProperties.removePropertyChangeListeners();
+		graphModel.removePropertyChangeListeners();
 		graphModel.shutdown();
-		PropertyChangeListener[] l = graphView.getPropertyChangeListeners();
-		for (PropertyChangeListener listener : l) {
+		for (PropertyChangeListener listener : graphView.getPropertyChangeListeners()) {
 			graphView.removePropertyChangeListener(listener);
 		}
 	}

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.xwife.applet.comp;
@@ -27,10 +27,8 @@ import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -51,14 +49,15 @@ import javax.swing.SwingUtilities;
 
 import org.F11.scada.applet.symbol.GraphicManager;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
+import org.F11.scada.xwife.applet.RobotUtil;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
 
 /**
  * デスクトップのスクリーンショットを生成するボタン
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class ScreenShotButton extends JButton {
 	private static final long serialVersionUID = -7550578587342892036L;
@@ -73,8 +72,7 @@ public class ScreenShotButton extends JButton {
 	private void initKeyEvent(final AbstractWifeApplet wifeApplet) {
 		String ssKey =
 			wifeApplet.getConfiguration().getString(
-				"org.F11.scada.xwife.applet.comp.screenShotKey",
-				"F11");
+					"org.F11.scada.xwife.applet.comp.screenShotKey", "F11");
 		if (null != ssKey && !"".equals(ssKey)) {
 			Action action = getAction();
 			InputMap imap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -112,47 +110,37 @@ public class ScreenShotButton extends JButton {
 
 				private void save() {
 					try {
-						Robot robot = new Robot();
 						Toolkit toolkit = Toolkit.getDefaultToolkit();
 						Dimension screenSize = toolkit.getScreenSize();
 						Rectangle screenRect = new Rectangle(screenSize);
 						BufferedImage image =
-							robot.createScreenCapture(screenRect);
+							RobotUtil.getInstance().createScreenCapture(
+									screenRect);
 						File file = new File(getSavePath(), getFileName());
-						if (showConfirmDialog(
-							wifeApplet,
-							"スクリーンショットファイル "
-								+ file.getAbsolutePath()
-								+ " を作成しますか？",
-							"スクリーンショット",
-							YES_NO_OPTION,
-							QUESTION_MESSAGE) == YES_OPTION) {
-							ImageIO.write(image, "png", file);
+						if (showConfirmDialog(wifeApplet, "スクリーンショットファイル "
+							+ file.getAbsolutePath()
+							+ " を作成しますか？", "スクリーンショット", YES_NO_OPTION,
+								QUESTION_MESSAGE) == YES_OPTION) {
+							if (null != image) {
+								ImageIO.write(image, "png", file);
+							} else {
+								logger.error("スクリーンショットがとれませんでした。");
+							}
 						}
-					} catch (AWTException e) {
-						logger.fatal(AWT_EXCEPTION_MSG, e);
-						showMessageDialog(
-							wifeApplet,
-							AWT_EXCEPTION_MSG,
-							AWT_EXCEPTION_MSG,
-							ERROR_MESSAGE);
 					} catch (IOException e) {
 						logger.error(IO_EXCPTION_MSG, e);
-						showMessageDialog(
-							wifeApplet,
-							IO_EXCPTION_MSG,
-							IO_EXCPTION_MSG,
-							ERROR_MESSAGE);
+						showMessageDialog(wifeApplet, IO_EXCPTION_MSG,
+								IO_EXCPTION_MSG, ERROR_MESSAGE);
 					}
 				}
 
 				private String getSavePath() {
 					String savePathName =
 						wifeApplet
-							.getConfiguration()
-							.getString(
-								"org.F11.scada.xwife.applet.comp.ScreenShotAction.savePathName",
-								".");
+								.getConfiguration()
+								.getString(
+										"org.F11.scada.xwife.applet.comp.ScreenShotAction.savePathName",
+										".");
 					File file = new File(getFileName(savePathName));
 					if (!"".equals(getFileName(savePathName)) && !file.exists()) {
 						file.mkdirs();
@@ -163,13 +151,13 @@ public class ScreenShotButton extends JButton {
 				private String getFileName() {
 					String saveFileName =
 						wifeApplet
-							.getConfiguration()
-							.getString(
-								"org.F11.scada.xwife.applet.comp.ScreenShotAction.saveFileName",
-								DEFAULT_FILE_NAME);
+								.getConfiguration()
+								.getString(
+										"org.F11.scada.xwife.applet.comp.ScreenShotAction.saveFileName",
+										DEFAULT_FILE_NAME);
 					return FastDateFormat
-						.getInstance(getFileName(saveFileName))
-						.format(new Date());
+							.getInstance(getFileName(saveFileName)).format(
+									new Date());
 				}
 
 				private String getFileName(String saveFileName) {

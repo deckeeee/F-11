@@ -15,23 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.draw;
-
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
 
+import jp.gr.javacons.jim.DataHolder;
+
 import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
 import org.F11.scada.applet.ngraph.SeriesProperties;
+import org.F11.scada.data.WifeDataDigital;
 
 /**
  * グラフ描画の基底クラス
- * 
+ *
  * @author maekawa
  *
  */
@@ -47,13 +49,14 @@ public abstract class AbstractGraphDraw implements GraphDraw {
 		if (properties.isVisibleVerticalString()) {
 			SeriesProperties seriesProperties =
 				properties.getSeriesGroup().getSeriesProperties().get(
-					drawSeriesIndex);
+						drawSeriesIndex);
 			String unitMark = getUnitMark(seriesProperties);
 			FontMetrics metrics = g.getFontMetrics();
 			if (seriesProperties.isVisible()) {
 				g.drawString(unitMark, x
 					- metrics.stringWidth(unitMark)
-					- properties.getScalePixcelSize(), top - metrics.getHeight());
+					- properties.getScalePixcelSize(), top
+					- metrics.getHeight());
 			}
 		}
 	}
@@ -65,15 +68,21 @@ public abstract class AbstractGraphDraw implements GraphDraw {
 	}
 
 	protected int getX(
-			LogData value,
-			long startDate,
-			long lastDate,
-			boolean isAllSpanDisplayMode) {
+		LogData value,
+		long startDate,
+		long lastDate,
+		boolean isAllSpanDisplayMode) {
 		Insets insets = properties.getInsets();
 		return (int) Math.round((double) properties
-			.getHorizontalLine(isAllSpanDisplayMode)
+				.getHorizontalLine(isAllSpanDisplayMode)
 			/ (double) (lastDate - startDate)
 			* (double) (value.getDate().getTime() - startDate)
 			+ insets.left);
 	}
+
+	protected boolean isDigital(DataHolder holder) {
+		Object obj = holder.getValue();
+		return obj instanceof WifeDataDigital;
+	}
+
 }

@@ -44,10 +44,10 @@ public class LogoFactoryTest extends TestCase {
 
     public void testGetLogo() {
         LogoFactory factory = new LogoFactory();
-        assertTrue(factory.getLogo() instanceof Logo);
+        assertTrue(factory.getLogo(null) instanceof Logo);
 
         factory = new LogoFactory("/org/F11/scada/theme/LogoTest.xml");
-        assertTrue(factory.getLogo() instanceof JPanel);
+        assertTrue(factory.getLogo(null) instanceof JPanel);
     }
 
 }
