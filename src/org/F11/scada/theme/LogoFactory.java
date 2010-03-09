@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import org.F11.scada.applet.symbol.GraphicManager;
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.TitleConfig;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 
 /**
  * Logoコンポーネントを生成するファクトリークラスです。
@@ -44,7 +45,7 @@ public class LogoFactory {
     public LogoFactory() {
         alarmDefine = new AlarmDefine();
     }
-    
+
     /**
      * 引数で指定されたファイルで、ファクトリーを初期化します。
      * @param filePath 定義ファイル
@@ -57,8 +58,8 @@ public class LogoFactory {
      * Logoコンポーネントを生成して返します。
      * @return Logoコンポーネント
      */
-    public JComponent getLogo() {
-        JComponent component = new Logo();
+    public JComponent getLogo(AbstractWifeApplet applet) {
+        JComponent component = new Logo(applet);
         TitleConfig config = alarmDefine.getAlarmConfig().getTitleConfig();
         if (config != null) {
             String image = config.getImage();
@@ -66,14 +67,14 @@ public class LogoFactory {
                 Icon icon = GraphicManager.get(image);
                 if (icon != null) {
                     component = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-                    component.add(new LogoTime());
+                    component.add(new LogoTime(applet));
                     JLabel iconLabel = new JLabel(icon);
                     iconLabel.addMouseListener(new AboutDialogListener());
                     component.add(iconLabel);
                 }
             }
         }
-        
+
         return component;
     }
 }

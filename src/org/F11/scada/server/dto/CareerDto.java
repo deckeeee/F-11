@@ -15,16 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.dto;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
-public class CareerDto {
+public class CareerDto implements Serializable {
+	private static final long serialVersionUID = -7310356961553394026L;
 	public static final String TABLE = "career_table";
 
 	private Timestamp entrydate;
@@ -33,6 +35,7 @@ public class CareerDto {
 	private String attributeName;
 	private String message;
 	private String priorityName;
+	private String color;
 
 	public Timestamp getEntrydate() {
 		return entrydate;
@@ -82,6 +85,14 @@ public class CareerDto {
 		this.priorityName = priorityName;
 	}
 
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
 	public String csvOut() {
 		FastDateFormat f =
 			FastDateFormat.getInstance("\"yyyy/MM/dd HH:mm:ss\"");
@@ -109,6 +120,8 @@ public class CareerDto {
 			+ " "
 			+ message
 			+ " "
-			+ priorityName;
+			+ priorityName
+			+ " "
+			+ color;
 	}
 }

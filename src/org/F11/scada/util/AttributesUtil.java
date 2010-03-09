@@ -31,13 +31,13 @@ import org.xml.sax.Attributes;
 
 /**
  * 属性オブジェクトを扱うユーティリティークラスです。
- * 
+ *
  * @author maekawa
  */
 public abstract class AttributesUtil {
 	/**
 	 * 属性名の値を返します。但し、値が指定されていない場合・ヌル文字の場合は、nullを返します。
-	 * 
+	 *
 	 * @param attname 属性名
 	 * @param atts 属性オブジェクト
 	 * @return 属性名の値を返します。
@@ -48,7 +48,7 @@ public abstract class AttributesUtil {
 
 	/**
 	 * 文字列が null や空白の場合 null を以外の場合は引数の文字列を返します。
-	 * 
+	 *
 	 * @param str 判定する文字列
 	 * @return 文字列が null や空白の場合 null を以外の場合は引数の文字列を返します。
 	 */
@@ -59,7 +59,7 @@ public abstract class AttributesUtil {
 	/**
 	 * 属性名の値をbooleanで返します。但し、値が指定されていない場合・ヌル文字の場合は、falseを返します。
 	 * 値文字列の判定にはBoolean#valueOfメソッドを使用しています。
-	 * 
+	 *
 	 * @param attname 属性名
 	 * @param atts 属性オブジェクト
 	 * @return 属性名の値を返します。
@@ -71,7 +71,7 @@ public abstract class AttributesUtil {
 
 	/**
 	 * 引数の文字列が null か 空白の場合 true を返します。
-	 * 
+	 *
 	 * @param str 判定する文字列
 	 * @return 引数の文字列が null か 空白の場合 true を返します。
 	 */
@@ -93,7 +93,7 @@ public abstract class AttributesUtil {
 
 	/**
 	 * 文字列が null か空白なら null を以外の場合は"%"で囲んだ文字列を返します。
-	 * 
+	 *
 	 * @param s 文字列
 	 * @return 文字列が null か空白なら null を以外の場合は"%"で囲んだ文字列を返します。
 	 */
@@ -103,7 +103,7 @@ public abstract class AttributesUtil {
 
 	/**
 	 * 引数の文字列を「,」で分割します
-	 * 
+	 *
 	 * @param tables テーブル名を「,」で区切った文字列
 	 * @return テーブル名があればテーブル名のリストを無ければ空のリストを返します。
 	 */
@@ -123,11 +123,8 @@ public abstract class AttributesUtil {
 	public static Insets getInsets(String is) {
 		if (is != null) {
 			String[] s = is.split(",");
-			return new Insets(
-				getNumber(s[0].trim()),
-				getNumber(s[1].trim()),
-				getNumber(s[2].trim()),
-				getNumber(s[3].trim()));
+			return new Insets(getNumber(s[0].trim()), getNumber(s[1].trim()),
+					getNumber(s[2].trim()), getNumber(s[3].trim()));
 		} else {
 			return new Insets(50, 80, 60, 50);
 		}
@@ -135,5 +132,17 @@ public abstract class AttributesUtil {
 
 	private static int getNumber(String string) {
 		return Integer.parseInt(string);
+	}
+
+	public static int getIntegerValue(String s, int init) {
+		if (isSpaceOrNull(s)) {
+			return init;
+		} else {
+			try {
+				return Integer.parseInt(s);
+			} catch (Exception e) {
+				return init;
+			}
+		}
 	}
 }

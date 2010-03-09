@@ -45,27 +45,29 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractNewApplet extends AbstractWifeApplet {
+	private static final long serialVersionUID = -2238806542284807713L;
 	/** Log4j Logging オブジェクトのインスタンスです */
 	protected transient static Logger logger;
 
 	/** 履歴検索オブジェクトのリモート参照 */
 	protected transient AlarmListFinder alarmListFinder;
 
-	public AbstractNewApplet(boolean isStandalone) throws RemoteException {
-		super(isStandalone);
+	public AbstractNewApplet(boolean isStandalone, boolean soundoffAtStarted)
+			throws RemoteException {
+		super(isStandalone, soundoffAtStarted);
 		logger = Logger.getLogger(getClass().getName());
 	}
 
 	protected void lookup()
-			throws MalformedURLException,
-			RemoteException,
-			NotBoundException {
+		throws MalformedURLException,
+		RemoteException,
+		NotBoundException {
 		accessControl =
 			(AccessControlable) Naming.lookup(WifeUtilities
-				.createRmiActionControl());
+					.createRmiActionControl());
 		alarmListFinder =
 			(AlarmListFinder) Naming.lookup(WifeUtilities
-				.createRmiAlarmListFinderManager());
+					.createRmiAlarmListFinderManager());
 	}
 
 	protected void layoutContainer() throws IOException, SAXException {
@@ -84,8 +86,7 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		spane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
 		// ツリーの横幅
 		spane.setDividerLocation(configuration.getInt(
-			"xwife.applet.Applet.treeWidth",
-			150));
+				"xwife.applet.Applet.treeWidth", 150));
 		spane.setDividerSize(10);
 		spane.setOneTouchExpandable(true);
 		spane.add(treePanel);
@@ -107,15 +108,14 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 
 		JPanel LogoAndToolBarsPanel = new JPanel(new BorderLayout());
 		LogoFactory logoFactory = new LogoFactory();
-		LogoAndToolBarsPanel.add(logoFactory.getLogo(), BorderLayout.EAST);
+		LogoAndToolBarsPanel.add(logoFactory.getLogo(this), BorderLayout.EAST);
 		LogoAndToolBarsPanel.add(toolBarsPanel, BorderLayout.CENTER);
 		getContentPane().add(LogoAndToolBarsPanel, BorderLayout.NORTH);
 
 		mainSplit.setOneTouchExpandable(true);
 		// 警報以外の縦幅
 		mainSplit.setDividerLocation(configuration.getInt(
-			"xwife.applet.Applet.treeHeight",
-			775));
+				"xwife.applet.Applet.treeHeight", 775));
 		mainSplit.setDividerSize(10);
 		getContentPane().add(mainSplit);
 
@@ -123,13 +123,13 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		/*
 		 * final TreePath path = searchTreePath(treeDefine.getInitPage());
 		 * logger.info("init page = " + treeDefine.getInitPage() + " ,path = " +
-		 * path); SwingUtilities.invokeLater(new Runnable() { public void run() {
-		 * tree.setSelectionPath(path); tree.expandPath(path);
+		 * path); SwingUtilities.invokeLater(new Runnable() { public void run()
+		 * { tree.setSelectionPath(path); tree.expandPath(path);
 		 * tree.requestFocusInWindow(); } });
 		 */splashScreen.incrementValue();
 	}
 
 	protected abstract JComponent createAlarmComponent(
-			AbstractNewApplet applet,
-			String alarmDefPath);
+		AbstractNewApplet applet,
+		String alarmDefPath);
 }

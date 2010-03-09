@@ -77,6 +77,8 @@ public class DialogMapState implements State {
 			stack.push(new PfLaTenkeyDialogState(tagName, atts, this));
 		} else if (tagName.equals("pointcommentdialog")) {
 			stack.push(new PointCommentDialogState(tagName, atts, this));
+		} else if (tagName.equals("pinpointdialog")) {
+			stack.push(new PinpointDialogState(tagName, atts, this));
 		} else {
 			logger.debug("tagName:" + tagName);
 		}

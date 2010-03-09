@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.draw;
@@ -40,9 +40,9 @@ import org.apache.commons.collections.primitives.DoubleList;
 
 /**
  * 合成表示のグラフ描画クラス
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class CompositGraphDraw extends AbstractGraphDraw {
 
@@ -51,10 +51,10 @@ public class CompositGraphDraw extends AbstractGraphDraw {
 	}
 
 	public void drawSeries(
-			Graphics g,
-			int currentIndex,
-			LogData[] displayDatas,
-			boolean isAllSpanDisplayMode) {
+		Graphics g,
+		int currentIndex,
+		LogData[] displayDatas,
+		boolean isAllSpanDisplayMode) {
 		Insets insets = properties.getInsets();
 		long lastDate = displayDatas[currentIndex].getDate().getTime();
 		long startDate = lastDate - properties.getHorizontalLineSpan();
@@ -72,7 +72,7 @@ public class CompositGraphDraw extends AbstractGraphDraw {
 				int y2 = getY(i2.next(), seriesIndex);
 				SeriesProperties sp =
 					properties.getSeriesGroup().getSeriesProperties().get(
-						seriesIndex);
+							seriesIndex);
 				if (sp.isVisible()) {
 					g.setColor(sp.getColor());
 					g.drawLine((int) x1, y1 + insets.top, x2, y2 + insets.top);
@@ -100,37 +100,79 @@ public class CompositGraphDraw extends AbstractGraphDraw {
 	}
 
 	public void drawVerticalString(
-			Graphics g,
-			int top,
-			int x,
-			int y,
-			int i,
-			int drawSeriesIndex) {
+		Graphics g,
+		int top,
+		int x,
+		int y,
+		int i,
+		int drawSeriesIndex) {
 		if (properties.isVisibleVerticalString()) {
 			SeriesProperties p =
 				properties.getSeriesGroup().getSeriesProperties().get(
-					drawSeriesIndex);
+						drawSeriesIndex);
 			float max = p.getMax();
 			DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
 			float inc = (max - p.getMin()) / properties.getVerticalCount();
 			DataHolder holder =
 				Manager.getInstance().findDataHolder(
-					p.getHolderString().getHolderId());
-			ConvertValue converter =
-				(ConvertValue) holder
-					.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-			double ref = converter.convertInputValueUnlimited(max - i * inc);
-			String dateStr = converter.convertStringValueUnlimited(ref);
-			FontMetrics metrics = g.getFontMetrics();
-			if (p.isVisible()) {
-				g.setColor(p.getColor());
-				g.drawString(dateStr, x
-					- metrics.stringWidth(dateStr)
-					- properties.getScalePixcelSize(), round(top
-					+ y
-					+ metrics.getAscent()
-					/ DATE_STRING_RATE));
+						p.getHolderString().getHolderId());
+			if (isDigital(holder)) {
+				digitalDraw(g, top, x, y, i, p);
+			} else {
+				analogDraw(g, top, x, y, i, p, max, inc, holder);
 			}
+		}
+	}
+
+	private void digitalDraw(
+		Graphics g,
+		int top,
+		int x,
+		int y,
+		int i,
+		SeriesProperties p) {
+		String dateStr = "";
+		if (i == 0) {
+			dateStr = "ON ";
+		} else if (i == properties.getCompositionVerticalCount()) {
+			dateStr = "OFF";
+		}
+		FontMetrics metrics = g.getFontMetrics();
+		if (p.isVisible()) {
+			g.setColor(p.getColor());
+			g.drawString(dateStr, x
+				- metrics.stringWidth(dateStr)
+				- properties.getScalePixcelSize(), round(top
+				+ y
+				+ metrics.getAscent()
+				/ DATE_STRING_RATE));
+		}
+	}
+
+	private void analogDraw(
+		Graphics g,
+		int top,
+		int x,
+		int y,
+		int i,
+		SeriesProperties p,
+		float max,
+		float inc,
+		DataHolder holder) {
+		ConvertValue converter =
+			(ConvertValue) holder
+					.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+		double ref = converter.convertInputValueUnlimited(max - i * inc);
+		String dateStr = converter.convertStringValueUnlimited(ref);
+		FontMetrics metrics = g.getFontMetrics();
+		if (p.isVisible()) {
+			g.setColor(p.getColor());
+			g.drawString(dateStr, x
+				- metrics.stringWidth(dateStr)
+				- properties.getScalePixcelSize(), round(top
+				+ y
+				+ metrics.getAscent()
+				/ DATE_STRING_RATE));
 		}
 	}
 }

@@ -26,7 +26,7 @@ import java.util.TimerTask;
 public class ActionTimerTask extends TimerTask {
 	private final LimitedAction limitedAction;
 
-	ActionTimerTask (LimitedAction limitedAction) {
+	public ActionTimerTask (LimitedAction limitedAction) {
 		this.limitedAction = limitedAction;
 	}
 

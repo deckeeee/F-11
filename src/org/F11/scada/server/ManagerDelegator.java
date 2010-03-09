@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/ManagerDelegator.java,v 1.20.2.17 2007/04/24 00:46:51 frdm Exp $
  * $Revision: 1.20.2.17 $
  * $Date: 2007/04/24 00:46:51 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -72,6 +72,7 @@ import org.F11.scada.server.invoke.AddCheckJournal;
 import org.F11.scada.server.invoke.GetCheckEventJournal;
 import org.F11.scada.server.invoke.HistoryAllCheck;
 import org.F11.scada.server.invoke.InvokeHandler;
+import org.F11.scada.server.invoke.PinpointService;
 import org.F11.scada.server.invoke.SetNoncheckTable;
 import org.F11.scada.server.invoke.TrendFileService;
 import org.F11.scada.server.invoke.UnitSerachService;
@@ -85,7 +86,7 @@ import org.apache.log4j.Logger;
 
 /**
  * JIMマネージャーのリモート操作を代理実行するクラスです。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class ManagerDelegator extends UnicastRemoteObject implements
@@ -100,7 +101,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	/** Logging API */
 	private static Logger logger;
 	/** ポイント変更イベントマップ */
-	private final SortedMap pointMap;
+	private final SortedMap<Long, PointTableBean[]> pointMap;
 	/** ポイント変更イベントマップ最大数 */
 	private static final int POINT_MAP_MAX_COUNT = 1000;
 	/** データ更新ログのサービスオブジェクト */
@@ -112,17 +113,20 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * このオブジェクトを初期化します。
-	 * 
+	 *
 	 * @param recvPort オブジェクト転送ポート番号
 	 * @throws RemoteException
 	 * @throws MalformedURLException
 	 * @throws SQLException
 	 */
-	public ManagerDelegator(int recvPort) throws RemoteException,
+	public ManagerDelegator(int recvPort)
+			throws RemoteException,
 			MalformedURLException {
 		super(recvPort);
 		logger = Logger.getLogger(getClass().getName());
-		pointMap = Collections.synchronizedSortedMap(new TreeMap());
+		pointMap =
+			Collections
+					.synchronizedSortedMap(new TreeMap<Long, PointTableBean[]>());
 
 		historyCheck = new PostgreSQLAlarmDataStore();
 		logger.info("ManagerDelegator : " + mainServer);
@@ -140,6 +144,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		map.put("HistoryAllCheck", new HistoryAllCheck());
 		map.put("UnitSearchService", new UnitSerachService());
 		map.put("TrendFileService", new TrendFileService());
+		map.put("PinpointService", new PinpointService());
 		return map;
 	}
 
@@ -177,16 +182,16 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	}
 
 	public void setValue(
-			String dpname,
-			String dhname,
-			Object dataValue,
-			String user,
-			String ip) throws RemoteException {
+		String dpname,
+		String dhname,
+		Object dataValue,
+		String user,
+		String ip) throws RemoteException {
 		DataHolder dh = getDataHolder(dpname, dhname);
 		// 操作ログ処理
 		if (isSetValue(dh, dataValue)) {
 			service.logging(dh, dataValue, user, ip, new Timestamp(System
-				.currentTimeMillis()));
+					.currentTimeMillis()));
 			setValue(dataValue, dh);
 		}
 	}
@@ -219,16 +224,15 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	}
 
 	public void setHistoryTable(
-			Integer point,
-			String provider,
-			String holder,
-			Timestamp date,
-			Integer row) {
+		Integer point,
+		String provider,
+		String holder,
+		Timestamp date,
+		Integer row) {
 
 		DataHolder dh =
 			Manager.getInstance().findDataHolder(
-				AlarmDataProvider.PROVIDER_NAME,
-				AlarmDataProvider.HISTORY);
+					AlarmDataProvider.PROVIDER_NAME, AlarmDataProvider.HISTORY);
 		dh.setParameter("row", row);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 
@@ -240,21 +244,14 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 			logger.debug("rows:" + Arrays.asList(rows));
 		}
 		DataValueChangeEventKey key =
-			new DataValueChangeEventKey(
-				point.intValue(),
-				provider,
-				holder,
-				Boolean.TRUE,
-				date);
+			new DataValueChangeEventKey(point.intValue(), provider, holder,
+					Boolean.TRUE, date);
 		model.setValueAt(rows, row.intValue(), columnCount - 1, key);
 		dh.setValue(model, date, WifeQualityFlag.GOOD);
 		setNoncheck(row, model, key, date);
 		try {
-			historyCheck.doHistoryCheck(
-				point,
-				provider,
-				holder,
-				(Timestamp) rows[7]);
+			historyCheck.doHistoryCheck(point, provider, holder,
+					(Timestamp) rows[7]);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -270,25 +267,24 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	}
 
 	private void setNoncheck(
-			Integer row,
-			AlarmTableModel model,
-			DataValueChangeEventKey key,
-			Timestamp date) {
+		Integer row,
+		AlarmTableModel model,
+		DataValueChangeEventKey key,
+		Timestamp date) {
 		DataHolder dh =
-			Manager.getInstance().findDataHolder(
-				AlarmDataProvider.PROVIDER_NAME,
-				AlarmDataProvider.NONCHECK);
+			Manager.getInstance()
+					.findDataHolder(AlarmDataProvider.PROVIDER_NAME,
+							AlarmDataProvider.NONCHECK);
 		AlarmTableModel noncheckModel = (AlarmTableModel) dh.getValue();
 		Object[] rows = getRows(model, row);
-		noncheckModel.setJournal(AlarmTableJournal.createRowDataRemoveOpe(
-			key,
-			rows));
+		noncheckModel.setJournal(AlarmTableJournal.createRowDataRemoveOpe(key,
+				rows));
 		dh.setValue(noncheckModel, date, WifeQualityFlag.GOOD);
 	}
 
 	/**
 	 * 指定されたデータホルダを返します。
-	 * 
+	 *
 	 * @param dpname データプロバイダ名
 	 * @param dhname データホルダ名
 	 * @return 存在した場合は DataHolder オブジェクト、無い場合は null を返します。
@@ -314,7 +310,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * データホルダ更新データを返します。
-	 * 
+	 *
 	 * @param provider データプロバイダ名
 	 * @return データホルダ更新データのListオブジェクト
 	 */
@@ -327,8 +323,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 			if (obj instanceof WifeData) {
 				WifeData wd = (WifeData) obj;
 				retData.add(new HolderData(dh.getDataHolderName(), wd
-					.toByteArray(), dh.getTimeStamp().getTime(), (Map) dh
-					.getParameter(DemandDataReferencer.GRAPH_DATA)));
+						.toByteArray(), dh.getTimeStamp().getTime(), (Map) dh
+						.getParameter(DemandDataReferencer.GRAPH_DATA)));
 			}
 		}
 		return retData;
@@ -336,7 +332,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * データホルダ更新データを返します。
-	 * 
+	 *
 	 * @param provider データプロバイダ名
 	 * @param t 保持データの最新日付の long 値
 	 * @return データホルダ更新データのListオブジェクト
@@ -349,7 +345,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * サーバーで実行されている、データプロバイダ名の配列を返します。
-	 * 
+	 *
 	 * @return String[] データプロバイダ名の配列
 	 */
 	public List getDataProviders() {
@@ -372,12 +368,12 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * データホルダー生成オブジェクトの配列を返します。
-	 * 
+	 *
 	 * @param dataProvider データプロバイダ名
 	 * @return CreateHolderData[] データホルダー生成オブジェクトの配列
 	 */
 	public List getCreateHolderDatas(String dataProvider)
-			throws RemoteException {
+		throws RemoteException {
 		DataProvider dp = Manager.getInstance().getDataProvider(dataProvider);
 		ArrayList datas = new ArrayList(dp.getDataHolderCount());
 		for (Iterator i = dp.getDataHolderValues().iterator(); i.hasNext();) {
@@ -392,21 +388,15 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 					|| wd instanceof WifeDataAnalog4) {
 					cv =
 						(ConvertValue) dh
-							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+								.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 					demand =
 						(Map) dh.getParameter(DemandDataReferencer.GRAPH_DATA);
 				}
 				Date date = dh.getTimeStamp();
 				QualityFlag qualityFlag = dh.getQualityFlag();
 				CreateHolderData data =
-					new CreateHolderData(
-						s,
-						wd,
-						cv,
-						demand,
-						date,
-						qualityFlag,
-						dataProvider);
+					new CreateHolderData(s, wd, cv, demand, date, qualityFlag,
+							dataProvider);
 				if (logger.isDebugEnabled()) {
 					logger.debug("CreateHolderData:" + data);
 				}
@@ -420,22 +410,26 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	 * @see org.F11.scada.data.DataAccessable#getAlarmJournal(java.sql.Timestamp,
 	 *      java.lang.String, java.lang.String)
 	 */
-	public SortedMap getAlarmJournal(long t, String provider, String holder)
-			throws RemoteException {
+	public SortedMap<Long, AlarmTableJournal> getAlarmJournal(
+		long t,
+		String provider,
+		String holder) throws RemoteException {
 		DataHolder dh = Manager.getInstance().findDataHolder(provider, holder);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
-		return model.getAlarmJournal(t);
+		SortedMap<Long, AlarmTableJournal> alarmJournal =
+			model.getAlarmJournal(t);
+		return alarmJournal;
 	}
 
 	/**
 	 * そのポイントが含まれるオブジェクトを設定します。
-	 * 
+	 *
 	 * @param nb 新ポイント情報
 	 * @param ob 旧ポイント情報
 	 * @since 1.0.3
 	 */
 	public void setPageEditTime(PointTableBean nb, PointTableBean ob)
-			throws RemoteException {
+		throws RemoteException {
 
 		logger.info("Change : " + ob + " -> " + nb);
 
@@ -444,22 +438,19 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 		DataHolder dh =
 			Manager.getInstance().findDataHolder(
-				AlarmDataProvider.PROVIDER_NAME,
-				AlarmDataProvider.CAREER);
+					AlarmDataProvider.PROVIDER_NAME, AlarmDataProvider.CAREER);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 		TableUtil.setPoint(model, nb, ob);
 
 		dh =
 			Manager.getInstance().findDataHolder(
-				AlarmDataProvider.PROVIDER_NAME,
-				AlarmDataProvider.HISTORY);
+					AlarmDataProvider.PROVIDER_NAME, AlarmDataProvider.HISTORY);
 		model = (AlarmTableModel) dh.getValue();
 		TableUtil.setPoint(model, nb, ob);
 
 		dh =
 			Manager.getInstance().findDataHolder(
-				AlarmDataProvider.PROVIDER_NAME,
-				AlarmDataProvider.SUMMARY);
+					AlarmDataProvider.PROVIDER_NAME, AlarmDataProvider.SUMMARY);
 		model = (AlarmTableModel) dh.getValue();
 		TableUtil.setPoint(model, nb, ob);
 	}
@@ -469,10 +460,8 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 		if (null != schedules && schedules.containsKey(key)) {
 			DataHolder dh = (DataHolder) schedules.get(key);
 			WifeDataSchedule data = (WifeDataSchedule) dh.getValue();
-			dh.setValue(
-				data.setGroupName(nb.getName()),
-				new Date(),
-				WifeQualityFlag.GOOD);
+			dh.setValue(data.setGroupName(nb.getName()), new Date(),
+					WifeQualityFlag.GOOD);
 		}
 	}
 
@@ -500,24 +489,26 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * タイムスタンプで指定された以上のジャーナルデータを返します。
-	 * 
+	 *
 	 * @param t タイムスタンプのLong値
 	 * @return SortedMap 更新日時と PointTableBean オブジェクトのマップ
 	 * @since 1.0.3
 	 */
-	public SortedMap getPointJournal(long t) throws RemoteException {
-		return new TreeMap(pointMap.tailMap(new Long(t + 1)));
+	public SortedMap<Long, PointTableBean[]> getPointJournal(long t)
+		throws RemoteException {
+		return new TreeMap<Long, PointTableBean[]>(pointMap.tailMap(new Long(
+				t + 1)));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.data.DataAccessable#getCreateHolderDatas(org.F11.scada.
 	 * server.register.HolderString[])
 	 */
 	public List getCreateHolderDatas(Collection holderStrings)
-			throws RemoteException {
+		throws RemoteException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug(holderStrings);
@@ -551,21 +542,15 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 					|| wd instanceof WifeDataAnalog4) {
 					cv =
 						(ConvertValue) dh
-							.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+								.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 					demand =
 						(Map) dh.getParameter(DemandDataReferencer.GRAPH_DATA);
 				}
 				Date date = dh.getTimeStamp();
 				QualityFlag qualityFlag = dh.getQualityFlag();
 				CreateHolderData data =
-					new CreateHolderData(
-						dh.getDataHolderName(),
-						wd,
-						cv,
-						demand,
-						date,
-						qualityFlag,
-						dp.getDataProviderName());
+					new CreateHolderData(dh.getDataHolderName(), wd, cv,
+							demand, date, qualityFlag, dp.getDataProviderName());
 				datas.add(data);
 			}
 		}
@@ -577,7 +562,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * スケジュールデータを含むデータホルダをマネージャーに設定します。
-	 * 
+	 *
 	 * @param point ポイントID
 	 * @param dh データホルダ
 	 * @return 設定したデータホルダ
@@ -592,7 +577,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * スケジュールデータを含むデータホルダをマネージャーから削除します。
-	 * 
+	 *
 	 * @param point ポイントID
 	 * @return 削除したデータホルダ
 	 * @version 2.0.21
@@ -606,7 +591,7 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 
 	/**
 	 * サーバーのコマンドを呼び出します。
-	 * 
+	 *
 	 * @param command コマンド名
 	 * @param args 引数
 	 * @return 戻り値があるばあいはオブジェクトが返される、そうでない場合は null が返される。

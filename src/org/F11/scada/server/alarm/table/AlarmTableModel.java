@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/alarm/table/AlarmTableModel.java,v 1.5.2.2 2006/08/16 08:53:06 frdm Exp $
  * $Revision: 1.5.2.2 $
  * $Date: 2006/08/16 08:53:06 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -43,8 +43,8 @@ public interface AlarmTableModel extends TableModel, CheckTable {
 	 * @param t タイムスタンプのLong値
 	 * @return SortedMap ジャーナルデータのマップ
 	 */
-	public SortedMap getAlarmJournal(long t);
-	
+	public SortedMap<Long, AlarmTableJournal> getAlarmJournal(long t);
+
 	/**
 	 * 指定した行・カラムにデータを設定します。その後ジャーナルデータを追加します。
 	 * @param data 設定するデータの配列
@@ -57,7 +57,7 @@ public interface AlarmTableModel extends TableModel, CheckTable {
 			int rowIndex,
 			int columnIndex,
 			DataValueChangeEventKey key);
-	
+
 	/**
 	 * 指定した行にデータを挿入します。その後ジャーナルデータを追加します。
 	 * @param row データを挿入する行
@@ -65,33 +65,33 @@ public interface AlarmTableModel extends TableModel, CheckTable {
 	 * @param key データ変更イベント値
 	 */
 	public void insertRow(int row, Object[] data, DataValueChangeEventKey key);
-	
+
 	/**
 	 * 指定した行のデータを削除します。その後ジャーナルデータを追加します。
 	 * @param row 削除する行
 	 * @param key データ変更イベント値
 	 */
 	public void removeRow(int row, DataValueChangeEventKey key);
-	
+
 	/**
 	 * ジャーナルデータのリストをテーブルモデルに反映し、ジャーナルデータに追加します。
 	 * @param value ジャーナルデータのソートマップ
 	 */
-	public void setValue(SortedMap value);
-	
+	public void setValue(SortedMap<Long, AlarmTableJournal> value);
+
 	/**
 	 * 最後のジャーナルデータを返します。
 	 * @return 最後のジャーナルデータ
 	 */
 	public AlarmTableJournal getLastJournal();
-	
+
 	/**
 	 * キーを含む最初の行を返します。
 	 * @param key データ変更イベント値キーオブジェクト
 	 * @return int キーの行が存在した場合は、その行を返します。存在しない場合は負数(-1)を返します。
 	 */
 	public int searchRow(DataValueChangeEventKey key);
-	
+
 	/**
 	 * 指定した行にデータを挿入します。
 	 * @param row データを挿入する行
@@ -110,7 +110,7 @@ public interface AlarmTableModel extends TableModel, CheckTable {
 	 * @param t タイムスタンプのLong値
 	 * @return SortedMap 確認イベントジャーナルデータのマップ
 	 */
-	SortedMap getCheckJournal(long t);
+	SortedMap<Long, CheckEvent> getCheckJournal(long t);
 
 	/**
 	 * 最後の警報確認ジャーナルデータを返します。
@@ -133,7 +133,7 @@ public interface AlarmTableModel extends TableModel, CheckTable {
 	 */
 	int getColumn(String columnName);
 
-	
+
 	/**
 	 * 指定した行のデータを削除します。
 	 * @param row 削除する行

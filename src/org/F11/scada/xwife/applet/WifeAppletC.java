@@ -36,17 +36,18 @@ public class WifeAppletC extends AbstractNewApplet {
 	private static final long serialVersionUID = 9029283868398055560L;
 
 	public WifeAppletC() throws RemoteException {
-		this(false);
+		this(false, false);
 	}
 
-	public WifeAppletC(boolean isStandalone) throws RemoteException {
-		super(isStandalone);
+	public WifeAppletC(boolean isStandalone, boolean soundoffAtStarted)
+			throws RemoteException {
+		super(isStandalone, soundoffAtStarted);
 		setAppletTypeC(true);
 	}
 
 	protected JComponent createAlarmComponent(
-			AbstractNewApplet applet,
-			String alarmDefPath) {
+		AbstractNewApplet applet,
+		String alarmDefPath) {
 		return new AlarmPanel(applet, alarmDefPath);
 	}
 
@@ -68,8 +69,7 @@ public class WifeAppletC extends AbstractNewApplet {
 
 				wifeApplet.mainSplit
 						.setDividerLocation(wifeApplet.configuration.getInt(
-								"xwife.applet.Applet.treeHeight",
-								775));
+								"xwife.applet.Applet.treeHeight", 775));
 			} else {
 				but.setText(VIEWMODE_DW);
 				panelAlarmList.setVisible(true);
@@ -92,15 +92,21 @@ public class WifeAppletC extends AbstractNewApplet {
 	// Main ÉÅÉ\ÉbÉh
 	public static void main(String[] args) {
 		final JFrame frame = new JFrame();
+		boolean sound = false;
+		if (args != null) {
+			for (int i = 0; i < args.length; i++) {
+				if ("-nosound".equalsIgnoreCase(args[i])) {
+					sound = true;
+				}
+			}
+		}
 		WifeAppletC applet = null;
 		try {
-			applet = new WifeAppletC(true);
+			applet = new WifeAppletC(true, sound);
 		} catch (RemoteException e) {
-			JOptionPane.showInternalMessageDialog(
-					frame,
+			JOptionPane.showInternalMessageDialog(frame,
 					ServerErrorUtil.ERROR_MESSAGE,
-					ServerErrorUtil.ERROR_MESSAGE,
-					JOptionPane.ERROR_MESSAGE);
+					ServerErrorUtil.ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 		setOptions(args, applet);
 		setCloseAction(frame, applet);
@@ -113,8 +119,7 @@ public class WifeAppletC extends AbstractNewApplet {
 		}
 		applet.start();
 		applet.setFrameBounds(frame);
-		if (applet.configuration.getBoolean(
-				"xwife.applet.Applet.maximized",
+		if (applet.configuration.getBoolean("xwife.applet.Applet.maximized",
 				false)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}

@@ -20,8 +20,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,8 +40,8 @@ public class AlarmStopDialog extends JDialog {
 	private final StreamManager manager;
 
 	private final JTextField keyName = new JTextField();
-	private final JTextField stopEvent = new JTextField();
-	private final JTextField stopWrite = new JTextField();
+	private final JTextField stopEvent = new JTextField(20);
+	private final JTextField stopWrite = new JTextField(20);
 
 	public AlarmStopDialog(StreamManager manager, Frame parent) {
 		super(parent, "警報音停止設定", true);
@@ -88,6 +91,8 @@ public class AlarmStopDialog extends JDialog {
 		c.gridwidth = GridBagConstraints.REMAINDER; // end row
 		gridbag.setConstraints(stopWrite, c);
 
+		stopSoundOnly(panel, c);
+
 		mainPanel.add(panel, BorderLayout.CENTER);
 
 		panel = new JPanel(new GridLayout(1, 0));
@@ -111,6 +116,35 @@ public class AlarmStopDialog extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
+	private void stopSoundOnly(JPanel mainPanel, GridBagConstraints c) {
+		JLabel label = new JLabel("警報音停止タイプ：");
+		label.setToolTipText("音のみを停止するか、擬似的に停止ボタンをクリックするかを設定。音のみ停止が推奨");
+		c.weightx = 1.0;
+		c.gridwidth = 1;
+		mainPanel.add(label, c);
+		JComboBox cb = new JComboBox(new String[] { "停止ボタンクリック", "音のみ停止" });
+		final String key = "xwife.applet.Applet.alarmStopKey.stopSoundOnly";
+		if ("false".equals(manager.getClientConf(key, "false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("停止ボタンクリック".equals(e.getItem())) {
+						manager.setClientConf(key, "false");
+					} else {
+						manager.setClientConf(key, "true");
+					}
+				}
+			}
+		});
+		c.weightx = 1.0;
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		mainPanel.add(cb, c);
+	}
+
 	private void push_ok() {
 		log.debug("push_ok");
 		manager.setClientConf("xwife.applet.Applet.alarmStopKey", keyName
@@ -121,6 +155,7 @@ public class AlarmStopDialog extends JDialog {
 				stopWrite.getText());
 		dispose();
 	}
+
 	private void push_cansel() {
 		dispose();
 	}

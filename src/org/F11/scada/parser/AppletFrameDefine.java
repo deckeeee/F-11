@@ -394,6 +394,15 @@ public class AppletFrameDefine {
 
 			BasePane bp = (BasePane) pageMap.get(ITEM_KEY_PANE);
 			if (bp.isCache()) {
+				if (cachePageMap.containsKey(name)) {
+					PageMapWrapper pageMapWrapper =
+						(PageMapWrapper) cachePageMap.remove(name);
+					cacheHolderSet.removeAll(pageMapWrapper.pageDefine
+							.getDataHolders());
+					BasePane oldbp =
+						(BasePane) pageMapWrapper.getPageMap().get(ITEM_KEY_PANE);
+					oldbp.destroyPage();
+				}
 				cachePageMap.put(name, new PageMapWrapper(System
 						.currentTimeMillis(), pageMap, page));
 				cacheHolderSet.addAll(page.getDataHolders());

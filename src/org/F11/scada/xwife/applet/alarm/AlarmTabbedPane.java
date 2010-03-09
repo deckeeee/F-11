@@ -25,6 +25,7 @@ import static org.F11.scada.util.TableUtil.removeColumn;
 import static org.F11.scada.util.TableUtil.removeColumns;
 import static org.F11.scada.util.TableUtil.setColumnWidth;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
@@ -294,7 +295,7 @@ public class AlarmTabbedPane extends JTabbedPane {
 
 	/**
 	 * 対象のテーブルに AlarmTableCellRenderer を設定します。
-	 * 
+	 *
 	 * @param table 対象のテーブル
 	 */
 	private void setAlarmTableCellRenderer(JTable table) {

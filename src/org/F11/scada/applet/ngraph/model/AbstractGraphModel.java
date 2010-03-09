@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.model;
-
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -28,12 +27,11 @@ import java.util.List;
 import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.SeriesGroup;
 
-
 /**
  * グラフモデルの基底クラスです。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public abstract class AbstractGraphModel implements GraphModel {
 	protected final PropertyChangeSupport changeSupport;
@@ -78,7 +76,7 @@ public abstract class AbstractGraphModel implements GraphModel {
 	public List<SeriesGroup> getSeriesGroups() {
 		return graphProperties.getSeriesGroups();
 	}
-	
+
 	public String getLogName() {
 		return logName;
 	}
@@ -92,4 +90,12 @@ public abstract class AbstractGraphModel implements GraphModel {
 		return maxRecord;
 	}
 
+	public void removePropertyChangeListeners() {
+		if (changeSupport != null) {
+			for (PropertyChangeListener l : changeSupport
+					.getPropertyChangeListeners()) {
+				changeSupport.removePropertyChangeListener(l);
+			}
+		}
+	}
 }

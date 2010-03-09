@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/alarm/table/postgresql/PostgreSQLAlarmTableModel.java,v 1.11.2.8 2006/09/11 06:19:35 frdm Exp $
  * $Revision: 1.11.2.8 $
  * $Date: 2006/09/11 06:19:35 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -27,7 +27,6 @@ package org.F11.scada.server.alarm.table.postgresql;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -48,7 +47,7 @@ import org.apache.log4j.Logger;
 /**
  * DefaultTableModelによるAlarmTableModelの実装です。
  * 継承不能のクラスです。このクラスの機能を使用する場合は、継承ではなく委譲モデルを使用して下さい。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
@@ -59,61 +58,70 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 	/** テーブルモデルの保持最大行 */
 	private static int MAX_ROW =
 		Integer
-			.parseInt(EnvironmentManager.get("/server/alarm/maxrow", "5000"));
+				.parseInt(EnvironmentManager
+						.get("/server/alarm/maxrow", "5000"));
 	/** ジャーナルデータ保持最大行 */
-	private static int MAX_JOURNAL = 5000;
+	private static int MAX_JOURNAL =
+		Integer.parseInt(EnvironmentManager.get("/server/alarm/maxjournal",
+				"5000"));
 	/** DefaultTableModelオブジェクト */
 	private final DefaultTableModel model;
 	/** ジャーナルデータのSortedMap */
-	private final SortedMap journal;
+	private final SortedMap<Long, AlarmTableJournal> journal;
 	/** 行検索オブジェクトの参照 */
 	private final Searcher searcher;
 	/** 確認サポート */
 	private final CheckTable checkTable;
 	/** 確認イベントのジャーナル */
-	private final SortedMap checkJournal;
+	private final SortedMap<Long, CheckEvent> checkJournal;
 	/** ロギング */
 	private static final Logger logger =
 		Logger.getLogger(PostgreSQLAlarmTableModel.class);
-	private final Map titleMap;
+	/** テーブルの列名と列数マップ */
+	private final Map<String, Integer> titleMap;
+	/** テーブル名称 */
+	private final String tableName;
 
 	private PostgreSQLAlarmTableModel(
 			DefaultTableModel model,
 			Searcher searcher,
-			Map titleMap) {
+			Map<String, Integer> titleMap,
+			String tableName) {
 		if (model == null) {
 			throw new IllegalArgumentException("model is null.");
 		}
-
 		this.model = model;
-		this.journal = Collections.synchronizedSortedMap(new TreeMap());
+		this.journal =
+			Collections
+					.synchronizedSortedMap(new TreeMap<Long, AlarmTableJournal>());
 		this.searcher = searcher;
 		checkTable = new CheckTableSupport();
-		this.checkJournal = Collections.synchronizedSortedMap(new TreeMap());
+		this.checkJournal =
+			Collections.synchronizedSortedMap(new TreeMap<Long, CheckEvent>());
 		this.titleMap = titleMap;
+		this.tableName = tableName;
 	}
 
 	public static PostgreSQLAlarmTableModel createDefaultAlarmTableModel(
-			DefaultTableModel model,
-			Map titleMap) {
-		return new PostgreSQLAlarmTableModel(
-			model,
-			new DefaultSearcher(model),
-			titleMap);
+		DefaultTableModel model,
+		Map<String, Integer> titleMap,
+		String tableName) {
+		return new PostgreSQLAlarmTableModel(model, new DefaultSearcher(model),
+				titleMap, tableName);
 	}
 
 	public static PostgreSQLAlarmTableModel createHistoryAlarmTableModel(
-			DefaultTableModel model,
-			Map titleMap) {
-		return new PostgreSQLAlarmTableModel(
-			model,
-			new HistorySearcher(model),
-			titleMap);
+		DefaultTableModel model,
+		Map<String, Integer> titleMap,
+		String tableName) {
+		return new PostgreSQLAlarmTableModel(model, new HistorySearcher(model),
+				titleMap, tableName);
 	}
 
-	public SortedMap getAlarmJournal(long t) {
+	public SortedMap<Long, AlarmTableJournal> getAlarmJournal(long t) {
 		synchronized (journal) {
-			return new TreeMap(journal.tailMap(new Long(t + 1)));
+			return new TreeMap<Long, AlarmTableJournal>(journal
+					.tailMap(new Long(t + 1)));
 		}
 	}
 
@@ -182,10 +190,10 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 	}
 
 	public void setValueAt(
-			Object[] data,
-			int rowIndex,
-			int columnIndex,
-			DataValueChangeEventKey key) {
+		Object[] data,
+		int rowIndex,
+		int columnIndex,
+		DataValueChangeEventKey key) {
 		model.setValueAt(data[columnIndex], rowIndex, columnIndex);
 		addJournal(AlarmTableJournal.createRowDataModifyOpe(key, data));
 	}
@@ -231,19 +239,20 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 	}
 
 	private void trimTableModelRow() {
-		for (int size = model.getRowCount(), cnt = size - MAX_ROW; cnt > 0; cnt--) {
-			model.removeRow(model.getRowCount() - 1);
+		if (!PostgreSQLInitialTableFactory.SUMMARY.equals(tableName)) {
+			for (int size = model.getRowCount(), cnt = size - MAX_ROW; cnt > 0; cnt--) {
+				model.removeRow(model.getRowCount() - 1);
+			}
 		}
 	}
 
 	/**
 	 * クライアントで使用するテーブルモデルのメソッド
-	 * 
+	 *
 	 * @param value
 	 */
-	public void setValue(SortedMap value) {
-		for (Iterator it = value.values().iterator(); it.hasNext();) {
-			AlarmTableJournal jn = (AlarmTableJournal) it.next();
+	public void setValue(SortedMap<Long, AlarmTableJournal> value) {
+		for (AlarmTableJournal jn : value.values()) {
 			operationJournal(jn);
 		}
 		synchronized (journal) {
@@ -263,7 +272,7 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 		case AlarmTableJournal.REMOVE_OPERATION:
 			int row = searcher.searchRow(jn);
 			if (row < 0) {
-				logger.error("Row not found : jn=" + jn);
+				logger.error("Row not found : tn=" + tableName + " jn=" + jn);
 			} else {
 				model.removeRow(row);
 			}
@@ -276,7 +285,7 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 				}
 			} else {
 				// 更新する行がテーブルモデル内に存在しない。
-				logger.error("Row not found : jn=" + jn);
+				logger.error("Row not found : tn=" + tableName + " jn=" + jn);
 			}
 			break;
 		}
@@ -285,7 +294,7 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 	public AlarmTableJournal getLastJournal() {
 		synchronized (journal) {
 			if (journal.size() > 0) {
-				return (AlarmTableJournal) journal.get(journal.lastKey());
+				return journal.get(journal.lastKey());
 			} else {
 				return null;
 			}
@@ -294,7 +303,7 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 
 	/**
 	 * キーを含む最初の行を返します。
-	 * 
+	 *
 	 * @param key データ変更イベント値キーオブジェクト
 	 * @return int キーの行が存在した場合は、その行を返します。存在しない場合は負数(-1)を返します。
 	 */
@@ -315,7 +324,7 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 
 	/**
 	 * 指定した行にデータを挿入します。
-	 * 
+	 *
 	 * @param row データを挿入する行
 	 * @param data 挿入するデータの配列
 	 */
@@ -354,15 +363,13 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 
 	private boolean isDuplicate(CheckEvent evt) {
 		// 既に同じ確認イベントがあればボーキング
-		TreeMap tempMap = null;
+		TreeMap<Long, CheckEvent> tempMap = null;
 		synchronized (checkJournal) {
 			tempMap =
-				new TreeMap(checkJournal.tailMap(new Long(evt
-					.getOnDate()
-					.getTime() - 1L)));
+				new TreeMap<Long, CheckEvent>(checkJournal.tailMap(new Long(evt
+						.getOnDate().getTime() - 1L)));
 		}
-		for (Iterator i = tempMap.values().iterator(); i.hasNext();) {
-			CheckEvent value = (CheckEvent) i.next();
+		for (CheckEvent value : tempMap.values()) {
 			if (value.equalsKey(evt)) {
 				return true;
 			}
@@ -376,16 +383,17 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 		}
 	}
 
-	public SortedMap getCheckJournal(long t) {
+	public SortedMap<Long, CheckEvent> getCheckJournal(long t) {
 		synchronized (checkJournal) {
-			return new TreeMap(checkJournal.tailMap(new Long(t + 1L)));
+			return new TreeMap<Long, CheckEvent>(checkJournal.tailMap(new Long(
+					t + 1L)));
 		}
 	}
 
 	public CheckEvent getLastCheckEvent() {
 		synchronized (checkJournal) {
 			if (checkJournal.size() > 0) {
-				return (CheckEvent) checkJournal.get(checkJournal.lastKey());
+				return checkJournal.get(checkJournal.lastKey());
 			} else {
 				return null;
 			}
@@ -410,9 +418,9 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 
 	/**
 	 * 行検索オブジェクトのインターフェイスです。
-	 * 
+	 *
 	 * @author maekawa
-	 * 
+	 *
 	 */
 	static interface Searcher {
 		public int searchRow(AlarmTableJournal jn);
@@ -420,9 +428,9 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 
 	/**
 	 * 標準行検索クラスです。
-	 * 
+	 *
 	 * @author maekawa
-	 * 
+	 *
 	 */
 	static class DefaultSearcher implements Searcher, Serializable {
 		private static final long serialVersionUID = 8867454984946361662L;
@@ -457,9 +465,9 @@ public final class PostgreSQLAlarmTableModel implements AlarmTableModel,
 
 	/**
 	 * ヒストリ用の行検索クラスです。
-	 * 
+	 *
 	 * @author maekawa
-	 * 
+	 *
 	 */
 	static class HistorySearcher implements Searcher, Serializable {
 		private static final long serialVersionUID = -8186346906661550286L;

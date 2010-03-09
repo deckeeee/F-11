@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.xwife.applet.comp;
@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 全画面共通のツールバーを管理するクラス。
- * 
+ *
  * /resources/AlarmDefine.xml &lt;toolbar displayLogin="false" /&gt;が false
  * ならブラウザ表示の時ログインボタンを表示しない。
  * /resources/login.xmlが存在している場合で、自IPアドレスが定義されていない場合はログインボタンを表示しない。
@@ -57,7 +57,7 @@ public class SystemToolBar extends JToolBar {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param pageMap ページマップオブジェクト
 	 */
 	public SystemToolBar(AbstractWifeApplet wifeApplet) {
@@ -69,11 +69,19 @@ public class SystemToolBar extends JToolBar {
 			addChangeUser(wifeApplet);
 		}
 		add(new ScreenLockButton(wifeApplet));
-		add(new AlarmSoundLockButton(wifeApplet));
+		add(getAlarmSoundLock(wifeApplet));
 		if (isShowScreenShot(wifeApplet)) {
 			add(new ScreenShotButton(wifeApplet));
 		}
 		addSeparator();
+	}
+
+	private AlarmSoundLockButton getAlarmSoundLock(AbstractWifeApplet wifeApplet) {
+		AlarmSoundLockButton b = new AlarmSoundLockButton(wifeApplet);
+		if (wifeApplet.isSoundoffAtStarted()) {
+			b.doClick();
+		}
+		return b;
 	}
 
 	private JLabel getUserNameLabel() {

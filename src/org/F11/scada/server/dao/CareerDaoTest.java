@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.dao;
@@ -40,5 +40,16 @@ public class CareerDaoTest extends S2DaoTestCase {
 		List<CareerDto> dto =
 			dao.getCareer("2009-02-17 00:00:00", "2009-02-17 23:59:59");
 		System.out.println(dto.size());
+	}
+
+	public void testGetPinpointCareer() {
+		List<CareerDto> dto =
+			dao
+					.getPinpointCareer(
+							"(i.provider = 'P1' AND i.holder = 'D_1900000_Digital') " +
+							"OR (i.provider = 'P1' AND i.holder = 'D_1900001_Digital')",
+							"10");
+		System.out.println(dto.size());
+		System.out.println(dto);
 	}
 }

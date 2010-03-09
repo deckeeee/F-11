@@ -28,11 +28,9 @@ package org.F11.scada.applet.dialog;
 import java.awt.Window;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import org.F11.scada.EnvironmentManager;
 import org.F11.scada.applet.parser.dialog.F11DialogHandler;
-import org.F11.scada.util.MemoryLogUtil;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
@@ -45,9 +43,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class DialogFactory {
 	private static final Logger logger = Logger.getLogger(DialogFactory.class);
-	private Map dialogs;
 
-	private DialogFactory(Window window, PageChanger changer) {
+	public static WifeDialog get(Window window, String name, PageChanger changer) {
 		F11DialogHandler dd = new F11DialogHandler(window, changer);
 		InputStream stream = null;
 		try {
@@ -56,7 +53,8 @@ public class DialogFactory {
 						"/org.xml.sax.driver", ""));
 			parser.setContentHandler(dd);
 			stream =
-				getClass().getResource("/resources/Dialog.xml").openStream();
+				DialogFactory.class.getResource("/resources/Dialog.xml")
+						.openStream();
 			InputSource is = new InputSource(stream);
 			parser.parse(is);
 		} catch (IOException e) {
@@ -72,16 +70,6 @@ public class DialogFactory {
 				}
 			}
 		}
-		dialogs = dd.getDialogs();
-	}
-
-	public Map getDialogs() {
-		return dialogs;
-	}
-
-	public static WifeDialog get(Window window, String name, PageChanger changer) {
-		DialogFactory df = new DialogFactory(window, changer);
-		WifeDialog wifeDialog = (WifeDialog) df.getDialogs().get(name);
-		return wifeDialog;
+		return (WifeDialog) dd.getDialogs().get(name);
 	}
 }

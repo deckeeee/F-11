@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -24,7 +24,6 @@ import static org.F11.scada.applet.ngraph.model.GraphModel.GROUP_CHANGE;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,9 +35,9 @@ import org.apache.log4j.Logger;
 
 /**
  * シリーズのテーブルモデル
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class SeriesTableModel extends AbstractTableModel implements
 		PropertyChangeListener {
@@ -53,11 +52,12 @@ public class SeriesTableModel extends AbstractTableModel implements
 	private final String[] titles =
 		new String[] { "表示", "色", "ｽｹｰﾙ", "記号", "機器名称", "参照値", "現在値", "単位" };
 	private final GraphProperties graphProperties;
+	private ScheduledExecutorService service;
 
 	public SeriesTableModel(GraphProperties graphProperties) {
 		this.graphProperties = graphProperties;
 		this.graphProperties.addPropertyChangeListener(GROUP_CHANGE, this);
-		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+		service = Executors.newScheduledThreadPool(1);
 		service.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				for (int i = 0; i < getRowCount(); i++) {
@@ -78,10 +78,8 @@ public class SeriesTableModel extends AbstractTableModel implements
 	}
 
 	public int getRowCount() {
-		return isNotEmpty() ? graphProperties
-			.getSeriesGroup()
-			.getSeriesProperties()
-			.size() : 0;
+		return isNotEmpty() ? graphProperties.getSeriesGroup()
+				.getSeriesProperties().size() : 0;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -93,10 +91,8 @@ public class SeriesTableModel extends AbstractTableModel implements
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
 		SeriesProperties seriesProperties =
-			graphProperties
-				.getSeriesGroup()
-				.getSeriesProperties()
-				.get(rowIndex);
+			graphProperties.getSeriesGroup().getSeriesProperties()
+					.get(rowIndex);
 		switch (columnIndex) {
 		case VISIBLE_COLUMN:
 			boolean b = seriesProperties.isVisible();
@@ -117,12 +113,8 @@ public class SeriesTableModel extends AbstractTableModel implements
 	}
 
 	private TableModelEvent getTableModelEvent(int rowIndex, int columnIndex) {
-		return new TableModelEvent(
-			this,
-			rowIndex,
-			rowIndex,
-			columnIndex,
-			TableModelEvent.UPDATE);
+		return new TableModelEvent(this, rowIndex, rowIndex, columnIndex,
+				TableModelEvent.UPDATE);
 	}
 
 	private Object getSeriesProperty(int rowIndex, int columnIndex) {
@@ -149,11 +141,6 @@ public class SeriesTableModel extends AbstractTableModel implements
 		}
 	}
 
-	private String format(String format, Float value) {
-		DecimalFormat f = new DecimalFormat(format);
-		return value == null ? null : f.format(value);
-	}
-
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		if (isNotEmpty()) {
@@ -178,17 +165,32 @@ public class SeriesTableModel extends AbstractTableModel implements
 
 	public SeriesProperties getSeriesProperties(int rowIndex) {
 		return graphProperties.getSeriesGroup().getSeriesProperties().get(
-			rowIndex);
+				rowIndex);
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (GROUP_CHANGE.equals(evt.getPropertyName())) {
-			for (int i = 0; i < graphProperties
-				.getSeriesGroup()
-				.getSeriesProperties()
-				.size(); i++) {
+			for (int i = 0; i < graphProperties.getSeriesGroup()
+					.getSeriesProperties().size(); i++) {
 				setValueAt(null, i, REFERENCE_VALUE_COLUMN);
 			}
 		}
+	}
+
+	/**
+	 * シリーズの最大数 を返します。
+	 *
+	 * @return　シリーズの最大数 を返します。
+	 */
+	public int getMaxRow() {
+		int max = 0;
+		for (SeriesGroup sg : graphProperties.getSeriesGroups()) {
+			max = Math.max(max, sg.getSeriesProperties().size());
+		}
+		return max;
+	}
+
+	public void shutdown() {
+		service.shutdown();
 	}
 }

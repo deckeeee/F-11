@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.xwife.applet.comp;
@@ -64,8 +64,7 @@ public class StopAlarmButton extends JButton {
 	private void initKeyEvent(final AbstractWifeApplet wifeApplet) {
 		String stopKey =
 			wifeApplet.getConfiguration().getString(
-				"xwife.applet.Applet.alarmStopKey",
-				"F12");
+					"xwife.applet.Applet.alarmStopKey", "F12");
 		Action key = new AbstractAction(stopKey) {
 			private static final long serialVersionUID = -2668128777789593884L;
 
@@ -87,8 +86,7 @@ public class StopAlarmButton extends JButton {
 	private void getWrtiteHolder(final AbstractWifeApplet wifeApplet) {
 		String value =
 			wifeApplet.getConfiguration().getString(
-				"xwife.applet.Applet.alarmStopKey.write",
-				"");
+					"xwife.applet.Applet.alarmStopKey.write", "");
 		if (!"".equals(value)) {
 			int p = value.indexOf('_');
 			if (0 < p) {
@@ -125,10 +123,8 @@ public class StopAlarmButton extends JButton {
 
 	private void writeDigital(DataHolder dh, WifeData wd) {
 		WifeDataDigital dd = (WifeDataDigital) wd;
-		dh.setValue(
-			(WifeData) dd.valueOf(TRUE_DATA),
-			new Date(),
-			WifeQualityFlag.GOOD);
+		dh.setValue((WifeData) dd.valueOf(TRUE_DATA), new Date(),
+				WifeQualityFlag.GOOD);
 		try {
 			dh.syncWrite();
 		} catch (Exception e) {
@@ -139,10 +135,19 @@ public class StopAlarmButton extends JButton {
 	private void createStopAlarmButtonListener(AbstractWifeApplet wifeApplet) {
 		String value =
 			wifeApplet.getConfiguration().getString(
-				"xwife.applet.Applet.alarmStopKey.event",
-				"");
+					"xwife.applet.Applet.alarmStopKey.event", "");
 		if (!"".equals(value)) {
-			new StopAlarmButtonListener(value, this);
+			boolean stopSoundOnly =
+				wifeApplet
+						.getConfiguration()
+						.getBoolean(
+								"xwife.applet.Applet.alarmStopKey.stopSoundOnly",
+								false);
+			if (stopSoundOnly) {
+				new StopAlarmButtonListener(value, wifeApplet);
+			} else {
+				new StopAlarmButtonListener(value, this);
+			}
 		}
 	}
 
@@ -150,11 +155,17 @@ public class StopAlarmButton extends JButton {
 			DataValueChangeListener, DataReferencerOwner, ReferencerOwnerSymbol {
 		private final Logger logger =
 			Logger.getLogger(StopAlarmButtonListener.class);
-		private final JButton button;
+		private JButton button;
+		private AbstractWifeApplet wifeApplet;
 		private DataReferencer referencer;
 
 		StopAlarmButtonListener(String value, JButton button) {
 			this.button = button;
+			connectReferencer(value);
+		}
+
+		StopAlarmButtonListener(String value, AbstractWifeApplet wifeApplet) {
+			this.wifeApplet = wifeApplet;
 			connectReferencer(value);
 		}
 
@@ -185,7 +196,12 @@ public class StopAlarmButton extends JButton {
 				if (value instanceof WifeDataDigital) {
 					WifeDataDigital dd = (WifeDataDigital) value;
 					if (dd.isOnOff(true)) {
-						button.doClick();
+						if (null != button) {
+							button.doClick();
+						} else if (null != wifeApplet) {
+							wifeApplet.stopAlarm();
+							logger.info("Œx•ñ‰¹’âŽ~");
+						}
 					}
 				}
 			}
