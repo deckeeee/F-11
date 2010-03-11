@@ -26,14 +26,14 @@ import java.io.Serializable;
  */
 public class OperationLoggingFinderDto extends OperationLogging implements Serializable {
     private static final long serialVersionUID = 2281837983162942817L;
-    
+
     public static final String TABLE = "operation_logging_table";
     public static final String id_ID = "identity";
 
     private String unit;
     private String name;
     private String message;
-    
+
     public OperationLoggingFinderDto() {
     }
     public String getUnit() {
@@ -58,7 +58,7 @@ public class OperationLoggingFinderDto extends OperationLogging implements Seria
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof OperationLogging)) {
+		if (!(obj instanceof OperationLoggingFinderDto)) {
 			return false;
 		}
 		OperationLoggingFinderDto log = (OperationLoggingFinderDto) obj;

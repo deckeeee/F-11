@@ -41,7 +41,7 @@ public final class PortChannelManager {
 	/** ポートのマップ */
 	protected final static Map portChannels = new HashMap();
 	/** セレクタ */
-	protected static PortSelector portSelector;
+	protected static volatile PortSelector portSelector;
 
 	/**
 	 * プライベートコンストラクタ
