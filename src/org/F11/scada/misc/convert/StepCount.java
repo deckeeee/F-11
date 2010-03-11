@@ -21,9 +21,9 @@ import org.F11.scada.server.deploy.FileLister;
 
 /**
  * ディレクトリ内のファイル名(拡張子のみも可)を小文字に統一します。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class StepCount {
 	/** 変名オブジェクト */
@@ -36,7 +36,7 @@ public class StepCount {
 
 	/**
 	 * ディレクトリ内のファイル名(拡張子のみも可)を小文字に統一します。
-	 * 
+	 *
 	 * @param root 基本ディレクトリ
 	 * @param rename 変名オブジェクト
 	 */
@@ -48,8 +48,9 @@ public class StepCount {
 		for (Iterator i = c.iterator(); i.hasNext();) {
 			File file = (File) i.next();
 			fileCount++;
+			BufferedReader r = null;
 			try {
-				BufferedReader r = new BufferedReader(new FileReader(file));
+				r = new BufferedReader(new FileReader(file));
 				do {
 					count++;
 				} while (null != r.readLine());
@@ -57,6 +58,14 @@ public class StepCount {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				if (null != r) {
+					try {
+						r.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		Format f = NumberFormat.getInstance();
