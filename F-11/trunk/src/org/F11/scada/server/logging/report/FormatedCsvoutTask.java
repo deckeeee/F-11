@@ -45,46 +45,32 @@ public class FormatedCsvoutTask extends AbstractCsvoutTask {
 
 	/**
 	 * コンストラクタ
-	 * 
-	 * @param name ロギング名
-	 * @param dataHolders データホルダーのリスト
+	 *
+	 * @param name
+	 *            ロギング名
+	 * @param dataHolders
+	 *            データホルダーのリスト
 	 * @param midOffset
-	 * @param factoryName データ永続クラス名
-	 * @exception SQLException DBMSに接続できなかったとき
+	 * @param factoryName
+	 *            データ永続クラス名
+	 * @exception SQLException
+	 *                DBMSに接続できなかったとき
 	 */
-	public FormatedCsvoutTask(
-			String logg_name,
-			ValueListHandler handlerManager,
-			String schedule,
-			List dataHolders,
-			String currDir,
-			String csv_head,
-			String csv_mid,
-			String csv_foot,
-			int keepCount,
-			long midOffset,
-			File formatFile,
-			List<String> tables) throws NoSuchFieldException,
-			IllegalAccessException {
-		super(
-				logg_name,
-				handlerManager,
-				schedule,
-				dataHolders,
-				currDir,
-				csv_head,
-				csv_mid,
-				csv_foot,
-				keepCount,
-				midOffset,
-				tables);
+	public FormatedCsvoutTask(String logg_name,
+			ValueListHandler handlerManager, String schedule, List dataHolders,
+			String currDir, String csv_head, String csv_mid, String csv_foot,
+			int keepCount, long midOffset, File formatFile, List<String> tables)
+			throws NoSuchFieldException, IllegalAccessException {
+		super(logg_name, handlerManager, schedule, dataHolders, currDir,
+				csv_head, csv_mid, csv_foot, keepCount, midOffset, tables);
 		this.formatFile = formatFile;
 	}
 
 	/**
 	 * CSVファイル作成
-	 * 
-	 * @param file 作成するCSVファイル
+	 *
+	 * @param file
+	 *            作成するCSVファイル
 	 * @return 先頭レコードの日付
 	 */
 	protected Timestamp csvOut(File file) {
@@ -94,11 +80,9 @@ public class FormatedCsvoutTask extends AbstractCsvoutTask {
 		try {
 			// csv 作成
 			out = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file),
-					"Windows-31J"));
+					new FileOutputStream(file), "Windows-31J"));
 			dataHeadWrite(out);
-			Timestamp st = csvSchedule.startTime(
-					System.currentTimeMillis(),
+			Timestamp st = csvSchedule.startTime(System.currentTimeMillis(),
 					dataMode);
 			handlerManager.findRecord(logg_name, st);
 			startTime = nomalWrite(startTime, out);
@@ -149,11 +133,9 @@ public class FormatedCsvoutTask extends AbstractCsvoutTask {
 	 */
 	private Timestamp nomalWrite(Timestamp startTime, BufferedWriter out)
 			throws IOException {
-		Timestamp st = csvSchedule.startTime(
-				System.currentTimeMillis(),
+		Timestamp st = csvSchedule.startTime(System.currentTimeMillis(),
 				dataMode);
-		Timestamp endTime = csvSchedule.endTime(
-				System.currentTimeMillis(),
+		Timestamp endTime = csvSchedule.endTime(System.currentTimeMillis(),
 				dataMode);
 		logger.info(st + "～" + endTime);
 		while (handlerManager.hasNext(logg_name)) {
@@ -163,18 +145,23 @@ public class FormatedCsvoutTask extends AbstractCsvoutTask {
 							.before(endTime))) {
 				data.first();
 				ConvertValue[] convertValues = util.createConvertValue(
-						dataHolders,
-						logg_name);
-				LineNumberReader in = new LineNumberReader(new FileReader(
-						formatFile));
-				in.readLine();
-				Formatter formatter = new Formatter(out);
-				for (ConvertValue conv : convertValues) {
-					double dd = data.next();
-					String formatStr = in.readLine();
-					String convertStringValue = conv.convertStringValue(conv
-							.convertInputValue(dd));
-					formatter.format(formatStr, convertStringValue);
+						dataHolders, logg_name);
+				LineNumberReader in = null;
+				try {
+					in = new LineNumberReader(new FileReader(formatFile));
+					in.readLine();
+					Formatter formatter = new Formatter(out);
+					for (ConvertValue conv : convertValues) {
+						double dd = data.next();
+						String formatStr = in.readLine();
+						String convertStringValue = conv
+								.convertStringValue(conv.convertInputValue(dd));
+						formatter.format(formatStr, convertStringValue);
+					}
+				} finally {
+					if (null != in) {
+						in.close();
+					}
 				}
 				if (startTime == null)
 					startTime = data.getTimestamp();

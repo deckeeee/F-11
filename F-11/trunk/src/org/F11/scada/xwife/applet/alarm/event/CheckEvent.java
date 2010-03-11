@@ -140,7 +140,7 @@ public class CheckEvent extends EventObject {
 
 	public String toString() {
 		return super.toString()
-		+ ", jumpPath=" + jumpPath 
+		+ ", jumpPath=" + jumpPath
 		+ ", autoJumpFlag=" + autoJumpFlag
 		+ ", autoJumpPriority=" + autoJumpPriority
 		+ ", alarmColor=" + alarmColor
@@ -155,7 +155,7 @@ public class CheckEvent extends EventObject {
 			&& jumpPath.equals(dst.jumpPath)
 			&& autoJumpFlag == dst.autoJumpFlag
 			&& autoJumpPriority == dst.autoJumpPriority
-			&& alarmColor.equals(alarmColor)
+			&& alarmColor.equals(dst.alarmColor)
 			&& point == dst.point
 			&& provider.equals(dst.provider)
 			&& holder.equals(dst.holder)
