@@ -307,18 +307,18 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		if (isStandalone) {
 			File file = new File("log");
 			file.mkdirs();
-			URL url = getClass().getResource("/resources/applet_log4j.xml");
+			URL url = AbstractWifeApplet.class.getResource("/resources/applet_log4j.xml");
 			if (url != null) {
 				DOMConfigurator.configure(url);
 			} else {
 				url =
-					getClass().getResource(
+					AbstractWifeApplet.class.getResource(
 							"/resources/xwife_applet_log4j.properties");
 				PropertyConfigurator.configure(url);
 			}
 		} else {
 			URL url =
-				getClass().getResource(
+				AbstractWifeApplet.class.getResource(
 						"/resources/xwife_applet_log4j.properties");
 			PropertyConfigurator.configure(url);
 		}

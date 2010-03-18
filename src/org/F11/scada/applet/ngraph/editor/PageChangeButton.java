@@ -15,14 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor;
 
 import static org.F11.scada.applet.ngraph.util.XmlAttributeUtil.getAttribute;
 
-public class PageChangeButton {
+import java.io.Serializable;
+
+public class PageChangeButton implements Serializable {
+	private static final long serialVersionUID = 8468362291605518511L;
 	private String changeto;
 	private String value;
 	private Integer x;

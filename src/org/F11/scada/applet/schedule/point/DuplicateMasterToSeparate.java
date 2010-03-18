@@ -326,7 +326,7 @@ public class DuplicateMasterToSeparate extends JPanel {
 				DuplicateMasterToSeparate mainPanel) {
 			if (null != mainPanel.getSrcGroupDto()) {
 				ScheduleGroupDto srcDto = mainPanel.getSrcGroupDto();
-				return srcDto.getGroupNo() != dto.getGroupNo();
+				return !srcDto.getGroupNo().equals(dto.getGroupNo());
 			}
 			return true;
 		}
