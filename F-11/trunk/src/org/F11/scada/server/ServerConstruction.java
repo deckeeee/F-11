@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 public class ServerConstruction {
 	private final Logger logger = Logger.getLogger(ServerConstruction.class);
 	private IPandPort mainSystem;
-	private List subSystems;
+	private List<String> subSystems;
 
 	public String getMainSystem() {
 		return mainSystem.toString();
@@ -46,9 +46,9 @@ public class ServerConstruction {
 		return null == port || "".equals(port) ? 1099 : Integer.parseInt(port);
 	}
 
-	public List getSubSystems() {
+	public List<String> getSubSystems() {
 		if (null == subSystems) {
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		} else {
 			return Collections.unmodifiableList(subSystems);
 		}
@@ -56,7 +56,7 @@ public class ServerConstruction {
 
 	public boolean addSubSystem(String address, String port) {
 		if (null == subSystems) {
-			subSystems = new ArrayList();
+			subSystems = new ArrayList<String>();
 		}
 		return subSystems.add(address + ":" + getPort(port));
 	}
@@ -67,10 +67,14 @@ public class ServerConstruction {
 			InetAddress checkIp = InetAddress.getByName(address);
 			return mainIp.equals(checkIp);
 		} catch (UnknownHostException e) {
-			logger.error("ドメインあるいはIPアドレスの形式が不正です : mainSystem=" + mainSystem
-					+ " , address=" + address, e);
+			logger.error("ドメインあるいはIPアドレスの形式が不正です : mainSystem="
+				+ mainSystem
+				+ " , address="
+				+ address, e);
 			throw new RuntimeException("ドメインあるいはIPアドレスの形式が不正です : mainSystem="
-					+ mainSystem + " , address=" + address, e);
+				+ mainSystem
+				+ " , address="
+				+ address, e);
 		}
 	}
 
@@ -85,10 +89,6 @@ public class ServerConstruction {
 
 		public String getIp() {
 			return ip;
-		}
-
-		public int getPort() {
-			return port;
 		}
 
 		public String toString() {
