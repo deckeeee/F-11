@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.cat.util;
@@ -30,22 +30,22 @@ import java.util.Set;
 
 /**
  * コレクションに関するユーティリティークラス。このクラスをstaticインポートし、それぞれのメソッドを呼び出すことで以下の呼び出しが可能になります。
- * 
+ *
  * <pre>
  *  List&lt;String&gt; strings = list(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);
  *  Map&lt;String, String&gt; stringMap = map($(&quot;X&quot;, &quot;1&quot;), $(&quot;Y&quot;, &quot;2&quot;));
  *  Set&lt;String&gt; stringSet = set(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);
  * </pre>
- * 
+ *
  * メソッド呼び出しの際に使用するクラスが類推できる為、new で記述するよりもわずらわしさが減少します。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public abstract class CollectionUtil {
 	/**
 	 * 指定したクラスのArrayListを生成します
-	 * 
+	 *
 	 * @param <T> クラス
 	 * @return 指定したクラスのArrayListを生成します
 	 */
@@ -55,7 +55,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定したクラスと初期容量のArrayListを生成します
-	 * 
+	 *
 	 * @param <T> クラス
 	 * @param size 初期容量
 	 * @return 指定したクラスと初期容量のArrayListを生成します
@@ -66,7 +66,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定した内容でリストを生成します。
-	 * 
+	 *
 	 * @param <T> クラス
 	 * @param elements 初期値
 	 * @return 指定した内容でリストを生成します。
@@ -77,7 +77,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定したクラスのHashSetを生成します
-	 * 
+	 *
 	 * @param <T> クラス
 	 * @return 指定したクラスのHashSetを生成します
 	 */
@@ -87,7 +87,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定したクラスのHashSetを初期容量サイズで生成します
-	 * 
+	 *
 	 * @param <T> クラス
 	 * @param size 初期容量サイズ
 	 * @return 指定したクラスのHashSetを生成します
@@ -98,7 +98,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定した内容でセットを生成します。
-	 * 
+	 *
 	 * @param <T> クラス
 	 * @param elements 初期値
 	 * @return 指定した内容でセットを生成します。
@@ -109,7 +109,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定したクラスのHashMapを生成します
-	 * 
+	 *
 	 * @param <K> キーになるクラス
 	 * @param <V> 値になるクラス
 	 * @return 指定したクラスのHashMapを生成します
@@ -118,7 +118,7 @@ public abstract class CollectionUtil {
 		return new HashMap<K, V>();
 	}
 
-	private static class Pair<A, B> {
+	public static class Pair<A, B> {
 		private A first;
 		private B second;
 
@@ -138,13 +138,13 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 指定されたリテラルでマップを生成します。
-	 * 
+	 *
 	 * <pre>
 	 * Map&lt;Integer, String&gt; m = map($(0, &quot;0&quot;), $(1, &quot;1&quot;));
 	 * </pre>
-	 * 
+	 *
 	 * のように記述します。
-	 * 
+	 *
 	 * @param <K> キーのクラス
 	 * @param <V> 値のクラス
 	 * @param entries エントリーのリテラル
@@ -160,7 +160,7 @@ public abstract class CollectionUtil {
 
 	/**
 	 * 値とキーのペアを生成します。
-	 * 
+	 *
 	 * @param <A> キーのクラス
 	 * @param <B> 値のクラス
 	 * @param first キー値
