@@ -15,6 +15,7 @@ import javax.swing.JDialog;
 import org.F11.scada.applet.dialog.PinpointDialog;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -54,14 +55,21 @@ public class PinpointDialogState implements State {
 		int width = Integer.parseInt(atts.getValue("width"));
 		int height = Integer.parseInt(atts.getValue("height"));
 
+		int rowWidth1 =
+			AttributesUtil.getIntegerValue(atts.getValue("rowWidth1"), -1);
+		int rowWidth2 =
+			AttributesUtil.getIntegerValue(atts.getValue("rowWidth2"), -1);
+		int rowWidth3 =
+			AttributesUtil.getIntegerValue(atts.getValue("rowWidth3"), -1);
+
 		if (state.handler.window instanceof Frame) {
 			dialog =
 				new PinpointDialog((Frame) state.handler.window,
-						state.handler.changer);
+						state.handler.changer, rowWidth1, rowWidth2, rowWidth3);
 		} else if (state.handler.window instanceof Dialog) {
 			dialog =
 				new PinpointDialog((Dialog) state.handler.window,
-						state.handler.changer);
+						state.handler.changer, rowWidth1, rowWidth2, rowWidth3);
 		}
 		dialog.setSize(width, height);
 	}
