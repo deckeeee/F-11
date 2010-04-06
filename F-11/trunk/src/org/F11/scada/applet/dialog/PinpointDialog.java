@@ -56,16 +56,35 @@ public class PinpointDialog extends WifeDialog {
 	/** 親アプレット(警報音停止にて使用) */
 	private final AbstractWifeApplet wifeApplet;
 	private JPanel mainPanel;
+	private final int rowWidth1;
+	private final int rowWidth2;
+	private final int rowWidth3;
 
-	public PinpointDialog(Dialog dialog, PageChanger changer) {
+	public PinpointDialog(
+			Dialog dialog,
+			PageChanger changer,
+			int rowWidth1,
+			int rowWidth2,
+			int rowWidth3) {
 		super(dialog);
 		this.wifeApplet = (AbstractWifeApplet) changer;
+		this.rowWidth1 = rowWidth1;
+		this.rowWidth2 = rowWidth2;
+		this.rowWidth3 = rowWidth3;
 		init();
 	}
 
-	public PinpointDialog(Frame frame, PageChanger changer) {
+	public PinpointDialog(
+			Frame frame,
+			PageChanger changer,
+			int rowWidth1,
+			int rowWidth2,
+			int rowWidth3) {
 		super(frame);
 		this.wifeApplet = (AbstractWifeApplet) changer;
+		this.rowWidth1 = rowWidth1;
+		this.rowWidth2 = rowWidth2;
+		this.rowWidth3 = rowWidth3;
 		init();
 	}
 
@@ -114,8 +133,25 @@ public class PinpointDialog extends WifeDialog {
 		TableUtil.removeColumn(table, 4);
 		removeSortColumn(table);
 		TableUtil.setColumnWidth(table, 0, " 8888/88/88 88:88:88 ");
+		setTableWidth(table);
 		int limit = symbol.getLimit();
 		return new RowHeaderScrollPane(table, limit, getFormat(limit));
+	}
+
+	private void setTableWidth(JTable table) {
+		if (0 < rowWidth1) {
+			TableUtil.setColumnWidth(table, 1, rowWidth1);
+		}
+		if (0 < rowWidth2) {
+			TableUtil.setColumnWidth(table, 2, rowWidth2);
+		}
+		Configuration configuration = wifeApplet.getConfiguration();
+		boolean isShowSortColumn =
+			configuration.getBoolean(
+					"org.F11.scada.xwife.applet.alarm.showSortColumn", false);
+		if (isShowSortColumn && 0 < rowWidth3) {
+			TableUtil.setColumnWidth(table, 3, rowWidth3);
+		}
 	}
 
 	private String getFormat(int limit) {
