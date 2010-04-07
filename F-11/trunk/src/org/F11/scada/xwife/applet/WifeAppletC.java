@@ -118,7 +118,7 @@ public class WifeAppletC extends AbstractNewApplet {
 			e.printStackTrace();
 		}
 		applet.start();
-		applet.setFrameBounds(frame);
+		applet.setFrameBounds(frame, args);
 		if (applet.configuration.getBoolean("xwife.applet.Applet.maximized",
 				false)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);

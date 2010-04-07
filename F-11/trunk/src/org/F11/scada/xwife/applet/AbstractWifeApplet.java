@@ -24,7 +24,6 @@ package org.F11.scada.xwife.applet;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -307,19 +306,21 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		if (isStandalone) {
 			File file = new File("log");
 			file.mkdirs();
-			URL url = AbstractWifeApplet.class.getResource("/resources/applet_log4j.xml");
+			URL url =
+				AbstractWifeApplet.class
+						.getResource("/resources/applet_log4j.xml");
 			if (url != null) {
 				DOMConfigurator.configure(url);
 			} else {
 				url =
-					AbstractWifeApplet.class.getResource(
-							"/resources/xwife_applet_log4j.properties");
+					AbstractWifeApplet.class
+							.getResource("/resources/xwife_applet_log4j.properties");
 				PropertyConfigurator.configure(url);
 			}
 		} else {
 			URL url =
-				AbstractWifeApplet.class.getResource(
-						"/resources/xwife_applet_log4j.properties");
+				AbstractWifeApplet.class
+						.getResource("/resources/xwife_applet_log4j.properties");
 			PropertyConfigurator.configure(url);
 		}
 	}
@@ -1065,8 +1066,44 @@ public abstract class AbstractWifeApplet extends JApplet implements
 			configuration.getInt("xwife.applet.Applet.frame.size.width", 1152);
 		int height =
 			configuration.getInt("xwife.applet.Applet.frame.size.height", 864);
-		Rectangle r = new Rectangle(x, y, width, height);
-		frame.setBounds(r);
+		frame.setBounds(x, y, width, height);
+	}
+
+	void setFrameBounds(Frame frame, String[] args) {
+		int x = -1;
+		int y = -1;
+		int width = -1;
+		int height = -1;
+		if (args != null) {
+			try {
+				for (int i = 0; i < args.length; i++) {
+					if ("-x".equalsIgnoreCase(args[i])) {
+						x = Integer.parseInt(args[i + 1]);
+					}
+					if ("-y".equalsIgnoreCase(args[i])) {
+						y = Integer.parseInt(args[i + 1]);
+					}
+					if ("-width".equalsIgnoreCase(args[i])) {
+						width = Integer.parseInt(args[i + 1]);
+					}
+					if ("-height".equalsIgnoreCase(args[i])) {
+						height = Integer.parseInt(args[i + 1]);
+					}
+				}
+				if (isValidOption(x, y, width, height)) {
+					frame.setBounds(x, y, width, height);
+				} else {
+					setFrameBounds(frame);
+				}
+			} catch (RuntimeException e) {
+				logger.error("オプション解析時にエラーが発生しました。", e);
+				setFrameBounds(frame);
+			}
+		}
+	}
+
+	private boolean isValidOption(int x, int y, int width, int height) {
+		return 0 <= x && 0 <= y && 0 <= width && 0 <= height;
 	}
 
 	public boolean isAppletTypeC() {
