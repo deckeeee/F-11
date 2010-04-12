@@ -60,6 +60,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 	private final JTextField trdDlgWidth = new JTextField();
 	private final JTextField trdDlgHeight = new JTextField();
 	private final JTextField separateScheduleLimit = new JTextField();
+	private final JTextField soundOnHolder = new JTextField();
 	private final JFormattedTextField treeFontSize =
 		new JFormattedTextField(new DecimalFormat("###"));
 	private final JFormattedTextField soundTimerTime =
@@ -413,6 +414,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		soundTimer(mainPanel);
 		soundTimerTime(mainPanel);
 		isViewWeek(mainPanel);
+		soundOnHolder(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -656,6 +658,19 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(cb);
 	}
 
+	private void soundOnHolder(JPanel mainPanel) {
+		// 警報音禁止をクライアントで共有
+		mainPanel.add(new JLabel("警報音禁止をクライアントで共有："));
+		JPanel panel = new JPanel(new GridLayout(1, 0));
+		soundOnHolder.setText(manager.getClientConf(
+				"xwife.applet.Applet.soundOnHolder", ""));
+		soundOnHolder.getDocument().addDocumentListener(this);
+		soundOnHolder
+				.setToolTipText("共有する場合はホルダIDを入力。何も入力しない場合は従来通り、各クライアント毎で警報音禁止状態を保持します。");
+		panel.add(soundOnHolder);
+		mainPanel.add(panel);
+	}
+
 	public void changedUpdate(DocumentEvent e) {
 		eventPaformed(e);
 	}
@@ -704,6 +719,9 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			manager.setClientConf(
 					"org.F11.scada.xwife.applet.alarm.soundTimerTime",
 					soundTimerTime.getText());
+		} else if (e.getDocument() == soundOnHolder.getDocument()) {
+			manager.setClientConf("xwife.applet.Applet.soundOnHolder",
+					soundOnHolder.getText());
 		}
 	}
 

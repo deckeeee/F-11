@@ -78,8 +78,13 @@ public class SystemToolBar extends JToolBar {
 
 	private AlarmSoundLockButton getAlarmSoundLock(AbstractWifeApplet wifeApplet) {
 		AlarmSoundLockButton b = new AlarmSoundLockButton(wifeApplet);
-		if (wifeApplet.isSoundoffAtStarted()) {
-			b.doClick();
+		String value =
+			wifeApplet.getConfiguration().getString(
+					"xwife.applet.Applet.soundOnHolder", "");
+		if ("".equals(value)) {
+			if (wifeApplet.isSoundoffAtStarted()) {
+				b.doClick();
+			}
 		}
 		return b;
 	}
@@ -124,7 +129,7 @@ public class SystemToolBar extends JToolBar {
 	}
 
 	private Set<InetAddress> getAddressSet(XMLDecoder decoder)
-			throws UnknownHostException {
+		throws UnknownHostException {
 		ArrayList<String> list = (ArrayList) decoder.readObject();
 		HashSet<InetAddress> set = new HashSet<InetAddress>(list.size());
 		for (String ipAddress : list) {
@@ -144,8 +149,7 @@ public class SystemToolBar extends JToolBar {
 	private boolean isShowScreenShot(AbstractWifeApplet wifeApplet) {
 		return wifeApplet.isStandAlone()
 			&& wifeApplet.getConfiguration().getBoolean(
-				"org.F11.scada.xwife.applet.isShowScreenShot",
-				false);
+					"org.F11.scada.xwife.applet.isShowScreenShot", false);
 	}
 
 	private boolean isDisplayToolBar(AbstractWifeApplet wifeApplet) {
