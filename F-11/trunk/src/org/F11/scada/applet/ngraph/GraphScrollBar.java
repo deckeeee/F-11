@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -24,9 +24,9 @@ import javax.swing.JScrollBar;
 
 /**
  * グラフを操作するスクロールバー
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class GraphScrollBar extends JScrollBar {
 	private static final long serialVersionUID = -1581244115481109858L;
@@ -48,7 +48,7 @@ public class GraphScrollBar extends JScrollBar {
 		long recordeSpan =
 			p
 				.getHorizontalScaleButtonProperty()
-				.get(p.getGroupNo())
+				.get(0)
 				.getRecordeSpan();
 		return (int) (p.getHorizontalLineSpan() / recordeSpan) + 1;
 	}

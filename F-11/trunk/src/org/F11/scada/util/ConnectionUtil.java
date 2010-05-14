@@ -43,9 +43,10 @@ public final class ConnectionUtil {
 		dataSource.setMaxActive(200);
 		dataSource.setMaxIdle(50);
 		dataSource.setMaxWait(5000);
+		dataSource.setTimeBetweenEvictionRunsMillis(60000);
 //		dataSource.setPoolPreparedStatements(true);
 	}
-	
+
 	private ConnectionUtil() {}
 
 	/**
