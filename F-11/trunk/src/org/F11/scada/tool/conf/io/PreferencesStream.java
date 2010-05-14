@@ -170,6 +170,7 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/alarm/csvout/minute", "10"));
 		pw.println(getXmlProp("/server/alarm/csvout/path", "C:/careerbackup"));
 		pw.println(getXmlProp("/server/alarm/csvout/file", "'career'yyyyMMdd'.csv'"));
+		pw.println(getXmlProp("/server/alarm/attribute/title", "‘®«1,‘®«2,‘®«3"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

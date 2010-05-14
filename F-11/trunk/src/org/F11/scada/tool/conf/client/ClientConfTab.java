@@ -415,6 +415,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		soundTimerTime(mainPanel);
 		isViewWeek(mainPanel);
 		soundOnHolder(mainPanel);
+		isShowAttributeColumn(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -669,6 +670,39 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				.setToolTipText("共有する場合はホルダIDを入力。何も入力しない場合は従来通り、各クライアント毎で警報音禁止状態を保持します。");
 		panel.add(soundOnHolder);
 		mainPanel.add(panel);
+	}
+
+	private void isShowAttributeColumn(JPanel mainPanel) {
+		JLabel label = new JLabel("属性を警報一覧に表示する：");
+		label.setToolTipText("属性を警報一覧に表示するか設定");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "する", "しない" });
+		if ("true"
+				.equals(manager.getClientConf(
+						"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+						"true"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("しない".equals(e.getItem())) {
+						manager
+								.setClientConf(
+										"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+										"false");
+					} else {
+						manager
+								.setClientConf(
+										"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+										"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {

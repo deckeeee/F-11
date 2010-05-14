@@ -52,12 +52,13 @@ import org.F11.scada.applet.ClientConfiguration;
 import org.F11.scada.server.alarm.table.AttributeRecord;
 import org.F11.scada.server.alarm.table.FindAlarmCondition;
 import org.F11.scada.server.alarm.table.FindAlarmCondition.RadioStat;
+import org.F11.scada.util.AlarmTableTitleUtil;
 import org.F11.scada.xwife.applet.AttributeNColumnUtil;
 import org.F11.scada.xwife.applet.SortColumnUtil;
 
 /**
  * 警報一覧 検索条件設定ダイアログです。
- * 
+ *
  * @author hori <hoti@users.sourceforge.jp>
  */
 public class FindAlarmDialog extends JDialog {
@@ -79,9 +80,12 @@ public class FindAlarmDialog extends JDialog {
 	private JTextField attribute1Field;
 	private JTextField attribute2Field;
 	private JTextField attribute3Field;
+	private final AlarmTableTitleUtil alarmTableTitleUtil =
+		new AlarmTableTitleUtil();
+	private final boolean isShowAttributeColumn;
 
 	/**
-	 * 
+	 *
 	 */
 	private FindAlarmDialog(
 			Frame frame,
@@ -92,20 +96,26 @@ public class FindAlarmDialog extends JDialog {
 		this.attris = attris;
 		this.priorityList = priorityList;
 		createPriorityList(cond);
-		isShowSortColumn = getShowSortColumn();
+		ClientConfiguration configuration = new ClientConfiguration();
+		isShowSortColumn = getShowSortColumn(configuration);
+		isShowAttributeColumn = getShowAttributeColumn(configuration);
 		init(cond);
 	}
 
-	private boolean getShowSortColumn() {
-		ClientConfiguration configuration = new ClientConfiguration();
+	private boolean getShowSortColumn(ClientConfiguration configuration) {
 		return SortColumnUtil.getShowSortColumn(configuration);
 	}
 
+	private boolean getShowAttributeColumn(ClientConfiguration configuration) {
+		return configuration.getBoolean(
+				"org.F11.scada.xwife.applet.alarm.showAttributeColumn", true);
+	}
+
 	public static FindAlarmCondition showFindAlarmDialog(
-			Frame frame,
-			FindAlarmCondition cond,
-			AttributeRecord[] attris,
-			List priorityList) {
+		Frame frame,
+		FindAlarmCondition cond,
+		AttributeRecord[] attris,
+		List priorityList) {
 		FindAlarmDialog dlg =
 			new FindAlarmDialog(frame, cond, attris, priorityList);
 		dlg.show();
@@ -163,7 +173,9 @@ public class FindAlarmDialog extends JDialog {
 
 	private JComponent getCenter(FindAlarmCondition cond) {
 		Box box = Box.createVerticalBox();
-		box.add(getKindList(cond));
+		if (isShowAttributeColumn) {
+			box.add(getKindList(cond));
+		}
 		if (isShowSortColumn) {
 			box.add(getPriortyList(cond));
 		}
@@ -300,31 +312,22 @@ public class FindAlarmDialog extends JDialog {
 		setNameFields(cond, mainPanel);
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
 			attribute1Field = new JTextField(20);
-			setAttributeField(
-				cond.getAttribute1(),
-				mainPanel,
-				attribute1Field,
-				"属性1：");
+			setAttributeField(cond.getAttribute1(), mainPanel, attribute1Field,
+					alarmTableTitleUtil.getAttributeString("属性1") + "：");
 			attribute2Field = new JTextField(20);
-			setAttributeField(
-				cond.getAttribute2(),
-				mainPanel,
-				attribute2Field,
-				"属性2：");
+			setAttributeField(cond.getAttribute2(), mainPanel, attribute2Field,
+					alarmTableTitleUtil.getAttributeString("属性2") + "：");
 			attribute3Field = new JTextField(20);
-			setAttributeField(
-				cond.getAttribute3(),
-				mainPanel,
-				attribute3Field,
-				"属性3：");
+			setAttributeField(cond.getAttribute3(), mainPanel, attribute3Field,
+					alarmTableTitleUtil.getAttributeString("属性3") + "：");
 		}
 		setOkCancel(mainPanel);
 		return mainPanel;
 	}
 
 	private void setMessageRadioButtons(
-			FindAlarmCondition cond,
-			JComponent mainPanel) {
+		FindAlarmCondition cond,
+		JComponent mainPanel) {
 		// 条件
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		ButtonGroup group = new ButtonGroup();
@@ -372,8 +375,8 @@ public class FindAlarmDialog extends JDialog {
 	}
 
 	private void setCheckRadioButtons(
-			FindAlarmCondition cond,
-			JComponent mainPanel) {
+		FindAlarmCondition cond,
+		JComponent mainPanel) {
 		// 確認
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		ButtonGroup group = new ButtonGroup();
@@ -439,10 +442,10 @@ public class FindAlarmDialog extends JDialog {
 	}
 
 	private void setAttributeField(
-			String textValue,
-			Box mainPanel,
-			JTextField field,
-			String label) {
+		String textValue,
+		Box mainPanel,
+		JTextField field,
+		String label) {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel.add(new JLabel(label));
 		field.setText(textValue);
@@ -477,47 +480,37 @@ public class FindAlarmDialog extends JDialog {
 	}
 
 	private boolean createFindAlarmCondition() {
-		int[] sels = kindList.getSelectedIndices();
-		if (sels.length <= 0) {
-			JOptionPane.showMessageDialog(
-				this,
-				"種別を１つ以上選択してください。",
-				"F-11 client error",
-				JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		int[] atid = new int[sels.length];
-		String[] atnm = new String[sels.length];
-		for (int s = 0; s < sels.length; s++) {
-			atid[s] = attris[sels[s]].getAttribute();
-			atnm[s] = attris[sels[s]].getName();
+		int[] atid = new int[0];
+		String[] atnm = new String[0];
+		if (isShowAttributeColumn) {
+			int[] sels = kindList.getSelectedIndices();
+			if (sels.length <= 0) {
+				JOptionPane.showMessageDialog(this, "種別を１つ以上選択してください。",
+						"F-11 client error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			atid = new int[sels.length];
+			atnm = new String[sels.length];
+			for (int s = 0; s < sels.length; s++) {
+				atid[s] = attris[sels[s]].getAttribute();
+				atnm[s] = attris[sels[s]].getName();
+			}
 		}
 		Object[] prioSels = prioritySelectList.getSelectedValues();
 		if (prioSels.length <= 0) {
-			JOptionPane.showMessageDialog(
-				this,
-				"種別を１つ以上選択してください。",
-				"F-11 client error",
-				JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "種別を１つ以上選択してください。",
+					"F-11 client error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
 		ret_cond =
-			new FindAlarmCondition(
-				st_panel.isEnabled(),
-				st_panel.getCalendar(),
-				ed_panel.isEnabled(),
-				ed_panel.getCalendar(),
-				atid,
-				bitvalSelect,
-				histckSelect,
-				atnm,
-				unitField.getText(),
-				nameField.getText(),
-				Arrays.asList(prioSels),
-				getFieldText(attribute1Field),
-				getFieldText(attribute2Field),
-				getFieldText(attribute3Field));
+			new FindAlarmCondition(st_panel.isEnabled(),
+					st_panel.getCalendar(), ed_panel.isEnabled(), ed_panel
+							.getCalendar(), atid, bitvalSelect, histckSelect,
+					atnm, unitField.getText(), nameField.getText(), Arrays
+							.asList(prioSels), getFieldText(attribute1Field),
+					getFieldText(attribute2Field),
+					getFieldText(attribute3Field));
 		return true;
 	}
 

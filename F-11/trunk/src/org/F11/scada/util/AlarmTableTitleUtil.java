@@ -24,7 +24,6 @@ public class AlarmTableTitleUtil {
 			String titleItem = tokenizer.nextToken().trim();
 			map.put("‘®«" + i, titleItem);
 		}
-		System.out.println(map);
 	}
 
 	public String repraceStrings(String src) {
