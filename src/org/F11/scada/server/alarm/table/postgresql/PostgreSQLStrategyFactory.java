@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/alarm/table/postgresql/PostgreSQLStrategyFactory.java,v 1.13.2.11 2007/10/23 09:03:50 frdm Exp $
  * $Revision: 1.13.2.11 $
  * $Date: 2007/10/23 09:03:50 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -41,13 +41,14 @@ import org.F11.scada.server.alarm.table.SoundStrategy;
 import org.F11.scada.server.alarm.table.StrategyFactory;
 import org.F11.scada.server.io.StrategyUtility;
 import org.F11.scada.server.io.postgresql.S2ContainerUtil;
+import org.F11.scada.util.AlarmTableTitleUtil;
 import org.F11.scada.util.ConnectionUtil;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
 /**
  * PostgreSQL用のテーブルモデル操作アルゴリズム・ファクトリークラスです。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class PostgreSQLStrategyFactory extends StrategyFactory {
@@ -56,7 +57,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用のテーブルモデル操作アルゴリズム・ファクトリーを生成します。
-	 * 
+	 *
 	 * @throws IOException SQL定義プロパティ読込時の例外です。
 	 * @throws SQLException SQL実行時例外です。
 	 */
@@ -69,7 +70,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用の履歴テーブルモデル操作アルゴリズムを返します。
-	 * 
+	 *
 	 * @param model テーブルモデル
 	 * @return 操作アルゴリズムオブジェクト
 	 */
@@ -79,7 +80,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用のヒストリーテーブルモデル操作アルゴリズムを返します。
-	 * 
+	 *
 	 * @param model テーブルモデル
 	 * @return 操作アルゴリズムオブジェクト
 	 */
@@ -89,7 +90,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用のサマリーテーブルモデル操作アルゴリズムを返します。
-	 * 
+	 *
 	 * @param model テーブルモデル
 	 * @return 操作アルゴリズムオブジェクト
 	 */
@@ -99,7 +100,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用の未復旧テーブルモデル操作アルゴリズムを返します。
-	 * 
+	 *
 	 * @param model テーブルモデル
 	 * @return 操作アルゴリズムオブジェクト
 	 */
@@ -109,7 +110,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用の未確認テーブルモデル操作アルゴリズムを返します。
-	 * 
+	 *
 	 * @param model テーブルモデル
 	 * @return 操作アルゴリズムオブジェクト
 	 */
@@ -119,16 +120,18 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用の履歴テーブルモデル操作アルゴリズムの実装クラスです。
-	 * 
+	 *
 	 * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
 	 */
 	static final class CareerStrategy implements RowDataStrategy {
-		private static final Logger logger = Logger
-				.getLogger(CareerStrategy.class);
+		private static final Logger logger =
+			Logger.getLogger(CareerStrategy.class);
 		private final StrategyUtility utility;
 		private final AlarmTableModel model;
 		private final AlarmMail alarmMail;
 		private final SoundStrategy strategy;
+		private final AlarmTableTitleUtil alarmTableTitleUtil =
+			new AlarmTableTitleUtil();
 
 		CareerStrategy(
 				StrategyUtility utility,
@@ -137,15 +140,16 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			this.utility = utility;
 			this.model = model;
 			S2Container container = S2ContainerUtil.getS2Container();
-			AlarmMailFactory factory = (AlarmMailFactory) container
-					.getComponent(AlarmMailFactory.class);
+			AlarmMailFactory factory =
+				(AlarmMailFactory) container
+						.getComponent(AlarmMailFactory.class);
 			this.alarmMail = factory.getAlarmMail();
 			this.strategy = strategy;
 		}
 
 		/**
 		 * イベントをテーブルモデルに反映します。
-		 * 
+		 *
 		 * @param evt データ変更イベント
 		 * @see org.F11.scada.server.alarm.table.RowDataStrategy#renewRow(jp.gr.
 		 *      javacons.jim.DataValueChangeEvent, javax.swing.table.
@@ -158,8 +162,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			ResultSet rs = null;
 			try {
 				con = ConnectionUtil.getConnection();
-				stmt = con.prepareStatement(utility
-						.getPrepareStatement("/career/renewsql"));
+				stmt =
+					con.prepareStatement(utility
+							.getPrepareStatement("/career/renewsql"));
 				stmt.setInt(1, key.getPoint());
 				stmt.setString(2, key.getProvider());
 				stmt.setString(3, key.getHolder());
@@ -204,14 +209,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		 * 登録モードを判定してテーブルモデルを更新します。
 		 */
 		private void doInsert(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int mode = rs.getInt("career_mode");
 			boolean value = key.getValue().booleanValue();
 
-			if ((mode == 1 && value == false) || (mode == 2 && value == true)
-					|| (mode == 3)) {
+			if ((mode == 1 && value == false)
+				|| (mode == 2 && value == true)
+				|| (mode == 3)) {
 				addRow(rs, model, key);
 			} else if (mode == 4) {
 				if (value == true) {
@@ -232,38 +238,42 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		 * 行を追加します。
 		 */
 		private void addRow(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			Object[] insRow = new Object[model.getColumnCount()];
 			insRow[model.getColumn("ジャンプパス")] = rs.getString("jump_path");
-			insRow[model.getColumn("自動ジャンプ")] = Boolean.valueOf(rs
-					.getBoolean("auto_jump_flag"));
-			insRow[model.getColumn("優先順位")] = new Integer(rs
-					.getInt("auto_jump_priority"));
+			insRow[model.getColumn("自動ジャンプ")] =
+				Boolean.valueOf(rs.getBoolean("auto_jump_flag"));
+			insRow[model.getColumn("優先順位")] =
+				new Integer(rs.getInt("auto_jump_priority"));
 			insRow[model.getColumn("表示色")] = rs.getString("alarm_color");
 			insRow[model.getColumn("point")] = new Integer(key.getPoint());
 			insRow[model.getColumn("provider")] = key.getProvider();
 			insRow[model.getColumn("holder")] = key.getHolder();
-			insRow[model.getColumn("サウンドタイプ")] = strategy.getSoundType(rs
-					.getInt("sound_type"), key);
+			insRow[model.getColumn("サウンドタイプ")] =
+				strategy.getSoundType(rs.getInt("sound_type"), key);
 			insRow[model.getColumn("サウンドパス")] = rs.getString("sound_path");
-			insRow[model.getColumn("Emailグループ")] = new Integer(rs
-					.getInt("email_group_id"));
-			insRow[model.getColumn("Emailモード")] = new Integer(rs
-					.getInt("email_send_mode"));
-			insRow[model.getColumn("onoff")] = Boolean.valueOf(WifeUtilities
-					.isTrue(rs.getString("onoff")));
+			insRow[model.getColumn("Emailグループ")] =
+				new Integer(rs.getInt("email_group_id"));
+			insRow[model.getColumn("Emailモード")] =
+				new Integer(rs.getInt("email_send_mode"));
+			insRow[model.getColumn("onoff")] =
+				Boolean.valueOf(WifeUtilities.isTrue(rs.getString("onoff")));
 			insRow[model.getColumn("日時")] = key.getTimeStamp();
 			insRow[model.getColumn("記号")] = rs.getString("unit");
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
-			insRow[model.getColumn("最新警報モード")] = new Integer(rs.getInt("new_info_mode"));
-			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
-			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
-			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
+			insRow[model.getColumn("最新警報モード")] =
+				new Integer(rs.getInt("new_info_mode"));
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性1"))] = rs.getString("attribute1");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性2"))] = rs.getString("attribute2");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性3"))] = rs.getString("attribute3");
 			model.insertRow(0, insRow, key);
 		}
 
@@ -271,14 +281,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		 * キーで一番上の行から検索し、その行があれば削除します。
 		 */
 		private void removeRow(
-				AlarmTableModel model,
-				DataValueChangeEventKey key) {
+			AlarmTableModel model,
+			DataValueChangeEventKey key) {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
 				int po = ((Integer) model.getValueAt(row, "point")).intValue();
 				String pro = (String) model.getValueAt(row, "provider");
 				String hol = (String) model.getValueAt(row, "holder");
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					model.removeRow(row, key);
 					break;
 				}
@@ -288,14 +299,16 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用のヒストリーテーブルモデル操作アルゴリズムの実装クラスです。
-	 * 
+	 *
 	 * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
 	 */
 	static final class HistoryStrategy implements RowDataStrategy {
-		private static final Logger logger = Logger
-				.getLogger(HistoryStrategy.class);
+		private static final Logger logger =
+			Logger.getLogger(HistoryStrategy.class);
 		private final StrategyUtility utility;
 		private final AlarmTableModel model;
+		private final AlarmTableTitleUtil alarmTableTitleUtil =
+			new AlarmTableTitleUtil();
 
 		HistoryStrategy(StrategyUtility utility, AlarmTableModel model) {
 			this.utility = utility;
@@ -309,8 +322,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			ResultSet rs = null;
 			try {
 				con = ConnectionUtil.getConnection();
-				stmt = con.prepareStatement(utility
-						.getPrepareStatement("/history/renewsql"));
+				stmt =
+					con.prepareStatement(utility
+							.getPrepareStatement("/history/renewsql"));
 				stmt.setInt(1, key.getPoint());
 				stmt.setString(2, key.getProvider());
 				stmt.setString(3, key.getHolder());
@@ -351,9 +365,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void doInsert(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int mode = rs.getInt("history_mode");
 			boolean value = key.getValue().booleanValue();
 
@@ -383,9 +397,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOndate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			Object[] insRow = new Object[model.getColumnCount()];
 			addRowCommon(rs, model, key, insRow);
 			insRow[model.getColumn("発生・運転")] = key.getTimeStamp();
@@ -394,9 +408,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOffdate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			Object[] insRow = new Object[model.getColumnCount()];
 			addRowCommon(rs, model, key, insRow);
 			insRow[model.getColumn("発生・運転")] = null;
@@ -405,15 +419,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowCommon(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key,
-				Object[] insRow) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key,
+			Object[] insRow) throws SQLException {
 			insRow[model.getColumn("ジャンプパス")] = rs.getString("jump_path");
-			insRow[model.getColumn("自動ジャンプ")] = Boolean.valueOf(rs
-					.getBoolean("auto_jump_flag"));
-			insRow[model.getColumn("優先順位")] = new Integer(rs
-					.getInt("auto_jump_priority"));
+			insRow[model.getColumn("自動ジャンプ")] =
+				Boolean.valueOf(rs.getBoolean("auto_jump_flag"));
+			insRow[model.getColumn("優先順位")] =
+				new Integer(rs.getInt("auto_jump_priority"));
 			insRow[model.getColumn("表示色")] = rs.getString("alarm_color");
 			insRow[model.getColumn("point")] = new Integer(key.getPoint());
 			insRow[model.getColumn("provider")] = key.getProvider();
@@ -427,20 +441,24 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 				insRow[model.getColumn("確認")] = "────";
 			}
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
-			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
-			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
-			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性1"))] = rs.getString("attribute1");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性2"))] = rs.getString("attribute2");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性3"))] = rs.getString("attribute3");
 		}
 
 		private void removeRow(
-				AlarmTableModel model,
-				DataValueChangeEventKey key) {
+			AlarmTableModel model,
+			DataValueChangeEventKey key) {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
 				int po = ((Integer) model.getValueAt(row, "point")).intValue();
 				String pro = (String) model.getValueAt(row, "provider");
 				String hol = (String) model.getValueAt(row, "holder");
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					model.removeRow(row, key);
 					break;
 				}
@@ -448,15 +466,16 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void modifyRow(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
 				int po = ((Integer) model.getValueAt(row, "point")).intValue();
 				String pro = (String) model.getValueAt(row, "provider");
 				String hol = (String) model.getValueAt(row, "holder");
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					int colSize = model.getColumnCount();
 					Object[] obj = new Object[colSize];
 					for (int col = 0; col < colSize; col++) {
@@ -474,14 +493,16 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用のサマリーテーブルモデル操作アルゴリズムの実装クラスです。
-	 * 
+	 *
 	 * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
 	 */
 	static final class SummaryStrategy implements RowDataStrategy {
-		private static final Logger logger = Logger
-				.getLogger(SummaryStrategy.class);
+		private static final Logger logger =
+			Logger.getLogger(SummaryStrategy.class);
 		private final StrategyUtility utility;
 		private final AlarmTableModel model;
+		private final AlarmTableTitleUtil alarmTableTitleUtil =
+			new AlarmTableTitleUtil();
 
 		SummaryStrategy(StrategyUtility utility, AlarmTableModel model) {
 			this.utility = utility;
@@ -495,8 +516,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			ResultSet rs = null;
 			try {
 				con = ConnectionUtil.getConnection();
-				stmt = con.prepareStatement(utility
-						.getPrepareStatement("/summary/renewsql"));
+				stmt =
+					con.prepareStatement(utility
+							.getPrepareStatement("/summary/renewsql"));
 				stmt.setInt(1, key.getPoint());
 				stmt.setString(2, key.getProvider());
 				stmt.setString(3, key.getHolder());
@@ -537,9 +559,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void doInsert(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int mode = rs.getInt("summary_mode");
 			boolean value = key.getValue().booleanValue();
 
@@ -569,9 +591,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOndate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int row = model.searchRow(key);
 			if (row < 0) {
 				Object[] insRow = new Object[model.getColumnCount()];
@@ -597,9 +619,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOffdate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int row = model.searchRow(key);
 			if (row < 0) {
 				Object[] insRow = new Object[model.getColumnCount()];
@@ -625,15 +647,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowCommon(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key,
-				Object[] insRow) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key,
+			Object[] insRow) throws SQLException {
 			insRow[model.getColumn("ジャンプパス")] = rs.getString("jump_path");
-			insRow[model.getColumn("自動ジャンプ")] = Boolean.valueOf(rs
-					.getBoolean("auto_jump_flag"));
-			insRow[model.getColumn("優先順位")] = new Integer(rs
-					.getInt("auto_jump_priority"));
+			insRow[model.getColumn("自動ジャンプ")] =
+				Boolean.valueOf(rs.getBoolean("auto_jump_flag"));
+			insRow[model.getColumn("優先順位")] =
+				new Integer(rs.getInt("auto_jump_priority"));
 			insRow[model.getColumn("表示色")] = rs.getString("alarm_color");
 			insRow[model.getColumn("point")] = new Integer(key.getPoint());
 			insRow[model.getColumn("provider")] = key.getProvider();
@@ -643,23 +665,28 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
-			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
-			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
-			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性1"))] = rs.getString("attribute1");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性2"))] = rs.getString("attribute2");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性3"))] = rs.getString("attribute3");
 		}
 
 		private void removeRow(
-				AlarmTableModel model,
-				DataValueChangeEventKey key) {
+			AlarmTableModel model,
+			DataValueChangeEventKey key) {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
-				int po = ((Integer) model.getValueAt(row, model
-						.getColumn("point"))).intValue();
-				String pro = (String) model.getValueAt(row, model
-						.getColumn("provider"));
-				String hol = (String) model.getValueAt(row, model
-						.getColumn("holder"));
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				int po =
+					((Integer) model.getValueAt(row, model.getColumn("point")))
+							.intValue();
+				String pro =
+					(String) model.getValueAt(row, model.getColumn("provider"));
+				String hol =
+					(String) model.getValueAt(row, model.getColumn("holder"));
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					model.removeRow(row, key);
 					break;
 				}
@@ -667,18 +694,20 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void modifyRow(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
-				int po = ((Integer) model.getValueAt(row, model
-						.getColumn("point"))).intValue();
-				String pro = (String) model.getValueAt(row, model
-						.getColumn("provider"));
-				String hol = (String) model.getValueAt(row, model
-						.getColumn("holder"));
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				int po =
+					((Integer) model.getValueAt(row, model.getColumn("point")))
+							.intValue();
+				String pro =
+					(String) model.getValueAt(row, model.getColumn("provider"));
+				String hol =
+					(String) model.getValueAt(row, model.getColumn("holder"));
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					int colSize = model.getColumnCount();
 					Object[] obj = new Object[colSize];
 					for (int col = 0; col < colSize; col++) {
@@ -698,12 +727,14 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用の未復旧テーブルモデル操作アルゴリズムの実装クラスです。
-	 * 
+	 *
 	 * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
 	 */
 	static final class OccurrenceStrategy implements RowDataStrategy {
 		private final StrategyUtility utility;
 		private final AlarmTableModel model;
+		private final AlarmTableTitleUtil alarmTableTitleUtil
+			= new AlarmTableTitleUtil();
 
 		OccurrenceStrategy(StrategyUtility utility, AlarmTableModel model) {
 			this.utility = utility;
@@ -717,8 +748,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			ResultSet rs = null;
 			try {
 				con = ConnectionUtil.getConnection();
-				stmt = con.prepareStatement(utility
-						.getPrepareStatement("/occurrence/renewsql"));
+				stmt =
+					con.prepareStatement(utility
+							.getPrepareStatement("/occurrence/renewsql"));
 				stmt.setInt(1, key.getPoint());
 				stmt.setString(2, key.getProvider());
 				stmt.setString(3, key.getHolder());
@@ -756,9 +788,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void doInsert(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			boolean value = key.getValue().booleanValue();
 			if (value) {
 				addRowOndate(rs, model, key);
@@ -768,9 +800,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOndate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int row = model.searchRow(key);
 			if (row < 0) {
 				Object[] insRow = new Object[model.getColumnCount()];
@@ -796,15 +828,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowCommon(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key,
-				Object[] insRow) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key,
+			Object[] insRow) throws SQLException {
 			insRow[model.getColumn("ジャンプパス")] = rs.getString("jump_path");
-			insRow[model.getColumn("自動ジャンプ")] = Boolean.valueOf(rs
-					.getBoolean("auto_jump_flag"));
-			insRow[model.getColumn("優先順位")] = new Integer(rs
-					.getInt("auto_jump_priority"));
+			insRow[model.getColumn("自動ジャンプ")] =
+				Boolean.valueOf(rs.getBoolean("auto_jump_flag"));
+			insRow[model.getColumn("優先順位")] =
+				new Integer(rs.getInt("auto_jump_priority"));
 			insRow[model.getColumn("表示色")] = rs.getString("alarm_color");
 			insRow[model.getColumn("point")] = new Integer(key.getPoint());
 			insRow[model.getColumn("provider")] = key.getProvider();
@@ -814,20 +846,24 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("警報・状態")] = rs.getString("message");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
-			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
-			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
-			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性1"))] = rs.getString("attribute1");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性2"))] = rs.getString("attribute2");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性3"))] = rs.getString("attribute3");
 		}
 
 		private void removeRow(
-				AlarmTableModel model,
-				DataValueChangeEventKey key) {
+			AlarmTableModel model,
+			DataValueChangeEventKey key) {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
 				int po = ((Integer) model.getValueAt(row, "point")).intValue();
 				String pro = (String) model.getValueAt(row, "provider");
 				String hol = (String) model.getValueAt(row, "holder");
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					model.removeRow(row, key);
 					break;
 				}
@@ -837,7 +873,7 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 
 	/**
 	 * PostgreSQL用の未確認テーブルモデル操作アルゴリズムの実装クラスです。
-	 * 
+	 *
 	 * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
 	 */
 	static final class NoncheckStrategy implements RowDataStrategy {
@@ -845,6 +881,8 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		// Logger.getLogger(NoncheckStrategy.class);
 		private final StrategyUtility utility;
 		private final AlarmTableModel model;
+		private final AlarmTableTitleUtil alarmTableTitleUtil
+			= new AlarmTableTitleUtil();
 
 		NoncheckStrategy(StrategyUtility utility, AlarmTableModel model) {
 			this.utility = utility;
@@ -858,8 +896,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			ResultSet rs = null;
 			try {
 				con = ConnectionUtil.getConnection();
-				stmt = con.prepareStatement(utility
-						.getPrepareStatement("/noncheck/renewsql"));
+				stmt =
+					con.prepareStatement(utility
+							.getPrepareStatement("/noncheck/renewsql"));
 				stmt.setInt(1, key.getPoint());
 				stmt.setString(2, key.getProvider());
 				stmt.setString(3, key.getHolder());
@@ -897,9 +936,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void doInsert(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			int mode = rs.getInt("history_mode");
 			boolean value = key.getValue().booleanValue();
 
@@ -929,9 +968,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOndate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			Object[] insRow = new Object[model.getColumnCount()];
 			addRowCommon(rs, model, key, insRow);
 			insRow[model.getColumn("発生・運転")] = key.getTimeStamp();
@@ -940,9 +979,9 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowOffdate(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			Object[] insRow = new Object[model.getColumnCount()];
 			addRowCommon(rs, model, key, insRow);
 			insRow[model.getColumn("発生・運転")] = null;
@@ -951,15 +990,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void addRowCommon(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key,
-				Object[] insRow) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key,
+			Object[] insRow) throws SQLException {
 			insRow[model.getColumn("ジャンプパス")] = rs.getString("jump_path");
-			insRow[model.getColumn("自動ジャンプ")] = Boolean.valueOf(rs
-					.getBoolean("auto_jump_flag"));
-			insRow[model.getColumn("優先順位")] = new Integer(rs
-					.getInt("auto_jump_priority"));
+			insRow[model.getColumn("自動ジャンプ")] =
+				Boolean.valueOf(rs.getBoolean("auto_jump_flag"));
+			insRow[model.getColumn("優先順位")] =
+				new Integer(rs.getInt("auto_jump_priority"));
 			insRow[model.getColumn("表示色")] = rs.getString("alarm_color");
 			insRow[model.getColumn("point")] = new Integer(key.getPoint());
 			insRow[model.getColumn("provider")] = key.getProvider();
@@ -968,9 +1007,12 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 			insRow[model.getColumn("名称")] = rs.getString("kikiname");
 			insRow[model.getColumn("属性")] = rs.getString("attname");
 			insRow[model.getColumn("種別")] = rs.getString("priorityname");
-			insRow[model.getColumn("属性1")] = rs.getString("attribute1");
-			insRow[model.getColumn("属性2")] = rs.getString("attribute2");
-			insRow[model.getColumn("属性3")] = rs.getString("attribute3");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性1"))] = rs.getString("attribute1");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性2"))] = rs.getString("attribute2");
+			insRow[model.getColumn(alarmTableTitleUtil
+					.getAttributeString("属性3"))] = rs.getString("attribute3");
 			if (rs.getBoolean("check_type")) {
 				insRow[model.getColumn("確認")] = null;
 			} else {
@@ -979,14 +1021,15 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void removeRow(
-				AlarmTableModel model,
-				DataValueChangeEventKey key) {
+			AlarmTableModel model,
+			DataValueChangeEventKey key) {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
 				int po = ((Integer) model.getValueAt(row, "point")).intValue();
 				String pro = (String) model.getValueAt(row, "provider");
 				String hol = (String) model.getValueAt(row, "holder");
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					model.removeRow(row, key);
 					break;
 				}
@@ -994,15 +1037,16 @@ public class PostgreSQLStrategyFactory extends StrategyFactory {
 		}
 
 		private void modifyRow(
-				ResultSet rs,
-				AlarmTableModel model,
-				DataValueChangeEventKey key) throws SQLException {
+			ResultSet rs,
+			AlarmTableModel model,
+			DataValueChangeEventKey key) throws SQLException {
 			for (int row = 0, mc = model.getRowCount(); row < mc; row++) {
 				int po = ((Integer) model.getValueAt(row, "point")).intValue();
 				String pro = (String) model.getValueAt(row, "provider");
 				String hol = (String) model.getValueAt(row, "holder");
-				if (key.getPoint() == po && pro.equals(key.getProvider())
-						&& hol.equals(key.getHolder())) {
+				if (key.getPoint() == po
+					&& pro.equals(key.getProvider())
+					&& hol.equals(key.getHolder())) {
 					int colSize = model.getColumnCount();
 					Object[] obj = new Object[colSize];
 					for (int col = 0; col < colSize; col++) {

@@ -41,6 +41,7 @@ import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmTableConfig;
+import org.F11.scada.util.AlarmTableTitleUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.applet.AttributeNColumnUtil;
 import org.F11.scada.xwife.server.AlarmDataProvider;
@@ -51,6 +52,8 @@ public class CareerPanel extends JPanel {
 	/** メインアプレットの参照です */
 	private AbstractWifeApplet wifeApplet;
 	private final AlarmColumn alarmColumn;
+	private final AlarmTableTitleUtil alarmTableTitleUtil =
+		new AlarmTableTitleUtil();
 
 	public CareerPanel(AbstractWifeApplet wifeApplet) {
 		super(new BorderLayout());
@@ -63,8 +66,7 @@ public class CareerPanel extends JPanel {
 	private void addCareer(AlarmTableConfig alarmTableConfig) {
 		DataHolder dh =
 			Manager.getInstance().findDataHolder(
-				AlarmDataProvider.PROVIDER_NAME,
-				AlarmDataProvider.CAREER);
+					AlarmDataProvider.PROVIDER_NAME, AlarmDataProvider.CAREER);
 		career = new AlarmTable(dh, wifeApplet, alarmTableConfig);
 		career.setAutoCreateColumnsFromModel(false);
 		removeColumns(career, 12);
@@ -80,21 +82,32 @@ public class CareerPanel extends JPanel {
 		setColumnWidth(career, 4, alarmColumn.getStatusSize());
 		removeSortColumn(career, 5, wifeApplet, alarmColumn.getSortSize());
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
-			setColumnWidth(career, "属性1", alarmColumn.getAttributeNSize());
-			setColumnWidth(career, "属性2", alarmColumn.getAttributeNSize());
-			setColumnWidth(career, "属性3", alarmColumn.getAttributeNSize());
+			setColumnWidth(career, alarmTableTitleUtil
+					.getAttributeString("属性1"), alarmColumn.getAttributeNSize());
+			setColumnWidth(career, alarmTableTitleUtil
+					.getAttributeString("属性2"), alarmColumn.getAttributeNSize());
+			setColumnWidth(career, alarmTableTitleUtil
+					.getAttributeString("属性3"), alarmColumn.getAttributeNSize());
 		} else {
-			removeColumn(career, "属性1");
-			removeColumn(career, "属性2");
-			removeColumn(career, "属性3");
+			removeColumn(career, alarmTableTitleUtil.getAttributeString("属性1"));
+			removeColumn(career, alarmTableTitleUtil.getAttributeString("属性2"));
+			removeColumn(career, alarmTableTitleUtil.getAttributeString("属性3"));
+		}
+		if (!isShowAttributeColumn()) {
+			removeColumn(career, "属性");
 		}
 		JScrollPane sp = new JScrollPane(career);
 		add(sp, BorderLayout.CENTER);
 	}
 
+	private boolean isShowAttributeColumn() {
+		return wifeApplet.getConfiguration().getBoolean(
+				"org.F11.scada.xwife.applet.alarm.showAttributeColumn", true);
+	}
+
 	/**
 	 * 対象のテーブルに AlarmTableCellRenderer を設定します。
-	 * 
+	 *
 	 * @param table 対象のテーブル
 	 */
 	private void setAlarmTableCellRenderer(JTable table) {

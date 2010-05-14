@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.tool.conf.client;
@@ -44,9 +44,9 @@ import org.F11.scada.xwife.applet.alarm.AlarmColumn;
 
 /**
  * 警報一覧の列幅設定ダイアログ
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class AlarmTableColumn extends JDialog {
 	private static final long serialVersionUID = -3024378393789154566L;
@@ -193,7 +193,7 @@ public class AlarmTableColumn extends JDialog {
 					date.getText());
 				manager.setClientConf(
 					"org.F11.scada.xwife.applet.alarm.attributeNSize",
-					attribute.getText());
+					attributen.getText());
 				dispose();
 			}
 		});

@@ -44,6 +44,7 @@ import org.F11.scada.WifeUtilities;
 import org.F11.scada.server.alarm.AlarmException;
 import org.F11.scada.server.alarm.table.AlarmTableModel;
 import org.F11.scada.server.alarm.table.InitialTableFactory;
+import org.F11.scada.util.AlarmTableTitleUtil;
 import org.F11.scada.util.ConnectionUtil;
 
 /**
@@ -99,7 +100,9 @@ public final class PostgreSQLInitialTableFactory extends InitialTableFactory {
 			throw new IllegalArgumentException("sql is null.");
 		}
 
-		StringTokenizer tokenizer = new StringTokenizer(title, ",");
+		AlarmTableTitleUtil alarmTableTitleUtil = new AlarmTableTitleUtil();
+		StringTokenizer tokenizer =
+			new StringTokenizer(alarmTableTitleUtil.repraceStrings(title), ",");
 		Object[] titleRow = new Object[tokenizer.countTokens()];
 		HashMap<String, Integer> titleMap =
 			new HashMap<String, Integer>(tokenizer.countTokens());

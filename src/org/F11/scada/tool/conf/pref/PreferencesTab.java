@@ -61,6 +61,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private final JTextField serverUser = new JTextField();
 	private final JTextField serverPass = new JTextField();
 	private final JTextField mailErrorHolder = new JTextField();
+	private final JTextField alarmAttributeTitle = new JTextField();
 
 	public PreferencesTab(Frame parent, StreamManager manager) {
 		super();
@@ -75,8 +76,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("データプロバイダーサーバー名(IP)："));
 		Box box = new Box(BoxLayout.X_AXIS);
 		serverIp.setText(manager.getPreferences(
-			"/server/rmi/managerdelegator/name",
-			""));
+				"/server/rmi/managerdelegator/name", ""));
 		serverIp.getDocument().addDocumentListener(this);
 		box.add(serverIp);
 		JButton but = new JButton("詳細");
@@ -93,8 +93,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		box = new Box(BoxLayout.X_AXIS);
 		collectorIp.setText(manager.getPreferences(
-			"/server/rmi/collectorserver/name",
-			""));
+				"/server/rmi/collectorserver/name", ""));
 		collectorIp.getDocument().addDocumentListener(this);
 		box.add(collectorIp);
 		but = new JButton("詳細");
@@ -122,9 +121,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		// E-Mail設定
 		mainPanel.add(new JLabel("メールサーバー名（空白でメール無し）："));
 		box = new Box(BoxLayout.X_AXIS);
-		mailIp.setText(manager.getPreferences(
-			"/server/mail/smtp/servername",
-			""));
+		mailIp.setText(manager.getPreferences("/server/mail/smtp/servername",
+				""));
 		mailIp.getDocument().addDocumentListener(this);
 		box.add(mailIp);
 		but = new JButton("詳細");
@@ -139,8 +137,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報一覧プリンタ名（空白で印字無し）："));
 		box = new Box(BoxLayout.X_AXIS);
 		prnName.setText(manager.getPreferences(
-			"/server/alarm/print/printservice",
-			""));
+				"/server/alarm/print/printservice", ""));
 		prnName.getDocument().addDocumentListener(this);
 		box.add(prnName);
 		but = new JButton("詳細");
@@ -175,9 +172,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(cb);
 		// サーバータイトル
 		mainPanel.add(new JLabel("サーバータイトル："));
-		serverTitle.setText(manager.getPreferences(
-			"/server/title",
-			"F-11 Server"));
+		serverTitle.setText(manager.getPreferences("/server/title",
+				"F-11 Server"));
 		serverTitle.getDocument().addDocumentListener(this);
 		mainPanel.add(serverTitle);
 		// サーバー起動待機時間(秒)
@@ -185,16 +181,15 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		label.setToolTipText("データプロバイダーサーバーが起動されてからデータベースにアクセスし始めるまでの待機時間。");
 		mainPanel.add(label);
 		startupWait
-			.setText(manager.getPreferences("/server/startup/wait", "0"));
+				.setText(manager.getPreferences("/server/startup/wait", "0"));
 		startupWait.getDocument().addDocumentListener(this);
 		mainPanel.add(startupWait);
 		// 最大レコード数
 		label = new JLabel("最大レコード数(トレンド表示)：");
 		label.setToolTipText("トレンドグラフ表示の自動更新モード時に表示するデータ数。");
 		mainPanel.add(label);
-		maxrecord.setText(manager.getPreferences(
-			"/server/logging/maxrecord",
-			"4096"));
+		maxrecord.setText(manager.getPreferences("/server/logging/maxrecord",
+				"4096"));
 		maxrecord.getDocument().addDocumentListener(this);
 		mainPanel.add(maxrecord);
 		// 警報履歴の最大保持件数(ヒストリ・履歴 共用)
@@ -202,7 +197,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		label.setToolTipText("クライアントのヒストリ・履歴でスクロール可能な件数。");
 		mainPanel.add(label);
 		maxalarm
-			.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
+				.setText(manager.getPreferences("/server/alarm/maxrow", "5000"));
 		maxalarm.getDocument().addDocumentListener(this);
 		mainPanel.add(maxalarm);
 		// 操作ログ検索一覧でポイント名称のプレフィックス
@@ -221,13 +216,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("使わない".equals(e.getItem()))
-						manager.setPreferences(
-							"/server/operationlog/prefix",
-							"false");
+						manager.setPreferences("/server/operationlog/prefix",
+								"false");
 					else
-						manager.setPreferences(
-							"/server/operationlog/prefix",
-							"true");
+						manager.setPreferences("/server/operationlog/prefix",
+								"true");
 				}
 			}
 		});
@@ -250,6 +243,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		attributeNDisplay(mainPanel);
 		mailErrorHolder(mainPanel);
 		alarmCsvWrite(mainPanel);
+		alarmAttributeTitle(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -276,7 +270,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("使わない".equals(e.getItem()))
 						manager
-							.setPreferences("/server/schedulepoint", "false");
+								.setPreferences("/server/schedulepoint",
+										"false");
 					else
 						manager.setPreferences("/server/schedulepoint", "true");
 				}
@@ -314,9 +309,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 
 	private void pageDeployPeriod(JPanel mainPanel) {
 		mainPanel.add(new JLabel("ページ定義ファイル チェック間隔(ミリ秒)："));
-		deployPeriod.setText(manager.getPreferences(
-			"/server/deploy/period",
-			"69896"));
+		deployPeriod.setText(manager.getPreferences("/server/deploy/period",
+				"69896"));
 		deployPeriod.getDocument().addDocumentListener(this);
 		mainPanel.add(deployPeriod);
 	}
@@ -339,13 +333,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("有り".equals(e.getItem()))
-						manager.setPreferences(
-							"/server/logging/noRevision",
-							"false");
+						manager.setPreferences("/server/logging/noRevision",
+								"false");
 					else
-						manager.setPreferences(
-							"/server/logging/noRevision",
-							"true");
+						manager.setPreferences("/server/logging/noRevision",
+								"true");
 				}
 			}
 		});
@@ -355,8 +347,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void operationLoggingUtil(JPanel mainPanel) {
 		mainPanel.add(new JLabel("スケジュール操作ログのフッタ："));
 		operationLoggingUtil.setText(manager.getPreferences(
-			"/server/operationlog/impl/OperationLoggingUtilImpl",
-			""));
+				"/server/operationlog/impl/OperationLoggingUtilImpl", ""));
 		operationLoggingUtil.getDocument().addDocumentListener(this);
 		mainPanel.add(operationLoggingUtil);
 	}
@@ -370,9 +361,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItem("回数記録");
 		String prefix =
 			manager
-				.getPreferences(
-					"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
-					"false");
+					.getPreferences(
+							"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+							"false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -383,14 +374,14 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("配列添字".equals(e.getItem()))
 						manager
-							.setPreferences(
-								"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
-								"false");
+								.setPreferences(
+										"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+										"false");
 					else
 						manager
-							.setPreferences(
-								"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
-								"true");
+								.setPreferences(
+										"/server/operationlog/impl/OperationLoggingUtilImpl/scheduleCount",
+										"true");
 				}
 			}
 		});
@@ -404,7 +395,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		cb.addItem("毎正時");
 		String prefix =
 			manager
-				.getPreferences("/server/logging/report/outputMode", "false");
+					.getPreferences("/server/logging/report/outputMode",
+							"false");
 		if ("false".equals(prefix)) {
 			cb.setSelectedIndex(0);
 		} else {
@@ -415,12 +407,10 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("レコード追加時".equals(e.getItem()))
 						manager.setPreferences(
-							"/server/logging/report/outputMode",
-							"false");
+								"/server/logging/report/outputMode", "false");
 					else
 						manager.setPreferences(
-							"/server/logging/report/outputMode",
-							"true");
+								"/server/logging/report/outputMode", "true");
 				}
 			}
 		});
@@ -443,13 +433,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("本番(制約有り)".equals(e.getItem()))
-						manager.setPreferences(
-							"/server/systemtime/testMode",
-							"false");
+						manager.setPreferences("/server/systemtime/testMode",
+								"false");
 					else
-						manager.setPreferences(
-							"/server/systemtime/testMode",
-							"true");
+						manager.setPreferences("/server/systemtime/testMode",
+								"true");
 				}
 			}
 		});
@@ -461,8 +449,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		label.setToolTipText("次の通信文を送信するまでの待機時間。");
 		mainPanel.add(label);
 		communicateWaitTime.setText(manager.getPreferences(
-			"/server/communicateWaitTime",
-			"100"));
+				"/server/communicateWaitTime", "100"));
 		communicateWaitTime.getDocument().addDocumentListener(this);
 		mainPanel.add(communicateWaitTime);
 	}
@@ -483,13 +470,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("使用しない".equals(e.getItem()))
-						manager.setPreferences(
-							"/server/formula/isUseFormula",
-							"false");
+						manager.setPreferences("/server/formula/isUseFormula",
+								"false");
 					else
-						manager.setPreferences(
-							"/server/formula/isUseFormula",
-							"true");
+						manager.setPreferences("/server/formula/isUseFormula",
+								"true");
 				}
 			}
 		});
@@ -513,18 +498,14 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("属性優先(初期値)".equals(e.getItem())) {
 						manager.setPreferences(
-							"/server/alarm/sound/attributemode",
-							"true");
+								"/server/alarm/sound/attributemode", "true");
 					} else {
 						manager.setPreferences(
-							"/server/alarm/sound/attributemode",
-							"false");
+								"/server/alarm/sound/attributemode", "false");
 					}
-					JOptionPane.showMessageDialog(
-						cb,
-						"モード変更した後は必ずrejarしてサーバーの再起動をして下さい",
-						"警報音発信モード変更",
-						JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(cb,
+							"モード変更した後は必ずrejarしてサーバーの再起動をして下さい", "警報音発信モード変更",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -541,7 +522,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	private void serverPass(JPanel mainPanel) {
 		mainPanel.add(new JLabel("サーバー終了用パスワード："));
 		serverPass.setText(manager
-			.getPreferences("/server/password", "okusama"));
+				.getPreferences("/server/password", "okusama"));
 		serverPass.getDocument().addDocumentListener(this);
 		mainPanel.add(serverPass);
 	}
@@ -564,13 +545,11 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("ページ通信優先".equals(e.getItem())) {
-						manager.setPreferences(
-							"/server/isPageChangeInterrupt",
-							"true");
+						manager.setPreferences("/server/isPageChangeInterrupt",
+								"true");
 					} else {
-						manager.setPreferences(
-							"/server/isPageChangeInterrupt",
-							"false");
+						manager.setPreferences("/server/isPageChangeInterrupt",
+								"false");
 					}
 				}
 			}
@@ -597,12 +576,10 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("属性n非表示".equals(e.getItem())) {
 						manager.setPreferences(
-							"/server/alarm/attributen/enable",
-							"false");
+								"/server/alarm/attributen/enable", "false");
 					} else {
 						manager.setPreferences(
-							"/server/alarm/attributen/enable",
-							"true");
+								"/server/alarm/attributen/enable", "true");
 					}
 				}
 			}
@@ -615,8 +592,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		comp.setToolTipText("警報メール送信エラー発生時、ビットを立てるデジタルホルダを「プロバイダ_ホルダ」で設定します。");
 		mainPanel.add(comp);
 		mailErrorHolder.setText(manager.getPreferences(
-			"/server/mail/errorholder",
-			""));
+				"/server/mail/errorholder", ""));
 		mailErrorHolder.getDocument().addDocumentListener(this);
 		mainPanel.add(mailErrorHolder);
 	}
@@ -633,6 +609,16 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(but);
 	}
 
+	private void alarmAttributeTitle(JPanel mainPanel) {
+		JLabel comp = new JLabel("属性1,2,3置き換え文字列：");
+		comp.setToolTipText("属性1,2,3置き換え文字列をカンマ区切りで設定します。");
+		mainPanel.add(comp);
+		alarmAttributeTitle.setText(manager.getPreferences(
+				"/server/alarm/attribute/title", "属性1,属性2,属性3"));
+		alarmAttributeTitle.getDocument().addDocumentListener(this);
+		mainPanel.add(alarmAttributeTitle);
+	}
+
 	public void changedUpdate(DocumentEvent e) {
 		eventPaformed(e);
 	}
@@ -647,49 +633,49 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 
 	private void eventPaformed(DocumentEvent e) {
 		if (e.getDocument() == serverIp.getDocument()) {
-			manager.setPreferences(
-				"/server/rmi/managerdelegator/name",
-				serverIp.getText());
+			manager.setPreferences("/server/rmi/managerdelegator/name",
+					serverIp.getText());
 		} else if (e.getDocument() == collectorIp.getDocument()) {
-			manager.setPreferences(
-				"/server/rmi/collectorserver/name",
-				collectorIp.getText());
+			manager.setPreferences("/server/rmi/collectorserver/name",
+					collectorIp.getText());
 		} else if (e.getDocument() == dbmsIp.getDocument()) {
 			manager.setPreferences("/server/jdbc/servername", dbmsIp.getText());
 		} else if (e.getDocument() == mailIp.getDocument()) {
 			manager.setPreferences("/server/mail/smtp/servername", mailIp
-				.getText());
+					.getText());
 		} else if (e.getDocument() == prnName.getDocument()) {
 			manager.setPreferences("/server/alarm/print/printservice", prnName
-				.getText());
+					.getText());
 		} else if (e.getDocument() == serverTitle.getDocument()) {
 			manager.setPreferences("/server/title", serverTitle.getText());
 		} else if (e.getDocument() == startupWait.getDocument()) {
 			manager.setPreferences("/server/startup/wait", startupWait
-				.getText());
+					.getText());
 		} else if (e.getDocument() == maxrecord.getDocument()) {
 			manager.setPreferences("/server/logging/maxrecord", maxrecord
-				.getText());
+					.getText());
 		} else if (e.getDocument() == maxalarm.getDocument()) {
 			manager.setPreferences("/server/alarm/maxrow", maxalarm.getText());
 		} else if (e.getDocument() == deployPeriod.getDocument()) {
 			manager.setPreferences("/server/deploy/period", deployPeriod
-				.getText());
+					.getText());
 		} else if (e.getDocument() == operationLoggingUtil.getDocument()) {
 			manager.setPreferences(
-				"/server/operationlog/impl/OperationLoggingUtilImpl",
-				operationLoggingUtil.getText());
+					"/server/operationlog/impl/OperationLoggingUtilImpl",
+					operationLoggingUtil.getText());
 		} else if (e.getDocument() == communicateWaitTime.getDocument()) {
-			manager.setPreferences(
-				"/server/communicateWaitTime",
-				communicateWaitTime.getText());
+			manager.setPreferences("/server/communicateWaitTime",
+					communicateWaitTime.getText());
 		} else if (e.getDocument() == serverUser.getDocument()) {
 			manager.setPreferences("/server/user", serverUser.getText());
 		} else if (e.getDocument() == serverPass.getDocument()) {
 			manager.setPreferences("/server/password", serverPass.getText());
 		} else if (e.getDocument() == mailErrorHolder.getDocument()) {
 			manager.setPreferences("/server/mail/errorholder", mailErrorHolder
-				.getText());
+					.getText());
+		} else if (e.getDocument() == alarmAttributeTitle.getDocument()) {
+			manager.setPreferences("/server/alarm/attribute/title",
+					alarmAttributeTitle.getText());
 		}
 	}
 }
