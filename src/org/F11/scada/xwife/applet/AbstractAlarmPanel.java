@@ -257,7 +257,9 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		}
 
 		if (isShowSortColumn) {
-			box.add(Box.createHorizontalStrut(15));
+			if (isShowAttributeColumn()) {
+				box.add(Box.createHorizontalStrut(15));
+			}
 			box.add(new JLabel("éÌï ÅF"));
 			labelPriority = new JLabel();
 			labelPriority.setOpaque(true);
