@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components>
+	<include path="dao.dicon"/>
+	
+	<component class="org.F11.scada.misc.convert.EMailAttributeDao" >
+		<aspect>dao.interceptor</aspect>
+	</component>
+	
+	<component class="org.F11.scada.misc.convert.EMailIndividualDao" >
+		<aspect>dao.interceptor</aspect>
+	</component>
+</components>
