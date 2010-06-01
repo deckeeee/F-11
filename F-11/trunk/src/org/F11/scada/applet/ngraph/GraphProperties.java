@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -33,9 +33,9 @@ import org.F11.scada.applet.ngraph.model.GraphModel;
 
 /**
  * トレンドグラフのプロパティ。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class GraphProperties {
 	/** このプロパティーのリスナー */
@@ -98,6 +98,8 @@ public class GraphProperties {
 	private boolean isCompositionMode = true;
 	/** 現在のスパン表示モード */
 	private boolean isAllSpanDisplayMode;
+	/** トレンド操作ボタンの表示/非表示 */
+	private boolean isShowTrendOpButton;
 
 	public GraphProperties() {
 		changeSupport = new PropertyChangeSupport(this);
@@ -123,9 +125,8 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 縦軸の総ピクセル verticalScale × compositionVerticalCount
-	 * 
-	 * @return 縦軸の総ピクセル verticalScale × compositionVerticalCount
+	 * 縦目盛のピクセル数を取得します。
+	 * @return 縦目盛のピクセル数
 	 */
 	public int getVerticalLine() {
 		if (verticalLine == 0) {
@@ -135,54 +136,48 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 縦1目盛のピクセル長
-	 * 
-	 * @return 縦1目盛のピクセル長
+	 * 縦目盛1つ分のピクセル数を取得します。
+	 * @return 縦目盛1つ分のピクセル数
 	 */
 	public int getVerticalScale() {
 		return verticalScale;
 	}
 
 	/**
-	 * 縦1目盛のピクセル長
-	 * 
-	 * @param verticalScale 縦1目盛のピクセル長
+	 * 縦目盛1つ分のピクセル数を設定します。
+	 * @param verticalScale 縦目盛1つ分のピクセル数
 	 */
 	public void setVerticalScale(int verticalScale) {
 		this.verticalScale = verticalScale;
 	}
 
 	/**
-	 * 縦目盛の数(通常は10)
-	 * 
-	 * @return　縦目盛の数(通常は10)
+	 * 縦目盛の数を取得します。
+	 * @return 縦目盛の数
 	 */
 	public int getVerticalCount() {
 		return verticalCount;
 	}
 
 	/**
-	 * 縦目盛の数(通常は10)
-	 * 
-	 * @param verticalCount 縦目盛の数(通常は10)
+	 * 縦目盛の数を設定します。
+	 * @param verticalCount 縦目盛の数
 	 */
 	public void setVerticalCount(int verticalCount) {
 		this.verticalCount = verticalCount;
 	}
 
 	/**
-	 * 合成表示モードの縦目盛の数
-	 * 
-	 * @return 合成表示モードの縦目盛の数
+	 * 合成モード縦目盛の数を取得します。
+	 * @return 合成モード縦目盛の数
 	 */
 	public int getCompositionVerticalCount() {
 		return compositionVerticalCount;
 	}
 
 	/**
-	 * 合成表示モードの縦目盛の数を設定します
-	 * 
-	 * @param compositionVerticalCount 合成表示モードの縦目盛の数
+	 * 合成モード縦目盛の数を設定します。
+	 * @param compositionVerticalCount 合成モード縦目盛の数
 	 */
 	public void setCompositionVerticalCount(int compositionVerticalCount) {
 		this.compositionVerticalCount = compositionVerticalCount;
@@ -190,9 +185,9 @@ public class GraphProperties {
 
 	/**
 	 * 横軸の総ピクセル
-	 * 
+	 *
 	 * @param isAllSpanDisplayMode スパン全表示モードなら true を略表示モードなら false を指定
-	 * 
+	 *
 	 * @return 横軸の総ピクセル
 	 */
 	public int getHorizontalLine(boolean isAllSpanDisplayMode) {
@@ -200,36 +195,32 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 縦横スケール目盛自身のピクセル数
-	 * 
-	 * @return 縦横スケール目盛自身のピクセル数
+	 * 目盛線のピクセル数を取得します。
+	 * @return 目盛線のピクセル数
 	 */
 	public int getScalePixcelSize() {
 		return scalePixcelSize;
 	}
 
 	/**
-	 * 縦横スケール目盛自身のピクセル数を設定
-	 * 
-	 * @param scalePixcelSize 縦横スケール目盛自身のピクセル数
+	 * 目盛線のピクセル数を設定します。
+	 * @param scalePixcelSize 目盛線のピクセル数
 	 */
 	public void setScalePixcelSize(int scalePixcelSize) {
 		this.scalePixcelSize = scalePixcelSize;
 	}
 
 	/**
-	 * 横スケールの表示期間をミリ秒で返します。
-	 * 
-	 * @return 横スケールの表示期間をミリ秒で返します。
+	 * 横目盛の時間スケール幅を取得します。
+	 * @return 横目盛の時間スケール幅
 	 */
 	public long getHorizontalLineSpan() {
 		return horizontalLineSpan;
 	}
 
 	/**
-	 * 横スケールの表示期間をミリ秒で設定します。
-	 * 
-	 * @param horizontalLineSpan 横スケールの表示期間をミリ秒で設定します。
+	 * 横目盛の時間スケール幅を設定します。
+	 * @param horizontalLineSpan 横目盛の時間スケール幅
 	 */
 	public void setHorizontalLineSpan(long horizontalLineSpan) {
 		this.horizontalLineSpan = horizontalLineSpan;
@@ -237,9 +228,9 @@ public class GraphProperties {
 
 	/**
 	 * 横軸1目盛の長さ(ピクセル)
-	 * 
+	 *
 	 * @param isAllSpanDisplayMode
-	 * 
+	 *
 	 * @return 横軸1目盛の長さ(ピクセル)
 	 */
 	public int getHorizontalScale(boolean isAllSpanDisplayMode) {
@@ -249,162 +240,144 @@ public class GraphProperties {
 	}
 
 	/**
-	 * スパン全表示の横幅の目盛ひとつ分ピクセル数
-	 * 
-	 * @param horizontalForAllSpanMode スパン全表示の横幅の目盛ひとつ分ピクセル数
+	 * ｽｹｰﾙ全表示の横幅ピクセル数を設定します。
+	 * @param horizontalForAllSpanMode ｽｹｰﾙ全表示の横幅ピクセル数
 	 */
 	public void setHorizontalForAllSpanMode(int horizontalForAllSpanMode) {
 		this.horizontalForAllSpanMode = horizontalForAllSpanMode;
 	}
 
 	/**
-	 * スパン略表示の横幅の目盛ひとつ分ピクセル数
-	 * 
-	 * @param horizontalForSelectSpanMode スパン略表示の横幅の目盛ひとつ分ピクセル数
+	 * ｽｹｰﾙ略表示の横幅ピクセル数を設定します。
+	 * @param horizontalForSelectSpanMode ｽｹｰﾙ略表示の横幅ピクセル数
 	 */
 	public void setHorizontalForSelectSpanMode(int horizontalForSelectSpanMode) {
 		this.horizontalForSelectSpanMode = horizontalForSelectSpanMode;
 	}
 
 	/**
-	 * 横軸の目盛数
-	 * 
-	 * @return 横軸の目盛数
+	 * 横目盛の数を取得します。
+	 * @return 横目盛の数
 	 */
 	public int getHorizontalCount() {
 		return horizontalCount;
 	}
 
 	/**
-	 * 横軸の目盛数
-	 * 
-	 * @param horizontalCount 横軸の目盛数
+	 * 横目盛の数を設定します。
+	 * @param horizontalCount 横目盛の数
 	 */
 	public void setHorizontalCount(int horizontalCount) {
 		this.horizontalCount = horizontalCount;
 	}
 
 	/**
-	 * 上段の横スケール単位のフォーマット文字列 フォーマットは{@link java.util.Formatter}を利用しています。
-	 * 
-	 * @return 上段の横スケール単位のフォーマット文字列
+	 * 日付表示フォーマットを取得します。
+	 * @return 日付表示フォーマット
 	 */
 	public String getDateFormat() {
 		return dateFormat;
 	}
 
 	/**
-	 * 上段の横スケール単位のフォーマット文字列
-	 * 
-	 * @param dateFormat 上段の横スケール単位のフォーマット文字列
+	 * 日付表示フォーマットを設定します。
+	 * @param dateFormat 日付表示フォーマット
 	 */
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
 	}
 
 	/**
-	 * 下段の横スケール単位のフォーマット文字列 フォーマットは{@link java.util.Formatter}を利用しています。
-	 * 
-	 * @return 下段の横スケール単位のフォーマット文字列
+	 * 時間表示フォーマットを取得します。
+	 * @return 時間表示フォーマット
 	 */
 	public String getTimeFormat() {
 		return timeFormat;
 	}
 
 	/**
-	 * 下段の横スケール単位のフォーマット文字列
-	 * 
-	 * @param timeFormat 下段の横スケール単位のフォーマット文字列
+	 * 時間表示フォーマットを設定します。
+	 * @param timeFormat 時間表示フォーマット
 	 */
 	public void setTimeFormat(String timeFormat) {
 		this.timeFormat = timeFormat;
 	}
 
 	/**
-	 * グラフ周りの余白
-	 * 
-	 * @return グラフ周りの余白
+	 * グラフエリアの余白を取得します。
+	 * @return グラフエリアの余白
 	 */
 	public Insets getInsets() {
 		return insets;
 	}
 
 	/**
-	 * グラフ周りの余白
-	 * 
-	 * @param insets グラフ周りの余白
+	 * グラフエリアの余白を設定します。
+	 * @param insets グラフエリアの余白
 	 */
 	public void setInsets(Insets insets) {
 		this.insets = insets;
 	}
 
 	/**
-	 * グラフに使用するフォント
-	 * 
-	 * @return グラフに使用するフォント
+	 * 使用フォントを取得します。
+	 * @return 使用フォント
 	 */
 	public Font getFont() {
 		return font;
 	}
 
 	/**
-	 * グラフに使用するフォント
-	 * 
-	 * @param font グラフに使用するフォント
+	 * 使用フォントを設定します。
+	 * @param font 使用フォント
 	 */
 	public void setFont(Font font) {
 		this.font = font;
 	}
 
 	/**
-	 * 元になる縦横の線の色。横軸の文字列の色にも使用する。
-	 * 
-	 * @return 元になる縦横の線の色。横軸の文字列の色にも使用する。
+	 * 線の色を取得します。
+	 * @return 線の色
 	 */
 	public Color getLineColor() {
 		return lineColor;
 	}
 
 	/**
-	 * 元になる縦横の線の色。横軸の文字列の色にも使用する。
-	 * 
-	 * @param lineColor 元になる縦横の線の色。横軸の文字列の色にも使用する。
+	 * 線の色を設定します。
+	 * @param lineColor 線の色
 	 */
 	public void setLineColor(Color lineColor) {
 		this.lineColor = lineColor;
 	}
 
 	/**
-	 * グラフの背景色
-	 * 
-	 * @return グラフの背景色
+	 * 背景色を取得します。
+	 * @return 背景色
 	 */
 	public Color getBackGround() {
 		return backGround;
 	}
 
 	/**
-	 * グラフの背景色
-	 * 
-	 * @param backGround グラフの背景色
+	 * 背景色を設定します。
+	 * @param backGround 背景色
 	 */
 	public void setBackGround(Color backGround) {
 		this.backGround = backGround;
 	}
 
 	/**
-	 * 目盛り線(点線)の色
-	 * 
-	 * @return 目盛り線(点線)の色
+	 * グラフエリアのグリッド色を取得します。
+	 * @return グラフエリアのグリッド色
 	 */
 	public Color getVerticalScaleColor() {
 		return verticalScaleColor;
 	}
 
 	/**
-	 * 目盛り線(点線)の色
-	 * 
-	 * @param verticalScaleColor 目盛り線(点線)の色
+	 * グラフエリアのグリッド色を設定します。
+	 * @param verticalScaleColor グラフエリアのグリッド色
 	 */
 	public void setVerticalScaleColor(Color verticalScaleColor) {
 		this.verticalScaleColor = verticalScaleColor;
@@ -412,7 +385,7 @@ public class GraphProperties {
 
 	/**
 	 * シリーズをグループに追加します。
-	 * 
+	 *
 	 * @param s シリーズをグループに追加します。
 	 */
 	public void setSeriesGroup(List<SeriesGroup> s) {
@@ -421,7 +394,7 @@ public class GraphProperties {
 
 	/**
 	 * カレントグループNo.のシリーズグループを返します。
-	 * 
+	 *
 	 * @return カレントグループNo.のシリーズグループを返します。
 	 */
 	public SeriesGroup getSeriesGroup() {
@@ -429,18 +402,16 @@ public class GraphProperties {
 	}
 
 	/**
-	 * シリーズグループのリストを返します。
-	 * 
-	 * @return シリーズグループリストを返します。
+	 * シリーズグループのリストを取得します。
+	 * @return シリーズグループのリスト
 	 */
 	public List<SeriesGroup> getSeriesGroups() {
 		return Collections.unmodifiableList(seriesGroups);
 	}
 
 	/**
-	 * カレントグループNo.を返します。
-	 * 
-	 * @return カレントグループNo.を返します。
+	 * カレントグループNo.を取得します。
+	 * @return カレントグループNo.
 	 */
 	public int getGroupNo() {
 		return groupNo;
@@ -448,9 +419,7 @@ public class GraphProperties {
 
 	/**
 	 * カレントグループNo.を設定します。
-	 * 
-	 * @param groupNo グループNo.
-	 * @return グループNo.を変更できた場合は true をそうでない場合は false を返します。
+	 * @param groupNo カレントグループNo.
 	 */
 	public boolean setGroupNo(int groupNo) {
 		boolean validGroupNo = isValidGroupNo(groupNo);
@@ -470,53 +439,47 @@ public class GraphProperties {
 	}
 
 	/**
-	 * グラフ定義ファイル名を返します
-	 * 
-	 * @return グラフ定義ファイル名を返します
+	 * ページ定義ファイル名を取得します。
+	 * @return ページ定義ファイル名
 	 */
 	public String getPagefile() {
 		return pagefile;
 	}
 
 	/**
-	 * グラフ定義ファイル名を設定します
-	 * 
-	 * @param pagefile グラフ定義ファイル名を設定します
+	 * ページ定義ファイル名を設定します。
+	 * @param pagefile ページ定義ファイル名
 	 */
 	public void setPagefile(String pagefile) {
 		this.pagefile = pagefile;
 	}
 
 	/**
-	 * ｽｹｰﾙ全表示の横幅ピクセル数を返します
-	 * 
-	 * @return ｽｹｰﾙ全表示の横幅ピクセル数を返します
+	 * ｽｹｰﾙ全表示の横幅ピクセル数を取得します。
+	 * @return ｽｹｰﾙ全表示の横幅ピクセル数
 	 */
 	public int getHorizontalForAllSpanMode() {
 		return horizontalForAllSpanMode;
 	}
 
 	/**
-	 * ｽｹｰﾙ略表示の横幅ピクセル数を返します
-	 * 
-	 * @return ｽｹｰﾙ略表示の横幅ピクセル数を返します
+	 * ｽｹｰﾙ略表示の横幅ピクセル数を取得します。
+	 * @return ｽｹｰﾙ略表示の横幅ピクセル数
 	 */
 	public int getHorizontalForSelectSpanMode() {
 		return horizontalForSelectSpanMode;
 	}
 
 	/**
-	 * 横スケール変更ボタンのプロパティーを返します
-	 * 
-	 * @return 横スケール変更ボタンのプロパティーを返します
+	 * 横スケール変更ボタンのプロパティーを取得します。
+	 * @return 横スケール変更ボタンのプロパティー
 	 */
 	public List<HorizontalScaleButtonProperty> getHorizontalScaleButtonProperty() {
 		return horizontalScaleButtonProperty;
 	}
 
 	/**
-	 * 横スケール変更ボタンのプロパティーを設定します
-	 * 
+	 * 横スケール変更ボタンのプロパティーを設定します。
 	 * @param horizontalScaleButtonProperty 横スケール変更ボタンのプロパティー
 	 */
 	public void setHorizontalScaleButtonProperty(
@@ -525,17 +488,15 @@ public class GraphProperties {
 	}
 
 	/**
-	 * トレンドグラフ最大表示レコードを返します
-	 * 
-	 * @return トレンドグラフ最大表示レコードを返します
+	 * トレンドグラフ最大表示レコードを取得します。
+	 * @return トレンドグラフ最大表示レコード
 	 */
 	public int getMaxRecord() {
 		return maxRecord;
 	}
 
 	/**
-	 * トレンドグラフ最大表示レコードを設定します
-	 * 
+	 * トレンドグラフ最大表示レコードを設定します。
 	 * @param maxRecord トレンドグラフ最大表示レコード
 	 */
 	public void setMaxRecord(int maxRecord) {
@@ -543,17 +504,15 @@ public class GraphProperties {
 	}
 
 	/**
-	 * ツールバー表示の有無を返します
-	 * 
-	 * @return ツールバー表示の有無を返します
+	 * ツールバー表示の有無を取得します。
+	 * @return ツールバー表示の有無
 	 */
 	public boolean isVisibleToolbar() {
 		return isVisibleToolbar;
 	}
 
 	/**
-	 * ツールバー表示の有無を設定します
-	 * 
+	 * ツールバー表示の有無を設定します。
 	 * @param isVisibleToolbar ツールバー表示の有無
 	 */
 	public void setVisibleToolbar(boolean isVisibleToolbar) {
@@ -561,17 +520,15 @@ public class GraphProperties {
 	}
 
 	/**
-	 * シリーズ表示の有無を返します
-	 * 
-	 * @return シリーズ表示の有無を返します
+	 * シリーズ表示の有無を取得します。
+	 * @return シリーズ表示の有無
 	 */
 	public boolean isVisibleSeries() {
 		return isVisibleSeries;
 	}
 
 	/**
-	 * シリーズ表示の有無を設定します
-	 * 
+	 * シリーズ表示の有無を設定します。
 	 * @param isVisibleSeries シリーズ表示の有無
 	 */
 	public void setVisibleSeries(boolean isVisibleSeries) {
@@ -579,8 +536,7 @@ public class GraphProperties {
 	}
 
 	/**
-	 * ステータス表示の有無を返します
-	 * 
+	 * ステータス表示の有無を取得します。
 	 * @return ステータス表示の有無
 	 */
 	public boolean isVisibleStatus() {
@@ -588,8 +544,7 @@ public class GraphProperties {
 	}
 
 	/**
-	 * ステータス表示の有無を設定します
-	 * 
+	 * ステータス表示の有無を設定します。
 	 * @param isVisibleStatus ステータス表示の有無
 	 */
 	public void setVisibleStatus(boolean isVisibleStatus) {
@@ -597,8 +552,7 @@ public class GraphProperties {
 	}
 
 	/**
-	 * スクロールバー表示の有無を返します
-	 * 
+	 * スクロールバー表示の有無を取得します。
 	 * @return スクロールバー表示の有無
 	 */
 	public boolean isVisibleScroolbar() {
@@ -606,8 +560,7 @@ public class GraphProperties {
 	}
 
 	/**
-	 * スクロールバー表示の有無を設定します
-	 * 
+	 * スクロールバー表示の有無を設定します。
 	 * @param isVisibleScroolbar スクロールバー表示の有無
 	 */
 	public void setVisibleScroolbar(boolean isVisibleScroolbar) {
@@ -615,17 +568,15 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 参照位置線表示の有無を返します
-	 * 
-	 * @return 参照位置線表示の有無を返します
+	 * 参照位置線表示の有無を取得します。
+	 * @return 参照位置線表示の有無
 	 */
 	public boolean isVisibleReferenceLine() {
 		return isVisibleReferenceLine;
 	}
 
 	/**
-	 * 参照位置線表示の有無を設定します
-	 * 
+	 * 参照位置線表示の有無を設定します。
 	 * @param isVisibleReferenceLine 参照位置線表示の有無
 	 */
 	public void setVisibleReferenceLine(boolean isVisibleReferenceLine) {
@@ -633,17 +584,15 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 縦スケール文字表示の有無を返します
-	 * 
-	 * @return 縦スケール文字表示の有無を返します
+	 * 縦スケール文字表示の有無を取得します。
+	 * @return 縦スケール文字表示の有無
 	 */
 	public boolean isVisibleVerticalString() {
 		return isVisibleVerticalString;
 	}
 
 	/**
-	 * 縦スケール文字表示の有無を設定します
-	 * 
+	 * 縦スケール文字表示の有無を設定します。
 	 * @param isVisibleVerticalString 縦スケール文字表示の有無
 	 */
 	public void setVisibleVerticalString(boolean isVisibleVerticalString) {
@@ -651,17 +600,15 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 現在の合成・分離表示モードを返します
-	 * 
-	 * @return 現在の合成・分離表示モードを返します
+	 * 現在の合成・分離表示モードを取得します。
+	 * @return 現在の合成・分離表示モード
 	 */
 	public boolean isCompositionMode() {
 		return isCompositionMode;
 	}
 
 	/**
-	 * 現在の合成・分離表示モードを設定します
-	 * 
+	 * 現在の合成・分離表示モードを設定します。
 	 * @param isCompositionMode 現在の合成・分離表示モード
 	 */
 	public void setCompositionMode(boolean isCompositionMode) {
@@ -669,21 +616,35 @@ public class GraphProperties {
 	}
 
 	/**
-	 * 現在のスパン表示モードを返します
-	 * 
-	 * @return 現在のスパン表示モードを返します
+	 * 現在のスパン表示モードを取得します。
+	 * @return 現在のスパン表示モード
 	 */
 	public boolean isAllSpanDisplayMode() {
 		return isAllSpanDisplayMode;
 	}
 
 	/**
-	 * 現在のスパン表示モードを設定します
-	 * 
+	 * 現在のスパン表示モードを設定します。
 	 * @param isAllSpanDisplayMode 現在のスパン表示モード
 	 */
 	public void setAllSpanDisplayMode(boolean isAllSpanDisplayMode) {
 		this.isAllSpanDisplayMode = isAllSpanDisplayMode;
+	}
+
+	/**
+	 * トレンド操作ボタンの表示/非表示を取得します。
+	 * @return トレンド操作ボタンの表示/非表示
+	 */
+	public boolean isShowTrendOpButton() {
+		return isShowTrendOpButton;
+	}
+
+	/**
+	 * トレンド操作ボタンの表示/非表示を設定します。
+	 * @param isShowTrendOpButton トレンド操作ボタンの表示/非表示
+	 */
+	public void setShowTrendOpButton(boolean isShowTrendOpButton) {
+		this.isShowTrendOpButton = isShowTrendOpButton;
 	}
 
 }
