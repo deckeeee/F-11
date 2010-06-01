@@ -2,7 +2,7 @@
  * $Header$
  * $Revision$
  * $Date$
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -45,7 +45,7 @@ import org.xml.sax.Attributes;
 
 /**
  * XPath=/page_map/page/trendgraph 状態を表すクラスです。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class TrendGraph3State implements State {
@@ -107,6 +107,8 @@ public class TrendGraph3State implements State {
 	private boolean isAllSpanDisplayMode;
 	/** グループ番号 */
 	private final Object argv;
+	/** トレンド操作ボタンの表示/非表示 */
+	private boolean isShowTrendOpButton;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
@@ -170,6 +172,8 @@ public class TrendGraph3State implements State {
 		isAllSpanDisplayMode =
 			Boolean.parseBoolean(getValue(atts, "allSpanDisplayMode", "false"));
 		this.argv = argv;
+		isShowTrendOpButton =
+			Boolean.parseBoolean(getValue(atts, "showTrendOpButton", "true"));
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
@@ -240,6 +244,7 @@ public class TrendGraph3State implements State {
 		p.setVisibleVerticalString(isVisibleVerticalString);
 		p.setCompositionMode(isCompositionMode);
 		p.setAllSpanDisplayMode(isAllSpanDisplayMode);
+		p.setShowTrendOpButton(isShowTrendOpButton);
 
 		return p;
 	}

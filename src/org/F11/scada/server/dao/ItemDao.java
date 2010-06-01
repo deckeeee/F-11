@@ -61,6 +61,6 @@ public interface ItemDao {
 	int updateJumpPage(String page, String provider, String holder);
 
 	static final String updateJumpPage_SQL =
-		"UPDATE item_table SET jump_path = ?, auto_jump_flag = '1'" +
-		" WHERE system = '1' AND data_type = 0 AND provider = ? AND holder = ?";
+		"UPDATE item_table SET jump_path = ?"
+			+ " WHERE system = '1' AND data_type = 0 AND provider = ? AND holder = ?";
 }

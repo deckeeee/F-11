@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -62,9 +62,9 @@ import org.F11.scada.util.FontUtil;
 
 /**
  * グループの操作をする処理を集約したツールバー
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 	private static final long serialVersionUID = -3659589949473526923L;
@@ -79,7 +79,9 @@ public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 		this.mediator = mediator;
 		this.graphProperties = graphProperties;
 		groupNameLabel = getGroupNameLabel();
-		add(getTrendOpButton());
+		if (graphProperties.isShowTrendOpButton()) {
+			add(getTrendOpButton());
+		}
 		add(getBackButton());
 		add(getForwardButton());
 		addSeparator();
