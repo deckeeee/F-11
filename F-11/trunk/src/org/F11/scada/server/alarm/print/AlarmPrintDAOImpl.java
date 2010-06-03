@@ -120,12 +120,13 @@ public class AlarmPrintDAOImpl implements AlarmPrintDAO {
 		Connection con = ds.getConnection();
 		try {
 			String sql =
-				"SELECT a.printer_mode FROM item_table i, attribute_table a, point_table p " +				"WHERE i.attribute_id = a.attribute AND p.point = i.point AND " +				"i.point = ? AND i.provider = ? AND i.holder = ?";
+				"SELECT a.printer_mode FROM item_table i, attribute_table a, point_table p, message_table m " +				"WHERE i.attribute_id = a.attribute AND p.point = i.point AND i.message_id = m.message_id AND " +				"i.point = ? AND i.provider = ? AND i.holder = ? AND m.type = ?";
 			PreparedStatement st = con.prepareStatement(sql);
 			try {
 				st.setInt(1, key.getPoint());
 				st.setString(2, key.getProvider());
 				st.setString(3, key.getHolder());
+				st.setBoolean(4, key.getValue());
 				ResultSet rs = st.executeQuery();
 				try {
 					if (rs.next()) {
