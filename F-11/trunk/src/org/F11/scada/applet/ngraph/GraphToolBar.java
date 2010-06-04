@@ -123,9 +123,13 @@ public class GraphToolBar extends JToolBar implements Mediator, Colleague {
 	}
 
 	private String getGroupName(GraphModel model) {
-		int no = model.getGroupNo() + 1;
-		String s = model.getGroupName();
-		return String.format("No.%03d : %s%n", no, s);
+		if (null != model) {
+			int no = model.getGroupNo() + 1;
+			String s = model.getGroupName();
+			return String.format("No.%03d : %s%n", no, s);
+		} else {
+			return "";
+		}
 	}
 
 	private JButton getBackButton() {
