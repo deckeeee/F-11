@@ -66,7 +66,11 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 	public GraphMainPanel(GraphProperties graphProperties) {
 		super(new BorderLayout());
 		this.graphProperties = graphProperties;
-		createColleagus();
+		if (graphProperties.getSeriesGroups().isEmpty()) {
+			graphToolBar = new GraphToolBar(this, graphProperties);
+		} else {
+			createColleagus();
+		}
 	}
 
 	private void createColleagus() {
@@ -80,18 +84,17 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		seriesModel = new SeriesTableModel(graphProperties);
 		graphView.setSeriesMaxCount(seriesModel.getMaxRow());
 		seriesModel.addTableModelListener(new ChangeTableModelListener(
-			graphView));
-		graphView.addPropertyChangeListener(
-			GraphView.GRAPH_CLICKED_CHANGE,
-			new GraphClickedListener(seriesModel));
+				graphView));
+		graphView.addPropertyChangeListener(GraphView.GRAPH_CLICKED_CHANGE,
+				new GraphClickedListener(seriesModel));
 		seriesTable = new SeriesTable(seriesModel, this, graphProperties);
 		seriesPane = new JScrollPane(seriesTable);
 		seriesPane.setPreferredSize(new Dimension(
-			graphView.getPreferredSize().width,
-			Math.round(seriesTable.getRowHeight()
-				* MAX_ROW_COUNT
-				+ seriesTable.getRowMargin()
-				* 2.5F)));
+				graphView.getPreferredSize().width, Math.round(seriesTable
+						.getRowHeight()
+					* MAX_ROW_COUNT
+					+ seriesTable.getRowMargin()
+					* 2.5F)));
 		JPanel northPanel = new JPanel(new BorderLayout());
 		graphToolBar = new GraphToolBar(this, graphProperties);
 		northPanel.add(seriesPane, BorderLayout.CENTER);
@@ -99,9 +102,7 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		add(centerPanel, BorderLayout.CENTER);
 		add(scrollBar, BorderLayout.SOUTH);
 		graphModel.setLogName(graphProperties
-			.getHorizontalScaleButtonProperty()
-			.get(0)
-			.getLogName());
+				.getHorizontalScaleButtonProperty().get(0).getLogName());
 		visibleSet();
 	}
 
@@ -149,15 +150,8 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 	}
 
 	public GraphChangeEvent getGraphChangeEvent() {
-		return new GraphChangeEvent(
-			this,
-			graphView,
-			graphModel,
-			graphProperties,
-			scrollBar,
-			statusBar,
-			seriesTable,
-			seriesModel);
+		return new GraphChangeEvent(this, graphView, graphModel,
+				graphProperties, scrollBar, statusBar, seriesTable, seriesModel);
 	}
 
 	public JComponent getToolBar() {
@@ -175,7 +169,8 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		graphProperties.removePropertyChangeListeners();
 		graphModel.removePropertyChangeListeners();
 		graphModel.shutdown();
-		for (PropertyChangeListener listener : graphView.getPropertyChangeListeners()) {
+		for (PropertyChangeListener listener : graphView
+				.getPropertyChangeListeners()) {
 			graphView.removePropertyChangeListener(listener);
 		}
 	}
@@ -213,9 +208,8 @@ public class GraphMainPanel extends JPanel implements Mediator, Service {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				JFrame f = new JFrame("トレンドグラフテスト");
-				f.add(
-					new GraphMainPanel(new GraphProperties()),
-					BorderLayout.CENTER);
+				f.add(new GraphMainPanel(new GraphProperties()),
+						BorderLayout.CENTER);
 				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				f.pack();
 				f.setVisible(true);

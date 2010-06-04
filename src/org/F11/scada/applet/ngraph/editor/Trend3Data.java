@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor;
@@ -30,9 +30,9 @@ import org.F11.scada.applet.ngraph.HorizontalScaleButtonProperty;
 
 /**
  * ページ定義のトレンドグラフプロパティー
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class Trend3Data implements Serializable {
 	private static final long serialVersionUID = -7411129957549137491L;
@@ -54,7 +54,7 @@ public class Trend3Data implements Serializable {
 	private String backGround;
 	private String verticalScaleColor;
 	private String pagefile;
-	private List<SeriesData> seriesDatas;
+	private List<SeriesData> seriesDatas = new ArrayList<SeriesData>();
 	private String seriesColors;
 	/** 横スケール変更ボタンのプロパティー */
 	private List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties;
@@ -113,7 +113,7 @@ public class Trend3Data implements Serializable {
 	}
 
 	public void setHorizontalForSelectSpanMode(
-			Integer horizontalForSelectSpanMode) {
+		Integer horizontalForSelectSpanMode) {
 		this.horizontalForSelectSpanMode = horizontalForSelectSpanMode;
 	}
 
@@ -222,9 +222,6 @@ public class Trend3Data implements Serializable {
 	}
 
 	public void addSeriesData(SeriesData seriesData) {
-		if (null == this.seriesDatas) {
-			this.seriesDatas = new ArrayList<SeriesData>();
-		}
 		this.seriesDatas.add(seriesData);
 	}
 
@@ -241,12 +238,12 @@ public class Trend3Data implements Serializable {
 	}
 
 	public void setHorizontalScaleButtonProperty(
-			List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties) {
+		List<HorizontalScaleButtonProperty> horizontalScaleButtonProperties) {
 		this.horizontalScaleButtonProperties = horizontalScaleButtonProperties;
 	}
 
 	public void addHorizontalScaleButtonProperty(
-			HorizontalScaleButtonProperty property) {
+		HorizontalScaleButtonProperty property) {
 		if (null == horizontalScaleButtonProperties) {
 			horizontalScaleButtonProperties =
 				new ArrayList<HorizontalScaleButtonProperty>();
@@ -333,19 +330,16 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute("y", y));
 		sb.append(getAttribute("width", width));
 		sb.append(getAttribute("height", height));
-		sb.append(getAttribute(
-			"horizontalForAllSpanMode",
-			horizontalForAllSpanMode));
-		sb.append(getAttribute(
-			"horizontalForSelectSpanMode",
-			horizontalForSelectSpanMode));
+		sb.append(getAttribute("horizontalForAllSpanMode",
+				horizontalForAllSpanMode));
+		sb.append(getAttribute("horizontalForSelectSpanMode",
+				horizontalForSelectSpanMode));
 		sb.append(getAttribute("dateFormat", dateFormat));
 		sb.append(getAttribute("timeFormat", timeFormat));
 		sb.append(getAttribute("verticalScale", verticalScale));
 		sb.append(getAttribute("verticalCount", verticalCount));
-		sb.append(getAttribute(
-			"compositionVerticalCount",
-			compositionVerticalCount));
+		sb.append(getAttribute("compositionVerticalCount",
+				compositionVerticalCount));
 		sb.append(getAttribute("scalePixcelSize", scalePixcelSize));
 		sb.append(getAttribute("insets", insets));
 		sb.append(getAttribute("font", font));
@@ -361,9 +355,8 @@ public class Trend3Data implements Serializable {
 		sb.append(getAttribute("visibleScroolbar", isVisibleScroolbar));
 		sb.append(getAttribute("visibleReferenceLine", isVisibleReferenceLine));
 		sb
-			.append(getAttribute(
-				"visibleVerticalString",
-				isVisibleVerticalString));
+				.append(getAttribute("visibleVerticalString",
+						isVisibleVerticalString));
 		sb.append(getAttribute("compositionMode", isCompositionMode));
 		sb.append(getAttribute("allSpanDisplayMode", isAllSpanDisplayMode));
 		sb.append(">\n");
