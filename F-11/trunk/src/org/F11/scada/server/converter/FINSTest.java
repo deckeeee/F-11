@@ -64,6 +64,9 @@ public class FINSTest extends TestCase {
 			public String getPlcIpAddress() {
 				return null;
 			}
+			public String getPlcIpAddress2() {
+				return null;
+			}
 			public int getPlcPortNo() {
 				return 0;
 			}

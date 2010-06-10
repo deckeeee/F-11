@@ -121,4 +121,10 @@ public interface Environment {
 	 * @return ホストのホストアドレス
 	 */
 	public int getHostAddress();
+
+	/**
+	 * デバイスのIPアドレス(二重化用)を返します。
+	 * @return デバイスのIPアドレス
+	 */
+	public String getPlcIpAddress2();
 }

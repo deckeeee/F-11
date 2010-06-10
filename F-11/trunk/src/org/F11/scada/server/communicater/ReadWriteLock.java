@@ -42,7 +42,7 @@ public final class ReadWriteLock {
 	/** ライトロック */
 	private boolean writing = false;
 	/** 解除待ちスレッドのリスト */
-	private LinkedList waitingList = new LinkedList();
+	private LinkedList<Thread> waitingList = new LinkedList<Thread>();
 
 	/**
 	 * 読込みロック取得

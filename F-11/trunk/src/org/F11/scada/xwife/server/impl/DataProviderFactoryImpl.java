@@ -42,6 +42,7 @@ import org.F11.scada.xwife.explorer.ExplorerElement;
 import org.F11.scada.xwife.server.DataProviderFactory;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.F11.scada.xwife.server.communicater.EnvironmentPostgreSQL;
+import org.F11.scada.xwife.server.communicater.EnvironmentPostgreSQL2;
 import org.F11.scada.xwife.server.communicater.EnvironmentPropertyFiles;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
@@ -81,9 +82,13 @@ public class DataProviderFactoryImpl implements DataProviderFactory, ExplorerEle
 		ArrayList providers = new ArrayList();
 		Environment[] environments = null;
 		String device = EnvironmentManager.get("/server/device", "");
+		String redundant = EnvironmentManager.get("/server/device/redundant", "false");
 		if (device != null && !"".equals(device)) {
 			logger.info("Device file : " + device);
 			environments = EnvironmentPropertyFiles.getEnvironments(device);
+		} else if (redundant != null && "true".equals(redundant)) {
+			logger.info("Device Data Base (support redundant plc)");
+			environments = EnvironmentPostgreSQL2.getEnvironments();
 		} else {
 			logger.info("Device Data Base");
 			environments = EnvironmentPostgreSQL.getEnvironments();

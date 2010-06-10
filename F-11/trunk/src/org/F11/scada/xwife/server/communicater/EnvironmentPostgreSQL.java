@@ -1,23 +1,17 @@
 package org.F11.scada.xwife.server.communicater;
 
 /*
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 import java.net.InetAddress;
@@ -50,7 +44,8 @@ public class EnvironmentPostgreSQL implements Environment {
 	private int hostPortNo;
 	private String hostIpAddress;
 
-	private EnvironmentPostgreSQL(ResultSet result) throws SQLException, UnknownHostException {
+	private EnvironmentPostgreSQL(ResultSet result) throws SQLException,
+			UnknownHostException {
 		deviceID = result.getString(1);
 		deviceKind = result.getString(2);
 		plcIpAddress = result.getString(3);
@@ -206,6 +201,14 @@ public class EnvironmentPostgreSQL implements Environment {
 		return Integer.parseInt(s.substring(s.lastIndexOf('.') + 1));
 	}
 
+	/**
+	 * デバイスのIPアドレス(二重化用)を返します。
+	 * @return デバイスのIPアドレス
+	 */
+	public String getPlcIpAddress2() {
+		return null;
+	}
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 
@@ -228,8 +231,9 @@ public class EnvironmentPostgreSQL implements Environment {
 		return buffer.toString();
 	}
 
-	public static Environment[] getEnvironments() throws SQLException, UnknownHostException {
-//		Class.forName("org.postgresql.Driver");
+	public static Environment[] getEnvironments() throws SQLException,
+			UnknownHostException {
+		// Class.forName("org.postgresql.Driver");
 		if (logger == null) {
 			logger = Logger.getLogger(EnvironmentPostgreSQL.class.getClass());
 		}
@@ -240,7 +244,8 @@ public class EnvironmentPostgreSQL implements Environment {
 
 		try {
 			con = ConnectionUtil.getConnection();
-			stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("SELECT ");
 			buffer.append("id, kind, ip, port, command, net, node, unit, watch_wait, timeout, retry_count, ");

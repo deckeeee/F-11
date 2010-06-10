@@ -1,21 +1,15 @@
 /*
- * Projrct    F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All
- * Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.server.communicater;
@@ -40,22 +34,16 @@ import org.F11.scada.server.event.WifeCommand;
 import org.apache.log4j.Logger;
 
 /**
- * @author hori
- * 
- * WifeCommandの集合を管理するクラスです。
+ * @author hori WifeCommandの集合を管理するクラスです。
  */
 public final class LinkageCommand {
 	private static Logger log = Logger.getLogger(LinkageCommand.class);
 
 	/**
-	 * 集合用コンパレータ
-	 * 
-	 * 他方の通信エリアを完全に包括する場合に同一と見なします。 通信定義集合の検索を高速化する為に使用します。
+	 * 集合用コンパレータ 他方の通信エリアを完全に包括する場合に同一と見なします。 通信定義集合の検索を高速化する為に使用します。
 	 */
-	private final Comparator comp = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			WifeCommand wc1 = (WifeCommand) o1;
-			WifeCommand wc2 = (WifeCommand) o2;
+	private final Comparator<WifeCommand> comp = new Comparator<WifeCommand>() {
+		public int compare(WifeCommand wc1, WifeCommand wc2) {
 			if (wc1.getDeviceID().compareTo(wc2.getDeviceID()) < 0)
 				return -1;
 			else if (wc1.getDeviceID().compareTo(wc2.getDeviceID()) > 0)
@@ -72,13 +60,11 @@ public final class LinkageCommand {
 				return 1;
 
 			if (wc1.getMemoryAddress() < wc2.getMemoryAddress()
-					&& wc1.getMemoryAddress() + wc1.getWordLength() < wc2
-							.getMemoryAddress()
+					&& wc1.getMemoryAddress() + wc1.getWordLength() < wc2.getMemoryAddress()
 							+ wc2.getWordLength())
 				return -1;
 			if (wc2.getMemoryAddress() < wc1.getMemoryAddress()
-					&& wc2.getMemoryAddress() + wc2.getWordLength() < wc1
-							.getMemoryAddress()
+					&& wc2.getMemoryAddress() + wc2.getWordLength() < wc1.getMemoryAddress()
 							+ wc1.getWordLength())
 				return 1;
 
@@ -87,7 +73,8 @@ public final class LinkageCommand {
 	};
 
 	/* 通信定義の集合 */
-	protected final SortedMap lk_commands = new TreeMap(comp);
+	protected final SortedMap<WifeCommand, DefineData> lk_commands = new TreeMap<WifeCommand, DefineData>(
+			comp);
 	/* コンバータ */
 	private final Converter converter;
 
@@ -119,30 +106,28 @@ public final class LinkageCommand {
 
 	/**
 	 * ホルダ通信定義のコレクションを集合に追加します。
-	 * 
 	 * @param defines 未ソート通信定義コレクション
 	 */
-	public void addDefine(Collection dh_commands) {
+	public void addDefine(Collection<WifeCommand> dh_commands) {
 		// 参照元でリストを利用していることがある為、コピーしたリストをソートして使用する。
-		ArrayList commands = new ArrayList(dh_commands);
+		ArrayList<WifeCommand> commands = new ArrayList<WifeCommand>(
+				dh_commands);
 		Collections.sort(commands, comp);
-		for (Iterator i = commands.iterator(); i.hasNext();) {
-			WifeCommand command = (WifeCommand) i.next();
+		for (Iterator<WifeCommand> i = commands.iterator(); i.hasNext();) {
+			WifeCommand command = i.next();
 			addDefine(command);
 		}
 	}
 
 	/**
 	 * ホルダ通信定義を集合に追加します。
-	 * 
 	 * @param define 追加する通信定義
 	 */
 	public synchronized void addDefine(WifeCommand dh_command) {
 		// 既存の集合から一致する要素を検索
 		if (lk_commands.keySet().contains(dh_command)) {
-			WifeCommand wc = (WifeCommand) lk_commands.tailMap(dh_command)
-					.firstKey();
-			DefineData df = (DefineData) lk_commands.get(wc);
+			WifeCommand wc = lk_commands.tailMap(dh_command).firstKey();
+			DefineData df = lk_commands.get(wc);
 			df.addCommand(dh_command);
 			// 一致した要素のWordLengthが小さい場合がある
 			if (wc.getWordLength() < dh_command.getWordLength()) {
@@ -157,13 +142,13 @@ public final class LinkageCommand {
 		WifeCommand wc2 = null;
 		WifeCommand wc1e = null;
 		WifeCommand wc2e = null;
-		SortedMap head = lk_commands.headMap(dh_command);
+		SortedMap<WifeCommand, DefineData> head = lk_commands.headMap(dh_command);
 		if (!head.isEmpty()) {
 			// キーより小さい要素を作成する。拡張に失敗した場合 null値。
 			wc1 = (WifeCommand) head.lastKey();
 			wc1e = createExpandedCommand(wc1, dh_command);
 		}
-		SortedMap tail = lk_commands.tailMap(dh_command);
+		SortedMap<WifeCommand, DefineData> tail = lk_commands.tailMap(dh_command);
 		if (!tail.isEmpty()) {
 			// キーより大きい要素を作成する。拡張に失敗した場合 null値。
 			wc2 = (WifeCommand) tail.firstKey();
@@ -199,13 +184,13 @@ public final class LinkageCommand {
 		lk_commands.put(dh_command, df);
 	}
 
-	public void removeDefine(Collection dh_commands) {
-//		ArrayList commands = new ArrayList(dh_commands);
-//		Collections.sort(commands, comp);
-//		for (Iterator i = commands.iterator(); i.hasNext();) {
-//			WifeCommand command = (WifeCommand) i.next();
-//			removeDefine(command);
-//		}
+	public void removeDefine(Collection<WifeCommand> dh_commands) {
+		// ArrayList commands = new ArrayList(dh_commands);
+		// Collections.sort(commands, comp);
+		// for (Iterator i = commands.iterator(); i.hasNext();) {
+		// WifeCommand command = (WifeCommand) i.next();
+		// removeDefine(command);
+		// }
 	}
 
 	public void removeDefine(WifeCommand dh_command) {
@@ -218,14 +203,14 @@ public final class LinkageCommand {
 	/**
 	 * ホルダ通信定義のコレクションを含む通信要求リストを抽出します。 既存の集合から指定の通信定義を含む通信定義を検索し、コレクションします。
 	 * 集合にない通信定義は、そのまま追加します。
-	 * 
 	 * @param commands 抽出キーになる通信定義
 	 * @return 抽出した通信定義のコレクション
 	 */
-	public synchronized Collection getDefines(Collection dh_commands) {
-		SortedSet reqtbl = new TreeSet(comp);
-		for (Iterator it = dh_commands.iterator(); it.hasNext();) {
-			WifeCommand dh_comm = (WifeCommand) it.next();
+	public synchronized Collection<WifeCommand> getDefines(
+			Collection<WifeCommand> dh_commands) {
+		SortedSet<WifeCommand> reqtbl = new TreeSet<WifeCommand>(comp);
+		for (Iterator<WifeCommand> it = dh_commands.iterator(); it.hasNext();) {
+			WifeCommand dh_comm = it.next();
 
 			// 作成済みの通信要求リストを検索
 			if (reqtbl.contains(dh_comm)) {
@@ -236,8 +221,7 @@ public final class LinkageCommand {
 			}
 			// 既存の集合を検索
 			if (lk_commands.keySet().contains(dh_comm)) {
-				WifeCommand wc = (WifeCommand) lk_commands.tailMap(dh_comm)
-						.firstKey();
+				WifeCommand wc = lk_commands.tailMap(dh_comm).firstKey();
 				if (dh_comm.getWordLength() <= wc.getWordLength()) {
 					reqtbl.add(lk_commands.tailMap(dh_comm).firstKey());
 					continue;
@@ -251,16 +235,14 @@ public final class LinkageCommand {
 
 	/**
 	 * 通信結果で前回値を更新します。
-	 * 
 	 * @param command 通信定義のキー
 	 * @param readData 通信結果
 	 * @return ホルダ値を更新する必要がある場合は true
 	 */
-	public synchronized boolean updateDefine(
-			WifeCommand command,
+	public synchronized boolean updateDefine(WifeCommand command,
 			ByteBuffer readData) {
 		// 集合にないコマンドの通信結果は常にホルダ値更新
-		DefineData df = (DefineData) lk_commands.get(command);
+		DefineData df = lk_commands.get(command);
 		if (df == null)
 			return true;
 
@@ -276,12 +258,12 @@ public final class LinkageCommand {
 
 	/**
 	 * 集合にリンクされたホルダ通信定義のコレクションを返します。
-	 * 
 	 * @param command 集合のキー
 	 * @return ホルダ通信定義のコレクション。
 	 */
-	public synchronized Collection getHolderCommands(WifeCommand command) {
-		DefineData df = (DefineData) lk_commands.get(command);
+	public synchronized Collection<WifeCommand> getHolderCommands(
+			WifeCommand command) {
+		DefineData df = lk_commands.get(command);
 		if (df == null) {
 			throw new IllegalArgumentException("not find LinkageCommand."
 					+ command.toString());
@@ -305,15 +287,14 @@ public final class LinkageCommand {
 
 	/**
 	 * 通信回数の文字列表現を返します。
-	 * 
 	 * @return
 	 */
 	public synchronized String getCountString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Communication counter\n");
-		for (Iterator it = lk_commands.keySet().iterator(); it.hasNext();) {
-			WifeCommand wc = (WifeCommand) it.next();
-			DefineData df = (DefineData) lk_commands.get(wc);
+		for (Iterator<WifeCommand> it = lk_commands.keySet().iterator(); it.hasNext();) {
+			WifeCommand wc = it.next();
+			DefineData df = lk_commands.get(wc);
 			sb.append(wc.toString()).append("\n");
 			sb.append(df.getCountString());
 			sb.append("------------------------------\n");
@@ -332,8 +313,7 @@ public final class LinkageCommand {
 			return null;
 		}
 		if (dest.getMemoryAddress() < src.getMemoryAddress()
-				&& src.getMemoryAddress() + src.getWordLength() <= dest
-						.getMemoryAddress()
+				&& src.getMemoryAddress() + src.getWordLength() <= dest.getMemoryAddress()
 						+ converter.getPacketMaxSize(src)) {
 			long len = src.getMemoryAddress() + src.getWordLength()
 					- dest.getMemoryAddress();
@@ -343,8 +323,7 @@ public final class LinkageCommand {
 
 			return src.createCommand(dest.getMemoryAddress(), (int) len);
 		} else if (src.getMemoryAddress() <= dest.getMemoryAddress()
-				&& dest.getMemoryAddress() + dest.getWordLength() <= src
-						.getMemoryAddress()
+				&& dest.getMemoryAddress() + dest.getWordLength() <= src.getMemoryAddress()
 						+ converter.getPacketMaxSize(src)) {
 			long len = dest.getMemoryAddress() + dest.getWordLength()
 					- src.getMemoryAddress();
@@ -362,7 +341,7 @@ public final class LinkageCommand {
 	 */
 	private final class DefineData {
 		/* ホルダ通信定義への参照 */
-		private final Collection commands = new HashSet();
+		private final Collection<WifeCommand> commands = new HashSet<WifeCommand>();
 		/* 通信定義の前回値 */
 		private byte[] oldData = new byte[0];
 
@@ -390,8 +369,8 @@ public final class LinkageCommand {
 		/*
 		 * 
 		 */
-		public Collection getDefines() {
-			return new HashSet(commands);
+		public Collection<WifeCommand> getDefines() {
+			return new HashSet<WifeCommand>(commands);
 		}
 
 		/*

@@ -1,21 +1,15 @@
 /*
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.server.communicater;
@@ -81,74 +75,68 @@ public class PortSelectorTest extends TestCase {
 	public void testDatagramChannel() throws Exception {
 		PortSelector selector = new PortSelector();
 
-		DatagramChannel channel1 =
-			SelectorProvider.provider().openDatagramChannel();
+		DatagramChannel channel1 = SelectorProvider.provider().openDatagramChannel();
 		channel1.configureBlocking(false);
 		channel1.socket().setBroadcast(true);
 		channel1.socket().bind(
-			new InetSocketAddress(InetAddress.getLocalHost(), 9601));
+				new InetSocketAddress(InetAddress.getLocalHost(), 9601));
 		UdpListener listener1 = new UdpListener(selector);
 		listener1.channel = channel1;
 		selector.addListener(listener1);
 
-		DatagramChannel channel2 =
-			SelectorProvider.provider().openDatagramChannel();
+		DatagramChannel channel2 = SelectorProvider.provider().openDatagramChannel();
 		channel2.configureBlocking(false);
 		channel2.socket().setBroadcast(true);
 		channel2.socket().bind(
-			new InetSocketAddress(InetAddress.getLocalHost(), 9602));
+				new InetSocketAddress(InetAddress.getLocalHost(), 9602));
 		UdpListener listener2 = new UdpListener(selector);
 		listener2.channel = channel2;
 		selector.addListener(listener2);
 
 		// listener1 から listener2 へ送信
-		listener1.target =
-			new InetSocketAddress(InetAddress.getLocalHost(), 9602);
-		listener1.senddata = new byte[] { 1, 2, 3, 4, 5, 6 };
+		listener1.target = new InetSocketAddress(InetAddress.getLocalHost(),
+				9602);
+		listener1.senddata = new byte[]{1, 2, 3, 4, 5, 6};
 		selector.setInterestOps(listener1, SelectionKey.OP_WRITE);
 		Thread.sleep(100);
 		assertEquals(0, listener1.readCnt);
 		assertEquals(1, listener1.writeCnt);
 		assertEquals(1, listener2.readCnt);
 		assertEquals(0, listener2.writeCnt);
-		assertEquals(
-			"010203040506",
-			WifeUtilities.toString(listener2.recvdata));
+		assertEquals("010203040506", WifeUtilities.toString(listener2.recvdata));
 
 		// listener2 から listener1 へ送信
-		listener2.target =
-			new InetSocketAddress(InetAddress.getLocalHost(), 9601);
-		listener2.senddata = new byte[] { 6, 5, 4, 3, 2, 1 };
+		listener2.target = new InetSocketAddress(InetAddress.getLocalHost(),
+				9601);
+		listener2.senddata = new byte[]{6, 5, 4, 3, 2, 1};
 		selector.setInterestOps(listener2, SelectionKey.OP_WRITE);
 		Thread.sleep(100);
 		assertEquals(1, listener1.readCnt);
 		assertEquals(1, listener1.writeCnt);
 		assertEquals(1, listener2.readCnt);
 		assertEquals(1, listener2.writeCnt);
-		assertEquals(
-			"060504030201",
-			WifeUtilities.toString(listener1.recvdata));
+		assertEquals("060504030201", WifeUtilities.toString(listener1.recvdata));
 
 		// listener1 から listener2（ブロードキャスト） へ送信
 		listener1.target = new InetSocketAddress("255.255.255.255", 9602);
-		listener1.senddata = new byte[] { 1, 2, 3, 4, 5 };
+		listener1.senddata = new byte[]{1, 2, 3, 4, 5};
 		selector.setInterestOps(listener1, SelectionKey.OP_WRITE);
 		Thread.sleep(100);
 		assertEquals(1, listener1.readCnt);
 		assertEquals(2, listener1.writeCnt);
-		assertEquals(1, listener2.readCnt);
+		assertEquals(2, listener2.readCnt);
 		assertEquals(1, listener2.writeCnt);
-		assertEquals("010203040506", WifeUtilities.toString(listener2.recvdata));
+		assertEquals("0102030405", WifeUtilities.toString(listener2.recvdata));
 
 		// listener2 から listener2 へ送信
-		listener2.target =
-			new InetSocketAddress(InetAddress.getLocalHost(), 9602);
-		listener2.senddata = new byte[] { 5, 4, 3, 2, 1 };
+		listener2.target = new InetSocketAddress(InetAddress.getLocalHost(),
+				9602);
+		listener2.senddata = new byte[]{5, 4, 3, 2, 1};
 		selector.setInterestOps(listener2, SelectionKey.OP_WRITE);
 		Thread.sleep(100);
 		assertEquals(1, listener1.readCnt);
 		assertEquals(2, listener1.writeCnt);
-		assertEquals(2, listener2.readCnt);
+		assertEquals(3, listener2.readCnt);
 		assertEquals(2, listener2.writeCnt);
 		assertEquals("0504030201", WifeUtilities.toString(listener2.recvdata));
 
@@ -183,24 +171,20 @@ public class PortSelectorTest extends TestCase {
 		assertEquals(0, listener1.writeCnt);
 
 		// listener1 から サーバー へ送信
-		listener1.senddata = new byte[] { 1, 2, 3, 4, 5, 6 };
+		listener1.senddata = new byte[]{1, 2, 3, 4, 5, 6};
 		selector.setInterestOps(listener1, SelectionKey.OP_WRITE);
 		Thread.sleep(100);
 		assertEquals(1, listener1.writeCnt);
 		assertEquals(1, listener1.readCnt);
-		assertEquals(
-			"010203040506",
-			WifeUtilities.toString(listener1.recvdata));
+		assertEquals("010203040506", WifeUtilities.toString(listener1.recvdata));
 
 		// listener1 から サーバー へ送信
-		listener1.senddata = new byte[] { 6, 5, 4, 3, 2, 1 };
+		listener1.senddata = new byte[]{6, 5, 4, 3, 2, 1};
 		selector.setInterestOps(listener1, SelectionKey.OP_WRITE);
 		Thread.sleep(100);
 		assertEquals(2, listener1.writeCnt);
 		assertEquals(2, listener1.readCnt);
-		assertEquals(
-			"060504030201",
-			WifeUtilities.toString(listener1.recvdata));
+		assertEquals("060504030201", WifeUtilities.toString(listener1.recvdata));
 
 		assertTrue(listener1.channel.isOpen());
 
@@ -216,10 +200,10 @@ public class PortSelectorTest extends TestCase {
 	public void testReOpen() throws Exception {
 		PortSelector selector = new PortSelector();
 
-		InetSocketAddress local9600 = new InetSocketAddress(InetAddress
-				.getLocalHost(), 9600);
-		InetSocketAddress local9601 = new InetSocketAddress(InetAddress
-				.getLocalHost(), 9601);
+		InetSocketAddress local9600 = new InetSocketAddress(
+				InetAddress.getLocalHost(), 9600);
+		InetSocketAddress local9601 = new InetSocketAddress(
+				InetAddress.getLocalHost(), 9601);
 		UdpPortChannel port1 = new UdpPortChannel(local9600, selector);
 		UdpPortChannel port2 = new UdpPortChannel(local9601, selector);
 
@@ -266,8 +250,8 @@ public class PortSelectorTest extends TestCase {
 			recvbuffer.get(recvdata);
 			readCnt++;
 		}
-		public synchronized void onWrite()
-			throws IOException, InterruptedException {
+		public synchronized void onWrite() throws IOException,
+				InterruptedException {
 			channel.send(ByteBuffer.wrap(senddata), target);
 			senddata = null;
 			target = null;
@@ -280,8 +264,8 @@ public class PortSelectorTest extends TestCase {
 		}
 
 		// @see org.F11.scada.server.communicater.PortListener#open()
-		public SelectableChannel open()
-			throws IOException, InterruptedException {
+		public SelectableChannel open() throws IOException,
+				InterruptedException {
 			selector.setInterestOps(this, SelectionKey.OP_READ);
 			return channel;
 		}
@@ -326,8 +310,8 @@ public class PortSelectorTest extends TestCase {
 				readCnt++;
 			}
 		}
-		public synchronized void onWrite()
-			throws IOException, InterruptedException {
+		public synchronized void onWrite() throws IOException,
+				InterruptedException {
 			channel.write(ByteBuffer.wrap(senddata));
 			senddata = null;
 			writeCnt++;
@@ -340,14 +324,14 @@ public class PortSelectorTest extends TestCase {
 		}
 
 		// @see org.F11.scada.server.communicater.PortListener#open()
-		public SelectableChannel open()
-			throws IOException, InterruptedException {
+		public SelectableChannel open() throws IOException,
+				InterruptedException {
 			channel = SelectorProvider.provider().openSocketChannel();
 			channel.configureBlocking(false);
 			channel.socket().setKeepAlive(true);
 
-			channel.connect(
-				new InetSocketAddress(InetAddress.getLocalHost(), 5001));
+			channel.connect(new InetSocketAddress(InetAddress.getLocalHost(),
+					5001));
 
 			selector.setInterestOps(this, SelectionKey.OP_CONNECT);
 			return channel;
@@ -370,13 +354,12 @@ public class PortSelectorTest extends TestCase {
 			this.port = port;
 			selector = SelectorProvider.provider().openSelector();
 
-			serverSocketChannel =
-				SelectorProvider.provider().openServerSocketChannel();
+			serverSocketChannel = SelectorProvider.provider().openServerSocketChannel();
 
 			serverSocketChannel.configureBlocking(false);
 
-			InetSocketAddress address =
-				new InetSocketAddress(InetAddress.getLocalHost(), port);
+			InetSocketAddress address = new InetSocketAddress(
+					InetAddress.getLocalHost(), port);
 			serverSocketChannel.socket().bind(address);
 
 			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
@@ -395,7 +378,7 @@ public class PortSelectorTest extends TestCase {
 		}
 
 		private void accept(ServerSocketChannel serverSocketChannel)
-			throws IOException {
+				throws IOException {
 			SocketChannel socketChannel = serverSocketChannel.accept();
 			socketChannel.configureBlocking(false);
 			socketChannel.register(selector, SelectionKey.OP_READ);
@@ -419,21 +402,19 @@ public class PortSelectorTest extends TestCase {
 			try {
 				System.out.println("server:start " + port);
 				while (selector.select() > 0) {
-					Iterator keyIterator = selector.selectedKeys().iterator();
+					Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
 
 					while (keyIterator.hasNext()) {
-						SelectionKey key = (SelectionKey) keyIterator.next();
+						SelectionKey key = keyIterator.next();
 						keyIterator.remove();
 
 						if (key.isAcceptable()) {
 							// accept
-							ServerSocketChannel serverSocketChannel =
-								(ServerSocketChannel) key.channel();
+							ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 							accept(serverSocketChannel);
 						} else if (key.isReadable()) {
 							// read
-							SocketChannel socketChannel =
-								(SocketChannel) key.channel();
+							SocketChannel socketChannel = (SocketChannel) key.channel();
 							sendBack(socketChannel);
 						}
 					}

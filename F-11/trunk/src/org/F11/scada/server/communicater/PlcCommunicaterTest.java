@@ -1,21 +1,15 @@
 /*
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.server.communicater;
@@ -109,6 +103,9 @@ public class PlcCommunicaterTest extends TestCase {
 			public String getPlcIpAddress() {
 				return "127.0.0.1";
 			}
+			public String getPlcIpAddress2() {
+				return null;
+			}
 			public int getPlcPortNo() {
 				return 9600;
 			}
@@ -161,6 +158,9 @@ public class PlcCommunicaterTest extends TestCase {
 			}
 			public String getPlcIpAddress() {
 				return "127.0.0.1";
+			}
+			public String getPlcIpAddress2() {
+				return null;
 			}
 			public int getPlcPortNo() {
 				return 5001;
@@ -218,39 +218,34 @@ public class PlcCommunicaterTest extends TestCase {
 
 	public void testSyncWriteUdp() throws Exception {
 		WifeCommand comm = new WifeCommand("P1", 0, 0, 0, 0, 1);
-		Map wcommands = new HashMap();
+		Map<WifeCommand, byte[]> wcommands = new HashMap<WifeCommand, byte[]>();
 		wcommands.put(comm, WifeUtilities.toByteArray("1234"));
 		commUdp.syncWrite(wcommands);
 	}
 
 	public void testSyncReadUdp() throws Exception {
 		WifeCommand comm = new WifeCommand("P1", 0, 0, 0, 0, 1);
-		List commands = new ArrayList();
+		List<WifeCommand> commands = new ArrayList<WifeCommand>();
 		commands.add(comm);
 		commUdp.addReadCommand(commands);
-		Map response = commUdp.syncRead(commands);
+		Map<WifeCommand, byte[]> response = commUdp.syncRead(commands);
 		assertEquals(1, response.size());
-		assertEquals(
-			"1234",
-			WifeUtilities.toString((byte[]) response.get(comm)));
+		assertEquals("1234", WifeUtilities.toString(response.get(comm)));
 	}
 
 	public void testSyncReadUdp2() throws Exception {
 		WifeCommand comm1 = new WifeCommand("P1", 0, 0, 0, 0, 4);
 		WifeCommand comm2 = new WifeCommand("P1", 0, 0, 0, 1, 1);
-		List commands = new ArrayList();
+		List<WifeCommand> commands = new ArrayList<WifeCommand>();
 
 		commands.add(comm1);
 		commands.add(comm2);
 		commUdp.addReadCommand(commands);
-		Map response = commUdp.syncRead(commands);
+		Map<WifeCommand, byte[]> response = commUdp.syncRead(commands);
 		assertEquals(2, response.size());
-		assertEquals(
-			"1234567887654321",
-			WifeUtilities.toString((byte[]) response.get(comm1)));
-		assertEquals(
-			"5678",
-			WifeUtilities.toString((byte[]) response.get(comm2)));
+		assertEquals("1234567887654321",
+				WifeUtilities.toString(response.get(comm1)));
+		assertEquals("5678", WifeUtilities.toString(response.get(comm2)));
 
 		WifeCommand comm3 = new WifeCommand("P1", 0, 0, 0, 2, 1);
 		commands.clear();
@@ -258,14 +253,12 @@ public class PlcCommunicaterTest extends TestCase {
 		commUdp.addReadCommand(commands);
 		response = commUdp.syncRead(commands);
 		assertEquals(1, response.size());
-		assertEquals(
-			"8765",
-			WifeUtilities.toString((byte[]) response.get(comm3)));
+		assertEquals("8765", WifeUtilities.toString(response.get(comm3)));
 	}
 
 	public void testSyncErrUdp() throws Exception {
 		WifeCommand comm = new WifeCommand("P1", 0, 0, 10, 0, 1);
-		List commands = new ArrayList();
+		List<WifeCommand> commands = new ArrayList<WifeCommand>();
 		commands.add(comm);
 		commUdp.addReadCommand(commands);
 		try {
@@ -277,39 +270,34 @@ public class PlcCommunicaterTest extends TestCase {
 
 	public void testSyncWriteTcp() throws Exception {
 		WifeCommand comm = new WifeCommand("P2", 0, 0, 0, 0, 1);
-		Map wcommands = new HashMap();
+		Map<WifeCommand, byte[]> wcommands = new HashMap<WifeCommand, byte[]>();
 		wcommands.put(comm, WifeUtilities.toByteArray("1234"));
 		commTcp.syncWrite(wcommands);
 	}
 
 	public void testSyncReadTcp() throws Exception {
 		WifeCommand comm = new WifeCommand("P2", 0, 0, 0, 0, 1);
-		List commands = new ArrayList();
+		List<WifeCommand> commands = new ArrayList<WifeCommand>();
 		commands.add(comm);
 		commTcp.addReadCommand(commands);
-		Map response = commTcp.syncRead(commands);
+		Map<WifeCommand, byte[]> response = commTcp.syncRead(commands);
 		assertEquals(1, response.size());
-		assertEquals(
-			"1234",
-			WifeUtilities.toString((byte[]) response.get(comm)));
+		assertEquals("1234", WifeUtilities.toString(response.get(comm)));
 	}
 
 	public void testSyncReadTcp2() throws Exception {
 		WifeCommand comm1 = new WifeCommand("P2", 0, 0, 0, 0, 4);
 		WifeCommand comm2 = new WifeCommand("P2", 0, 0, 0, 1, 1);
-		List commands = new ArrayList();
+		List<WifeCommand> commands = new ArrayList<WifeCommand>();
 
 		commands.add(comm1);
 		commands.add(comm2);
 		commTcp.addReadCommand(commands);
-		Map response = commTcp.syncRead(commands);
+		Map<WifeCommand, byte[]> response = commTcp.syncRead(commands);
 		assertEquals(2, response.size());
-		assertEquals(
-			"1234567887654321",
-			WifeUtilities.toString((byte[]) response.get(comm1)));
-		assertEquals(
-			"5678",
-			WifeUtilities.toString((byte[]) response.get(comm2)));
+		assertEquals("1234567887654321",
+				WifeUtilities.toString(response.get(comm1)));
+		assertEquals("5678", WifeUtilities.toString(response.get(comm2)));
 
 		WifeCommand comm3 = new WifeCommand("P2", 0, 0, 0, 2, 1);
 		commands.clear();
@@ -317,14 +305,12 @@ public class PlcCommunicaterTest extends TestCase {
 		commTcp.addReadCommand(commands);
 		response = commTcp.syncRead(commands);
 		assertEquals(1, response.size());
-		assertEquals(
-			"8765",
-			WifeUtilities.toString((byte[]) response.get(comm3)));
+		assertEquals("8765", WifeUtilities.toString(response.get(comm3)));
 	}
 
 	public void testSyncErrTcp() throws Exception {
 		WifeCommand comm = new WifeCommand("P2", 0, 0, 10, 0, 1);
-		List commands = new ArrayList();
+		List<WifeCommand> commands = new ArrayList<WifeCommand>();
 		commands.add(comm);
 		commTcp.addReadCommand(commands);
 		try {
@@ -341,18 +327,15 @@ public class PlcCommunicaterTest extends TestCase {
 		private volatile Thread thread;
 		private ByteBuffer recvBuffer = ByteBuffer.allocate(2048);
 		private ByteBuffer sendBuffer = ByteBuffer.allocate(2048);
-		private Map resMap = new HashMap();
+		private Map<String, byte[]> resMap = new HashMap<String, byte[]>();
 
 		public UdpServer() throws InterruptedException {
-			resMap.put(
-				"01028200000000011234",
-				WifeUtilities.toByteArray("01020000"));
-			resMap.put(
-				"0101820000000001",
-				WifeUtilities.toByteArray("010100001234"));
-			resMap.put(
-				"0101820000000004",
-				WifeUtilities.toByteArray("010100001234567887654321"));
+			resMap.put("01028200000000011234",
+					WifeUtilities.toByteArray("01020000"));
+			resMap.put("0101820000000001",
+					WifeUtilities.toByteArray("010100001234"));
+			resMap.put("0101820000000004",
+					WifeUtilities.toByteArray("010100001234567887654321"));
 			startup();
 		}
 
@@ -387,17 +370,19 @@ public class PlcCommunicaterTest extends TestCase {
 					try {
 						target = channel.receive(recvBuffer);
 						recvBuffer.flip();
-						System.out.println(
-							"server recv:"
+						System.out.println("server recv:"
 								+ WifeUtilities.toString(recvBuffer));
 					} catch (ClosedByInterruptException e) {
 						break;
 					}
+					if (recvBuffer.remaining() < 10) {
+						System.out.println("server error:recv is short!!");
+						continue;
+					}
 					byte[] recvData = new byte[recvBuffer.remaining() - 10];
 					recvBuffer.position(10);
 					recvBuffer.get(recvData);
-					byte[] sendData =
-						(byte[]) resMap.get(WifeUtilities.toString(recvData));
+					byte[] sendData = resMap.get(WifeUtilities.toString(recvData));
 					if (sendData != null) {
 						Thread.yield();
 						sendBuffer.clear();
@@ -410,8 +395,7 @@ public class PlcCommunicaterTest extends TestCase {
 						sendBuffer.put(recvBuffer.get(5));
 						sendBuffer.put(recvBuffer.get(9));
 						sendBuffer.put(sendData).flip();
-						System.out.println(
-							"server send:"
+						System.out.println("server send:"
 								+ WifeUtilities.toString(sendBuffer));
 						channel.send(sendBuffer, target);
 					}
@@ -440,32 +424,27 @@ public class PlcCommunicaterTest extends TestCase {
 		private Selector selector;
 		private ServerSocketChannel serverSocketChannel;
 		private final int port;
-		private Map resMap = new HashMap();
+		private Map<String, byte[]> resMap = new HashMap<String, byte[]>();
 
 		private ByteBuffer recvBuffer = ByteBuffer.allocateDirect(1024);
 		private ByteBuffer sendBuffer = ByteBuffer.allocate(2048);
 
 		public TcpServer(int port) throws Exception {
-			resMap.put(
-				"01028200000000011234",
-				WifeUtilities.toByteArray("01020000"));
-			resMap.put(
-				"0101820000000001",
-				WifeUtilities.toByteArray("010100001234"));
-			resMap.put(
-				"0101820000000004",
-				WifeUtilities.toByteArray("010100001234567887654321"));
+			resMap.put("01028200000000011234",
+					WifeUtilities.toByteArray("01020000"));
+			resMap.put("0101820000000001",
+					WifeUtilities.toByteArray("010100001234"));
+			resMap.put("0101820000000004",
+					WifeUtilities.toByteArray("010100001234567887654321"));
 
 			this.port = port;
 			selector = SelectorProvider.provider().openSelector();
 
-			serverSocketChannel =
-				SelectorProvider.provider().openServerSocketChannel();
+			serverSocketChannel = SelectorProvider.provider().openServerSocketChannel();
 
 			serverSocketChannel.configureBlocking(false);
 
-			InetSocketAddress address =
-				new InetSocketAddress("127.0.0.1", port);
+			InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);
 			serverSocketChannel.socket().bind(address);
 
 			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
@@ -483,15 +462,15 @@ public class PlcCommunicaterTest extends TestCase {
 		}
 
 		private void accept(ServerSocketChannel serverSocketChannel)
-			throws IOException {
+				throws IOException {
 			SocketChannel socketChannel = serverSocketChannel.accept();
 			socketChannel.configureBlocking(false);
 			socketChannel.register(selector, SelectionKey.OP_READ);
 			System.out.println("server:connect.");
 		}
 
-		private void sendBack(SocketChannel socketChannel)
-			throws IOException, InterruptedException {
+		private void sendBack(SocketChannel socketChannel) throws IOException,
+				InterruptedException {
 			recvBuffer.clear();
 			if (socketChannel.read(recvBuffer) < 0) {
 				socketChannel.close();
@@ -504,8 +483,7 @@ public class PlcCommunicaterTest extends TestCase {
 			byte[] recvData = new byte[recvBuffer.remaining() - 10];
 			recvBuffer.position(10);
 			recvBuffer.get(recvData);
-			byte[] sendData =
-				(byte[]) resMap.get(WifeUtilities.toString(recvData));
+			byte[] sendData = resMap.get(WifeUtilities.toString(recvData));
 			if (sendData != null) {
 				sendBuffer.clear();
 				sendBuffer.put(WifeUtilities.toByteArray("c00002"));
@@ -517,8 +495,8 @@ public class PlcCommunicaterTest extends TestCase {
 				sendBuffer.put(recvBuffer.get(5));
 				sendBuffer.put(recvBuffer.get(9));
 				sendBuffer.put(sendData).flip();
-				System.out.println(
-					"server:" + WifeUtilities.toString(sendBuffer));
+				System.out.println("server:"
+						+ WifeUtilities.toString(sendBuffer));
 			} else {
 				System.out.println("server:no resp");
 			}
@@ -530,24 +508,22 @@ public class PlcCommunicaterTest extends TestCase {
 			try {
 				System.out.println("server:start " + port);
 				while (selector.select() > 0) {
-					Iterator keyIterator = selector.selectedKeys().iterator();
+					Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
 
 					while (keyIterator.hasNext()) {
-						SelectionKey key = (SelectionKey) keyIterator.next();
-						keyIterator.remove();
+						SelectionKey key = keyIterator.next();
 
 						if (key.isAcceptable()) {
 							// accept
-							ServerSocketChannel serverSocketChannel =
-								(ServerSocketChannel) key.channel();
+							ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 							accept(serverSocketChannel);
 						} else if (key.isReadable()) {
 							// read
-							SocketChannel socketChannel =
-								(SocketChannel) key.channel();
+							SocketChannel socketChannel = (SocketChannel) key.channel();
 							sendBack(socketChannel);
 						}
 					}
+					keyIterator.remove();
 				}
 				System.out.println("server:stop");
 			} catch (Exception e) {

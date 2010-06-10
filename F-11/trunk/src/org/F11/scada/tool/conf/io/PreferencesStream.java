@@ -130,6 +130,7 @@ public class PreferencesStream {
 			"/server/alarm/print/className",
 			"org.F11.scada.server.alarm.print.AlarmPrintService"));
 		pw.println(getXmlProp("/server/device", ""));
+		pw.println(getXmlProp("/server/device/redundant", "false"));
 		pw.println(getXmlProp("/server/FrameEditHandler", ""));
 		pw.println(getXmlProp(
 			"/server/autoprint",
