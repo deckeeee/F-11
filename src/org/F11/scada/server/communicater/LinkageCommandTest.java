@@ -1,21 +1,15 @@
 /*
- * Projrct    F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All
- * Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.server.communicater;
@@ -36,11 +30,10 @@ import org.F11.scada.server.event.WifeCommand;
 import org.apache.log4j.Logger;
 
 /**
- * @author user
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
+ * @author user To change this generated comment edit the template variable
+ *         "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to
+ *         Window>Preferences>Java>Code Generation.
  */
 public class LinkageCommandTest extends TestCase {
 	private static Logger log = Logger.getLogger(LinkageCommandTest.class);
@@ -52,7 +45,6 @@ public class LinkageCommandTest extends TestCase {
 
 	/**
 	 * Constructor for LinkageCommandTest.
-	 * 
 	 * @param arg0
 	 */
 	public LinkageCommandTest(String arg0) {
@@ -84,22 +76,22 @@ public class LinkageCommandTest extends TestCase {
 	}
 
 	public void testGetDefines() {
-		List wcs = new ArrayList();
+		List<WifeCommand> wcs = new ArrayList<WifeCommand>();
 		wcs.add(wc1);
 		wcs.add(wc3);
 		wcs.add(wc4);
-		Set result = new TreeSet(WifeCommand.comp);
+		Set<WifeCommand> result = new TreeSet<WifeCommand>(WifeCommand.comp);
 		result.addAll(lcom.getDefines(wcs));
 
 		assertEquals(3, result.size());
-		Iterator it = result.iterator();
-		WifeCommand wc = (WifeCommand) it.next();
+		Iterator<WifeCommand> it = result.iterator();
+		WifeCommand wc = it.next();
 		assertEquals(2001, wc.getMemoryAddress());
 		assertEquals(50, wc.getWordLength());
-		wc = (WifeCommand) it.next();
+		wc = it.next();
 		assertEquals(3000, wc.getMemoryAddress());
 		assertEquals(2, wc.getWordLength());
-		wc = (WifeCommand) it.next();
+		wc = it.next();
 		assertEquals(3900, wc.getMemoryAddress());
 		assertEquals(1, wc.getWordLength());
 
@@ -110,7 +102,7 @@ public class LinkageCommandTest extends TestCase {
 
 		assertEquals(1, result.size());
 		it = result.iterator();
-		wc = (WifeCommand) it.next();
+		wc = it.next();
 		assertEquals(5000, wc.getMemoryAddress());
 		assertEquals(4, wc.getWordLength());
 	}
@@ -118,7 +110,7 @@ public class LinkageCommandTest extends TestCase {
 	public void testGetDefines2() {
 		// プールされていないdefine
 		WifeCommand wc = new WifeCommand("P1", 1000, 0, 0, 2900, 1);
-		List wcs = new ArrayList();
+		List<WifeCommand> wcs = new ArrayList<WifeCommand>();
 		wcs.add(wc);
 		try {
 			lcom.getDefines(wcs);
@@ -138,10 +130,11 @@ public class LinkageCommandTest extends TestCase {
 
 	public void testUpdateDefine() {
 		// プールされているdefineの一つでeventを作成
-		List wcs = new ArrayList();
+		List<WifeCommand> wcs = new ArrayList<WifeCommand>();
 		wcs.add(wc3);
 		wcs.add(wc4);
-		List result = new ArrayList(lcom.getDefines(wcs));
+		List<WifeCommand> result = new ArrayList<WifeCommand>(
+				lcom.getDefines(wcs));
 		assertEquals(2, result.size());
 		WifeCommand wc = (WifeCommand) result.get(0);
 		ByteBuffer readData = ByteBuffer.allocate(2048);
@@ -164,10 +157,10 @@ public class LinkageCommandTest extends TestCase {
 	}
 
 	public void testGetHolderCommands() {
-		Set result = new TreeSet(WifeCommand.comp);
+		Set<WifeCommand> result = new TreeSet<WifeCommand>(WifeCommand.comp);
 		result.addAll(lcom.getHolderCommands(wc1));
 		assertEquals(2, result.size());
-		Iterator it = result.iterator();
+		Iterator<WifeCommand> it = result.iterator();
 		assertSame(wc1, it.next());
 		assertSame(wc2, it.next());
 
@@ -214,7 +207,7 @@ public class LinkageCommandTest extends TestCase {
 
 	public void testTime1() {
 		assertEquals(4, lcom.lk_commands.size());
-		List req = new ArrayList();
+		List<WifeCommand> req = new ArrayList<WifeCommand>();
 		long start = System.currentTimeMillis();
 		for (long i = 0; i < 10000L; i++) {
 			WifeCommand wc = new WifeCommand("P1", 0, 0, (int) (i % 10), i, 1);
@@ -231,7 +224,7 @@ public class LinkageCommandTest extends TestCase {
 
 	public void testTime10() {
 		assertEquals(4, lcom.lk_commands.size());
-		List req = new ArrayList();
+		List<WifeCommand> req = new ArrayList<WifeCommand>();
 		long start = System.currentTimeMillis();
 		for (long i = 0; i < 100000L; i++) {
 			WifeCommand wc = new WifeCommand("P1", 0, 0, (int) (i % 10), i, 1);
@@ -250,7 +243,7 @@ public class LinkageCommandTest extends TestCase {
 	public void testSchedule() throws Exception {
 		log.info("start");
 		assertEquals(4, lcom.lk_commands.size());
-		List req = new ArrayList();
+		List<WifeCommand> req = new ArrayList<WifeCommand>();
 		for (long i = 14000L, count = 0L; count < 64L; i += 112, count++) {
 			WifeCommand wc = new WifeCommand("P1", 0, 0, (int) (i % 10), i, 112);
 			req.add(wc);

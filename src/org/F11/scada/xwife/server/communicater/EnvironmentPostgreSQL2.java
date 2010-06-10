@@ -1,3 +1,5 @@
+package org.F11.scada.xwife.server.communicater;
+
 /*
  * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
  * Reserved. This program is free software; you can redistribute it and/or
@@ -12,29 +14,24 @@
  * 02111-1307, USA.
  */
 
-package org.F11.scada.xwife.server.communicater;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.F11.scada.server.communicater.Environment;
-import org.F11.scada.server.deploy.FileLister;
+import org.F11.scada.util.ConnectionUtil;
+import org.apache.log4j.Logger;
 
-/**
- * プロパティファイルより Environment オブジェクトを生成するクラスです
- * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
- */
-public class EnvironmentPropertyFiles implements Environment {
+public class EnvironmentPostgreSQL2 implements Environment {
+	private static Logger logger;
+
 	private String deviceID;
 	private String deviceKind;
 	private String plcIpAddress;
+	private String plcIpAddress2;
 	private int plcPortNo;
 	private String plcCommKind;
 	private int plcNetNo;
@@ -48,58 +45,30 @@ public class EnvironmentPropertyFiles implements Environment {
 	private int hostPortNo;
 	private String hostIpAddress;
 
-	private String plcIpAddress2;
-
-	/**
-	 * ディレクトリか拡張子がjavaのファイルを抽出するフィルターです。
-	 * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
-	 */
-	private static FileFilter filter = new FileFilter() {
-		public boolean accept(File pathname) {
-			return pathname.isDirectory()
-					|| pathname.getName().endsWith(".properties")
-					? true
-					: false;
+	private EnvironmentPostgreSQL2(ResultSet result) throws SQLException,
+			UnknownHostException {
+		deviceID = result.getString(1);
+		deviceKind = result.getString(2);
+		plcIpAddress = result.getString(3);
+		plcPortNo = result.getInt(4);
+		plcCommKind = result.getString(5);
+		plcNetNo = result.getInt(6);
+		plcNodeNo = result.getInt(7);
+		plcUnitNo = result.getInt(8);
+		plcWatchWait = result.getInt(9);
+		plcTimeout = result.getInt(10);
+		plcRetryCount = result.getInt(11);
+		plcRecoveryWait = result.getInt(12);
+		hostNetNo = result.getInt(13);
+		hostPortNo = result.getInt(14);
+		if (result.wasNull()) {
+			hostPortNo = plcPortNo;
 		}
-	};
-
-	/**
-	 * ルートからプロパティファイルを読込み Environment オブジェクトを生成します
-	 * @param file プロパティファイル
-	 */
-	private EnvironmentPropertyFiles(File file) throws IOException {
-		InputStream in = null;
-		try {
-			in = new BufferedInputStream(new FileInputStream(file));
-			Properties p = new Properties();
-			p.load(in);
-
-			deviceID = p.getProperty("deviceID");
-			deviceKind = p.getProperty("deviceKind");
-			plcIpAddress = p.getProperty("plcIpAddress");
-			plcPortNo = s2i(p.getProperty("plcPortNo"));
-			plcCommKind = p.getProperty("plcCommKind");
-			plcNetNo = s2i(p.getProperty("plcNetNo"));
-			plcNodeNo = s2i(p.getProperty("plcNodeNo"));
-			plcUnitNo = s2i(p.getProperty("plcUnitNo"));
-			plcWatchWait = s2i(p.getProperty("plcWatchWait"));
-			plcTimeout = s2i(p.getProperty("plcTimeout"));
-			plcRetryCount = s2i(p.getProperty("plcRetryCount"));
-			plcRecoveryWait = s2i(p.getProperty("plcRecoveryWait"));
-			hostNetNo = s2i(p.getProperty("hostNetNo"));
-			hostPortNo = s2i(p.getProperty("hostPortNo"));
-			hostIpAddress = p.getProperty("hostIpAddress");
-
-			plcIpAddress2 = p.getProperty("plcIpAddress2");
-		} finally {
-			if (in != null) {
-				in.close();
-			}
+		hostIpAddress = result.getString(15);
+		if (result.wasNull()) {
+			hostIpAddress = InetAddress.getLocalHost().getHostAddress();
 		}
-	}
-
-	private int s2i(String s) {
-		return Integer.parseInt(s);
+		plcIpAddress2 = result.getString(16);
 	}
 
 	/**
@@ -236,7 +205,7 @@ public class EnvironmentPropertyFiles implements Environment {
 
 	/**
 	 * デバイスのIPアドレス(二重化用)を返します。
-	 * @return デバイスのIPアドレス(二重化用)
+	 * @return デバイスのIPアドレス
 	 */
 	public String getPlcIpAddress2() {
 		return plcIpAddress2;
@@ -266,21 +235,63 @@ public class EnvironmentPropertyFiles implements Environment {
 		return buffer.toString();
 	}
 
-	public static Environment[] getEnvironments(File root) throws IOException {
-		FileLister lister = new FileLister();
-		Collection<File> col = lister.listFiles(root, filter);
-
-		Environment[] env = new EnvironmentPropertyFiles[col.size()];
-		int i = 0;
-		for (Iterator<File> it = col.iterator(); it.hasNext(); i++) {
-			File file = it.next();
-			env[i] = new EnvironmentPropertyFiles(file);
+	public static Environment[] getEnvironments() throws SQLException,
+			UnknownHostException {
+		// Class.forName("org.postgresql.Driver");
+		if (logger == null) {
+			logger = Logger.getLogger(EnvironmentPostgreSQL2.class.getClass());
 		}
 
-		return env;
-	}
+		Connection con = null;
+		Statement stmt = null;
+		ResultSet result = null;
 
-	public static Environment[] getEnvironments(String root) throws IOException {
-		return getEnvironments(new File(root));
+		try {
+			con = ConnectionUtil.getConnection();
+			stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("SELECT ");
+			buffer.append("id, kind, ip, port, command, net, node, unit, watch_wait, timeout, retry_count, ");
+			buffer.append("recovery_wait, host_net, host_port, host_ip, ip2 ");
+			buffer.append("from device_properties_table");
+
+			logger.debug(buffer.toString());
+
+			result = stmt.executeQuery(buffer.toString());
+			result.last();
+			EnvironmentPostgreSQL2[] environments = new EnvironmentPostgreSQL2[result.getRow()];
+			result.beforeFirst();
+			for (int i = 0; result.next() && i < environments.length; i++) {
+				environments[i] = new EnvironmentPostgreSQL2(result);
+			}
+			result.close();
+			stmt.close();
+			con.close();
+
+			return environments;
+		} finally {
+			if (result != null) {
+				try {
+					result.close();
+				} catch (SQLException e) {
+					result = null;
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					stmt = null;
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					con = null;
+				}
+			}
+		}
 	}
 }

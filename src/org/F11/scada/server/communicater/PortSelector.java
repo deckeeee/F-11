@@ -1,21 +1,15 @@
 /*
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.server.communicater;
@@ -48,10 +42,10 @@ public final class PortSelector implements Runnable {
 	/** セレクタ */
 	private AbstractSelector selector;
 	/** セレクタ登録済みkeyのマップ */
-	private Map enterKeys = new HashMap();
+	private Map<PortListener, SelectionKey> enterKeys = new HashMap<PortListener, SelectionKey>();
 
 	/** 内部からの処理要求を保持するキュー */
-	private LinkedList commands = new LinkedList();
+	private LinkedList<SelectCommand> commands = new LinkedList<SelectCommand>();
 
 	/**
 	 * コンストラクタ 監視スレッドを開始します。
@@ -80,9 +74,7 @@ public final class PortSelector implements Runnable {
 
 	/**
 	 * チャンネルをセレクタに登録し、リスナー登録します。 登録完了まで返りません。
-	 * 
-	 * @param listener
-	 *            登録するリスナー
+	 * @param listener 登録するリスナー
 	 * @return 登録後のセレクションキー
 	 */
 	public void addListener(PortListener listener) throws InterruptedException {
@@ -101,9 +93,7 @@ public final class PortSelector implements Runnable {
 
 	/**
 	 * 指定セレクションキーのチャンネルを閉じ、セレクタから削除します。 削除完了まで返りません。
-	 * 
-	 * @param selectionKey
-	 *            セレクションキー
+	 * @param selectionKey セレクションキー
 	 * @return 全てのチャンネルが閉じた場合、True
 	 */
 	public void removeListener(PortListener listener)
@@ -128,11 +118,8 @@ public final class PortSelector implements Runnable {
 
 	/**
 	 * 指定セレクションキーの対象セットを変更します。 変更完了を待たずに返ります。
-	 * 
-	 * @param selectionKey
-	 *            セレクションキー
-	 * @param ops
-	 *            対象セット
+	 * @param selectionKey セレクションキー
+	 * @param ops 対象セット
 	 */
 	public void setInterestOps(PortListener listener, int ops)
 			throws InterruptedException {
@@ -149,7 +136,6 @@ public final class PortSelector implements Runnable {
 
 	/**
 	 * 指定のチャンネルへ再オープン要求します。変更完了を待たずに返ります。
-	 * 
 	 * @param listener
 	 * @throws InterruptedException
 	 */
@@ -173,15 +159,15 @@ public final class PortSelector implements Runnable {
 					n = selector.select();
 				} catch (Exception e) {
 					if (!selector.isOpen()) {
-			            log.fatal("Exception caught: ", e);
+						log.fatal("Exception caught: ", e);
 						break;
 					}
 				}
 				if (n > 0) {
-					Iterator keyIterator = selector.selectedKeys().iterator();
+					Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
 
 					while (keyIterator.hasNext()) {
-						SelectionKey key = (SelectionKey) keyIterator.next();
+						SelectionKey key = keyIterator.next();
 						keyIterator.remove();
 						if (!key.isValid()) {
 							continue;
@@ -201,9 +187,9 @@ public final class PortSelector implements Runnable {
 								listener.onWrite();
 							}
 						} catch (Exception e) {
-				            log.warn("Exception caught: ", e);
+							log.warn("Exception caught: ", e);
 
-							synchronized(this) {
+							synchronized (this) {
 								commands.addLast(new ReopenChannel(listener));
 							}
 						}
@@ -214,13 +200,13 @@ public final class PortSelector implements Runnable {
 				th = thread;
 			}
 		} catch (Exception e) {
-            log.fatal("Exception caught: ", e);
+			log.fatal("Exception caught: ", e);
 		} finally {
 			th = null;
 			try {
 				selector.close();
 			} catch (IOException e) {
-	            log.fatal("Exception caught: ", e);
+				log.fatal("Exception caught: ", e);
 			}
 		}
 		log.debug("stop.");
@@ -240,9 +226,9 @@ public final class PortSelector implements Runnable {
 	 * 処理要求キューの先頭を実行します。
 	 */
 	private synchronized void executeCommands() throws Exception {
-		List nextCommands = new ArrayList();
+		List<SelectCommand> nextCommands = new ArrayList<SelectCommand>();
 		while (!commands.isEmpty()) {
-			SelectCommand command = (SelectCommand) commands.removeFirst();
+			SelectCommand command = commands.removeFirst();
 			SelectCommand leftComm = command.execute();
 			if (leftComm != null) {
 				nextCommands.add(leftComm);
@@ -295,7 +281,7 @@ public final class PortSelector implements Runnable {
 			if (log.isDebugEnabled()) {
 				log.debug("CloseChannel. " + listener.toString());
 			}
-			SelectionKey key = (SelectionKey) enterKeys.remove(listener);
+			SelectionKey key = enterKeys.remove(listener);
 			if (key != null) {
 				key.attach(null);
 				key.cancel();
@@ -321,7 +307,7 @@ public final class PortSelector implements Runnable {
 
 		public SelectCommand execute() throws IOException, InterruptedException {
 			log.debug("ReopenChannel. " + listener.toString());
-			SelectionKey key = (SelectionKey) enterKeys.remove(listener);
+			SelectionKey key = enterKeys.remove(listener);
 			if (key != null) {
 				key.attach(null);
 				key.cancel();
@@ -330,7 +316,7 @@ public final class PortSelector implements Runnable {
 			} else {
 				enterKeys.put(listener, key);
 				return this;
-			} 
+			}
 		}
 
 	}
@@ -348,7 +334,7 @@ public final class PortSelector implements Runnable {
 		}
 		public SelectCommand execute() {
 			log.debug("SetInterestOpsChannel. " + listener.toString());
-			SelectionKey key = (SelectionKey) enterKeys.get(listener);
+			SelectionKey key = enterKeys.get(listener);
 			if (key != null && key.isValid()) {
 				int old = key.interestOps();
 				key.interestOps(old | ops);
@@ -371,7 +357,7 @@ public final class PortSelector implements Runnable {
 		}
 		public SelectCommand execute() {
 			log.debug("ResetInterestOpsChannel. " + listener.toString());
-			SelectionKey key = (SelectionKey) enterKeys.get(listener);
+			SelectionKey key = enterKeys.get(listener);
 			if (key != null && key.isValid()) {
 				int old = key.interestOps();
 				key.interestOps(old & (~ops));

@@ -63,6 +63,9 @@ public class EnvironmentProperty implements Environment {
 	/** ホストIPアドレスのプロパティキーを表す定数です */
 	public static final String HOST_IP_ADDRESS_KEY = "HOST_IP_ADDRESS";
 
+	/** PLC IPアドレス(二重化用)のプロパティキーを表す定数です */
+	public static final String PLC_IP_ADDRESS2_KEY = "PLC_IP_ADDRESS2";
+	
 	/** 環境をキーで保持 */
 	private java.util.Properties environments;
 
@@ -277,6 +280,19 @@ public class EnvironmentProperty implements Environment {
 		return Integer.parseInt(s.substring(s.lastIndexOf('.') + 1));
 	}
 
+	/** プロパティ plcIpAddress2 の取得メソッド。
+	 * @return プロパティ plcIpAddress2 の値。
+	 */
+	public String getPlcIpAddress2() {
+		return environments.getProperty(PLC_IP_ADDRESS2_KEY);
+	}
+	/** プロパティ plcIpAddress2 の設定メソッド。
+	 * @param plcIpAddress2 プロパティ plcIpAddress2 の新しい値。
+	 */
+	public void setPlcIpAddress2(String plcIpAddress) {
+		environments.setProperty(PLC_IP_ADDRESS2_KEY, plcIpAddress);
+	}
+
 	public void setAllPropertys(String line) throws Exception {
 		try {
 			StringTokenizer st = new StringTokenizer(line);
@@ -345,6 +361,15 @@ public class EnvironmentProperty implements Environment {
 				else {
 					// 指定がない場合は PlcPortNo と同一
 					setHostPortNo(getPlcPortNo());
+				}
+
+				// IpAddress2
+				if (st.hasMoreTokens()) {
+					setPlcIpAddress2(st.nextToken());
+				}
+				else {
+					// 指定がない場合は null
+					setPlcIpAddress2(null);
 				}
 			}
 			else if (getDeviceKind().equals("BACnet")) {

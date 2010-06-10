@@ -129,32 +129,39 @@ public class TcpPortChannelTest extends TestCase {
 			new InetSocketAddress(InetAddress.getLocalHost(), 5001),
 			ByteBuffer.wrap(
 				WifeUtilities.toByteArray("c0000201020304050607080910111213")));
+		Thread.sleep(20L);
 		// -> listener2
 		port.sendRequest(
 			new InetSocketAddress(InetAddress.getLocalHost(), 5001),
 			ByteBuffer.wrap(
 				WifeUtilities.toByteArray("c00002060504030201070809101112")));
+		Thread.sleep(20L);
 		// -> ???
 		port.sendRequest(
 			new InetSocketAddress(InetAddress.getLocalHost(), 5001),
 			ByteBuffer.wrap(
 				WifeUtilities.toByteArray("c00002000102030405070809")));
+		Thread.sleep(20L);
 		// -> listener2
 		port.sendRequest(
 			new InetSocketAddress(InetAddress.getLocalHost(), 5001),
 			ByteBuffer.wrap(
 				WifeUtilities.toByteArray(
 					"c000020605040302010708091011121314")));
+		Thread.sleep(20L);
 		// -> ???
 		port.sendRequest(
 			new InetSocketAddress(InetAddress.getLocalHost(), 5001),
 			ByteBuffer.wrap(
 				WifeUtilities.toByteArray("c000020001020304050708091011")));
 
-		TestUtil.sleep(1000L);
+		TestUtil.sleep(20L);
 
 		assertFalse(port.removeListener(listener2));
 		assertTrue(port.removeListener(listener1));
+
+		selector.removeListener(port);
+		assertFalse(selector.isActive());
 
 		assertEquals(
 			"c0000201020304050607080910111213",
@@ -165,9 +172,6 @@ public class TcpPortChannelTest extends TestCase {
 			"c000020605040302010708091011121314",
 			WifeUtilities.toString(listener2.resdata));
 		assertEquals(2, listener2.recvcnt);
-
-		selector.removeListener(port);
-		assertFalse(selector.isActive());
 	}
 
 	/*
@@ -331,11 +335,10 @@ public class TcpPortChannelTest extends TestCase {
 			try {
 				System.out.println("server:start " + port);
 				while (selector.select() > 0) {
-					Iterator keyIterator = selector.selectedKeys().iterator();
+					Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
 
 					while (keyIterator.hasNext()) {
-						SelectionKey key = (SelectionKey) keyIterator.next();
-						keyIterator.remove();
+						SelectionKey key = keyIterator.next();
 
 						if (key.isAcceptable()) {
 							// accept
@@ -349,6 +352,7 @@ public class TcpPortChannelTest extends TestCase {
 							sendBack(socketChannel);
 						}
 					}
+					keyIterator.remove();
 				}
 				System.out.println("server:stop");
 			} catch (Exception e) {

@@ -1,21 +1,15 @@
 /*
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.server.communicater;
@@ -59,7 +53,6 @@ public final class PlcCommunicater implements Communicater {
 
 	/**
 	 * コンストラクター
-	 * 
 	 * @param device デバイス情報
 	 * @param converter プロトコルのコンバータ
 	 * @param listener 受信データ送付先リスナー
@@ -76,7 +69,7 @@ public final class PlcCommunicater implements Communicater {
 			waiter = new TcpReplyWaiter(device, header);
 		} else {
 			throw new IllegalArgumentException("not support "
-				+ device.getDeviceKind());
+					+ device.getDeviceKind());
 		}
 
 		this.device = device;
@@ -95,63 +88,58 @@ public final class PlcCommunicater implements Communicater {
 		}
 	}
 
-	public void addReadCommand(Collection commands) {
+	public void addReadCommand(Collection<WifeCommand> commands) {
 		linkageCommand.addDefine(commands);
 	}
 
-	public void removeReadCommand(Collection commands) {
+	public void removeReadCommand(Collection<WifeCommand> commands) {
 		linkageCommand.removeDefine(commands);
 	}
 
 	// @see
 	// org.F11.scada.server.communicater.Communicater#syncRead(java.util.Collection)
-	public Map syncRead(Collection commands)
-			throws InterruptedException,
-			IOException,
-			WifeException {
+	public Map<WifeCommand, byte[]> syncRead(Collection<WifeCommand> commands)
+			throws InterruptedException, IOException, WifeException {
 
 		return syncRead(commands, true);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.F11.scada.server.communicater.Communicater#syncRead(java.util.Collection,
-	 *      boolean)
+	 * @see
+	 * org.F11.scada.server.communicater.Communicater#syncRead(java.util.Collection
+	 * , boolean)
 	 */
-	public Map syncRead(Collection commands, boolean sameDataBalk)
-			throws InterruptedException,
-			IOException,
+	public Map<WifeCommand, byte[]> syncRead(Collection<WifeCommand> commands,
+			boolean sameDataBalk) throws InterruptedException, IOException,
 			WifeException {
 		lock.readLock();
 		try {
 			log.debug("syncRead(" + commands.size() + ")");
 			// 集合コマンドを取得
-			Collection lk_commands = linkageCommand.getDefines(commands);
-			HashMap commandDataMap = new HashMap(lk_commands.size());
-			for (Iterator it = lk_commands.iterator(); it.hasNext();) {
-				WifeCommand lk_comm = (WifeCommand) it.next();
+			Collection<WifeCommand> lk_commands = linkageCommand.getDefines(commands);
+			HashMap<WifeCommand, byte[]> commandDataMap = new HashMap<WifeCommand, byte[]>(
+					lk_commands.size());
+			for (Iterator<WifeCommand> it = lk_commands.iterator(); it.hasNext();) {
+				WifeCommand lk_comm = it.next();
 
 				// 読込み通信
 				converter.setReadCommand(lk_comm);
 				sendrecv();
 
 				if (sameDataBalk
-					&& !linkageCommand.updateDefine(lk_comm, recvData)) {
+						&& !linkageCommand.updateDefine(lk_comm, recvData)) {
 					continue;
 				}
 
 				// 集合コマンドから全ての元コマンドを取得（逆参照）
-				Collection dh_commands =
-					linkageCommand.getHolderCommands(lk_comm);
+				Collection<WifeCommand> dh_commands = linkageCommand.getHolderCommands(lk_comm);
 				// 要求されていない元コマンドを削除
 				dh_commands.retainAll(commands);
-				for (Iterator it2 = dh_commands.iterator(); it2.hasNext();) {
-					WifeCommand dh_comm = (WifeCommand) it2.next();
+				for (Iterator<WifeCommand> it2 = dh_commands.iterator(); it2.hasNext();) {
+					WifeCommand dh_comm = it2.next();
 					// 要求済みのコマンドについて、データを送付
-					int byteOffset =
-						(int) (dh_comm.getMemoryAddress() - lk_comm
-							.getMemoryAddress()) * 2;
+					int byteOffset = (int) (dh_comm.getMemoryAddress() - lk_comm.getMemoryAddress()) * 2;
 					byte[] cutdata = new byte[dh_comm.getWordLength() * 2];
 					recvData.position(byteOffset);
 					recvData.get(cutdata);
@@ -167,16 +155,14 @@ public final class PlcCommunicater implements Communicater {
 	// @see
 	// org.F11.scada.server.communicater.Communicater#syncWrite(java.util.Collection,
 	// java.util.Map)
-	public void syncWrite(Map commands)
-			throws InterruptedException,
-			IOException,
-			WifeException {
+	public void syncWrite(Map<WifeCommand, byte[]> commands)
+			throws InterruptedException, IOException, WifeException {
 		lock.writeLock();
 		try {
 			log.debug("syncWrite(" + commands.size() + ")");
-			for (Iterator it = commands.keySet().iterator(); it.hasNext();) {
-				WifeCommand comm = (WifeCommand) it.next();
-				byte[] data = (byte[]) commands.get(comm);
+			for (Iterator<WifeCommand> it = commands.keySet().iterator(); it.hasNext();) {
+				WifeCommand comm = it.next();
+				byte[] data = commands.get(comm);
 				if (data == null) {
 					throw new IllegalArgumentException("datas not found");
 				}
@@ -193,9 +179,7 @@ public final class PlcCommunicater implements Communicater {
 	/*
 	 * コンバータの結果に基き通信します。 コンバータが設定済みであること。 試行回数超過時に、最終原因の例外が発生します。
 	 */
-	private void sendrecv()
-			throws IOException,
-			WifeException,
+	private void sendrecv() throws IOException, WifeException,
 			InterruptedException {
 		recvData.clear();
 		while (converter.hasCommand()) {
@@ -204,31 +188,53 @@ public final class PlcCommunicater implements Communicater {
 			sendBuffer.flip();
 			// 送信後受信待ち
 			waiter.syncSendRecv(sendBuffer, recvBuffer);
-			WifeException ex = timeoutError();
+			WifeException ex = checkError();
 			// エラー発生なら試行を繰り返す
 			for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
 				if (ex != null) {
-					log.warn("ID["
-						+ device.getDeviceID()
-						+ "] try["
-						+ String.valueOf(i)
-						+ "] error["
-						+ ex.getMessage()
-						+ "]");
+					log.warn("ID[" + device.getDeviceID() + "] try["
+							+ String.valueOf(i) + "] error[" + ex.getMessage()
+							+ "]");
 				}
 				sendBuffer.clear();
 				converter.retryCommand(sendBuffer);
 				sendBuffer.flip();
 				// 送信後受信待ち
 				waiter.syncSendRecv(sendBuffer, recvBuffer);
-				ex = timeoutError();
+				ex = checkError();
+			}
+			// エラー発生ならば、二重化PLCと通信
+			if (ex != null && device.getPlcIpAddress2() != null
+					&& 0 < device.getPlcIpAddress2().length()) {
+
+				// 通信先IPを切り替える
+				waiter.change2sub();
+				
+				recvData.clear();
+				sendBuffer.clear();
+				converter.retryCommand(sendBuffer);
+				sendBuffer.flip();
+				// 送信後受信待ち
+				waiter.syncSendRecv(sendBuffer, recvBuffer);
+				ex = checkError();
+				// エラー発生なら試行を繰り返す
+				for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
+					if (ex != null) {
+						log.warn("ID[" + device.getDeviceID()
+								+ "] changed try[" + String.valueOf(i)
+								+ "] error[" + ex.getMessage() + "]");
+					}
+					sendBuffer.clear();
+					converter.retryCommand(sendBuffer);
+					sendBuffer.flip();
+					// 送信後受信待ち
+					waiter.syncSendRecv(sendBuffer, recvBuffer);
+					ex = checkError();
+				}
 			}
 			if (ex != null) {
-				log.warn("ID["
-					+ device.getDeviceID()
-					+ "] error decision["
-					+ ex.getMessage()
-					+ "]");
+				log.warn("ID[" + device.getDeviceID() + "] error decision["
+						+ ex.getMessage() + "]");
 				throw ex;
 			}
 			// 受信データを追加
@@ -237,15 +243,13 @@ public final class PlcCommunicater implements Communicater {
 		recvData.flip();
 	}
 
-	private WifeException timeoutError()
-			throws WifeException,
+	private WifeException checkError() throws WifeException,
 			InterruptedException {
 		WifeException ex = null;
 		if (recvBuffer.remaining() <= 0) {
 			// 無データはタイムアウト
 			sendBuffer.flip();
-			ex =
-				new WifeException(0, 0, "Recved time out. "
+			ex = new WifeException(0, 0, "Recved time out. "
 					+ WifeUtilities.toString(sendBuffer));
 		} else {
 			ex = converter.checkCommandResponce(recvBuffer);
@@ -259,8 +263,9 @@ public final class PlcCommunicater implements Communicater {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.F11.scada.server.communicater.Communicater#addWifeEventListener(org.F11.scada.server.event.WifeEventListener)
+	 * @see
+	 * org.F11.scada.server.communicater.Communicater#addWifeEventListener(org
+	 * .F11.scada.server.event.WifeEventListener)
 	 */
 	public void addWifeEventListener(WifeEventListener l) {
 		throw new UnsupportedOperationException();
@@ -268,8 +273,9 @@ public final class PlcCommunicater implements Communicater {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.F11.scada.server.communicater.Communicater#removeWifeEventListener(org.F11.scada.server.event.WifeEventListener)
+	 * @see
+	 * org.F11.scada.server.communicater.Communicater#removeWifeEventListener
+	 * (org.F11.scada.server.event.WifeEventListener)
 	 */
 	public void removeWifeEventListener(WifeEventListener l) {
 		throw new UnsupportedOperationException();

@@ -50,7 +50,7 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 	private final InetSocketAddress targetAddress;
 
 	/** 送信要求キュー */
-	private volatile LinkedList writeRequest = new LinkedList();
+	private volatile LinkedList<SendData> writeRequest = new LinkedList<SendData>();
 	/** キュー最大値 */
 	private static final int QUE_MAX = 2000;
 	/** 今回の送信要求オブジェクト */
@@ -60,8 +60,8 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 	private final ByteBuffer recvBuffer = ByteBuffer.allocateDirect(2048);
 
 	/** リスナーのマップ */
-	private final Map id2listenerMap = Collections
-			.synchronizedMap(new HashMap());
+	private final Map<String, RecvListener> id2listenerMap = Collections
+			.synchronizedMap(new HashMap<String, RecvListener>());
 
 	/**
 	 * コンストラクタ UDPチャンネルをオープンし、セレクタへ登録します。
@@ -157,7 +157,7 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 			recvBuffer.flip();
 			String idkey = makeIDKey(recvBuffer);
 			RecvListener listener = null;
-			listener = (RecvListener) id2listenerMap.get(idkey);
+			listener = id2listenerMap.get(idkey);
 			if (listener != null) {
 				listener.recvPerformed(recvBuffer);
 			}

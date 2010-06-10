@@ -170,6 +170,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			}
 		});
 		mainPanel.add(cb);
+		deviceRedundant(mainPanel);
 		// サーバータイトル
 		mainPanel.add(new JLabel("サーバータイトル："));
 		serverTitle.setText(manager.getPreferences("/server/title",
@@ -250,6 +251,36 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		this.setViewportView(scPanel);
 	}
 
+	private void deviceRedundant(JPanel mainPanel) {
+		// 二重化PLC通信 定義読み込み
+		JLabel label = new JLabel("二重化PLC通信：");
+		label.setToolTipText("二重化PLCと通信する定義を読み込む。");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox();
+		cb.addItem("しない");
+		cb.addItem("する");
+		String prefix =
+			manager.getPreferences("/server/device/redundant", "false");
+		if ("false".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("しない".equals(e.getItem()))
+						manager
+								.setPreferences("/server/device/redundant",
+										"false");
+					else
+						manager.setPreferences("/server/device/redundant", "true");
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+	
 	private void scheduleOpe(JPanel mainPanel) {
 		// スケジュール操作
 		JLabel label = new JLabel("スケジュール操作：");
@@ -315,6 +346,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(deployPeriod);
 	}
 
+	@SuppressWarnings("unused")
 	private void noRevision(JPanel mainPanel) {
 		JLabel label = new JLabel("ロギングリビジョン：");
 		label.setToolTipText("同一日時のロギングデータのリビジョン管理機能");

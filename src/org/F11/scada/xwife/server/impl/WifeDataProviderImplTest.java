@@ -1,22 +1,16 @@
 /*
  * =============================================================================
- * Projrct F-11 - Web SCADA for Java
- * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Projrct F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All Rights
+ * Reserved. This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that it
+ * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details. You should have received a copy of the GNU
+ * General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
  */
 
 package org.F11.scada.xwife.server.impl;
@@ -73,13 +67,9 @@ public class WifeDataProviderImplTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		factory = new TestCommunicaterFactory();
-		dp = new WifeDataProviderImpl(
-				new TestEnvironment(),
-				new TestItemDao(),
-				new TestHolderRegisterBuilder(),
-				new TestAlarmReferencer(),
-				new TestAlarmReferencer(),
-				factory);
+		dp = new WifeDataProviderImpl(new TestEnvironment(), new TestItemDao(),
+				new TestHolderRegisterBuilder(), new TestAlarmReferencer(),
+				new TestAlarmReferencer(), factory);
 		dp.setSendRequestSupport(new TestSendRequestSupport());
 	}
 
@@ -96,13 +86,11 @@ public class WifeDataProviderImplTest extends TestCase {
 		DataHolder dh = new DataHolder();
 		dh.setValueClass(WifeData.class);
 		dh.setDataHolderName("D_1900001_Digital");
-		dh.setValue(
-				WifeDataDigital.valueOfFalse(1),
-				new Date(),
+		dh.setValue(WifeDataDigital.valueOfFalse(1), new Date(),
 				WifeQualityFlag.INITIAL);
 		dh.setParameter(WifeDataProvider.PARA_NAME_CYCLEREAD, Boolean.TRUE);
-		dh.setParameter(WifeDataProvider.PARA_NAME_COMAND, WifeCommand
-				.getNullCommand());
+		dh.setParameter(WifeDataProvider.PARA_NAME_COMAND,
+				WifeCommand.getNullCommand());
 		dp.addDataHolder(dh);
 		assertNotNull(dp.getDataHolder("D_1900001_Digital"));
 	}
@@ -122,8 +110,8 @@ public class WifeDataProviderImplTest extends TestCase {
 		HolderData hd = (HolderData) list.get(0);
 		assertNull(hd.getDemandData());
 		assertEquals("D_1900000_Digital", hd.getHolder());
-		assertTrue(Arrays.equals(new byte[] { (byte) 0xFF, (byte) 0xFF }, hd
-				.getValue()));
+		assertTrue(Arrays.equals(new byte[]{(byte) 0xFF, (byte) 0xFF},
+				hd.getValue()));
 	}
 
 	public void testReadError() throws Exception {
@@ -159,8 +147,8 @@ public class WifeDataProviderImplTest extends TestCase {
 		assertNull(hd.getDemandData());
 		assertEquals("D_1900000_Digital", hd.getHolder());
 		// System.out.println(WifeUtilities.toString(hd.getValue()));
-		assertTrue(Arrays.equals(new byte[] { (byte) 0xFF, (byte) 0xFF }, hd
-				.getValue()));
+		assertTrue(Arrays.equals(new byte[]{(byte) 0xFF, (byte) 0xFF},
+				hd.getValue()));
 	}
 
 	public void testWriteDataHolder() throws Exception {
@@ -176,8 +164,8 @@ public class WifeDataProviderImplTest extends TestCase {
 		HolderData hd = (HolderData) list.get(0);
 		assertNull(hd.getDemandData());
 		assertEquals("D_1900000_Digital", hd.getHolder());
-		assertTrue(Arrays.equals(new byte[] { (byte) 0x00, (byte) 0x00 }, hd
-				.getValue()));
+		assertTrue(Arrays.equals(new byte[]{(byte) 0x00, (byte) 0x00},
+				hd.getValue()));
 	}
 
 	class TestEnvironment implements Environment {
@@ -211,6 +199,10 @@ public class WifeDataProviderImplTest extends TestCase {
 		}
 
 		public String getPlcIpAddress() {
+			return "127.0.0.1";
+		}
+
+		public String getPlcIpAddress2() {
 			return "127.0.0.1";
 		}
 
@@ -254,7 +246,7 @@ public class WifeDataProviderImplTest extends TestCase {
 		}
 
 		public Item[] getSystemItems(String provider, boolean system) {
-			return new Item[] { getItem(), getErrItem() };
+			return new Item[]{getItem(), getErrItem()};
 		}
 
 		private Item getItem() {
@@ -297,7 +289,7 @@ public class WifeDataProviderImplTest extends TestCase {
 			return null;
 		}
 
-		 public int updateJumpPage(String page, String provider, String holder) {
+		public int updateJumpPage(String page, String provider, String holder) {
 			return 0;
 		}
 	}
@@ -404,32 +396,26 @@ public class WifeDataProviderImplTest extends TestCase {
 			}
 
 			public Map syncRead(Collection commands, boolean sameDataBalk)
-					throws InterruptedException,
-					IOException,
-					WifeException {
+					throws InterruptedException, IOException, WifeException {
 				if (isError) {
 					throw new WifeException();
 				} else {
 					Map map = new HashMap();
 					for (Iterator i = commands.iterator(); i.hasNext();) {
 						WifeCommand c = (WifeCommand) i.next();
-						map.put(c, new byte[] { (byte) 0xFF, (byte) 0xFF });
+						map.put(c, new byte[]{(byte) 0xFF, (byte) 0xFF});
 					}
 					return map;
 				}
 			}
 
 			public Map syncRead(Collection commands)
-					throws InterruptedException,
-					IOException,
-					WifeException {
+					throws InterruptedException, IOException, WifeException {
 				return syncRead(commands, true);
 			}
 
-			public void syncWrite(Map commands)
-					throws InterruptedException,
-					IOException,
-					WifeException {
+			public void syncWrite(Map commands) throws InterruptedException,
+					IOException, WifeException {
 				isWrite = true;
 				log.info("syncWrite");
 			}
