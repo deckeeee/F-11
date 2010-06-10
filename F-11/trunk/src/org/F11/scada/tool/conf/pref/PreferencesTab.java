@@ -245,6 +245,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mailErrorHolder(mainPanel);
 		alarmCsvWrite(mainPanel);
 		alarmAttributeTitle(mainPanel);
+		plcRedundant(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -270,17 +271,17 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("しない".equals(e.getItem()))
-						manager
-								.setPreferences("/server/device/redundant",
-										"false");
+						manager.setPreferences("/server/device/redundant",
+								"false");
 					else
-						manager.setPreferences("/server/device/redundant", "true");
+						manager.setPreferences("/server/device/redundant",
+								"true");
 				}
 			}
 		});
 		mainPanel.add(cb);
 	}
-	
+
 	private void scheduleOpe(JPanel mainPanel) {
 		// スケジュール操作
 		JLabel label = new JLabel("スケジュール操作：");
@@ -649,6 +650,36 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 				"/server/alarm/attribute/title", "属性1,属性2,属性3"));
 		alarmAttributeTitle.getDocument().addDocumentListener(this);
 		mainPanel.add(alarmAttributeTitle);
+	}
+
+	private void plcRedundant(JPanel mainPanel) {
+		JLabel label = new JLabel("2重化PLC：");
+		label.setToolTipText("2重化PLCを使用するか、しないかを設定します。");
+		mainPanel.add(label);
+		final JComboBox cb = new JComboBox();
+		cb.addItem("使用しない");
+		cb.addItem("使用する");
+		String prefix =
+			manager.getPreferences("/server/device/redundant", "false");
+		if ("false".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("使用しない".equals(e.getItem())) {
+						manager.setPreferences("/server/device/redundant",
+								"false");
+					} else {
+						manager.setPreferences("/server/device/redundant",
+								"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
