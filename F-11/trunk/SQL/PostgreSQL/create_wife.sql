@@ -160,6 +160,7 @@ CREATE TABLE device_properties_table (
 	host_net INTEGER,
 	host_port INTEGER,
 	host_ip text,
+	ip2 text,
 	PRIMARY KEY (id)
 );
 
