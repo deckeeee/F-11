@@ -182,6 +182,7 @@ CREATE TABLE device_properties_table (
   host_net int(11) default NULL,
   host_port int(11) default NULL,
   host_ip text,
+  ip2 text,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
