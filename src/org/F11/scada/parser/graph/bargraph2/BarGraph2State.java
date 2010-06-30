@@ -13,6 +13,7 @@
  */
 package org.F11.scada.parser.graph.bargraph2;
 
+import java.awt.Font;
 import java.util.Stack;
 
 import javax.swing.JComponent;
@@ -21,6 +22,7 @@ import org.F11.scada.applet.graph.bargraph2.BarGraph2;
 import org.F11.scada.parser.PageState;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
+import org.F11.scada.util.FontUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
@@ -38,7 +40,9 @@ public class BarGraph2State implements State {
 	 */
 	public BarGraph2State(String tagName, Attributes atts, PageState pageState) {
 		this.pageState = pageState;
-		bargraph2 = new BarGraph2();
+
+		Font font = FontUtil.getFont(atts.getValue("font"));
+		bargraph2 = new BarGraph2(font);
 
 		JComponent graphPanel = bargraph2.getMainPanel();
 		String x = atts.getValue("x");

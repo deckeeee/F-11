@@ -416,6 +416,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		isViewWeek(mainPanel);
 		soundOnHolder(mainPanel);
 		isShowAttributeColumn(mainPanel);
+		isTodayOrTomorrow(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -697,6 +698,37 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 						manager
 								.setClientConf(
 										"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+										"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void isTodayOrTomorrow(JPanel mainPanel) {
+		JLabel label = new JLabel("Ωπºﬁ≠∞Ÿç°ì˙ÅAñæì˙Œﬁ¿›Çñ≥å¯Ç…Ç∑ÇÈÅF");
+		label.setToolTipText("Ωπºﬁ≠∞Ÿç°ì˙ÅAñæì˙Œﬁ¿›Çñ≥å¯Ç…Ç∑ÇÈÇ©ê›íË");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "ÇµÇ»Ç¢", "Ç∑ÇÈ", });
+		if ("false".equals(manager.getClientConf(
+				"org.F11.scada.applet.schedule.todayOrTomorrow", "false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("ÇµÇ»Ç¢".equals(e.getItem())) {
+						manager
+								.setClientConf(
+										"org.F11.scada.applet.schedule.todayOrTomorrow",
+										"false");
+					} else {
+						manager
+								.setClientConf(
+										"org.F11.scada.applet.schedule.todayOrTomorrow",
 										"true");
 					}
 				}
