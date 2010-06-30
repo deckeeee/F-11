@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/io/postgresql/PostgreSQLUtilityTest.java,v 1.5.2.12 2007/10/17 09:04:36 frdm Exp $
  * $Revision: 1.5.2.12 $
  * $Date: 2007/10/17 09:04:36 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -80,11 +80,11 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 		currentTime = new Timestamp(System.currentTimeMillis());
 		this.utility = (PostgreSQLUtility) getComponent("sql1");
 	}
-	
+
 	public static CommunicaterFactory createCommunicaterFactoryMock() {
 	    return new TestCommunicaterFactory();
 	}
-	
+
 	public static CommunicaterFactory createCommunicaterFactoryMock2() {
 		return new TestCommunicaterFactory2();
 	}
@@ -147,7 +147,7 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 		StringBuffer exp = new StringBuffer();
 		exp.append("CREATE TABLE ");
 		exp.append(TABLE_NAME);
-		exp.append(" (f_date TIMESTAMP NOT NULL, f_revision INTEGER NOT NULL, f_P1_D_500_BcdSingle double precision, f_P1_D_501_BcdSingle double precision, PRIMARY KEY(f_date, f_revision))");
+		exp.append(" (f_date DATETIME NOT NULL, f_revision INTEGER NOT NULL, f_P1_D_500_BcdSingle double precision, f_P1_D_501_BcdSingle double precision, PRIMARY KEY(f_date, f_revision))");
 		assertEquals(exp.toString(), sql);
 	}
 
@@ -207,7 +207,7 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 	        utility.getSelectAllString(TABLE_NAME, l, PostgreSQLValueListHandler.MAX_MAP_SIZE);
 //		System.out.println(sql);
 		StringBuffer exp = new StringBuffer();
-		exp.append("SELECT f_date, f_P1_D_500_BcdSingle, f_P1_D_501_BcdSingle FROM "); 
+		exp.append("SELECT f_date, f_P1_D_500_BcdSingle, f_P1_D_501_BcdSingle FROM ");
 		exp.append(TABLE_NAME);
 		exp.append(" WHERE f_revision = 0 ORDER BY f_date DESC LIMIT ").append(PostgreSQLValueListHandler.MAX_MAP_SIZE);
 		assertEquals(exp.toString(), sql);
@@ -229,14 +229,14 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 	        utility.getSelectTimeString(TABLE_NAME, l, time);
 		System.out.println(sql);
 		StringBuffer exp = new StringBuffer();
-		exp.append("SELECT f_date, f_P1_D_500_BcdSingle, f_P1_D_501_BcdSingle FROM "); 
+		exp.append("SELECT f_date, f_P1_D_500_BcdSingle, f_P1_D_501_BcdSingle FROM ");
 		exp.append(TABLE_NAME);
 		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		exp.append(" WHERE f_revision = 0 AND f_date > '").append(f.format(time)).append("'");
 		exp.append(" ORDER BY f_date DESC LIMIT ").append(PostgreSQLValueListHandler.MAX_MAP_SIZE);
 		assertEquals(exp.toString(), sql);
 	}
-	
+
 	private HolderString createHolderString(String provider, String holder) {
 	    HolderString hs = new HolderString();
 	    hs.setProvider(provider);
@@ -248,7 +248,7 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 	    ArrayList l = new ArrayList();
 	    l.add(createHolderString("P1", "H1"));
 	    l.add(createHolderString("P1", "H2"));
-	    
+
 	    String sql = utility.getFirstData(TABLE_NAME, l);
 	    assertEquals("SELECT f_date, f_P1_H1, f_P1_H2 FROM TABLE ORDER BY f_date ASC LIMIT 1", sql);
 	}
@@ -257,31 +257,31 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 	    ArrayList l = new ArrayList();
 	    l.add(createHolderString("P1", "H1"));
 	    l.add(createHolderString("P1", "H2"));
-	    
+
 	    String sql = utility.getLastData(TABLE_NAME, l);
 	    assertEquals("SELECT f_date, f_P1_H1, f_P1_H2 FROM TABLE ORDER BY f_date DESC LIMIT 1", sql);
 	}
-	
+
 	public void testGetSelectBefore() throws Exception {
 	    ArrayList l = new ArrayList();
 	    l.add(new HolderString("P1", "H1"));
 	    l.add(new HolderString("P1", "H2"));
-	    
+
 	    String sql = utility.getSelectBefore(TABLE_NAME, l, TimestampUtil
                 .parse("2005/01/01 00:00:00"), 4);
 	    assertEquals("SELECT f_date, f_P1_H1, f_P1_H2 FROM TABLE WHERE f_revision = 0 AND f_date < '2005/01/01 00:00:00' ORDER BY f_date DESC LIMIT " + 4, sql);
 	}
-	
+
 	public void testGetSelectAfter() throws Exception {
 	    ArrayList l = new ArrayList();
 	    l.add(new HolderString("P1", "H1"));
 	    l.add(new HolderString("P1", "H2"));
-	    
+
 	    String sql = utility.getSelectAfter(TABLE_NAME, l, TimestampUtil
                 .parse("2005/01/01 00:00:00"), 4);
 	    assertEquals("SELECT f_date, f_P1_H1, f_P1_H2 FROM TABLE WHERE f_revision = 0 AND f_date >= '2005/01/01 00:00:00' ORDER BY f_date ASC LIMIT " + 4, sql);
 	}
-/*	
+/*
 	public void testGetInsertPreparedStatment() throws Exception {
 		String device = EnvironmentManager.get("/server/device", "");
 		Environment[] environments = EnvironmentPropertyFiles.getEnvironments(device);
@@ -329,7 +329,7 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 	    l.add(hs1);
 	    l.add(hs2);
 
-	    PostgreSQLUtility utility2 = (PostgreSQLUtility) getComponent("sql2");	    
+	    PostgreSQLUtility utility2 = (PostgreSQLUtility) getComponent("sql2");
 	    String sql =
 	        utility2.getInsertString(
 				TABLE_NAME,
@@ -346,7 +346,7 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 		exp.append("', 0, 2000.0, 2500.0, 'false')");
 		assertEquals(exp.toString(), sql);
 	}
-	
+
 	public void testGetPaddingSql() throws Exception {
 	    HolderString hs1 = new HolderString();
 	    hs1.setProvider("P1");
@@ -361,7 +361,7 @@ public class PostgreSQLUtilityTest extends S2TestCase {
 	    l.add(hs1);
 	    l.add(hs2);
 	    l.add(hs3);
-	    System.out.println(utility.getPaddingSql("test", l, currentTime, 0));	    
+	    System.out.println(utility.getPaddingSql("test", l, currentTime, 0));
 	}
 
 	static class TestCommunicaterFactory implements CommunicaterFactory {
@@ -369,11 +369,11 @@ public class PostgreSQLUtilityTest extends S2TestCase {
                 throws Exception {
             return new TestCommunicater();
         }
-        
+
         static class TestCommunicater implements Communicater {
             public void addReadCommand(Collection commands) {
             }
-            
+
             public void removeReadCommand(Collection commands) {
 			}
 
@@ -409,11 +409,11 @@ public class PostgreSQLUtilityTest extends S2TestCase {
                 throws Exception {
             return new TestCommunicater();
         }
-        
+
         static class TestCommunicater implements Communicater {
             public void addReadCommand(Collection commands) {
             }
-            
+
             public void removeReadCommand(Collection commands) {
 			}
 

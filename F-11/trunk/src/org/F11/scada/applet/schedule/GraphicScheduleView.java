@@ -48,12 +48,13 @@ import org.F11.scada.applet.dialog.schedule.ScheduleDialogFactory;
 import org.F11.scada.applet.symbol.HandCursorListener;
 import org.F11.scada.applet.symbol.ReferencerOwnerSymbol;
 import org.F11.scada.applet.symbol.ScrollableBaseBox;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.applet.PageChanger;
 import org.apache.log4j.Logger;
 
 /**
  * グラフィック画面式のスケジュールビュークラスです。
- * 
+ *
  * @todo bar と button の配列が2つあるのは、要リファクタリング項目。ついでにTABキー移動も組み込めるように、Editable等組み込む。
  */
 public class GraphicScheduleView implements ActionListener,
@@ -79,7 +80,7 @@ public class GraphicScheduleView implements ActionListener,
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param alarmRef リモートデータオブジェクト
 	 */
 	public GraphicScheduleView(
@@ -103,7 +104,7 @@ public class GraphicScheduleView implements ActionListener,
 
 	/**
 	 * グラフィック画面式のスケジュールビューをスクロールペインにのせて返します。
-	 * 
+	 *
 	 * @return スクロールペイン
 	 */
 	public JComponent createView() {
@@ -112,7 +113,7 @@ public class GraphicScheduleView implements ActionListener,
 
 	/**
 	 * 登録・取消のツールバーコンポーネントを返します。
-	 * 
+	 *
 	 * @return ツールバー
 	 */
 	public JComponent createToolBar() {
@@ -127,10 +128,9 @@ public class GraphicScheduleView implements ActionListener,
 			mainBox.add(createRowPanel(0, scheduleModel.getTopSize() - 1));
 		}
 		mainBox.add(createRowPanel(scheduleModel.getTopSize(), scheduleModel
-			.getTopSize() + 6));
-		mainBox.add(createRowPanel(
-			scheduleModel.getTopSize() + 7,
-			scheduleModel.getPatternSize() - 1));
+				.getTopSize() + 6));
+		mainBox.add(createRowPanel(scheduleModel.getTopSize() + 7,
+				scheduleModel.getPatternSize() - 1));
 		return mainBox;
 	}
 
@@ -183,11 +183,8 @@ public class GraphicScheduleView implements ActionListener,
 
 		GridBagConstraints bc = (GridBagConstraints) c.clone();
 		bc.insets =
-			new Insets(
-				BarMatrix.SCALE_HEIGHT - 3,
-				0,
-				BarMatrix.MARGIN_BOTTOM,
-				0);
+			new Insets(BarMatrix.SCALE_HEIGHT - 3, 0, BarMatrix.MARGIN_BOTTOM,
+					0);
 
 		for (int i = start; i <= end; i++) {
 			bc.gridx = 0;
@@ -204,7 +201,7 @@ public class GraphicScheduleView implements ActionListener,
 
 	/**
 	 * 引数の曜日で ScheduleRowModel を返します。
-	 * 
+	 *
 	 * @param selectRow 曜日の項目パターンインデックス
 	 * @return 引数の項目で指定された ScheduleRowModel オブジェクト。
 	 */
@@ -218,22 +215,35 @@ public class GraphicScheduleView implements ActionListener,
 	public void actionPerformed(ActionEvent evt) {
 		if (scheduleModel.isEditable()) {
 			MatrixBarButton matrixBarButton = (MatrixBarButton) evt.getSource();
-			Frame frame = WifeUtilities.getParentFrame(matrixBarButton);
-			Dimension screenSize = frame.getToolkit().getScreenSize();
-			JDialog dialog =
-				dialogFactory.getScheduleDialog(frame, matrixBarButton
-					.getScheduleRowModel(), changer);
-			dialog.pack();
+			if (isTodayOrTomorrow(matrixBarButton)) {
+				Frame frame = WifeUtilities.getParentFrame(matrixBarButton);
+				Dimension screenSize = frame.getToolkit().getScreenSize();
+				JDialog dialog =
+					dialogFactory.getScheduleDialog(frame, matrixBarButton
+							.getScheduleRowModel(), changer);
+				dialog.pack();
 
-			Rectangle dialogBounds = dialog.getBounds();
+				Rectangle dialogBounds = dialog.getBounds();
 
-			dialogBounds.setLocation(matrixBarButton.getLocationOnScreen());
-			dialogBounds.x += matrixBarButton.getWidth();
-			dialogBounds.y += matrixBarButton.getHeight();
-			dialog.setLocation(WifeUtilities.getInScreenPoint(
-				screenSize,
-				dialogBounds));
-			dialog.show();
+				dialogBounds.setLocation(matrixBarButton.getLocationOnScreen());
+				dialogBounds.x += matrixBarButton.getWidth();
+				dialogBounds.y += matrixBarButton.getHeight();
+				dialog.setLocation(WifeUtilities.getInScreenPoint(screenSize,
+						dialogBounds));
+				dialog.show();
+			}
+		}
+	}
+
+	private boolean isTodayOrTomorrow(MatrixBarButton matrixBarButton) {
+		AbstractWifeApplet applet = (AbstractWifeApplet) changer;
+		boolean todayOrTomorrow =
+			applet.getConfiguration().getBoolean(
+					"org.F11.scada.applet.schedule.todayOrTomorrow", false);
+		if (!todayOrTomorrow) {
+			return true;
+		} else {
+			return !matrixBarButton.isTodayOrTomorrow();
 		}
 	}
 
@@ -278,6 +288,11 @@ public class GraphicScheduleView implements ActionListener,
 		public void removeActionListener() {
 			timer.removeActionListener(this);
 			timer.stop();
+		}
+
+		public boolean isTodayOrTomorrow() {
+			return "今日".equals(model.getDayIndexName())
+				|| "明日".equals(model.getDayIndexName());
 		}
 	}
 

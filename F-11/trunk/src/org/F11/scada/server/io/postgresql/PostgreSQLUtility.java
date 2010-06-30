@@ -91,7 +91,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * INSERT 文の SQL 文字列を作成します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param columnNames カラム名
 	 * @param values 値
@@ -127,7 +127,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * INSERT 文の SQL 文字列を作成します。更新日付とリビジョンを付加します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param dataHolders データホルダのリスト
 	 * @param revision リビジョン番号
@@ -228,7 +228,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * INSERT 文の SQL 文字列を作成します。更新日付とリビジョンを付加します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param dataHolders データホルダのリスト
 	 * @param revision リビジョン番号
@@ -369,7 +369,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * 現在の日付で重複レコードをチェックします。重複レコードが存在した場合、インクリメントした リビジョン番号を返します。
-	 * 
+	 *
 	 * @param tableName デバイス名
 	 * @param today チェックするレコードのタイムスタンプ
 	 * @return リビジョン番号
@@ -439,7 +439,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * SELECT 文の SQL 文字列を作成します。但し、where 句はここでは作成しません。 クライアントで作成してください。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param columnNames カラム名
 	 * @return SELECT SQL の文字列
@@ -459,7 +459,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * CREATE 文の SQL 文字列を作成します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param columnNames カラム名
 	 * @param values 値
@@ -507,7 +507,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * CREATE 文の SQL 文字列を作成します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param dataHolders データホルダのリスト
 	 * @return CREATE SQL の文字列
@@ -566,7 +566,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * ALTER 文の SQL 文字列を作成します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param columnName カラム名
 	 * @param value 値
@@ -588,7 +588,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * ALTER 文の SQL 文字列を作成します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @param dataHolder データホルダ
 	 * @return ALTER SQL の文字列
@@ -632,7 +632,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		} else if (value instanceof Integer) {
 			buffer.append(" INTEGER NOT NULL");
 		} else if (value instanceof Timestamp) {
-			buffer.append(" TIMESTAMP NOT NULL");
+			buffer.append(" DATETIME NOT NULL");
 		} else {
 			throw new IllegalArgumentException(
 				"value is not WifeDataDigital and WifeDataAnalog! : "
@@ -642,7 +642,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * SELECT * FROM テーブル名 LIMIT 0 の SQL 文字列を作成します。 テーブルの列数を求める為に使用します。
-	 * 
+	 *
 	 * @param tableName テーブル名
 	 * @return SQL 文字列
 	 */
@@ -654,7 +654,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * 重複レコード調査の SQL 文を作成します。
-	 * 
+	 *
 	 * @param name デバイス名
 	 * @param today 更新日付
 	 * @return SQL 文字列
@@ -674,7 +674,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * データホルダーで指定された列を返す SQL 文字列を返します。
 	 * <p>
 	 * <b>但し、格納されたデータのリビジョンナンバーが、'0' のみのデータをセレクトします。</b>
-	 * 
+	 *
 	 * @param name デバイス名
 	 * @param dataHolder データホルダのリスト
 	 * @param limit 最大レコード件数
@@ -990,7 +990,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	/**
 	 * 引数のタイムスタンプ範囲(start以上,end未満)のデータを返します
-	 * 
+	 *
 	 * @param name テーブル名
 	 * @param data 抽出ホルダのリスト
 	 * @param start このタイムスタンプ以上

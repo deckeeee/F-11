@@ -13,6 +13,7 @@
  */
 package org.F11.scada.applet.graph.bargraph2;
 
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.text.MessageFormat;
@@ -34,7 +35,7 @@ public class BarGraph2 implements GroupModel {
 	/** ロギングAPI */
 	private static Logger logger = Logger.getLogger(BarGraph2.class);
 	/** 表示するテキストのフォーマッタークラス */
-	private static final MessageFormat format = new MessageFormat("ポイント：{0}");
+	private static final MessageFormat format = new MessageFormat("ポイント： {0} {1}");
 	/** メインパネル */
 	private JPanel mainPanel;
 	/** ツールバー */
@@ -48,16 +49,16 @@ public class BarGraph2 implements GroupModel {
 	/** 参照グループindex */
 	private int groupIndex;
 
-	public BarGraph2() {
+	public BarGraph2(Font font) {
 		logger.debug("create BarGraph2");
 
-		createToolBar();
+		createToolBar(font);
 
 		mainPanel = new JPanel();
 		mainPanel.setLayout(null);
 	}
 
-	private void createToolBar() {
+	private void createToolBar(Font font) {
 		toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		addButton(
@@ -74,6 +75,7 @@ public class BarGraph2 implements GroupModel {
 		toolBar.addSeparator();
 
 		groupName = new JLabel();
+		groupName.setFont(font);
 		toolBar.add(groupName);
 	}
 
@@ -146,7 +148,7 @@ public class BarGraph2 implements GroupModel {
 		BarSeries series = group.get(groupIndex);
 		try {
 			comboBox.fireChangeGroup(series);
-			final String[] msg = new String[]{series.getName()};
+			final String[] msg = new String[]{series.getUnit_mark(), series.getName()};
 			groupName.setText(format.format(msg));
 		} catch (RemoteException ex) {
 			logger.error("change group [" + series.getName() + "] error!", ex);
