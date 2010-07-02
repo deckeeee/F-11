@@ -21,14 +21,14 @@
 package org.F11.scada.server.converter;
 
 /**
- * Wife通信モジュールのFINSコマンド生成の実装クラス。
+ * Wife通信モジュールのFINSCPコマンド生成の実装クラス。
  */
 public class FINSCP extends AbstractFINS {
 	protected int getReceiveSize() {
-		return 500 * 2;
+		return 498 * 2;
 	}
 
 	protected int getSendSize() {
-		return 495 * 2;
+		return 498 * 2;
 	}
 }
