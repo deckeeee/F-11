@@ -58,7 +58,7 @@ public class AlarmTableColumn extends JDialog {
 	private final JTextField status = new JTextField();
 	private final JTextField sort = new JTextField();
 	private final JTextField date = new JTextField();
-	private final JTextField attributen = new JTextField();
+	private final JTextField[] attributen = new JTextField[3];
 
 	public AlarmTableColumn(Frame frameParent, StreamManager manager) {
 		super(frameParent, "警報一覧", true);
@@ -96,64 +96,76 @@ public class AlarmTableColumn extends JDialog {
 		JLabel label = new JLabel("行ヘッダー幅：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, rowHeaderWidth, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.rowheader.width",
-			"" + AlarmColumn.ROW_HEADER_SIZE));
+				"org.F11.scada.xwife.applet.alarm.rowheader.width", ""
+					+ AlarmColumn.ROW_HEADER_SIZE));
 	}
 
 	private void setRowHeaderFormat(GridBagConstraints c, JPanel panel) {
 		JLabel label = new JLabel("行ヘッダーフォーマット：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, rowHeaderFormat, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.rowheader.format",
-			"" + AlarmColumn.ROW_HEADER_FORMAT));
+				"org.F11.scada.xwife.applet.alarm.rowheader.format", ""
+					+ AlarmColumn.ROW_HEADER_FORMAT));
 	}
 
 	private void setUnit(GridBagConstraints c, JPanel panel) {
 		JLabel label = new JLabel("機器記号：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, unit, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.unitSize",
-			"" + AlarmColumn.UNIT_SIZE));
+				"org.F11.scada.xwife.applet.alarm.unitSize", ""
+					+ AlarmColumn.UNIT_SIZE));
 	}
 
 	private void setAttribute(GridBagConstraints c, JPanel panel) {
 		JLabel label = new JLabel("属性：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, attribute, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.attributeSize",
-			"" + AlarmColumn.DEFAULT_SIZE));
+				"org.F11.scada.xwife.applet.alarm.attributeSize", ""
+					+ AlarmColumn.DEFAULT_SIZE));
 	}
 
 	private void setStatus(GridBagConstraints c, JPanel panel) {
 		JLabel label = new JLabel("状態：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, status, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.statusSize",
-			"" + AlarmColumn.DEFAULT_SIZE));
+				"org.F11.scada.xwife.applet.alarm.statusSize", ""
+					+ AlarmColumn.DEFAULT_SIZE));
 	}
 
 	private void setSort(GridBagConstraints c, JPanel panel) {
 		JLabel label = new JLabel("種別：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, sort, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.sortSize",
-			"" + AlarmColumn.DEFAULT_SIZE));
+				"org.F11.scada.xwife.applet.alarm.sortSize", ""
+					+ AlarmColumn.DEFAULT_SIZE));
 	}
 
 	private void setDate(GridBagConstraints c, JPanel panel) {
 		JLabel label = new JLabel("日時：");
 		addLabel(c, panel, label);
 		addTextArea(c, panel, date, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.dateSize",
-			"" + AlarmColumn.DATE_SIZE));
+				"org.F11.scada.xwife.applet.alarm.dateSize", ""
+					+ AlarmColumn.DATE_SIZE));
 	}
 
 	private void setAttributeN(GridBagConstraints c, JPanel panel) {
-		JLabel label = new JLabel("属性1,2,3：");
+		for (int i = 0; i < 3; i++) {
+			attributen[i] = new JTextField();
+			setAttributeN(c, panel, i, attributen[i]);
+		}
+	}
+
+	private void setAttributeN(
+		GridBagConstraints c,
+		JPanel panel,
+		int i,
+		JTextField attributen2) {
+		int index = i + 1;
+		JLabel label = new JLabel("属性" + index + "：");
 		addLabel(c, panel, label);
-		addTextArea(c, panel, attributen, manager.getClientConf(
-			"org.F11.scada.xwife.applet.alarm.attributeNSize",
-			"" + AlarmColumn.DEFAULT_SIZE));
+		addTextArea(c, panel, attributen2, manager.getClientConf(
+				"org.F11.scada.xwife.applet.alarm.attribute" + index + "Size",
+				"" + AlarmColumn.DEFAULT_SIZE));
 	}
 
 	private Component getSouth() {
@@ -171,29 +183,35 @@ public class AlarmTableColumn extends JDialog {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.rowheader.width",
-					rowHeaderWidth.getText());
+						"org.F11.scada.xwife.applet.alarm.rowheader.width",
+						rowHeaderWidth.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.rowheader.format",
-					rowHeaderFormat.getText());
+						"org.F11.scada.xwife.applet.alarm.rowheader.format",
+						rowHeaderFormat.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.unitSize",
-					unit.getText());
+						"org.F11.scada.xwife.applet.alarm.unitSize", unit
+								.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.attributeSize",
-					attribute.getText());
+						"org.F11.scada.xwife.applet.alarm.attributeSize",
+						attribute.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.statusSize",
-					status.getText());
+						"org.F11.scada.xwife.applet.alarm.statusSize", status
+								.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.sortSize",
-					sort.getText());
+						"org.F11.scada.xwife.applet.alarm.sortSize", sort
+								.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.dateSize",
-					date.getText());
+						"org.F11.scada.xwife.applet.alarm.dateSize", date
+								.getText());
 				manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.attributeNSize",
-					attributen.getText());
+						"org.F11.scada.xwife.applet.alarm.attribute1Size",
+						attributen[0].getText());
+				manager.setClientConf(
+						"org.F11.scada.xwife.applet.alarm.attribute2Size",
+						attributen[1].getText());
+				manager.setClientConf(
+						"org.F11.scada.xwife.applet.alarm.attribute3Size",
+						attributen[2].getText());
 				dispose();
 			}
 		});

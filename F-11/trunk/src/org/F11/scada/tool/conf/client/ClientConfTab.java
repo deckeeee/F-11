@@ -65,6 +65,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		new JFormattedTextField(new DecimalFormat("###"));
 	private final JFormattedTextField soundTimerTime =
 		new JFormattedTextField(new DecimalFormat("#####"));
+	private final JTextField columnConfig = new JTextField();
 
 	public ClientConfTab(Frame parent, StreamManager manager) {
 		super();
@@ -417,6 +418,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		soundOnHolder(mainPanel);
 		isShowAttributeColumn(mainPanel);
 		isTodayOrTomorrow(mainPanel);
+		columnConfig(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -737,6 +739,19 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(cb);
 	}
 
+	private void columnConfig(JPanel mainPanel) {
+		// Œx•ñˆê———ñˆÚ“®İ’è
+		mainPanel.add(new JLabel("Œx•ñˆê———ñˆÚ“®İ’èF"));
+		JPanel panel = new JPanel(new GridLayout(1, 0));
+		columnConfig.setText(manager.getClientConf(
+				"org.F11.scada.columnConfig", ""));
+		columnConfig.getDocument().addDocumentListener(this);
+		columnConfig
+				.setToolTipText("Œx•ñˆê——‚Ì—ñ‚ğu—ñ–¼1:ˆÚ“®æ‚Ì—ñ1, —ñ–¼2:ˆÚ“®æ‚Ì—ñ2... ,—ñ–¼n:ˆÚ“®æ‚Ì—ñnv‚Åİ’è‚µ‚Ü‚·B");
+		panel.add(columnConfig);
+		mainPanel.add(panel);
+	}
+
 	public void changedUpdate(DocumentEvent e) {
 		eventPaformed(e);
 	}
@@ -788,6 +803,9 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		} else if (e.getDocument() == soundOnHolder.getDocument()) {
 			manager.setClientConf("xwife.applet.Applet.soundOnHolder",
 					soundOnHolder.getText());
+		} else if (e.getDocument() == columnConfig.getDocument()) {
+			manager.setClientConf("org.F11.scada.columnConfig", columnConfig
+					.getText());
 		}
 	}
 

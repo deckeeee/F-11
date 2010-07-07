@@ -56,7 +56,7 @@ public class AlarmFactory {
 			AbstractWifeApplet wifeApplet,
 			boolean changePage) {
 		CareerPanel careerPanel = new CareerPanel(wifeApplet);
-		AlarmStats newMsg = new AlarmStats();
+		AlarmStats newMsg = new AlarmStats(wifeApplet);
 		careerPanel.addTableModelListener(newMsg);
 		careerPanel.addTableModelListener(new PriorityController(
 			wifeApplet,
@@ -70,7 +70,7 @@ public class AlarmFactory {
 			boolean changePage) {
 		AlarmTabbedPane alarmTabPane =
 			new AlarmTabbedPane(wifeApplet, JTabbedPane.TOP);
-		AlarmStats newMsg = new AlarmStats();
+		AlarmStats newMsg = new AlarmStats(wifeApplet);
 		alarmTabPane.addTableModelListener(newMsg);
 		PriorityController controller =
 			new PriorityController(wifeApplet, changePage);

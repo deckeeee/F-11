@@ -22,17 +22,23 @@
 package org.F11.scada.xwife.applet.alarm;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import org.F11.scada.applet.ClientConfiguration;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmNewsConfig;
+import org.F11.scada.util.TableUtil;
+import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.applet.AttributeNColumnUtil;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.time.FastDateFormat;
 
 public class AlarmStats extends JLabel implements TableModelListener {
@@ -41,38 +47,81 @@ public class AlarmStats extends JLabel implements TableModelListener {
 		FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss");
 	private final AlarmNewsConfig alarmNewsConfig;
 	private final boolean isUseNewInfoMode;
+	private final String columnConfig;
+	private final boolean showAttributeColumn;
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param table 最新情報元のテーブル
 	 */
-	public AlarmStats() {
+	public AlarmStats(AbstractWifeApplet applet) {
 		super();
 		alarmNewsConfig =
 			new AlarmDefine().getAlarmConfig().getAlarmNewsConfig();
 		setFont(alarmNewsConfig.getFontConfig().getFont());
-		ClientConfiguration configuration = new ClientConfiguration();
+		Configuration configuration = applet.getConfiguration();
 		isUseNewInfoMode =
+			configuration
+					.getBoolean(
+							"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode",
+							false);
+		columnConfig =
+			configuration.getString("org.F11.scada.columnConfig", "");
+		showAttributeColumn =
 			configuration.getBoolean(
-				"org.F11.scada.xwife.applet.alarm.AlarmStats.isUseNewInfoMode",
-				false);
+					"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+					true);
 	}
 
 	public void tableChanged(TableModelEvent e) {
 		TableModel model = (TableModel) e.getSource();
 		if (isSetText(model)) {
-			final StringBuffer sb = new StringBuffer();
-			sb.append(format.format(model.getValueAt(0, 12)) + "　");
+			Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+			for (int i = 12, j = 0; i < model.getColumnCount() - 1; i++) {
+				Object value = model.getValueAt(0, i);
+				if (AttributeNColumnUtil.isDisplayColumn(i, value)
+					&& isShowAttributeColumn(i)) {
+					map.put(model.getColumnName(i), j++);
+				}
+			}
+			Map<String, Integer> moveMap = TableUtil.getMoveMap(columnConfig);
+			Map<Integer, Integer> swapMap =
+				new LinkedHashMap<Integer, Integer>();
+			for (Map.Entry<String, Integer> entry : moveMap.entrySet()) {
+				if (map.containsKey(entry.getKey())) {
+					swapMap.put(map.get(entry.getKey()), entry.getValue());
+				}
+			}
+			List<String> l = new ArrayList<String>();
+			l.add(format.format(model.getValueAt(0, 12)));
 			for (int i = 13; i < model.getColumnCount() - 1; i++) {
 				Object value = model.getValueAt(0, i);
-				if (AttributeNColumnUtil.isDisplayColumn(i, value)) {
-					sb.append(value + "　");
+				if (AttributeNColumnUtil.isDisplayColumn(i, value)
+					&& isShowAttributeColumn(i)) {
+					l.add(value.toString());
 				}
+			}
+			swapColumn(swapMap, l);
+
+			final StringBuffer sb = new StringBuffer();
+			for (String s : l) {
+				sb.append(s + "　");
 			}
 			setText(sb.toString());
 			setForeground(ColorFactory
-				.getColor((String) model.getValueAt(0, 3)));
+					.getColor((String) model.getValueAt(0, 3)));
+		}
+	}
+
+	private boolean isShowAttributeColumn(int i) {
+		return showAttributeColumn || (!showAttributeColumn && i != 15);
+	}
+
+	private void swapColumn(Map<Integer, Integer> map, List<String> list) {
+		for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+			String s = list.remove(entry.getKey().intValue());
+			list.add(entry.getValue(), s);
 		}
 	}
 

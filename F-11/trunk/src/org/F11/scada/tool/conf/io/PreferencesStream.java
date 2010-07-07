@@ -173,6 +173,7 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/alarm/csvout/file", "'career'yyyyMMdd'.csv'"));
 		pw.println(getXmlProp("/server/alarm/attribute/title", "‘®«1,‘®«2,‘®«3"));
 		pw.println(getXmlProp("/server/device/redundant","false"));
+		pw.println(getXmlProp("/server/analogRoundMode","false"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;
