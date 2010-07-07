@@ -172,7 +172,9 @@ public final class WifeDataAnalog extends Number implements WifeData,
 
 				private BigInteger round(BigDecimal bd) {
 					if (analogRoundMode) {
-						BigDecimal tmpBd = bd.round(new MathContext(5));
+						BigDecimal tmpBd =
+							bd.round(new MathContext(bd.precision()
+								- bd.scale()));
 						return tmpBd.toBigInteger();
 					} else {
 						return bd.toBigInteger();
@@ -220,7 +222,9 @@ public final class WifeDataAnalog extends Number implements WifeData,
 
 				private BigInteger round(BigDecimal bd) {
 					if (analogRoundMode) {
-						BigDecimal tmpBd = bd.round(new MathContext(10));
+						BigDecimal tmpBd =
+							bd.round(new MathContext(bd.precision()
+								- bd.scale()));
 						return tmpBd.toBigInteger();
 					} else {
 						return bd.toBigInteger();
@@ -344,7 +348,9 @@ public final class WifeDataAnalog extends Number implements WifeData,
 
 				private BigInteger round(BigDecimal bd) {
 					if (analogRoundMode) {
-						BigDecimal tmpBd = bd.round(new MathContext(5));
+						BigDecimal tmpBd =
+							bd.round(new MathContext(bd.precision()
+								- bd.scale()));
 						return tmpBd.toBigInteger();
 					} else {
 						return bd.toBigInteger();
@@ -398,7 +404,9 @@ public final class WifeDataAnalog extends Number implements WifeData,
 
 				private BigInteger round(BigDecimal bd) {
 					if (analogRoundMode) {
-						BigDecimal tmpBd = bd.round(new MathContext(10));
+						BigDecimal tmpBd =
+							bd.round(new MathContext(bd.precision()
+								- bd.scale()));
 						return tmpBd.toBigInteger();
 					} else {
 						return bd.toBigInteger();
