@@ -62,6 +62,23 @@ public final class WifeDataAnalog extends Number implements WifeData,
 	 */
 	abstract static class AnalogType implements Serializable {
 		private static final long serialVersionUID = -347534979180523729L;
+
+		/**
+		 * 引数を整数で四捨五入します。
+		 *
+		 * @param bd 0以上の実数
+		 * @return 四捨五入した結果
+		 */
+		BigInteger round(BigDecimal bd) {
+			if (analogRoundMode) {
+				BigDecimal tmpBd =
+					bd.round(new MathContext(bd.precision() - bd.scale()));
+				return tmpBd.toBigInteger();
+			} else {
+				return bd.toBigInteger();
+			}
+		}
+
 		/** アナログ元byte配列データの形式がHEXで、0バイト目使用の1/2ワード長アナログデータです */
 		static final AnalogType HEX_ZERO_HALF_WORD =
 			new AnalogType(0, ByteSize.ZERO_HALF_WORD_ANALOG,
@@ -169,17 +186,6 @@ public final class WifeDataAnalog extends Number implements WifeData,
 						return HEX_SINGLE_WORD.byteSize.toByteArray(b2);
 					}
 				}
-
-				private BigInteger round(BigDecimal bd) {
-					if (analogRoundMode) {
-						BigDecimal tmpBd =
-							bd.round(new MathContext(bd.precision()
-								- bd.scale()));
-						return tmpBd.toBigInteger();
-					} else {
-						return bd.toBigInteger();
-					}
-				}
 			};
 		/** アナログ元byte配列データの形式がHEXで、2ワード長アナログデータです */
 		static final AnalogType HEX_DOUBLE_WORD =
@@ -217,17 +223,6 @@ public final class WifeDataAnalog extends Number implements WifeData,
 						System.arraycopy(b, 0, b2, b2.length - b.length,
 								b.length);
 						return HEX_DOUBLE_WORD.byteSize.toByteArray(b2);
-					}
-				}
-
-				private BigInteger round(BigDecimal bd) {
-					if (analogRoundMode) {
-						BigDecimal tmpBd =
-							bd.round(new MathContext(bd.precision()
-								- bd.scale()));
-						return tmpBd.toBigInteger();
-					} else {
-						return bd.toBigInteger();
 					}
 				}
 			};
@@ -345,17 +340,6 @@ public final class WifeDataAnalog extends Number implements WifeData,
 						return HEX_SINGLE_WORD.byteSize.toByteArray(b2);
 					}
 				}
-
-				private BigInteger round(BigDecimal bd) {
-					if (analogRoundMode) {
-						BigDecimal tmpBd =
-							bd.round(new MathContext(bd.precision()
-								- bd.scale()));
-						return tmpBd.toBigInteger();
-					} else {
-						return bd.toBigInteger();
-					}
-				}
 			};
 		/** アナログ元byte配列データの形式が符号ありHEXで、2ワード長アナログデータです */
 		static final AnalogType SHX_DOUBLE_WORD =
@@ -399,17 +383,6 @@ public final class WifeDataAnalog extends Number implements WifeData,
 						System.arraycopy(b, 0, b2, b2.length - b.length,
 								b.length);
 						return HEX_DOUBLE_WORD.byteSize.toByteArray(b2);
-					}
-				}
-
-				private BigInteger round(BigDecimal bd) {
-					if (analogRoundMode) {
-						BigDecimal tmpBd =
-							bd.round(new MathContext(bd.precision()
-								- bd.scale()));
-						return tmpBd.toBigInteger();
-					} else {
-						return bd.toBigInteger();
 					}
 				}
 			};
