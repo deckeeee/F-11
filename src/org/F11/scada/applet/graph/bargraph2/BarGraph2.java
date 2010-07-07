@@ -35,7 +35,7 @@ public class BarGraph2 implements GroupModel {
 	/** ロギングAPI */
 	private static Logger logger = Logger.getLogger(BarGraph2.class);
 	/** 表示するテキストのフォーマッタークラス */
-	private static final MessageFormat format = new MessageFormat("ポイント： {0} {1}");
+	private static final MessageFormat format = new MessageFormat("ポイント： {0}");
 	/** メインパネル */
 	private JPanel mainPanel;
 	/** ツールバー */
@@ -148,7 +148,7 @@ public class BarGraph2 implements GroupModel {
 		BarSeries series = group.get(groupIndex);
 		try {
 			comboBox.fireChangeGroup(series);
-			final String[] msg = new String[]{series.getUnit_mark(), series.getName()};
+			final String[] msg = new String[]{series.getName()};
 			groupName.setText(format.format(msg));
 		} catch (RemoteException ex) {
 			logger.error("change group [" + series.getName() + "] error!", ex);

@@ -83,11 +83,11 @@ public class CareerPanel extends JPanel {
 		removeSortColumn(career, 5, wifeApplet, alarmColumn.getSortSize());
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
 			setColumnWidth(career, alarmTableTitleUtil
-					.getAttributeString("‘®«1"), alarmColumn.getAttributeNSize());
+					.getAttributeString("‘®«1"), alarmColumn.getAttribute1Size());
 			setColumnWidth(career, alarmTableTitleUtil
-					.getAttributeString("‘®«2"), alarmColumn.getAttributeNSize());
+					.getAttributeString("‘®«2"), alarmColumn.getAttribute2Size());
 			setColumnWidth(career, alarmTableTitleUtil
-					.getAttributeString("‘®«3"), alarmColumn.getAttributeNSize());
+					.getAttributeString("‘®«3"), alarmColumn.getAttribute3Size());
 		} else {
 			removeColumn(career, alarmTableTitleUtil.getAttributeString("‘®«1"));
 			removeColumn(career, alarmTableTitleUtil.getAttributeString("‘®«2"));

@@ -87,6 +87,7 @@ import org.F11.scada.server.alarm.table.FindAlarmTable;
 import org.F11.scada.server.alarm.table.Priority;
 import org.F11.scada.server.alarm.table.FindAlarmCondition.RadioStat;
 import org.F11.scada.util.AlarmTableTitleUtil;
+import org.F11.scada.util.TableUtil;
 import org.F11.scada.xwife.applet.alarm.AlarmColumn;
 import org.F11.scada.xwife.applet.alarm.PageJump;
 import org.F11.scada.xwife.applet.alarm.RowHeaderScrollPane;
@@ -658,10 +659,13 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 		AlarmTableConfig alarmTableConfig =
 			alarmDefine.getAlarmConfig().getAlarmTableConfig();
+		String columnConfig =
+			wifeApplet.getConfiguration().getString(
+					"org.F11.scada.columnConfig", "");
 
-		createSummaryTab(tabbedPane, alarmTableConfig);
-		createHistoryTab(tabbedPane, alarmTableConfig);
-		createCareerTab(tabbedPane, alarmTableConfig);
+		createSummaryTab(tabbedPane, alarmTableConfig, columnConfig);
+		createHistoryTab(tabbedPane, alarmTableConfig, columnConfig);
+		createCareerTab(tabbedPane, alarmTableConfig, columnConfig);
 		setAlarmTableCellRenderer(summary);
 		setAlarmTableCellRenderer(history);
 		setAlarmTableCellRenderer(career);
@@ -671,7 +675,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	private void createCareerTab(
 		JTabbedPane tabbedPane,
-		AlarmTableConfig alarmTableConfig) {
+		AlarmTableConfig alarmTableConfig, String columnConfig) {
 		TableModel c_table =
 			new DefaultTableModel(new String[] {
 				"ジャンプパス",
@@ -721,11 +725,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		removeSortColumn(career, 5, wifeApplet, alarmColumn.getSortSize());
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
 			setColumnWidth(career, alarmTableTitleUtil
-					.getAttributeString("属性1"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性1"), alarmColumn.getAttribute1Size());
 			setColumnWidth(career, alarmTableTitleUtil
-					.getAttributeString("属性2"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性2"), alarmColumn.getAttribute2Size());
 			setColumnWidth(career, alarmTableTitleUtil
-					.getAttributeString("属性3"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性3"), alarmColumn.getAttribute3Size());
 		} else {
 			removeColumn(career, alarmTableTitleUtil.getAttributeString("属性1"));
 			removeColumn(career, alarmTableTitleUtil.getAttributeString("属性2"));
@@ -734,6 +738,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		if (!isShowAttributeColumn()) {
 			removeColumn(career, "属性");
 		}
+		TableUtil.moveColumn(career, columnConfig);
+
 		tabBase.add(new RowHeaderScrollPane(career, alarmDefine
 				.getAlarmConfig().getAlarmTableConfig().getLineCountConfig()
 				.getValue(), wifeApplet), BorderLayout.CENTER);
@@ -812,7 +818,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	private void createHistoryTab(
 		JTabbedPane tabbedPane,
-		AlarmTableConfig alarmTableConfig) {
+		AlarmTableConfig alarmTableConfig, String columnConfig) {
 		TableModel h_table =
 			new DefaultTableModel(new String[] {
 				"ジャンプパス",
@@ -868,11 +874,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		removeSortColumn(history, 5, wifeApplet, alarmColumn.getSortSize());
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
 			setColumnWidth(history, alarmTableTitleUtil
-					.getAttributeString("属性1"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性1"), alarmColumn.getAttribute1Size());
 			setColumnWidth(history, alarmTableTitleUtil
-					.getAttributeString("属性2"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性2"), alarmColumn.getAttribute2Size());
 			setColumnWidth(history, alarmTableTitleUtil
-					.getAttributeString("属性3"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性3"), alarmColumn.getAttribute3Size());
 		} else {
 			removeColumn(history, alarmTableTitleUtil.getAttributeString("属性1"));
 			removeColumn(history, alarmTableTitleUtil.getAttributeString("属性2"));
@@ -881,6 +887,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		if (!isShowAttributeColumn()) {
 			removeColumn(history, "属性");
 		}
+		TableUtil.moveColumn(history, columnConfig);
 
 		tabBase.add(new RowHeaderScrollPane(history, alarmDefine
 				.getAlarmConfig().getAlarmTableConfig().getLineCountConfig()
@@ -963,7 +970,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	private void createSummaryTab(
 		JTabbedPane tabbedPane,
-		AlarmTableConfig alarmTableConfig) {
+		AlarmTableConfig alarmTableConfig, String columnConfig) {
 		TableModel s_table =
 			new DefaultTableModel(new String[] {
 				"ジャンプパス",
@@ -1010,11 +1017,11 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		removeSortColumn(summary, 6, wifeApplet, alarmColumn.getSortSize());
 		if (AttributeNColumnUtil.isAttributeDisplay()) {
 			setColumnWidth(summary, alarmTableTitleUtil
-					.getAttributeString("属性1"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性1"), alarmColumn.getAttribute1Size());
 			setColumnWidth(summary, alarmTableTitleUtil
-					.getAttributeString("属性2"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性2"), alarmColumn.getAttribute2Size());
 			setColumnWidth(summary, alarmTableTitleUtil
-					.getAttributeString("属性3"), alarmColumn.getAttributeNSize());
+					.getAttributeString("属性3"), alarmColumn.getAttribute3Size());
 		} else {
 			removeColumn(summary, alarmTableTitleUtil.getAttributeString("属性1"));
 			removeColumn(summary, alarmTableTitleUtil.getAttributeString("属性2"));
@@ -1023,6 +1030,7 @@ public abstract class AbstractAlarmPanel extends JPanel {
 		if (!isShowAttributeColumn()) {
 			removeColumn(summary, "属性");
 		}
+		TableUtil.moveColumn(summary, columnConfig);
 
 		tabBase.add(new RowHeaderScrollPane(summary, alarmDefine
 				.getAlarmConfig().getAlarmTableConfig().getLineCountConfig()

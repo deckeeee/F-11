@@ -100,7 +100,7 @@ public class WifeApplet extends AbstractWifeApplet {
 			new AlarmTabbedPane(this, JTabbedPane.RIGHT);
 
 		// ç≈êVèÓïÒ
-		AlarmStats newMsg = new AlarmStats();
+		AlarmStats newMsg = new AlarmStats(this);
 		alarmTabPane.addTableModelListener(newMsg);
 		alarmTabPane.addTableModelListener(new PriorityController(this));
 		JPanel alarmPanel = new JPanel();

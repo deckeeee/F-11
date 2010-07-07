@@ -26,27 +26,34 @@ import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+
+import org.apache.log4j.Logger;
 
 public abstract class TableUtil {
+	private static Logger logger = Logger.getLogger(TableUtil.class);
+
 	public static void setWidth(
-			int width,
-			int column,
-			TableColumnModel columnModel) {
+		int width,
+		int column,
+		TableColumnModel columnModel) {
 		TableColumn tableColumn = columnModel.getColumn(column);
 		tableColumn.setMinWidth(width);
 		tableColumn.setMaxWidth(width);
 	}
 
 	public static void setPreferredWidth(
-			int width,
-			int column,
-			TableColumnModel columnModel) {
+		int width,
+		int column,
+		TableColumnModel columnModel) {
 		TableColumn tableColumn = columnModel.getColumn(column);
 		tableColumn.setPreferredWidth(width);
 	}
@@ -84,16 +91,13 @@ public abstract class TableUtil {
 	public static int getModelColumn(MouseEvent e) {
 		JTable table = (JTable) e.getSource();
 		int clickColumn = table.columnAtPoint(e.getPoint());
-		return table
-			.getTableHeader()
-			.getColumnModel()
-			.getColumn(clickColumn)
-			.getModelIndex();
+		return table.getTableHeader().getColumnModel().getColumn(clickColumn)
+				.getModelIndex();
 	}
 
 	/**
 	 * セルよりダイアログ表示位置を算出。
-	 * 
+	 *
 	 * @param table
 	 * @param row
 	 * @param column
@@ -109,7 +113,7 @@ public abstract class TableUtil {
 
 	/**
 	 * 先頭カラムから n カラムを削除します。
-	 * 
+	 *
 	 * @param table 対象のテーブル
 	 * @param removeColumnCount 削除するカラム数
 	 */
@@ -133,5 +137,41 @@ public abstract class TableUtil {
 				}
 			}
 		};
+	}
+
+	/**
+	 * 設定ファイルより、「列名1:移動先の列1, 列名2:移動先の列2... ,列名n:移動先の列n」の文字列を受け取り、
+	 * テーブル列の移動処理を行います。
+	 *
+	 * @param table 入れ替え処理するテーブル
+	 * @param columnConfig 「列名1:移動先の列1, 列名2:移動先の列2... ,列名n:移動先の列n」の文字列
+	 */
+	public static void moveColumn(JTable table, String columnConfig) {
+		Map<String, Integer> map = getMoveMap(columnConfig);
+		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+			moveColumn(table, entry.getKey(), entry.getValue());
+		}
+	}
+
+	private static void moveColumn(JTable table, String string, int i) {
+		TableColumnModel model = table.getColumnModel();
+		try {
+			table.moveColumn(model.getColumnIndex(string), i);
+		} catch (IllegalArgumentException e) {
+			logger.error("警報一覧の列変更設定で列名か列番号が不正です 列名=" + string + " 列番号=" + i , e);
+		}
+	}
+
+	public static Map<String, Integer> getMoveMap(String s) {
+		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+		if (null != s && s.length() > 0) {
+			String[] tmpStrs = s.split("[:\\$]");
+			for (int i = 0; i < tmpStrs.length; i += 2) {
+				String s1 = tmpStrs[i].trim();
+				String s2 = tmpStrs[i + 1].trim();
+				map.put(s1, Integer.valueOf(s2));
+			}
+		}
+		return map;
 	}
 }
