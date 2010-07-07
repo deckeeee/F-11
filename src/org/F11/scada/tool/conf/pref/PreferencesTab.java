@@ -246,6 +246,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		alarmCsvWrite(mainPanel);
 		alarmAttributeTitle(mainPanel);
 		plcRedundant(mainPanel);
+		analogRoundMode(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -683,8 +684,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 	}
 
 	private void analogRoundMode(JPanel mainPanel) {
-		JLabel label = new JLabel("アナログ内部値四捨五入：");
-		label.setToolTipText("アナログ内部値の四捨五入を設定します。初期値は四捨五入しない");
+		JLabel label = new JLabel("アナログHEX内部値四捨五入：");
+		label.setToolTipText("アナログHEX内部値の四捨五入を設定します。初期値は四捨五入しない");
 		mainPanel.add(label);
 		final JComboBox cb = new JComboBox();
 		cb.addItem("四捨五入しない");
