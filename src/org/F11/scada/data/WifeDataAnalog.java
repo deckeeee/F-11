@@ -66,7 +66,7 @@ public final class WifeDataAnalog extends Number implements WifeData,
 		/**
 		 * ˆø”‚ğ®”‚ÅlÌŒÜ“ü‚µ‚Ü‚·B
 		 *
-		 * @param bd 0ˆÈã‚ÌÀ”
+		 * @param bd À”
 		 * @return lÌŒÜ“ü‚µ‚½Œ‹‰Ê
 		 */
 		BigInteger round(BigDecimal bd) {
@@ -77,6 +77,12 @@ public final class WifeDataAnalog extends Number implements WifeData,
 						return new BigDecimal("1").toBigInteger();
 					} else {
 						return new BigDecimal("0").toBigInteger();
+					}
+				} else if (-1.0D < tmpValue && 0.0D > tmpValue) {
+					if (-0.5D < tmpValue) {
+						return new BigDecimal("0").toBigInteger();
+					} else {
+						return new BigDecimal("-1").toBigInteger();
 					}
 				} else {
 					BigDecimal tmpBd =
