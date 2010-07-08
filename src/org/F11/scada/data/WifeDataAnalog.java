@@ -71,9 +71,18 @@ public final class WifeDataAnalog extends Number implements WifeData,
 		 */
 		BigInteger round(BigDecimal bd) {
 			if (analogRoundMode) {
-				BigDecimal tmpBd =
-					bd.round(new MathContext(bd.precision() - bd.scale()));
-				return tmpBd.toBigInteger();
+				double tmpValue = bd.doubleValue();
+				if (1.0D > tmpValue && 0.0D <= tmpValue) {
+					if (0.5D <= tmpValue) {
+						return new BigDecimal("1").toBigInteger();
+					} else {
+						return new BigDecimal("0").toBigInteger();
+					}
+				} else {
+					BigDecimal tmpBd =
+						bd.round(new MathContext(bd.precision() - bd.scale()));
+					return tmpBd.toBigInteger();
+				}
 			} else {
 				return bd.toBigInteger();
 			}
