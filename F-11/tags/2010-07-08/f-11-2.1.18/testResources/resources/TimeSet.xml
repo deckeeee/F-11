@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 時刻設定定義 -->
+<f11:timeset xmlns:f11="http://www.F-11.org/scada">
+
+	<!-- 1時間おき -->
+	<!-- f11:timesettask schedule="MINUTE" offset="0" -->
+	<f11:timesettask schedule="HOUR" offset="30000" milliOffsetMode="true">
+		<f11:read provider="P1" holder="TimeRead"/>
+		<!-- f11:write provider="P1" holder="TimeRead"/-->
+		<f11:write provider="P2" holder="TimeWrite"/>
+	</f11:timesettask>
+</f11:timeset>
