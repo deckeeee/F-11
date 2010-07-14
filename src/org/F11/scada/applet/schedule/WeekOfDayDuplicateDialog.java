@@ -40,6 +40,8 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import org.F11.scada.WifeUtilities;
+import org.F11.scada.applet.ClientConfiguration;
+import org.apache.commons.configuration.Configuration;
 
 public class WeekOfDayDuplicateDialog extends JDialog {
 	private static final long serialVersionUID = 8204814342762000834L;
@@ -47,6 +49,7 @@ public class WeekOfDayDuplicateDialog extends JDialog {
 	private JList destList;
 	private final ScheduleModel model;
 	private final boolean isNonTandT;
+	private Configuration configuration = new ClientConfiguration();
 
 	public WeekOfDayDuplicateDialog(
 			Frame frame,
@@ -166,7 +169,10 @@ public class WeekOfDayDuplicateDialog extends JDialog {
 	}
 
 	private int getStartIndex() {
-		return isNonTandT ? 2 : 0;
+		boolean todayOrTomorrow =
+			configuration.getBoolean(
+					"org.F11.scada.applet.schedule.todayOrTomorrow", false);
+		return isNonTandT || todayOrTomorrow ? 2 : 0;
 	}
 
 	private static class ListElement {
