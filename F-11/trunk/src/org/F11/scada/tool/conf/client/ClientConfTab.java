@@ -419,6 +419,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		isShowAttributeColumn(mainPanel);
 		isTodayOrTomorrow(mainPanel);
 		columnConfig(mainPanel);
+		setNomalSize(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -750,6 +751,37 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				.setToolTipText("警報一覧の列を「列名1:移動先の列1, 列名2:移動先の列2... ,列名n:移動先の列n」で設定します。");
 		panel.add(columnConfig);
 		mainPanel.add(panel);
+	}
+
+	private void setNomalSize(JPanel mainPanel) {
+		JLabel label = new JLabel("警報発生時にクライアントサイズを戻す：");
+		label.setToolTipText("警報発生時に最小化されたクライアントを元のサイズに戻すかどうかを設定");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "戻さない", "戻す", });
+		if ("false".equals(manager.getClientConf(
+				"org.F11.scada.xwife.applet.alarm.setNomalSize", "false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("戻さない".equals(e.getItem())) {
+						manager
+								.setClientConf(
+										"org.F11.scada.xwife.applet.alarm.setNomalSize",
+										"false");
+					} else {
+						manager
+								.setClientConf(
+										"org.F11.scada.xwife.applet.alarm.setNomalSize",
+										"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {

@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -35,6 +36,7 @@ import javax.swing.table.TableModel;
 import org.F11.scada.applet.symbol.ColorFactory;
 import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.parser.alarm.AlarmNewsConfig;
+import org.F11.scada.util.ComponentUtil;
 import org.F11.scada.util.TableUtil;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
 import org.F11.scada.xwife.applet.AttributeNColumnUtil;
@@ -49,6 +51,7 @@ public class AlarmStats extends JLabel implements TableModelListener {
 	private final boolean isUseNewInfoMode;
 	private final String columnConfig;
 	private final boolean showAttributeColumn;
+	private final boolean setNomalSize;
 
 	/**
 	 * コンストラクタ
@@ -72,6 +75,9 @@ public class AlarmStats extends JLabel implements TableModelListener {
 			configuration.getBoolean(
 					"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
 					true);
+		setNomalSize =
+			configuration.getBoolean(
+					"org.F11.scada.xwife.applet.alarm.setNomalSize", false);
 	}
 
 	public void tableChanged(TableModelEvent e) {
@@ -111,6 +117,15 @@ public class AlarmStats extends JLabel implements TableModelListener {
 			setText(sb.toString());
 			setForeground(ColorFactory
 					.getColor((String) model.getValueAt(0, 3)));
+
+			setNomalSize();
+		}
+	}
+
+	private void setNomalSize() {
+		if (setNomalSize) {
+			JFrame frame = ComponentUtil.getAncestorOfClass(JFrame.class, this);
+			frame.setExtendedState(JFrame.NORMAL);
 		}
 	}
 
