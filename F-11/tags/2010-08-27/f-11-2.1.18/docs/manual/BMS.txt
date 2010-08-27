@@ -1,0 +1,16 @@
+Logging.xml
+
+スケジュール属性に"BMS"を指定すると、BMS用のCVSをエクスポートする。
+
+1分毎に1分ぶんのレコードを1ファイルにエクスポート。
+ヘッダには日付,時間,ホルダー名(プロバイダ名は無し)...
+
+EX.
+
+<f11:task name="log_table_bms" schedule="BMS" offset="0" factoryName="org.F11.scada.server.io.postgresql.PostgreSQLHandlerFactory">
+	<f11:column index="0" provider="P1" holder="D_500_BcdSingle" />
+	<f11:column index="1" provider="P1" holder="D_501_BcdSingle" />
+	<f11:column index="2" provider="P1" holder="D_502_BcdSingle" />
+	<f11:column index="3" provider="P1" holder="D_503_BcdSingle" />
+	<f11:csvout dir="C:/temp/csv/" csv_head="BMS" csv_mid="yyyyMMddHHmm" csv_foot=".csv" keep="36" data_head="true"/>
+</f11:task>
