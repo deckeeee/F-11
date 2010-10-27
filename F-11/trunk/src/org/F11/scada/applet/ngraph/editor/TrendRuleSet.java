@@ -25,7 +25,7 @@ import org.apache.commons.digester.RuleSetBase;
 
 /**
  * ページ定義からデータホルダを抽出するルールセットです。
- * 
+ *
  * @author maekawa
  */
 public class TrendRuleSet extends RuleSetBase {
@@ -38,7 +38,7 @@ public class TrendRuleSet extends RuleSetBase {
 	private static final String HORIZONTAL_SCALE_BUTTON =
 		"org.F11.scada.applet.ngraph.HorizontalScaleButtonProperty";
 	private static final String[] PAGE_ATTRIBUTE =
-		{ "width", "height", "name", "value" };
+		{ "width", "height", "name", "value", "cache" };
 	private static final String[] TREND3_ATTRIBUTE =
 		{
 			"x",

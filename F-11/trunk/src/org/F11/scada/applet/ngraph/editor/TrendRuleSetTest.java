@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor;
@@ -65,6 +65,7 @@ public class TrendRuleSetTest extends TestCase {
 		assertEquals(new Integer(800), page.getHeight());
 		assertEquals("TRND0004", page.getName());
 		assertEquals("/images/base/back.png", page.getValue());
+		assertEquals("true", page.getCache());
 
 		Trend3Data td3 = page.getTrend3Data();
 		assertEquals(new Integer(0), td3.getX());
@@ -132,8 +133,8 @@ public class TrendRuleSetTest extends TestCase {
 		assertEquals(new Integer(168), hbp.getHorizontalSelectSpanMode());
 		assertEquals(new Long(18000000), hbp.getHorizontalLineSpan());
 		assertEquals(new Long(60000), hbp.getRecordeSpan());
-		assertEquals("log_table_minute", hbp.getLogName());	
-		
+		assertEquals("log_table_minute", hbp.getLogName());
+
 		PageChangeButton pageChangeButton = page.getPageChangeButton();
 		assertNotNull(pageChangeButton);
 		assertEquals(new Integer(1110), pageChangeButton.getX());

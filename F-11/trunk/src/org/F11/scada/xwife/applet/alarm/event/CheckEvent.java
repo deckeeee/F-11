@@ -42,7 +42,11 @@ public class CheckEvent extends EventObject {
 	private final Timestamp timestamp;
 	private final Timestamp onDate;
 
-	public CheckEvent(Object source, AlarmTableModel model, int row, Timestamp timestamp) {
+	public CheckEvent(
+			Object source,
+			AlarmTableModel model,
+			int row,
+			Timestamp timestamp) {
 		super(source);
 		checkEventSource = (String) source;
 		jumpPath = getString(model, row, model.getColumn("ジャンプパス"));
@@ -140,25 +144,39 @@ public class CheckEvent extends EventObject {
 
 	public String toString() {
 		return super.toString()
-		+ ", jumpPath=" + jumpPath
-		+ ", autoJumpFlag=" + autoJumpFlag
-		+ ", autoJumpPriority=" + autoJumpPriority
-		+ ", alarmColor=" + alarmColor
-		+ ", point=" + point
-		+ ", provider=" + provider
-		+ ", holder=" + holder
-		+ ", onDate=" + onDate;
+			+ ", jumpPath="
+			+ jumpPath
+			+ ", autoJumpFlag="
+			+ autoJumpFlag
+			+ ", autoJumpPriority="
+			+ autoJumpPriority
+			+ ", alarmColor="
+			+ alarmColor
+			+ ", point="
+			+ point
+			+ ", provider="
+			+ provider
+			+ ", holder="
+			+ holder
+			+ ", onDate="
+			+ onDate;
 	}
 
 	public boolean equalsKey(CheckEvent dst) {
-		return checkEventSource.equals(dst.checkEventSource)
+		return checkEventSource != null
+			&& checkEventSource.equals(dst.checkEventSource)
+			&& jumpPath != null
 			&& jumpPath.equals(dst.jumpPath)
 			&& autoJumpFlag == dst.autoJumpFlag
 			&& autoJumpPriority == dst.autoJumpPriority
+			&& alarmColor != null
 			&& alarmColor.equals(dst.alarmColor)
 			&& point == dst.point
+			&& provider != null
 			&& provider.equals(dst.provider)
+			&& holder != null
 			&& holder.equals(dst.holder)
+			&& onDate != null
 			&& onDate.equals(dst.onDate);
 	}
 
