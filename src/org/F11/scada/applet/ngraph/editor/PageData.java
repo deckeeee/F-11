@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor;
@@ -26,9 +26,9 @@ import java.io.Serializable;
 
 /**
  * 定義ファイルのページプロパティー
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class PageData implements Serializable {
 	private static final long serialVersionUID = -4675764103764679678L;
@@ -36,6 +36,7 @@ public class PageData implements Serializable {
 	private Integer height;
 	private String name;
 	private String value;
+	private Boolean cache;
 	private Trend3Data trend3Data;
 	private PageChangeButton pageChangeButton;
 
@@ -69,6 +70,14 @@ public class PageData implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public Boolean getCache() {
+		return cache;
+	}
+
+	public void setCache(Boolean cache) {
+		this.cache = cache;
 	}
 
 	public Trend3Data getTrend3Data() {
@@ -107,9 +116,10 @@ public class PageData implements Serializable {
 		sb.append(getAttribute("height", height));
 		sb.append(getAttribute("name", name));
 		sb.append(getAttribute("value", value));
+		sb.append(getAttribute("cache", cache));
 		return sb.toString();
 	}
-	
+
 	public boolean isWriteOk() {
 		boolean ret = true;
 		for (SeriesData sd : trend3Data.getSeriesDatas()) {
