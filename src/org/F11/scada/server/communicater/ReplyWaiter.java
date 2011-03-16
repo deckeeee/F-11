@@ -38,4 +38,12 @@ public interface ReplyWaiter {
 	 * 二重化の他方へアクセスを切り換えます。
 	 */
 	public void change2sub() throws IOException, InterruptedException;
+
+	/**
+	 * TCPポートを再オープンします。
+	 *
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void reOpenPort() throws IOException, InterruptedException;
 }
