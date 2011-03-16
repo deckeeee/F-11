@@ -333,7 +333,7 @@ public final class PortSelector implements Runnable {
 			this.ops = ops;
 		}
 		public SelectCommand execute() {
-			log.debug("SetInterestOpsChannel. " + listener.toString());
+			log.debug("SetInterestOpsChannel. " + listener.toString() + " Ops=" + ops);
 			SelectionKey key = enterKeys.get(listener);
 			if (key != null && key.isValid()) {
 				int old = key.interestOps();
@@ -356,7 +356,7 @@ public final class PortSelector implements Runnable {
 			this.ops = ops;
 		}
 		public SelectCommand execute() {
-			log.debug("ResetInterestOpsChannel. " + listener.toString());
+			log.debug("ResetInterestOpsChannel. " + listener.toString() + " Ops=" + ops);
 			SelectionKey key = enterKeys.get(listener);
 			if (key != null && key.isValid()) {
 				int old = key.interestOps();

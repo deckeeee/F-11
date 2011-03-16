@@ -134,4 +134,7 @@ public final class UdpReplyWaiter implements RecvListener, ReplyWaiter {
 		}
 	}
 
+	public void reOpenPort() throws IOException, InterruptedException {
+		// No Operation.
+	}
 }

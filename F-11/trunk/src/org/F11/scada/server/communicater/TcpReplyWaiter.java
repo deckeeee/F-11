@@ -46,29 +46,76 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	/** 受信待ちフラグ */
 	private volatile boolean recvWaiting = false;
 
+	/** デバイスの参照 */
+	private final Environment device;
+
 	/**
 	 * コンストラクタ 通信するTCPポートをマネージャーから取得します。
+	 *
 	 * @param device デバイス情報
 	 * @param header 受信すべきヘッダー
 	 */
 	public TcpReplyWaiter(Environment device, byte[] header)
-			throws IOException, InterruptedException {
+			throws IOException,
+			InterruptedException {
 		this.header = header;
 		timeout = device.getPlcTimeout();
-		local = new InetSocketAddress(device.getHostIpAddress(),
-				device.getHostPortNo());
-		target1 = new InetSocketAddress(device.getPlcIpAddress(),
-				device.getPlcPortNo());
+		local =
+			new InetSocketAddress(device.getHostIpAddress(), device
+					.getHostPortNo());
+		target1 =
+			new InetSocketAddress(device.getPlcIpAddress(), device
+					.getPlcPortNo());
 		if (device.getPlcIpAddress2() != null
-				&& 0 < device.getPlcIpAddress2().length())
-			target2 = new InetSocketAddress(device.getPlcIpAddress2(),
-					device.getPlcPortNo());
+			&& 0 < device.getPlcIpAddress2().length())
+			target2 =
+				new InetSocketAddress(device.getPlcIpAddress2(), device
+						.getPlcPortNo());
 		else
 			target2 = null;
 
 		isTarget1 = true;
-		portChannel = (TcpPortChannel) PortChannelManager.getInstance().addPortListener(
-				"TCP", target1, local, this);
+		this.device = device;
+		portChannel =
+			(TcpPortChannel) PortChannelManager.getInstance().addPortListener(
+					"TCP", target1, local, this);
+		if (isFinsTcp()) {
+			sendFinsTcpCommand();
+		}
+	}
+
+	private void sendFinsTcpCommand() throws IOException, InterruptedException {
+		// FINSノードアドレス情報送信コマンドを送信
+		byte[] buf =
+			new byte[] {
+				(byte) 0x46,
+				(byte) 0x49,
+				(byte) 0x4E,
+				(byte) 0x53,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x0C,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00,
+				(byte) 0x00 };
+		portChannel.sendRequest((isTarget1 ? target1 : target2), ByteBuffer
+				.wrap(buf));
+		log.info("node sended");
+	}
+
+	private boolean isFinsTcp() {
+		return "TCP".equalsIgnoreCase(device.getDeviceKind())
+			&& "FINSTCP".equalsIgnoreCase(device.getPlcCommKind());
 	}
 
 	// @see org.F11.scada.server.communicater.ReplyWaiter#close()
@@ -81,7 +128,8 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	// org.F11.scada.server.communicater.ReplyWaiter#syncSendRecv(java.nio.ByteBuffer,
 	// java.nio.ByteBuffer)
 	public void syncSendRecv(ByteBuffer sendBuffer, ByteBuffer recvBuffer)
-			throws IOException, InterruptedException {
+		throws IOException,
+		InterruptedException {
 		log.debug("syncSendRecv()");
 		// 受信待ち
 		recvWaiting = true;
@@ -100,15 +148,17 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 				PortChannelManager.getInstance().removePortListener(target1,
 						this);
 				isTarget1 = false;
-				portChannel = (TcpPortChannel) PortChannelManager.getInstance().addPortListener(
-						"TCP", target2, local, this);
+				portChannel =
+					(TcpPortChannel) PortChannelManager.getInstance()
+							.addPortListener("TCP", target2, local, this);
 				log.info("target change to 2nd.");
 			} else {
 				PortChannelManager.getInstance().removePortListener(target2,
 						this);
 				isTarget1 = true;
-				portChannel = (TcpPortChannel) PortChannelManager.getInstance().addPortListener(
-						"TCP", target1, local, this);
+				portChannel =
+					(TcpPortChannel) PortChannelManager.getInstance()
+							.addPortListener("TCP", target1, local, this);
 				log.info("target change to 1st.");
 			}
 		}
@@ -137,4 +187,15 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 		}
 	}
 
+	public void reOpenPort() throws IOException, InterruptedException {
+		PortChannelManager.getInstance().removePortListener(target1,
+				this);
+		portChannel =
+			(TcpPortChannel) PortChannelManager.getInstance()
+					.addPortListener("TCP", target1, local, this);
+		if (isFinsTcp()) {
+			sendFinsTcpCommand();
+		}
+		log.info("TCPポートを再オープンしました。");
+	}
 }

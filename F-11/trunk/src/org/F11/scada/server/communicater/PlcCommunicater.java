@@ -50,6 +50,8 @@ public final class PlcCommunicater implements Communicater {
 	private ByteBuffer recvBuffer = ByteBuffer.allocateDirect(2048);
 	/** 読込みデータバッファ */
 	private ByteBuffer recvData = ByteBuffer.allocateDirect(2048);
+	/** FINS/TCPプロトコル通信の有無 */
+	private boolean isFinsTcp;
 
 	/**
 	 * コンストラクター
@@ -75,6 +77,12 @@ public final class PlcCommunicater implements Communicater {
 		this.device = device;
 		this.converter = converter;
 		this.linkageCommand = new LinkageCommand(converter);
+		this.isFinsTcp = isFinsTcp(device);
+	}
+
+	private boolean isFinsTcp(Environment device) {
+		return "TCP".equalsIgnoreCase(device.getDeviceKind())
+			&& "FINSTCP".equalsIgnoreCase(device.getPlcCommKind());
 	}
 
 	// @see org.F11.scada.server.communicater.Communicater#close()
@@ -209,7 +217,7 @@ public final class PlcCommunicater implements Communicater {
 
 				// 通信先IPを切り替える
 				waiter.change2sub();
-				
+
 				recvData.clear();
 				sendBuffer.clear();
 				converter.retryCommand(sendBuffer);
@@ -232,6 +240,34 @@ public final class PlcCommunicater implements Communicater {
 					ex = checkError();
 				}
 			}
+			// FINS/TCPでエラー発生ならばポートを再オープン
+			if (ex != null && isFinsTcp) {
+				// 通信先IPを切り替える
+				waiter.reOpenPort();
+
+				recvData.clear();
+				sendBuffer.clear();
+				converter.retryCommand(sendBuffer);
+				sendBuffer.flip();
+				// 送信後受信待ち
+				waiter.syncSendRecv(sendBuffer, recvBuffer);
+				ex = checkError();
+				// エラー発生なら試行を繰り返す
+				for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
+					if (ex != null) {
+						log.warn("ID[" + device.getDeviceID()
+								+ "] changed try[" + String.valueOf(i)
+								+ "] error[" + ex.getMessage() + "]");
+					}
+					sendBuffer.clear();
+					converter.retryCommand(sendBuffer);
+					sendBuffer.flip();
+					// 送信後受信待ち
+					waiter.syncSendRecv(sendBuffer, recvBuffer);
+					ex = checkError();
+				}
+			}
+
 			if (ex != null) {
 				log.warn("ID[" + device.getDeviceID() + "] error decision["
 						+ ex.getMessage() + "]");

@@ -40,6 +40,9 @@ import org.apache.log4j.Logger;
  * TCPポートを管理するクラスです。
  */
 public final class TcpPortChannel implements PortListener, PortChannel {
+	// FINS/TCPヘッダの長さ
+	private static final int FINSTCP_HEADER_LENGTH = 16;
+
 	private final static Logger log = Logger.getLogger(TcpPortChannel.class);
 
 	/** セレクタへの参照 */
@@ -65,7 +68,7 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 
 	/**
 	 * コンストラクタ UDPチャンネルをオープンし、セレクタへ登録します。
-	 * 
+	 *
 	 * @param local
 	 *            ホストアドレス
 	 * @param selector
@@ -82,6 +85,9 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 	// org.F11.scada.server.communicater.PortChannel#addListener(org.F11.scada.server.communicater.RecvListener)
 	public void addListener(RecvListener listener) {
 		String idkey = makeIDKey(ByteBuffer.wrap(listener.getRecvHeader()));
+		if (log.isDebugEnabled()) {
+			log.debug(WifeUtilities.toString(listener.getRecvHeader()));
+		}
 		if (idkey == null) {
 			throw new IllegalArgumentException("ID is not right.");
 		}
@@ -108,7 +114,7 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 
 	/**
 	 * セレクタに送信要求します。
-	 * 
+	 *
 	 * @param target
 	 *            相手先アドレス
 	 * @param sendBuffer
@@ -138,6 +144,9 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 		if (sendData == null) {
 			sendData = (SendData) writeRequest.removeFirst();
 		}
+		if (log.isDebugEnabled()) {
+			log.debug(WifeUtilities.toString(sendData.sendBuffer));
+		}
 		channel.write(sendData.sendBuffer);
 		if (!sendData.hasRemaining()) {
 			sendData = null;
@@ -153,6 +162,7 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 		recvBuffer.clear();
 		int len = 0;
 		len = channel.read(recvBuffer);
+		log.debug(WifeUtilities.toString(recvBuffer));
 		if (0 < len) {
 			recvBuffer.flip();
 			String idkey = makeIDKey(recvBuffer);
@@ -217,12 +227,15 @@ public final class TcpPortChannel implements PortListener, PortChannel {
 	 * 指定されたデータからリスナー特定用の文字列を作成します。 @param data 受信バッファ @return キー文字列
 	 */
 	protected String makeIDKey(ByteBuffer data) {
-		if ((data.get(0) == (byte) 0xc0 || data.get(0) == (byte) 0xc1)
-				&& data.get(1) == (byte) 0x00) {
+		if ((data.get(0) == (byte) 0x46 && data.get(1) == (byte) 0x49)
+				&& data.get(2) == (byte) 0x4E && data.get(3) == (byte) 0x53
+				&& data.get(11) == (byte) 0x02) {
+			// FINS/TCPヘッダの場合
 			byte[] id = new byte[6];
-			data.position(3);
+			data.position(FINSTCP_HEADER_LENGTH + 3);
 			data.get(id).position(0);
-			return "FINS_" + WifeUtilities.toString(id);
+//			log.info("FINS_TCP" + WifeUtilities.toString(id));
+			return "FINS_TCP" + WifeUtilities.toString(id);
 		} else if (data.get(0) == (byte) 0xd0 && data.get(1) == (byte) 0x00) {
 			byte[] id = new byte[5];
 			data.position(2);

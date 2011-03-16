@@ -53,21 +53,21 @@ public class SchedulePointServiceImpl implements SchedulePointService {
 
 	public void init() {
 		List dto = schedulePointDao.getAllSchedulePoint();
-		if (null == currentSchePointRows) {
+//		if (null == currentSchePointRows) {
 			currentSchePointRows = communicator.getHolderData(dto);
 			//schePointRowsはソート済み
 			for (Iterator i = currentSchePointRows.iterator(); i.hasNext();) {
 				SchedulePointRowDto rowDto = (SchedulePointRowDto) i.next();
 				schedulePointDao.updateScheduleGroupNo(rowDto);
 			}
-		} else {
-			List schePointRows = communicator.getHolderData(dto);
-			//schePointRowsはソート済み
-			for (Iterator i = select(schePointRows).iterator(); i.hasNext();) {
-				SchedulePointRowDto rowDto = (SchedulePointRowDto) i.next();
-				schedulePointDao.updateScheduleGroupNo(rowDto);
-			}
-		}
+//		} else {
+//			List schePointRows = communicator.getHolderData(dto);
+//			//schePointRowsはソート済み
+//			for (Iterator i = select(schePointRows).iterator(); i.hasNext();) {
+//				SchedulePointRowDto rowDto = (SchedulePointRowDto) i.next();
+//				schedulePointDao.updateScheduleGroupNo(rowDto);
+//			}
+//		}
 	}
 
 	private List select(List schePointRows) {
