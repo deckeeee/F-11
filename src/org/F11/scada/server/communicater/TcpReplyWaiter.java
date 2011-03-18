@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import org.F11.scada.EnvironmentManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -55,22 +56,24 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	 * @param device デバイス情報
 	 * @param header 受信すべきヘッダー
 	 */
-	public TcpReplyWaiter(Environment device, byte[] header)
-			throws IOException,
+	public TcpReplyWaiter(Environment device, byte[] header) throws IOException,
 			InterruptedException {
 		this.header = header;
 		timeout = device.getPlcTimeout();
 		local =
-			new InetSocketAddress(device.getHostIpAddress(), device
-					.getHostPortNo());
+			new InetSocketAddress(
+				device.getHostIpAddress(),
+				device.getHostPortNo());
 		target1 =
-			new InetSocketAddress(device.getPlcIpAddress(), device
-					.getPlcPortNo());
+			new InetSocketAddress(
+				device.getPlcIpAddress(),
+				device.getPlcPortNo());
 		if (device.getPlcIpAddress2() != null
 			&& 0 < device.getPlcIpAddress2().length())
 			target2 =
-				new InetSocketAddress(device.getPlcIpAddress2(), device
-						.getPlcPortNo());
+				new InetSocketAddress(
+					device.getPlcIpAddress2(),
+					device.getPlcPortNo());
 		else
 			target2 = null;
 
@@ -78,7 +81,10 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 		this.device = device;
 		portChannel =
 			(TcpPortChannel) PortChannelManager.getInstance().addPortListener(
-					"TCP", target1, local, this);
+				"TCP",
+				target1,
+				local,
+				this);
 		if (isFinsTcp()) {
 			sendFinsTcpCommand();
 		}
@@ -107,10 +113,21 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 				(byte) 0x00,
 				(byte) 0x00,
 				(byte) 0x00,
-				(byte) 0x00 };
-		portChannel.sendRequest((isTarget1 ? target1 : target2), ByteBuffer
-				.wrap(buf));
+				getHostAddress() };
+		portChannel.sendRequest(
+			(isTarget1 ? target1 : target2),
+			ByteBuffer.wrap(buf));
 		log.info("node sended");
+	}
+
+	private byte getHostAddress() {
+		boolean isAutoFinsNode =
+			Boolean
+				.valueOf(
+					EnvironmentManager.get("/server/isAutoFinsNode", "false"))
+				.booleanValue();
+		log.info("自動割付FINSノードアドレスを使用:" + isAutoFinsNode);
+		return isAutoFinsNode ? (byte) 0x00 : (byte) device.getHostAddress();
 	}
 
 	private boolean isFinsTcp() {
@@ -121,15 +138,15 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	// @see org.F11.scada.server.communicater.ReplyWaiter#close()
 	public void close() throws InterruptedException {
 		PortChannelManager.getInstance().removePortListener(
-				(isTarget1 ? target1 : target2), this);
+			(isTarget1 ? target1 : target2),
+			this);
 	}
 
 	// @see
 	// org.F11.scada.server.communicater.ReplyWaiter#syncSendRecv(java.nio.ByteBuffer,
 	// java.nio.ByteBuffer)
 	public void syncSendRecv(ByteBuffer sendBuffer, ByteBuffer recvBuffer)
-		throws IOException,
-		InterruptedException {
+			throws IOException, InterruptedException {
 		log.debug("syncSendRecv()");
 		// 受信待ち
 		recvWaiting = true;
@@ -145,20 +162,24 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	public void change2sub() throws IOException, InterruptedException {
 		if (target2 != null) {
 			if (isTarget1) {
-				PortChannelManager.getInstance().removePortListener(target1,
-						this);
+				PortChannelManager.getInstance().removePortListener(
+					target1,
+					this);
 				isTarget1 = false;
 				portChannel =
-					(TcpPortChannel) PortChannelManager.getInstance()
-							.addPortListener("TCP", target2, local, this);
+					(TcpPortChannel) PortChannelManager
+						.getInstance()
+						.addPortListener("TCP", target2, local, this);
 				log.info("target change to 2nd.");
 			} else {
-				PortChannelManager.getInstance().removePortListener(target2,
-						this);
+				PortChannelManager.getInstance().removePortListener(
+					target2,
+					this);
 				isTarget1 = true;
 				portChannel =
-					(TcpPortChannel) PortChannelManager.getInstance()
-							.addPortListener("TCP", target1, local, this);
+					(TcpPortChannel) PortChannelManager
+						.getInstance()
+						.addPortListener("TCP", target1, local, this);
 				log.info("target change to 1st.");
 			}
 		}
@@ -188,11 +209,13 @@ public final class TcpReplyWaiter implements RecvListener, ReplyWaiter {
 	}
 
 	public void reOpenPort() throws IOException, InterruptedException {
-		PortChannelManager.getInstance().removePortListener(target1,
-				this);
+		PortChannelManager.getInstance().removePortListener(target1, this);
 		portChannel =
-			(TcpPortChannel) PortChannelManager.getInstance()
-					.addPortListener("TCP", target1, local, this);
+			(TcpPortChannel) PortChannelManager.getInstance().addPortListener(
+				"TCP",
+				target1,
+				local,
+				this);
 		if (isFinsTcp()) {
 			sendFinsTcpCommand();
 		}
