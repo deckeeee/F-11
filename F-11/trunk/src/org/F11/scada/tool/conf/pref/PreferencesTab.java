@@ -245,8 +245,8 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mailErrorHolder(mainPanel);
 		alarmCsvWrite(mainPanel);
 		alarmAttributeTitle(mainPanel);
-		plcRedundant(mainPanel);
 		analogRoundMode(mainPanel);
+//		autoFinsNode(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -653,36 +653,6 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(alarmAttributeTitle);
 	}
 
-	private void plcRedundant(JPanel mainPanel) {
-		JLabel label = new JLabel("2重化PLC：");
-		label.setToolTipText("2重化PLCを使用するか、しないかを設定します。");
-		mainPanel.add(label);
-		final JComboBox cb = new JComboBox();
-		cb.addItem("使用しない");
-		cb.addItem("使用する");
-		String prefix =
-			manager.getPreferences("/server/device/redundant", "false");
-		if ("false".equals(prefix)) {
-			cb.setSelectedIndex(0);
-		} else {
-			cb.setSelectedIndex(1);
-		}
-		cb.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if ("使用しない".equals(e.getItem())) {
-						manager.setPreferences("/server/device/redundant",
-								"false");
-					} else {
-						manager.setPreferences("/server/device/redundant",
-								"true");
-					}
-				}
-			}
-		});
-		mainPanel.add(cb);
-	}
-
 	private void analogRoundMode(JPanel mainPanel) {
 		JLabel label = new JLabel("アナログHEX内部値四捨五入：");
 		label.setToolTipText("アナログHEX内部値の四捨五入を設定します。初期値は四捨五入しない");
@@ -705,6 +675,37 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 								"false");
 					} else {
 						manager.setPreferences("/server/analogRoundMode",
+								"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+
+	private void autoFinsNode(JPanel mainPanel) {
+		JLabel label = new JLabel("自動割付FINSノードアドレス(FINS/TCP)：");
+		label.setToolTipText("FINS/TCPを使用する場合、自動割付FINSノードアドレスを使用するかの有無。サーバーが2台以上の場合、自動割付FINSノードアドレスは利用できません。");
+		mainPanel.add(label);
+		final JComboBox cb = new JComboBox();
+		cb.addItem("利用しない");
+		cb.addItem("利用する");
+		String prefix =
+			manager.getPreferences("/server/isAutoFinsNode", "false");
+		if ("false".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("利用しない".equals(e.getItem())) {
+						manager.setPreferences("/server/isAutoFinsNode",
+								"false");
+					} else {
+						manager.setPreferences("/server/isAutoFinsNode",
 								"true");
 					}
 				}
