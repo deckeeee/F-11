@@ -79,7 +79,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * ページ定義を管理するクラスです。
- * 
+ *
  * @author hori
  */
 public class FrameDefineManager extends UnicastRemoteObject implements
@@ -122,11 +122,12 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param recvPort RMIシリアライズオブジェクト送受信のポート番号
 	 */
-	public FrameDefineManager(String recvPort, HolderRegisterBuilder builder)
-			throws RemoteException, MalformedURLException, IOException {
+	public FrameDefineManager(String recvPort, HolderRegisterBuilder builder) throws RemoteException,
+			MalformedURLException,
+			IOException {
 		this(
 			Integer.parseInt(recvPort),
 			"/resources/XWifeAppletDefine.xml",
@@ -135,19 +136,20 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param recvPort RMIシリアライズオブジェクト送受信のポート番号
 	 */
-	public FrameDefineManager(int recvPort, HolderRegisterBuilder builder)
-			throws RemoteException, MalformedURLException, IOException {
+	public FrameDefineManager(int recvPort, HolderRegisterBuilder builder) throws RemoteException,
+			MalformedURLException,
+			IOException {
 		this(recvPort, "/resources/XWifeAppletDefine.xml", builder);
 	}
 
-	public FrameDefineManager(
-			int port,
+	public FrameDefineManager(int port,
 			String path,
 			HolderRegisterBuilder builder) throws RemoteException,
-			MalformedURLException, IOException {
+			MalformedURLException,
+			IOException {
 
 		super(port);
 
@@ -187,7 +189,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		long timeout =
 			Long.parseLong(EnvironmentManager.get(
 				"/server/pagetimeout",
-				"600000"));
+				"300000"));
 		PageTimeout pt = new PageTimeout(timeout);
 		pt.schedule(this);
 	}
@@ -224,7 +226,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * ページ定義を登録します。
-	 * 
+	 *
 	 * @param name ページ名
 	 * @param xml 定義
 	 */
@@ -235,7 +237,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * ステータスバー登録を追加します。
-	 * 
+	 *
 	 * @param xml 定義
 	 */
 	public void setStatusbar(String xml) {
@@ -252,7 +254,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * ページ定義をxml文字列で返します。
-	 * 
+	 *
 	 * @param name ページ名
 	 * @return xml定義
 	 */
@@ -263,7 +265,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * ステータスバー定義をxml文字列で返します。
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getStatusbarString() {
@@ -272,7 +274,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * ページ名のセットを返します。
-	 * 
+	 *
 	 * @return
 	 */
 	protected Set getPageNameSet() {
@@ -281,7 +283,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * keyで指定された時刻以降にページ定義が変更されていれば、XMLで定義を返します。
-	 * 
+	 *
 	 * @param name ページ名
 	 * @param key 更新時刻
 	 * @return String ページ定義のXML表現。変更無し又はページ名無しの場合null
@@ -289,22 +291,28 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	private PageDefine getPage(String name, long key) {
 		PageDefine page = (PageDefine) pageMap.get(name);
 		if (page != null && key < page.getEditTime()) {
-			return new PageDefine(page.getEditTime(), replaceAllPointName(page
-				.getSrcXml()));
+			return new PageDefine(
+				page.getEditTime(),
+				replaceAllPointName(page.getSrcXml()));
 		}
 		return null;
 	}
 
 	/*
 	 * (Javadoc なし)
-	 * 
-	 * @see org.F11.scada.server.frame.FrameDefineHandler#getPage(java.lang.String,
-	 *      long, java.net.InetAddress)
+	 *
+	 * @see
+	 * org.F11.scada.server.frame.FrameDefineHandler#getPage(java.lang.String,
+	 * long, java.net.InetAddress)
 	 */
-	public synchronized PageDefine getPage(
-			String name,
+	public synchronized PageDefine getPage(String name,
 			long key,
 			Session session) {
+		if (isClientMax(session)) {
+			String conMaxPage =
+				EnvironmentManager.get("/server/clientMaxPage", "connectmax");
+			return getPage(conMaxPage, 0);
+		}
 		PageDefine pd = getPage(name, key);
 		List wdps = getWifeDataProviders(pd, session);
 		log.debug("page=" + name);
@@ -314,12 +322,12 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			log.debug("2");
 			checkUnregisterJim(session);
 			sendRequestDateMap.put(new Long(key), session);
-//			if (log.isDebugEnabled()) {
-//				log.debug("key="
-//					+ getKeyString(key)
-//					+ " value="
-//					+ sendRequestDateMap.get(new Long(key)));
-//			}
+			// if (log.isDebugEnabled()) {
+			// log.debug("key="
+			// + getKeyString(key)
+			// + " value="
+			// + sendRequestDateMap.get(new Long(key)));
+			// }
 			clientPageMap.put(session, name);
 			registerJim(pd);
 			log.debug("3");
@@ -330,8 +338,15 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 		return pd;
 	}
 
-	private List<DataProvider> getWifeDataProviders(
-			PageDefine pd,
+	private boolean isClientMax(Session session) {
+		int clientMax =
+			Integer
+				.parseInt(EnvironmentManager.get("/server/clientMax", "100"));
+		return clientPageMap.size() >= clientMax
+			&& !clientPageMap.containsKey(session);
+	}
+
+	private List<DataProvider> getWifeDataProviders(PageDefine pd,
 			Session session) {
 		HashSet<String> set = new HashSet<String>();
 		getRemoveProvider(session, set);
@@ -394,10 +409,10 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			if (pageMap.containsKey(pname)) {
 				PageDefine clientPage = (PageDefine) pageMap.get(pname);
 				if (!clientPage.isCache()) {
-//					log.debug("unregisterJim");
+					// log.debug("unregisterJim");
 					unregisterJim(session);
 				} else {
-//					log.debug("not unregisterJim");
+					// log.debug("not unregisterJim");
 				}
 			}
 		}
@@ -405,7 +420,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * 他のクライアントが開いているページのホルダーとNORをとりJIMから削除。
-	 * 
+	 *
 	 * @param address 送信元クライアントのIPアドレス
 	 * @throws RemoteException
 	 */
@@ -521,7 +536,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * PageDefine#getDataHoldersのSet(HolderString)オブジェクトでデータホルダーを生成しJIMに登録する。
-	 * 
+	 *
 	 * @param define
 	 */
 	private synchronized void registerJim(PageDefine define) {
@@ -569,7 +584,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * keyで指定された時刻以降にステータスバー定義が変更されていれば、XMLで定義を返します。
-	 * 
+	 *
 	 * @param key 更新時刻
 	 * @return String ステータスバー定義のXML表現。変更無しの場合null
 	 */
@@ -582,7 +597,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * ユーザー毎のメニューツリーを返します。 指定ユーザーにメニュー定義が無ければ、デフォルトのメニューツリーを返します。
-	 * 
+	 *
 	 * @param user ユーザー名
 	 * @return メニューツリーの定義
 	 * @throws RemoteException
@@ -679,7 +694,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * 引数のマップオブジェクトを全てputします
-	 * 
+	 *
 	 * @param map ページ名称とページ定義オブジェクトのマップ
 	 * @since 1.0.3
 	 */
@@ -716,7 +731,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * 指定した名称のページ定義を削除します
-	 * 
+	 *
 	 * @param pageName 削除するページ名称
 	 * @return 削除するページオブジェクト
 	 * @since 1.0.3
@@ -729,7 +744,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * 引数のページ名称が既に登録されていれば true をそうでなければ false を返します
-	 * 
+	 *
 	 * @param pageName 判定するページ名称
 	 * @return 引数のページ名称が既に登録されていれば true をそうでなければ false を返します
 	 * @since 1.0.3
@@ -740,7 +755,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	/**
 	 * そのポイントが含まれるオブジェクトを設定します。
-	 * 
+	 *
 	 * @param nb 新ポイント情報
 	 * @param ob 旧ポイント情報
 	 * @since 1.0.3
@@ -774,12 +789,12 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 
 	public synchronized void setSendRequestDateMap(Session session, long time) {
 		sendRequestDateMap.put(new Long(time), session);
-//		if (log.isDebugEnabled()) {
-//			log.debug("key="
-//				+ getKeyString(time)
-//				+ " value="
-//				+ sendRequestDateMap.get(new Long(time)));
-//		}
+		// if (log.isDebugEnabled()) {
+		// log.debug("key="
+		// + getKeyString(time)
+		// + " value="
+		// + sendRequestDateMap.get(new Long(time)));
+		// }
 	}
 
 	public List getCachePages() {

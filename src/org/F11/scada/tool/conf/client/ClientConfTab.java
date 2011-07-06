@@ -420,6 +420,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		isTodayOrTomorrow(mainPanel);
 		columnConfig(mainPanel);
 		setNomalSize(mainPanel);
+		setShowScreenLock(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -777,6 +778,37 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 								.setClientConf(
 										"org.F11.scada.xwife.applet.alarm.setNomalSize",
 										"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void setShowScreenLock(JPanel mainPanel) {
+		JLabel label = new JLabel("画面ロックボタンを表示する：");
+		label.setToolTipText("画面ロックボタン表示の有無");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "表示", "隠す", });
+		if ("true".equals(manager.getClientConf(
+				"org.F11.scada.xwife.applet.isShowScreenLock", "true"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("表示".equals(e.getItem())) {
+						manager
+								.setClientConf(
+										"org.F11.scada.xwife.applet.isShowScreenLock",
+										"true");
+					} else {
+						manager
+								.setClientConf(
+										"org.F11.scada.xwife.applet.isShowScreenLock",
+										"false");
 					}
 				}
 			}
