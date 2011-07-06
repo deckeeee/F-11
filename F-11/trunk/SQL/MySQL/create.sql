@@ -279,7 +279,8 @@ CREATE TABLE history_table (
   check_flag tinyint(1) default NULL,
   KEY history_on_date_idx (point,provider,holder,on_date),
   KEY history_off_date_idx (point,provider,holder,off_date),
-  KEY history_pri_idx (point,provider,holder,on_date,off_date,check_flag)
+  KEY history_pri_idx (point,provider,holder,on_date,off_date,check_flag),
+  KEY history_on_date2_idx (on_date)
 ) TYPE=MyISAM;
 
 --
@@ -527,7 +528,7 @@ CREATE TABLE user_define_table (
   PRIMARY KEY  (username)
 ) TYPE=MyISAM;
 
--- 無通信プロバイダ アイテム計算式テーブル 
+-- 無通信プロバイダ アイテム計算式テーブル
 DROP TABLE IF EXISTS item_formula_table;
 CREATE TABLE item_formula_table (
   id bigint(20) NOT NULL auto_increment,

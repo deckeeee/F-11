@@ -27,6 +27,8 @@ CREATE TABLE history_table (
 CREATE INDEX history_on_date_idx ON history_table (point, provider, holder, on_date);
 CREATE INDEX history_off_date_idx ON history_table (point, provider, holder, off_date);
 CREATE INDEX history_pri_idx ON history_table (point, provider, holder, on_date, off_date, check_flag);
+CREATE INDEX history_on_date2_idx ON history_table (on_date);
+
 
 /* 履歴定義 */
 CREATE TABLE career_table (
@@ -268,7 +270,7 @@ CREATE TABLE operation_logging_table (
 	ope_holder VARCHAR(100) NOT NULL,
 	PRIMARY KEY (id)
 );
---  操作ログインデックス定義 
+--  操作ログインデックス定義
 CREATE INDEX operation_logging_table_id_idx ON operation_logging_table (ope_date);
 
 --  バージョンアップで操作ログを追加した場合は、必ず以下のインデックスを作成してください。
@@ -295,7 +297,7 @@ CREATE TABLE point_comment_table (
 );
 CREATE UNIQUE INDEX point_comment_table_holder_idx ON point_comment_table (provider, holder);
 
---  E_Mail送信先グループマスター 
+--  E_Mail送信先グループマスター
 CREATE TABLE email_group_master_table (
 	email_group_id INTEGER NOT NULL,
 	kind INTEGER NOT NULL,
@@ -304,7 +306,7 @@ CREATE TABLE email_group_master_table (
 );
 
 
--- E_Mail 属性別設定テーブル 
+-- E_Mail 属性別設定テーブル
 CREATE TABLE email_attribute_setting_table (
 	email_attribute_setting_id SERIAL,
 	attribute_id INTEGER NOT NULL,
@@ -314,7 +316,7 @@ CREATE TABLE email_attribute_setting_table (
 );
 CREATE UNIQUE INDEX email_attribute_setting_attribute_idx ON email_attribute_setting_table (attribute_id, email_group_id);
 
--- E_Mail 個別設定テーブル 
+-- E_Mail 個別設定テーブル
 CREATE TABLE email_individual_setting_table (
 	email_individual_setting_id SERIAL,
 	provider VARCHAR(100) NOT NULL,
@@ -406,7 +408,7 @@ CREATE TABLE schedule_group_table (
 CREATE INDEX schedule_group_table_groupno ON schedule_group_table (group_no);
 CREATE INDEX schedule_group_table_pageid ON schedule_group_table (page_id);
 
--- 無通信プロバイダ アイテム計算式テーブル 
+-- 無通信プロバイダ アイテム計算式テーブル
 CREATE TABLE item_formula_table (
   id SERIAL,
   holder VARCHAR(100) NOT NULL,

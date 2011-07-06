@@ -175,6 +175,8 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/device/redundant","false"));
 		pw.println(getXmlProp("/server/analogRoundMode","false"));
 		pw.println(getXmlProp("/server/isAutoFinsNode","false"));
+		pw.println(getXmlProp("/server/clientMax","100"));
+		pw.println(getXmlProp("/server/clientMaxPage","connectmax"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

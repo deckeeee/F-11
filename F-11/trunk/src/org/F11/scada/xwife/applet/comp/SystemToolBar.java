@@ -68,12 +68,19 @@ public class SystemToolBar extends JToolBar {
 		if (isDisplayToolBar(wifeApplet) && isLoginXml()) {
 			addChangeUser(wifeApplet);
 		}
-		add(new ScreenLockButton(wifeApplet));
+		if (isShowScreenLock(wifeApplet)) {
+			add(new ScreenLockButton(wifeApplet));
+		}
 		add(getAlarmSoundLock(wifeApplet));
 		if (isShowScreenShot(wifeApplet)) {
 			add(new ScreenShotButton(wifeApplet));
 		}
 		addSeparator();
+	}
+
+	private boolean isShowScreenLock(AbstractWifeApplet wifeApplet) {
+		return wifeApplet.getConfiguration().getBoolean(
+				"org.F11.scada.xwife.applet.isShowScreenLock", true);
 	}
 
 	private AlarmSoundLockButton getAlarmSoundLock(AbstractWifeApplet wifeApplet) {
