@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>テーブルレコード削除機能</title>
+<link rel="stylesheet" href="default.css" type="text/css">
+</head>
+
+<body>
+<h1>テーブルレコード削除機能</h1>
+
+<p>定義ファイル名：/recources/RemoveDefine.dicon</p>
+
+<h2>削除レコード指定方法</h2>
+
+<ul>
+<li>秒数指定...削除タスクを実行した日時から、何秒前までを残すかを指定する方法です。</li>
+<li>件数指定...削除タスクを実行した総レコード件数から、指定したレコード数を残す方法です。</li>
+</ul>
+
+<ol>
+<li>秒数指定
+<pre>
+&lt;!-- 削除コンポーネントを指定 秒数:secondRemoveDao 件数:countRemoveDao --&gt;
+&lt;property name="dao"&gt;secondRemoveDao&lt;/property&gt;
+</pre>
+<p>コメントの通りです。プロパティdaoにsecondRemoveDaoを指定します。</p>
+<pre>
+&lt;!-- 削除テーブル追加はここから --&gt;
+&lt;initMethod name="addSchedule" &gt;
+  &lt;arg&gt;
+    &lt;component class="org.F11.scada.server.remove.RemoveDto" &gt;
+      &lt;description&gt;
+        tableName:テーブル名
+        dateFieldName:日時フィールド名
+        removeValue:削除判定値(何秒前を削除又は保持件数)
+      &lt;/description&gt;
+      &lt;property name="tableName"&gt;"log_table_minute"&lt;/property&gt;
+      &lt;property name="dateFieldName"&gt;"f_date"&lt;/property&gt;
+      &lt;property name="removeValue"&gt;86400&lt;/property&gt;
+    &lt;/component&gt;
+  &lt;/arg&gt;
+</pre>
+
+ここにデータベースのテーブル名・日付フィールド名・削除に使用する判定値を設定します。<br/>
+    テーブル名,日付フィールド名はそれぞれ以下の通りになります。
+   <ul>
+   <li>ロギングデータ...例の通り</li>
+   <li>サマリ...設定しないで下さい</li>
+   <li>ヒストリ...hisotry_table, off_date</li>
+   <li>履歴...career_table, entrydate</li>
+   <li>操作ログ...operation_logging_table, ope_date</li>
+   <li>警報メール送信履歴...alarm_email_sent_table, sentdate</li>
+   </ul>
+<br/>
+removeValueには削除タスクを実行した日時から、何秒前までを残すかを指定します。86400秒だと一日分を残す設定になります。
+<pre>
+  &lt;arg&gt;
+    &lt;component class="org.F11.scada.scheduling.DailyIterator"&gt;
+      &lt;description&gt;毎日指定した時分秒に実行します&lt;/description&gt;
+      &lt;arg&gt;&lt;description&gt;時&lt;/description&gt;18&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;分&lt;/description&gt;43&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;秒&lt;/description&gt;0&lt;/arg&gt;
+    &lt;/component&gt;
+  &lt;/arg&gt;
+&lt;/initMethod&gt;
+</pre>
+<p>コメントの通り時分秒を設定します。</p>
+<pre>
+    &lt;!-- 月に一度実行したい場合はこちらのイテレーターを設定します --&gt;
+    &lt;component class="org.F11.scada.scheduling.MonthlyIterator"&gt;
+      &lt;description&gt;毎月指定した日時分秒に実行します&lt;/description&gt;
+      &lt;arg&gt;&lt;description&gt;日&lt;/description&gt;1&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;時&lt;/description&gt;1&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;分&lt;/description&gt;0&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;秒&lt;/description&gt;0&lt;/arg&gt;
+    &lt;/component&gt;
+</pre>
+月に一度のスケジューリングには、MonthlyIteratorを設定します。コメントの通り日時分秒を設定します。
+</li>
+<li>件数指定
+<pre>
+&lt;!-- 削除コンポーネントを指定 秒数:secondRemoveDao 件数:countRemoveDao --&gt;
+&lt;property name="dao"&gt;countRemoveDao&lt;/property&gt;
+</pre>
+<p>コメントの通りです。プロパティdaoにcountRemoveDaoを指定します。</p>
+<pre>
+&lt;!-- 削除テーブル追加はここから --&gt;
+&lt;initMethod name="addSchedule" &gt;
+  &lt;arg&gt;
+    &lt;component class="org.F11.scada.server.remove.RemoveDto" &gt;
+      &lt;description&gt;
+        tableName:テーブル名
+        dateFieldName:日時フィールド名
+        removeValue:削除判定値(何秒前を削除又は保持件数)
+      &lt;/description&gt;
+      &lt;property name="tableName"&gt;"log_table_minute"&lt;/property&gt;
+      &lt;property name="dateFieldName"&gt;"f_date"&lt;/property&gt;
+      &lt;property name="removeValue"&gt;30000&lt;/property&gt;
+    &lt;/component&gt;
+  &lt;/arg&gt;
+</pre>
+ここにデータベースのテーブル名・日付フィールド名・削除に使用する判定値を設定します。<br/>
+テーブル名,日付フィールド名はそれぞれ以下の通りになります。
+   <ul>
+   <li>ロギングデータ...例の通り</li>
+   <li>サマリ...設定しないで下さい</li>
+   <li>ヒストリ...hisotry_table, off_date</li>
+   <li>履歴...career_table, entrydate</li>
+   <li>操作ログ...operation_logging_table, ope_date</li>
+   <li>警報メール送信履歴...alarm_email_sent_table, sentdate</li>
+   </ul>
+
+removeValueには残したいレコード数を設定します
+<pre>
+  &lt;arg&gt;
+    &lt;component class="org.F11.scada.scheduling.DailyIterator"&gt;
+      &lt;description&gt;毎日指定した時分秒に実行します&lt;/description&gt;
+      &lt;arg&gt;&lt;description&gt;時&lt;/description&gt;18&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;分&lt;/description&gt;43&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;秒&lt;/description&gt;0&lt;/arg&gt;
+    &lt;/component&gt;
+  &lt;/arg&gt;
+&lt;/initMethod&gt;
+</pre>
+コメントの通り字分秒を設定します
+
+<pre>
+    &lt;/component&gt;
+    &lt;!-- 月に一度実行したい場合はこちらのイテレーターを設定します --&gt;
+    &lt;component class="org.F11.scada.scheduling.MonthlyIterator"&gt;
+      &lt;description&gt;毎月指定した日時分秒に実行します&lt;/description&gt;
+      &lt;arg&gt;&lt;description&gt;日&lt;/description&gt;1&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;時&lt;/description&gt;1&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;分&lt;/description&gt;0&lt;/arg&gt;
+      &lt;arg&gt;&lt;description&gt;秒&lt;/description&gt;0&lt;/arg&gt;
+    &lt;/component&gt;
+</pre>
+月に一度のスケジューリングには、MonthlyIteratorを設定します。コメントの通り日時分秒を設定します。
+</li>
+<li>&lt;initMethod name="addSchedule"&gt; ～ &lt;/initMethod&gt;を追加することで、複数のテーブル削除をスケジューリングすることが可能です。タスクの実行は指定した順番で逐次実行されます。
+</li>
+
+<li>秒数指定と件数指定を同時に使いたい場合は、&lt;component class="org.F11.scada.server.remove.impl.RemoveServiceImpl"&gt; ～ &lt;/component&gt;を2つにして、一方のプロパティdaoをsecondRemoveDaoに、もう一方をcountRemoveDaoにすることで可能になります。</li>
+
+<li>各項目の&lt;description&gt; ～ &lt;/description&gt;の部分は、各項目の説明文です。目障りなら削除して頂いても問題ありません。
+</li>
+
+</ol>
+</body>
+</html>
