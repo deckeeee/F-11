@@ -1,0 +1,19 @@
+ClientConfiguration.xml
+
+クライアント機能の設定ファイル。同様のファイルとして、既にAlarmDefine.xmlが存在するが、
+段階的には廃止していく予定。
+
+
+キー:意味
+
+BandFButton.backIcon:ツリー上部の「戻る」ボタンのアイコン
+BandFButton.forwardIcon:ツリー上部の「進む」ボタンのアイコン
+BandFButton.width:ツリー上部の「戻る」ボタンの幅
+BandFButton.height:ツリー上部の「進む」ボタンの幅
+
+operation.limit:操作ログ検索の一覧に表示する行数
+
+#スケジュールバーの色設定(キーが存在しない場合は初期設定が生きる)
+barmatrix.oncolor:ONの色　初期設定はRED
+barmatrix.offcolor:OFFの色　初期設定はLIME
+barmatrix2.barcolor:設定期間の色　初期設定はPINK
