@@ -55,6 +55,10 @@ public class CsvScheduleFactory {
 			return new GODASchedule();
 		} else if ("MONTHLYMONTHOUT".equalsIgnoreCase(name)) {
 			return new MonthlyMonthOutSchedule();
+		} else if ("KANDEN".equalsIgnoreCase(name)) {
+			return new KandenSchedule();
+		} else if ("NEWDAILY".equalsIgnoreCase(name)) {
+			return new DailySchedule();
 		} else {
 			throw new IllegalArgumentException("指定されたスケジュールはありません。 " + name);
 		}

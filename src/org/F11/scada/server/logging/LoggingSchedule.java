@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.F11.scada.scheduling.DailyIterator;
+import org.F11.scada.scheduling.Schedule;
+import org.F11.scada.scheduling.Scheduler;
+import org.F11.scada.scheduling.SchedulerTask;
 import org.F11.scada.util.ThreadUtil;
 import org.apache.log4j.Logger;
 
@@ -65,9 +69,9 @@ public abstract class LoggingSchedule {
 	public static final LoggingSchedule QMINUTE = new QMinuteSchedule();
 	public static final LoggingSchedule FIVEMINUTE = new WaitMinuteSchedule(5L);
 	public static final LoggingSchedule THIRTYMINUTE = new WaitMinuteSchedule(
-			30L);
+		30L);
 	public static final LoggingSchedule SIXTYMINUTE = new WaitMinuteSchedule(
-			60L);
+		60L);
 	/** 1分毎ロギング月出力スケジュール */
 	public static final LoggingSchedule ONEHOURMONTHOUT = new HourSchedule();
 	public static final LoggingSchedule ONEHOURMONTHOUT2 = new HourSchedule();
@@ -82,6 +86,10 @@ public abstract class LoggingSchedule {
 	public static final LoggingSchedule GODA10 = GODA;
 	public static final LoggingSchedule GODA30 = THIRTYMINUTE;
 	public static final LoggingSchedule GODA60 = SIXTYMINUTE;
+
+	/** 30分ロギングの7時30分出力のスケジュール(関電専用) **/
+	public static final LoggingSchedule KANDEN = HOUR;
+	public static final LoggingSchedule NEWDAILY = new NewDailySchedule();
 
 	/** 最後にタスクを実行したカレンダーです。 */
 	protected Calendar startDate;
@@ -171,17 +179,15 @@ public abstract class LoggingSchedule {
 		protected void checkOffset(int offset) {
 			if (offset < 0 || offset > 59) {
 				throw new IllegalArgumentException("offset range error : "
-						+ offset);
+					+ offset);
 			}
 		}
 
-		abstract protected void scheduleAtFixedRate(
-				TimerTask task,
+		abstract protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer);
 
-		abstract protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		abstract protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer);
 
@@ -197,8 +203,7 @@ public abstract class LoggingSchedule {
 			super();
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -206,8 +211,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -226,8 +230,7 @@ public abstract class LoggingSchedule {
 			super();
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -241,8 +244,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -267,8 +269,7 @@ public abstract class LoggingSchedule {
 			super();
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -278,8 +279,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -300,8 +300,7 @@ public abstract class LoggingSchedule {
 			super();
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -310,8 +309,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -331,8 +329,7 @@ public abstract class LoggingSchedule {
 			super();
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -344,8 +341,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -374,8 +370,7 @@ public abstract class LoggingSchedule {
 			super();
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -389,8 +384,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -418,8 +412,7 @@ public abstract class LoggingSchedule {
 			period = 1000L * 60L * waitMinite;
 		}
 
-		protected void scheduleAtFixedRate(
-				TimerTask task,
+		protected void scheduleAtFixedRate(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -433,8 +426,7 @@ public abstract class LoggingSchedule {
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 
-		protected void scheduleAtFixedRateMilliOffset(
-				TimerTask task,
+		protected void scheduleAtFixedRateMilliOffset(TimerTask task,
 				int offset,
 				Timer timer) {
 			Calendar cal = Calendar.getInstance();
@@ -506,8 +498,7 @@ public abstract class LoggingSchedule {
 				this(task, offset, false);
 			}
 
-			ScheduleThreadTask(
-					TimerTask task,
+			ScheduleThreadTask(TimerTask task,
 					int offset,
 					boolean isMilliSecondMode) {
 				this.task = task;
@@ -528,8 +519,12 @@ public abstract class LoggingSchedule {
 			}
 
 			public String toString() {
-				return "task=" + task + ", offset=" + offset
-						+ ", isMillisecondMode=" + isMilliSecondMode;
+				return "task="
+					+ task
+					+ ", offset="
+					+ offset
+					+ ", isMillisecondMode="
+					+ isMilliSecondMode;
 			}
 		}
 	}
@@ -560,8 +555,8 @@ public abstract class LoggingSchedule {
 				synchronized (scheduleList) {
 					boolean execute = false;
 					for (Iterator i = scheduleList.iterator(); i.hasNext();) {
-						ScheduleThreadTask scheduleThreadTask = (ScheduleThreadTask) i
-								.next();
+						ScheduleThreadTask scheduleThreadTask =
+							(ScheduleThreadTask) i.next();
 						int sd = startDate.get(Calendar.DATE);
 						int sh = scheduleThreadTask.getOffset();
 						if (scheduleThreadTask.isMilliSecondMode) {
@@ -588,15 +583,16 @@ public abstract class LoggingSchedule {
 		protected void checkOffset(int offset) {
 			if (offset < 0 || offset > 23) {
 				throw new IllegalArgumentException("offset range error : "
-						+ offset);
+					+ offset);
 			}
 		}
 
 		/*
 		 * (non-Javadoc)
 		 *
-		 * @see org.F11.scada.server.logging.LoggingSchedule#add(java.util.TimerTask,
-		 *      int)
+		 * @see
+		 * org.F11.scada.server.logging.LoggingSchedule#add(java.util.TimerTask,
+		 * int)
 		 */
 		public void add(TimerTask task, int offset) {
 			super.add(task, offset);
@@ -630,8 +626,8 @@ public abstract class LoggingSchedule {
 				synchronized (scheduleList) {
 					boolean execute = false;
 					for (Iterator i = scheduleList.iterator(); i.hasNext();) {
-						ScheduleThreadTask scheduleThreadTask = (ScheduleThreadTask) i
-								.next();
+						ScheduleThreadTask scheduleThreadTask =
+							(ScheduleThreadTask) i.next();
 						int sm = startDate.get(Calendar.MONTH);
 						int sd = scheduleThreadTask.getOffset();
 						if (scheduleThreadTask.isMilliSecondMode) {
@@ -658,7 +654,7 @@ public abstract class LoggingSchedule {
 		protected void checkOffset(int offset) {
 			if (offset < 0 || offset > 31) {
 				throw new IllegalArgumentException("offset range error : "
-						+ offset);
+					+ offset);
 			}
 		}
 	}
@@ -689,8 +685,8 @@ public abstract class LoggingSchedule {
 				synchronized (scheduleList) {
 					boolean execute = false;
 					for (Iterator i = scheduleList.iterator(); i.hasNext();) {
-						ScheduleThreadTask scheduleThreadTask = (ScheduleThreadTask) i
-								.next();
+						ScheduleThreadTask scheduleThreadTask =
+							(ScheduleThreadTask) i.next();
 						int sy = startDate.get(Calendar.YEAR);
 						int sm = scheduleThreadTask.getOffset();
 						if (scheduleThreadTask.isMilliSecondMode) {
@@ -717,7 +713,7 @@ public abstract class LoggingSchedule {
 		protected void checkOffset(int offset) {
 			if (offset < 0 || offset > 11) {
 				throw new IllegalArgumentException("offset range error : "
-						+ offset);
+					+ offset);
 			}
 		}
 	}
@@ -734,7 +730,7 @@ public abstract class LoggingSchedule {
 
 		public void add(TimerTask task) {
 			throw new UnsupportedOperationException(
-					"Must use \"add(TimerTask task, int offset)\" method.");
+				"Must use \"add(TimerTask task, int offset)\" method.");
 		}
 
 		public void add(TimerTask task, int offset) {
@@ -755,8 +751,49 @@ public abstract class LoggingSchedule {
 		protected void checkOffset(int offset) {
 			if (offset < Integer.MIN_VALUE || offset > Integer.MAX_VALUE) {
 				throw new IllegalArgumentException("offset range error : "
-						+ offset);
+					+ offset);
 			}
+		}
+	}
+
+	private static class NewDailySchedule extends LoggingSchedule {
+		private final Scheduler scheduler = new Scheduler();
+
+		@Override
+		public void add(TimerTask task) {
+			DailyIterator dailyIterator = new DailyIterator(0, 1, 0);
+			final TimerTask t = task;
+			SchedulerTask schedulerTask = new SchedulerTask() {
+				@Override
+				public void run() {
+					t.run();
+				}
+			};
+			Schedule schedule = new Schedule(schedulerTask, dailyIterator);
+			scheduler.schedule(schedule);
+		}
+
+		@Override
+		public void add(TimerTask task, int offset) {
+			DailyIterator dailyIterator = new DailyIterator(offset, 1, 0);
+			final TimerTask t = task;
+			SchedulerTask schedulerTask = new SchedulerTask() {
+				@Override
+				public void run() {
+					t.run();
+				}
+			};
+			Schedule schedule = new Schedule(schedulerTask, dailyIterator);
+			scheduler.schedule(schedule);
+		}
+
+		@Override
+		public void addMilliOffset(TimerTask task, int offset) {
+			throw new IllegalArgumentException("NEWDAILYはmilliOffsetモードを使えません。");
+		}
+
+		@Override
+		protected void checkOffset(int offset) {
 		}
 	}
 
@@ -767,11 +804,11 @@ public abstract class LoggingSchedule {
 	 */
 	public static void main(String[] argv) {
 		LoggingSchedule.FIVEMINUTE.addMilliOffset(new PrintTask(
-				"5MinuteSchedule"), 0);
+			"5MinuteSchedule"), 0);
 		LoggingSchedule.THIRTYMINUTE.addMilliOffset(new PrintTask(
-				"30MinuteSchedule"), 0);
+			"30MinuteSchedule"), 0);
 		LoggingSchedule.SIXTYMINUTE.addMilliOffset(new PrintTask(
-				"60MiniteSchedule"), 0);
+			"60MiniteSchedule"), 0);
 	}
 
 	private static class PrintTask extends TimerTask {
@@ -784,8 +821,10 @@ public abstract class LoggingSchedule {
 
 		public void run() {
 			Format format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			System.out.println("[" + display + "] Now : "
-					+ format.format(new Date()));
+			System.out.println("["
+				+ display
+				+ "] Now : "
+				+ format.format(new Date()));
 		}
 	}
 }
