@@ -175,8 +175,10 @@ public class WifeAppletD extends AbstractNewApplet {
 				panelAlarmList.setVisible(false);
 				panelNewAlarm.setMinimumSize(dimension);
 				panelNewAlarm.setVisible(true);
+//				wifeApplet.mainSplit.setDividerLocation(wifeApplet.mainSplit
+//						.getMaximumDividerLocation());
 				wifeApplet.mainSplit.setDividerLocation(wifeApplet.mainSplit
-						.getMaximumDividerLocation());
+					.getLastDividerLocation());
 				panelNewAlarm.setMinimumSize(Globals.ZERO_DIMENSION);
 			} else {
 				if (null == dimension) {

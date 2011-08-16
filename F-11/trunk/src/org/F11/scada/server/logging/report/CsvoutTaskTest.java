@@ -36,7 +36,7 @@ public class CsvoutTaskTest extends TestCase {
 
 	/**
 	 * Constructor for CsvoutTaskTest.
-	 * 
+	 *
 	 * @param arg0
 	 */
 	public CsvoutTaskTest(String arg0) {
@@ -128,6 +128,22 @@ public class CsvoutTaskTest extends TestCase {
 				src.getTime(),
 				true).toString());
 		assertEquals("1970-01-01 09:00:00.0", csvSchedule.endTime(
+				src.getTime(),
+				true).toString());
+	}
+
+	public void testKanden30() throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2003, Calendar.NOVEMBER, 7, 18, 10, 11);
+		Timestamp src = new Timestamp(cal.getTimeInMillis());
+		CsvSchedule csvSchedule = factory.getCsvSchedule("KANDEN30");
+		Timestamp tm = csvSchedule.startTime(src.getTime(), true);
+		assertEquals("2003-11-07 07:30:00.0", tm.toString());
+		assertEquals("2003-11-07 07:30:00.0", csvSchedule.startTime(
+				src.getTime(),
+				true).toString());
+		assertEquals("2003-11-08 07:00:00.0", csvSchedule.endTime(
 				src.getTime(),
 				true).toString());
 	}
