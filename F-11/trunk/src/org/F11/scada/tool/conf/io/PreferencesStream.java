@@ -177,6 +177,18 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/isAutoFinsNode","false"));
 		pw.println(getXmlProp("/server/clientMax","100"));
 		pw.println(getXmlProp("/server/clientMaxPage","connectmax"));
+		pw.println(getXmlProp("/server/calendar/label/horiday","‹x"));
+		pw.println(getXmlProp("/server/calendar/label/special01","“Á1"));
+		pw.println(getXmlProp("/server/calendar/label/special02","“Á2"));
+		pw.println(getXmlProp("/server/calendar/label/special03","“Á3"));
+		pw.println(getXmlProp("/server/calendar/label/special04","“Á4"));
+		pw.println(getXmlProp("/server/calendar/label/special05","“Á5"));
+		pw.println(getXmlProp("/server/calendar/message/horiday","‹x“ú"));
+		pw.println(getXmlProp("/server/calendar/message/special01","“ÁŽê“ú1"));
+		pw.println(getXmlProp("/server/calendar/message/special02","“ÁŽê“ú2"));
+		pw.println(getXmlProp("/server/calendar/message/special03","“ÁŽê“ú3"));
+		pw.println(getXmlProp("/server/calendar/message/special04","“ÁŽê“ú4"));
+		pw.println(getXmlProp("/server/calendar/message/special05","“ÁŽê“ú5"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

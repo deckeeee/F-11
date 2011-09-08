@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/applet/schedule/WifeCalendar.java,v 1.13.2.9 2006/04/11 07:27:53 frdm Exp $
  * $Revision: 1.13.2.9 $
  * $Date: 2006/04/11 07:27:53 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -73,6 +73,7 @@ import jp.gr.javacons.jim.DataReferencerOwner;
 import jp.gr.javacons.jim.DataValueChangeEvent;
 import jp.gr.javacons.jim.DataValueChangeListener;
 
+import org.F11.scada.EnvironmentManager;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.WifeDialog;
 import org.F11.scada.applet.symbol.ColorFactory;
@@ -90,10 +91,11 @@ import org.apache.log4j.Logger;
 
 /**
  * 休日、特殊日設定カレンダークラスです。
+ *
  * @todo 表示する月の設定を分離する。とりあえず一年カレンダー固定。
  */
 public class WifeCalendar {
-	/**	メイン画面コンポーネント */
+	/** メイン画面コンポーネント */
 	private ScrollableBasePanel mainPanel;
 	/** ボタン種別マネージャー */
 	private DayTypeButtonManager buttonManager;
@@ -102,6 +104,7 @@ public class WifeCalendar {
 
 	/**
 	 * コンストラクタ
+	 *
 	 * @param alarmRef リモートデータオブジェクト
 	 */
 	public WifeCalendar(String dataProvider, String dataHolder) {
@@ -110,18 +113,19 @@ public class WifeCalendar {
 
 	/**
 	 * コンストラクタ
+	 *
 	 * @param alarmRef リモートデータオブジェクト
 	 */
-	public WifeCalendar(
-		String dataProvider,
-		String dataHolder,
-		Authenticationable authentication) {
+	public WifeCalendar(String dataProvider,
+			String dataHolder,
+			Authenticationable authentication) {
 		logger = Logger.getLogger(getClass().getName());
 
 		mainPanel = new ScrollableBasePanel(new GridLayout(3, 4, 10, 10));
 
 		final int year = 12;
-		buttonManager = new DayTypeButtonManager(dataProvider, dataHolder, authentication);
+		buttonManager =
+			new DayTypeButtonManager(dataProvider, dataHolder, authentication);
 		MonthPanelFactory mpf = new MonthPanelFactory(buttonManager);
 		for (int i = 0; i < year; i++) {
 			JComponent comp = mpf.next();
@@ -147,12 +151,12 @@ public class WifeCalendar {
 	/**
 	 * 状態ボタンを管理するクラスです。
 	 */
-	static class DayTypeButtonManager
-		implements ActionListener, DataReferencerOwner, DataValueChangeListener {
+	static class DayTypeButtonManager implements ActionListener,
+			DataReferencerOwner, DataValueChangeListener {
 		/** DataHolderタイプ情報です。 */
-		private static final Class[][] WIFE_TYPE_INFO =
-			new Class[][] { { DataHolder.class, WifeData.class }
-		};
+		private static final Class[][] WIFE_TYPE_INFO = new Class[][] { {
+			DataHolder.class,
+			WifeData.class } };
 		/** 現在の状態 */
 		private DayTypeButton state;
 		/** 状態ボタンのツールバー */
@@ -180,10 +184,9 @@ public class WifeCalendar {
 			init();
 		}
 
-		DayTypeButtonManager(
-			String dataProvider,
-			String dataHolder,
-			Authenticationable authentication) {
+		DayTypeButtonManager(String dataProvider,
+				String dataHolder,
+				Authenticationable authentication) {
 			this(dataProvider, dataHolder);
 			this.authentication = authentication;
 		}
@@ -205,21 +208,25 @@ public class WifeCalendar {
 				logger.debug(dataCalendar.toString());
 				logger.debug("" + dataCalendar.getWordSize());
 			}
-			undoDataCalendar = (WifeDataCalendar) dataCalendar.valueOf(dataCalendar.toByteArray());
+			undoDataCalendar =
+				(WifeDataCalendar) dataCalendar.valueOf(dataCalendar
+					.toByteArray());
 
 			state = DayTypeButton.createHoliday();
 			createToolBar(state);
-//TODO 最大特殊日が5日までは、制限無しにすること
+			// TODO 最大特殊日が5日までは、制限無しにすること
 			DecimalFormat fmt = new DecimalFormat("00");
-			for (int i = 1, spCount = dataCalendar.getSpecialDayCount();
-					i <= spCount && i <= 5; i++) {
+			for (int i = 1, spCount = dataCalendar.getSpecialDayCount(); i <= spCount
+				&& i <= 5; i++) {
 				Method method;
 				try {
 					method =
 						DayTypeButton.class.getMethod(
 							"createSpecial" + fmt.format(i),
 							new Class[0]);
-					createToolBar((DayTypeButton) method.invoke(new Object(), new Object[0]));
+					createToolBar((DayTypeButton) method.invoke(
+						new Object(),
+						new Object[0]));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -242,7 +249,7 @@ public class WifeCalendar {
 		}
 
 		private void setStatusLabel() {
-			Object[] m = { state.getMessage()};
+			Object[] m = { state.getMessage() };
 			stateLabel.setText(message.format(m));
 			stateLabel.setBackground(state.getColor());
 			stateLabel.setOpaque(true);
@@ -261,10 +268,13 @@ public class WifeCalendar {
 			}
 			if (dataCalendar != null && undoDataCalendar != null) {
 				if (dataCalendar.equals(undoDataCalendar)) {
-					WifeDataCalendar cal = (WifeDataCalendar) ((DataHolder) o).getValue();
+					WifeDataCalendar cal =
+						(WifeDataCalendar) ((DataHolder) o).getValue();
 					firePropertyChange(CANCEL_EVENT_NAME, dataCalendar, cal);
 					dataCalendar = cal;
-					undoDataCalendar = (WifeDataCalendar) dataCalendar.valueOf(cal.toByteArray());
+					undoDataCalendar =
+						(WifeDataCalendar) dataCalendar.valueOf(cal
+							.toByteArray());
 				}
 			}
 		}
@@ -297,8 +307,7 @@ public class WifeCalendar {
 
 		Color searchColor(int month, int day) {
 			Color color = null;
-			for (Iterator it = values().iterator();
-					it.hasNext();) {
+			for (Iterator it = values().iterator(); it.hasNext();) {
 				DayTypeButton button = (DayTypeButton) it.next();
 				if (dataCalendar.testBit(button.getType(), month, day)) {
 					color = button.getColor();
@@ -323,36 +332,41 @@ public class WifeCalendar {
 			setStatusLabel();
 		}
 
-		void addPropertyChangeListener(String eventName, PropertyChangeListener listener) {
+		void addPropertyChangeListener(String eventName,
+				PropertyChangeListener listener) {
 			if (changeSupport == null) {
 				changeSupport = new SwingPropertyChangeSupport(this);
 			}
 			changeSupport.addPropertyChangeListener(eventName, listener);
 		}
 
-		void removePropertyChangeListener(String eventName, PropertyChangeListener listener) {
+		void removePropertyChangeListener(String eventName,
+				PropertyChangeListener listener) {
 			if (changeSupport == null) {
 				return;
 			}
 			changeSupport.removePropertyChangeListener(eventName, listener);
 		}
 
-		void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		void firePropertyChange(String propertyName,
+				Object oldValue,
+				Object newValue) {
 			if (changeSupport == null) {
 				return;
 			}
 			changeSupport.firePropertyChange(propertyName, oldValue, newValue);
 		}
-		
-		public void disConnect() {
-		    dataReferencer.disconnect(this);
 
-		    if (changeSupport != null) {
-			    PropertyChangeListener[] listeners = changeSupport.getPropertyChangeListeners();
-			    for (int i = 0; i < listeners.length; i++) {
-	                changeSupport.removePropertyChangeListener(listeners[i]);
-	            }
-		    }
+		public void disConnect() {
+			dataReferencer.disconnect(this);
+
+			if (changeSupport != null) {
+				PropertyChangeListener[] listeners =
+					changeSupport.getPropertyChangeListeners();
+				for (int i = 0; i < listeners.length; i++) {
+					changeSupport.removePropertyChangeListener(listeners[i]);
+				}
+			}
 		}
 	}
 
@@ -360,17 +374,28 @@ public class WifeCalendar {
 	 * 設定するタイプを表すボタンクラスです。
 	 */
 	static final class DayTypeButton extends JButton {
-	    private static final long serialVersionUID = -4266480488017783674L;
+		private static final long serialVersionUID = -4266480488017783674L;
 		static final DayTypeButton HOLIDAY = new DayTypeButton(DayType.HOLIDAY);
-		static final DayTypeButton SPECIAL01 = new DayTypeButton(DayType.SPECIAL01);
-		static final DayTypeButton SPECIAL02 = new DayTypeButton(DayType.SPECIAL02);
-		static final DayTypeButton SPECIAL03 = new DayTypeButton(DayType.SPECIAL03);
-		static final DayTypeButton SPECIAL04 = new DayTypeButton(DayType.SPECIAL04);
-		static final DayTypeButton SPECIAL05 = new DayTypeButton(DayType.SPECIAL05);
+		static final DayTypeButton SPECIAL01 = new DayTypeButton(
+			DayType.SPECIAL01);
+		static final DayTypeButton SPECIAL02 = new DayTypeButton(
+			DayType.SPECIAL02);
+		static final DayTypeButton SPECIAL03 = new DayTypeButton(
+			DayType.SPECIAL03);
+		static final DayTypeButton SPECIAL04 = new DayTypeButton(
+			DayType.SPECIAL04);
+		static final DayTypeButton SPECIAL05 = new DayTypeButton(
+			DayType.SPECIAL05);
 
-		private static final DayTypeButton[] PRIVATE_VALUES =
-			{ HOLIDAY, SPECIAL01, SPECIAL02, SPECIAL03, SPECIAL04, SPECIAL05, };
-		static final List VALUES = Collections.unmodifiableList(Arrays.asList(PRIVATE_VALUES));
+		private static final DayTypeButton[] PRIVATE_VALUES = {
+			HOLIDAY,
+			SPECIAL01,
+			SPECIAL02,
+			SPECIAL03,
+			SPECIAL04,
+			SPECIAL05, };
+		static final List VALUES = Collections.unmodifiableList(Arrays
+			.asList(PRIVATE_VALUES));
 		/** カレンダーに設定する日付タイプです */
 		private DayType dayType;
 
@@ -438,17 +463,42 @@ public class WifeCalendar {
 		 * カレンダーで設定する、日付の種類を表す、タイプセーフ enum クラスです。
 		 */
 		static final class DayType {
-			static final DayType HOLIDAY = new DayType(0, "休", "休日", "red", new Dimension(36, 36));
-			static final DayType SPECIAL01 =
-				new DayType(1, "特1", "特殊日1", "cyan", new Dimension(36, 36));
-			static final DayType SPECIAL02 =
-				new DayType(2, "特2", "特殊日2", "springgreen", new Dimension(36, 36));
-			static final DayType SPECIAL03 =
-				new DayType(3, "特3", "特殊日3", "dodgerblue", new Dimension(36, 36));
-			static final DayType SPECIAL04 =
-				new DayType(4, "特4", "特殊日4", "yellow", new Dimension(36, 36));
-			static final DayType SPECIAL05 =
-				new DayType(5, "特5", "特殊日5", "magenta", new Dimension(36, 36));
+			static final DayType HOLIDAY = new DayType(
+				0,
+				EnvironmentManager.get("/server/calendar/label/horiday", "休"),
+				EnvironmentManager.get("/server/calendar/message/horiday", "休日"),
+				"red",
+				new Dimension(36, 36));
+			static final DayType SPECIAL01 = new DayType(
+				1,
+				EnvironmentManager.get("/server/calendar/label/special01", "特1"),
+				EnvironmentManager.get("/server/calendar/message/special01", "特殊日1"),
+				"cyan",
+				new Dimension(36, 36));
+			static final DayType SPECIAL02 = new DayType(
+				2,
+				EnvironmentManager.get("/server/calendar/label/special02", "特2"),
+				EnvironmentManager.get("/server/calendar/message/special02", "特殊日2"),
+				"springgreen",
+				new Dimension(36, 36));
+			static final DayType SPECIAL03 = new DayType(
+				3,
+				EnvironmentManager.get("/server/calendar/label/special03", "特3"),
+				EnvironmentManager.get("/server/calendar/message/special03", "特殊日3"),
+				"dodgerblue",
+				new Dimension(36, 36));
+			static final DayType SPECIAL04 = new DayType(
+				4,
+				EnvironmentManager.get("/server/calendar/label/special04", "特4"),
+				EnvironmentManager.get("/server/calendar/message/special04", "特殊日4"),
+				"yellow",
+				new Dimension(36, 36));
+			static final DayType SPECIAL05 = new DayType(
+				5,
+				EnvironmentManager.get("/server/calendar/label/special05", "特5"),
+				EnvironmentManager.get("/server/calendar/message/special05", "特殊日5"),
+				"magenta",
+				new Dimension(36, 36));
 
 			private int type;
 			private String name;
@@ -456,12 +506,11 @@ public class WifeCalendar {
 			private Color color;
 			private Dimension size;
 
-			private DayType(
-				int type,
-				String name,
-				String message,
-				String colorName,
-				Dimension size) {
+			private DayType(int type,
+					String name,
+					String message,
+					String colorName,
+					Dimension size) {
 				this.type = type;
 				this.name = name;
 				this.message = message;
@@ -515,17 +564,21 @@ public class WifeCalendar {
 
 		/**
 		 * 現在のカレンダーパネルを返し、日付を次月にします。
+		 *
 		 * @return 現在の月のカレンダーパネルオブジェクト
 		 */
 		public MonthPanel next() {
 			MonthPanel p = getMonthPanel();
-			buttonManager.addPropertyChangeListener(DayTypeButtonManager.CANCEL_EVENT_NAME, p);
+			buttonManager.addPropertyChangeListener(
+				DayTypeButtonManager.CANCEL_EVENT_NAME,
+				p);
 			currentCalendar.add(Calendar.MONTH, 1);
 			return p;
 		}
 
 		/**
 		 * 現在の月のカレンダーパネルを返します。
+		 *
 		 * @return 現在の月のカレンダーパネルオブジェクト
 		 */
 		private MonthPanel getMonthPanel() {
@@ -534,9 +587,11 @@ public class WifeCalendar {
 			Calendar cal = (Calendar) currentCalendar.clone();
 			DateFormat dform = new SimpleDateFormat(defaultMonthLabelFormat);
 
-			MonthPanel monthPanel = new MonthPanel(new BorderLayout(), cal, buttonManager, timer);
+			MonthPanel monthPanel =
+				new MonthPanel(new BorderLayout(), cal, buttonManager, timer);
 			JLabel m = new JLabel(dform.format(cal.getTime()));
-			m.setFont(m.getFont().deriveFont((float) (m.getFont().getSize2D() * 1.4)));
+			m.setFont(m.getFont().deriveFont(
+				(float) (m.getFont().getSize2D() * 1.4)));
 			if (panelCount == 1) {
 				m.setBackground(ColorFactory.getColor("aquamarine"));
 				m.setOpaque(true);
@@ -584,9 +639,11 @@ public class WifeCalendar {
 
 		/**
 		 * デフォルトのロケールを使用して、当月のボタン配列を作成します。
-		 * @param monthPanel 
+		 *
+		 * @param monthPanel
 		 */
-		private JButton[][] createDayButtons(ActionListener l, MonthPanel monthPanel) {
+		private JButton[][] createDayButtons(ActionListener l,
+				MonthPanel monthPanel) {
 			int row = MONTH_ROW_COUNT - 1;
 			DayButton[][] dayButtons = new DayButton[row][WEEK_COUNT];
 			for (int i = 0; i < row; i++) {
@@ -603,15 +660,19 @@ public class WifeCalendar {
 			Map weekIndex = createWeekIndex();
 			while (currentMonth == cal.get(Calendar.MONTH)) {
 				int index =
-					((Integer) weekIndex.get(new Integer(cal.get(Calendar.DAY_OF_WEEK))))
-						.intValue();
-				dayButtons[cal.get(Calendar.WEEK_OF_MONTH)
-					- 1][index].setText(dform.format(cal.getTime()));
-				dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index].setEnabled(true);
-				dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index].addActionListener(l);
-				dayButtons[cal.get(Calendar.WEEK_OF_MONTH)
-					- 1][index].setDayOfWeek(cal.get(Calendar.DAY_OF_WEEK));
-				setColor(dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index], cal);
+					((Integer) weekIndex.get(new Integer(cal
+						.get(Calendar.DAY_OF_WEEK)))).intValue();
+				dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index]
+					.setText(dform.format(cal.getTime()));
+				dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index]
+					.setEnabled(true);
+				dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index]
+					.addActionListener(l);
+				dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index]
+					.setDayOfWeek(cal.get(Calendar.DAY_OF_WEEK));
+				setColor(
+					dayButtons[cal.get(Calendar.WEEK_OF_MONTH) - 1][index],
+					cal);
 				cal.add(Calendar.DATE, 1);
 			}
 			return dayButtons;
@@ -625,7 +686,9 @@ public class WifeCalendar {
 			Calendar cal = (Calendar) currentCalendar.clone();
 			cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
 			for (int i = 0; i < 7; i++) {
-				index.put(new Integer(cal.get(Calendar.DAY_OF_WEEK)), new Integer(i));
+				index.put(
+					new Integer(cal.get(Calendar.DAY_OF_WEEK)),
+					new Integer(i));
 				cal.add(Calendar.DATE, 1);
 			}
 			return index;
@@ -633,7 +696,9 @@ public class WifeCalendar {
 
 		private void setColor(JButton button, Calendar cal) {
 			Color color =
-				buttonManager.searchColor(cal.get(Calendar.MONTH), cal.get(Calendar.DATE) - 1);
+				buttonManager.searchColor(
+					cal.get(Calendar.MONTH),
+					cal.get(Calendar.DATE) - 1);
 			if (color != null) {
 				button.setBackground(color);
 				button.setOpaque(true);
@@ -645,10 +710,9 @@ public class WifeCalendar {
 		/**
 		 * 一月分を表示する JPanel を保持するクラスです。
 		 */
-		static class MonthPanel
-			extends JPanel
-			implements ActionListener, PropertyChangeListener, Editable, ReferencerOwnerSymbol {
-		    
+		static class MonthPanel extends JPanel implements ActionListener,
+				PropertyChangeListener, Editable, ReferencerOwnerSymbol {
+
 			private static final long ACTION_WAIT_TIME = 250L;
 			private static final long serialVersionUID = 4557141194939440464L;
 			/** このパネルが持つ月です */
@@ -662,11 +726,10 @@ public class WifeCalendar {
 			/** アクション実行タイマー */
 			private final Timer timer;
 
-			MonthPanel(
-				LayoutManager layoutManager,
-				Calendar calendar,
-				DayTypeButtonManager buttonManager,
-				Timer timer) {
+			MonthPanel(LayoutManager layoutManager,
+					Calendar calendar,
+					DayTypeButtonManager buttonManager,
+					Timer timer) {
 				super(layoutManager);
 				this.month = calendar.get(Calendar.MONTH);
 				this.buttonManager = buttonManager;
@@ -694,16 +757,20 @@ public class WifeCalendar {
 					}
 
 					// 変更直後に書込み
-					DataHolder dh = buttonManager.dataReferencer.getDataHolder();
-					dh.setValue(buttonManager.dataCalendar, new Date(), WifeQualityFlag.GOOD);
+					DataHolder dh =
+						buttonManager.dataReferencer.getDataHolder();
+					dh.setValue(
+						buttonManager.dataCalendar,
+						new Date(),
+						WifeQualityFlag.GOOD);
 					try {
 						dh.syncWrite();
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 					buttonManager.undoDataCalendar =
-						(WifeDataCalendar) buttonManager.dataCalendar.valueOf(
-							buttonManager.dataCalendar.toByteArray());
+						(WifeDataCalendar) buttonManager.dataCalendar
+							.valueOf(buttonManager.dataCalendar.toByteArray());
 					isAction = false;
 					timer.schedule(new ActionTimerTask(this), ACTION_WAIT_TIME);
 				}
@@ -713,31 +780,37 @@ public class WifeCalendar {
 			 * 取消処理されたときに呼ばれます。
 			 */
 			public void propertyChange(PropertyChangeEvent evt) {
-				//				logger.info(month + "月　取消処理 " + evt.getSource());
+				// logger.info(month + "月　取消処理 " + evt.getSource());
 				cancelEvent(evt);
 			}
 
 			private void cancelEvent(PropertyChangeEvent evt) {
-				WifeDataCalendar dataCalendar = (WifeDataCalendar) evt.getNewValue();
+				WifeDataCalendar dataCalendar =
+					(WifeDataCalendar) evt.getNewValue();
 
 				Component[] comps = getComponents();
 				for (int j = 0; j < comps.length; j++) {
 					Container cont = (Container) comps[j];
 					Component[] comps2 = cont.getComponents();
 					for (int i = 0; i < comps2.length; i++) {
-						//						logger.info("" + comps2[i]);
+						// logger.info("" + comps2[i]);
 						if (comps2[i] instanceof JButton) {
 							JButton button = (JButton) comps2[i];
 							if (button.isEnabled()) {
-								int day = Integer.parseInt(button.getText()) - 1;
+								int day =
+									Integer.parseInt(button.getText()) - 1;
 								button.setOpaque(false);
-								for (Iterator it = buttonManager.values().iterator();
-									it.hasNext();
-									) {
-									DayTypeButton dayTypebutton = (DayTypeButton) it.next();
-									if (dataCalendar
-										.testBit(dayTypebutton.getType(), month, day)) {
-										button.setBackground(dayTypebutton.getColor());
+								for (Iterator it =
+									buttonManager.values().iterator(); it
+									.hasNext();) {
+									DayTypeButton dayTypebutton =
+										(DayTypeButton) it.next();
+									if (dataCalendar.testBit(
+										dayTypebutton.getType(),
+										month,
+										day)) {
+										button.setBackground(dayTypebutton
+											.getColor());
 										button.setOpaque(true);
 										break;
 									}
@@ -751,23 +824,25 @@ public class WifeCalendar {
 
 			/**
 			 * 編集する為のダイアログを返します。
+			 *
 			 * @param window 親ウィンドウ
 			 * @param collection ベースクラスのインスタンス
 			 * @param 任意のパラメータリスト
 			 * @todo 任意のパラメータはもう少し、型を強制するべきかも。
 			 */
-			public WifeDialog getDialog(
-				Window window,
-				SymbolCollection collection,
-				java.util.List para) {
+			public WifeDialog getDialog(Window window,
+					SymbolCollection collection,
+					java.util.List para) {
 				throw new UnsupportedOperationException();
 			}
+
 			/**
 			 * 設定ダイアログの左上の Point オブジェクトを返します。
 			 */
 			public Point getPoint() {
 				throw new UnsupportedOperationException();
 			}
+
 			/**
 			 * 設定ダイアログの左上の Point オブジェクトを設定します。
 			 */
@@ -777,6 +852,7 @@ public class WifeCalendar {
 
 			/**
 			 * このシンボルの編集可能フラグを設定します。
+			 *
 			 * @param editable 編集可能にするなら true をそうでなければ false を設定します。
 			 */
 			public void setEditable(boolean[] editable) {
@@ -790,6 +866,7 @@ public class WifeCalendar {
 
 			/**
 			 * このシンボルが編集可能かどうかを返します。
+			 *
 			 * @return 編集可能な場合は true をそうでなければ false を返します。
 			 */
 			public boolean isEditable() {
@@ -801,17 +878,18 @@ public class WifeCalendar {
 			 */
 			public String[] getDestinations() {
 				if (isConnect()) {
-					DataHolder dh = buttonManager.dataReferencer.getDataHolder();
+					DataHolder dh =
+						buttonManager.dataReferencer.getDataHolder();
 					StringBuffer buffer = new StringBuffer();
 					DataProvider dp = dh.getDataProvider();
 					if (dp == null) {
-					    logger.debug("null dp : " + dh.getDataHolderName());
-					    return new String[0];
+						logger.debug("null dp : " + dh.getDataHolderName());
+						return new String[0];
 					}
 					buffer.append(dh.getDataProvider().getDataProviderName());
 					buffer.append("_");
 					buffer.append(dh.getDataHolderName());
-					return new String[] { buffer.toString()};
+					return new String[] { buffer.toString() };
 				} else {
 					return new String[0];
 				}
@@ -832,6 +910,7 @@ public class WifeCalendar {
 
 			/**
 			 * 書き込み先の追加はしない。
+			 *
 			 * @see org.F11.scada.applet.symbol.Editable#addDestination(Map)
 			 */
 			public void addDestination(Map atts) {
@@ -839,12 +918,15 @@ public class WifeCalendar {
 
 			/**
 			 * 書き込み先の追加はしない。
+			 *
 			 * @see org.F11.scada.applet.symbol.Editable#addElement(Map)
 			 */
 			public void addValueSetter(ValueSetter setter) {
 			}
 
-			/* (non-Javadoc)
+			/*
+			 * (non-Javadoc)
+			 *
 			 * @see org.F11.scada.applet.symbol.Editable#isTabkeyMove()
 			 */
 			public boolean isTabkeyMove() {
@@ -852,22 +934,23 @@ public class WifeCalendar {
 			}
 
 			public void disConnect() {
-			    buttonManager.disConnect();
-			    if (null != buttonManager.authentication) {
-			    	buttonManager.authentication.removeEditable(this);
-			    }
+				buttonManager.disConnect();
+				if (null != buttonManager.authentication) {
+					buttonManager.authentication.removeEditable(this);
+				}
 			}
 
 			public void setAction(boolean isAction) {
 				this.isAction = isAction;
 			}
 
-
 			private static class ActionTimerTask extends TimerTask {
 				private final MonthPanel monthPanel;
+
 				ActionTimerTask(MonthPanel monthPanel) {
 					this.monthPanel = monthPanel;
 				}
+
 				public void run() {
 					monthPanel.setAction(true);
 				}
@@ -878,7 +961,7 @@ public class WifeCalendar {
 		 * 日付ボタンクラスです。
 		 */
 		static class DayButton extends JButton {
-		    private static final long serialVersionUID = -4266480488017783674L;
+			private static final long serialVersionUID = -4266480488017783674L;
 			private int dayOfWeek;
 
 			DayButton(MonthPanel monthPanel) {

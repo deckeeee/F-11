@@ -260,6 +260,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		// autoFinsNode(mainPanel);
 		clientMax(mainPanel);
 		clientMaxPage(mainPanel);
+		calendar(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -767,6 +768,19 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		clientMaxPage.setText(manager.getPreferences("/server/clientMaxPage", "connectmax"));
 		clientMaxPage.getDocument().addDocumentListener(this);
 		mainPanel.add(clientMaxPage);
+	}
+
+
+	private void calendar(JPanel mainPanel) {
+		// 警報一覧印字設定
+		mainPanel.add(new JLabel("カレンダー文字列設定："));
+		JButton but = new JButton("詳細");
+		but.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CalendarDialog(manager, frameParent).setVisible(true);
+			}
+		});
+		mainPanel.add(but);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
