@@ -104,7 +104,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	/** 送信要求日をキーにして、セッションを格納したマップ */
 	private final SortedMap sendRequestDateMap;
 	/** セッションとクライアントが最終要求したPageIDのマップ */
-	private final Map clientPageMap;
+	private final Map<Session, String> clientPageMap;
 	/** DIcon */
 	private final HolderRegisterBuilder builder;
 	/** メニューツリー定義の管理クラスです。 */
@@ -308,6 +308,7 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 	public synchronized PageDefine getPage(String name,
 			long key,
 			Session session) {
+		printClientIpaddress();
 		if (isClientMax(session)) {
 			String conMaxPage =
 				EnvironmentManager.get("/server/clientMaxPage", "connectmax");
@@ -336,6 +337,17 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 			log.debug("4");
 		}
 		return pd;
+	}
+
+	private void printClientIpaddress() {
+		log.info("最大接続可能クライアント数 = "
+			+ EnvironmentManager.get("/server/clientMax", "100")
+			+ " 現在接続クライアント数 = "
+			+ clientPageMap.size());
+		log.info("接続中のクライアント");
+		for (Map.Entry<Session, String> entry : clientPageMap.entrySet()) {
+			log.info(entry.getKey().getIpaddress());
+		}
 	}
 
 	private boolean isClientMax(Session session) {
@@ -827,7 +839,9 @@ public class FrameDefineManager extends UnicastRemoteObject implements
 					log.info(" -- Page Removed : "
 						+ new Timestamp(key.longValue())
 						+ " session : "
-						+ session);
+						+ session
+						+ " IP : "
+						+ session.getIpaddress());
 				}
 				unregisterJim(session);
 				sendRequestDateMap.remove(key);

@@ -37,19 +37,20 @@ import org.F11.scada.WifeUtilities;
 public final class Session implements Serializable {
     private static final long serialVersionUID = -4361438510380379690L;
     private final String id;
+    private InetAddress ip;
 
     public Session() {
         id = createId();
     }
 
-    private Session(String id) {
+    private Session(String id, InetAddress ip) {
         this.id = id;
+        this.ip = ip;
     }
 
     private String createId() {
 	    double seed = Math.random();
 	    byte[] seedb = String.valueOf(seed).getBytes();
-	    InetAddress ip = null;
         try {
             ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
@@ -59,7 +60,7 @@ public final class Session implements Serializable {
 	    byte[] b = new byte[seedb.length + ipb.length];
 	    System.arraycopy(seedb, 0, b, 0, seedb.length);
 	    System.arraycopy(ipb, 0, b, seedb.length, ipb.length);
-	    
+
 	    MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA");
@@ -69,7 +70,7 @@ public final class Session implements Serializable {
         byte[] result = digest.digest(b);
 	    return (WifeUtilities.toString(result));
     }
-    
+
     /**
      * このセッションに割り当てられた一意の識別子が格納された文字列を返します。
      * @return このセッションに割り当てられた一意の識別子が格納された文字列
@@ -77,7 +78,7 @@ public final class Session implements Serializable {
     public String getId() {
         return id;
     }
-    
+
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -88,16 +89,20 @@ public final class Session implements Serializable {
         Session other = (Session) obj;
         return id.equals(other.id);
     }
-    
+
     public int hashCode() {
         return id.hashCode();
     }
-    
+
     public String toString() {
         return "id=" + id;
     }
 
+    public String getIpaddress() {
+   		return ip.getHostAddress();
+    }
+
     private Object readResolve() throws ObjectStreamException {
-        return new Session(id);
+        return new Session(id, ip);
     }
 }

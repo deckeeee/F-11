@@ -90,6 +90,7 @@ public abstract class LoggingSchedule {
 	/** 30分ロギングの7時30分出力のスケジュール(関電専用) **/
 	public static final LoggingSchedule KANDEN = HOUR;
 	public static final LoggingSchedule NEWDAILY = new NewDailySchedule();
+	public static final LoggingSchedule EIGHTHOUR = HOUR;
 
 	/** 最後にタスクを実行したカレンダーです。 */
 	protected Calendar startDate;
