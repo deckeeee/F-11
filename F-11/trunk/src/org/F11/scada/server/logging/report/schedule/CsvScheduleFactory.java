@@ -59,6 +59,8 @@ public class CsvScheduleFactory {
 			return new KandenSchedule();
 		} else if ("NEWDAILY".equalsIgnoreCase(name)) {
 			return new DailySchedule();
+		} else if ("EIGHTHOUR".equalsIgnoreCase(name)) {
+			return new EightHourSchedule();
 		} else {
 			throw new IllegalArgumentException("指定されたスケジュールはありません。 " + name);
 		}
