@@ -35,6 +35,10 @@ public class NippoTodayPrintCommand extends AbstractPrintCommand {
 			SimpleDateFormat sf = new SimpleDateFormat(csv_mid);
 			Calendar cal = new GregorianCalendar();
 			cal.setTimeInMillis(evt.getTimeStamp().getTime());
+			int hour = cal.get(Calendar.HOUR_OF_DAY);
+			if (hour < 8) {
+				cal.add(Calendar.DATE, -1);
+			}
 			csvname += sf.format(cal.getTime());
 		}
 		csvname += csv_foot;

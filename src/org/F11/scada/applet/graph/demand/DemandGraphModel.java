@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/applet/graph/demand/DemandGraphModel.java,v 1.9.2.3 2005/03/11 06:50:47 frdm Exp $
  * $Revision: 1.9.2.3 $
  * $Date: 2005/03/11 06:50:47 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -52,7 +52,7 @@ import org.apache.commons.collections.primitives.DoubleList;
  * 予想電力　 - (カウンタ値, 現在値, グラフの右端, 予想電力値)
  * 過去電力値 - カウンタ値のパラメタ graphdata(LinkedHashMap) より、
  * 　　　　　   カウンタ値未満の値を抽出しグラフモデルデータを生成。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class DemandGraphModel
@@ -83,6 +83,8 @@ public class DemandGraphModel
 	private int counter;
 	/** x 座標がカウンタのデータ値 */
 	private double currentElectricity;
+	/** デマンドログの間隔 */
+	private int logint;
 
 	/**
 	 * デマンドグラフモデルを生成します。
@@ -209,7 +211,7 @@ public class DemandGraphModel
 			return wa.doubleValue();
 		}
 	}
-	
+
 	private double doConvert(DataReferencer dr) {
 		DataHolder dh = dr.getDataHolder();
 		if (dh == null) {
@@ -232,7 +234,7 @@ public class DemandGraphModel
 		cal.set(Calendar.MINUTE, 0);
 
 		for (int i = 0; i < count; i++) {
-			cal.add(Calendar.SECOND, 30);
+			cal.add(Calendar.SECOND, logint);
 		}
 
 		return new Timestamp(cal.getTimeInMillis());
@@ -267,10 +269,14 @@ public class DemandGraphModel
 			dataReferencers[i].disconnect(this);
 		}
 	}
-	
+
     public void start() {
     }
-    
+
     public void stop() {
     }
+
+	public void setLogint(int logint) {
+		this.logint = logint;
+	}
 }
