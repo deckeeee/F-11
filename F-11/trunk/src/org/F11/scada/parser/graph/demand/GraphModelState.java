@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/parser/graph/demand/GraphModelState.java,v 1.2.6.2 2006/02/16 04:59:01 frdm Exp $
  * $Revision: 1.2.6.2 $
  * $Date: 2006/02/16 04:59:01 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -31,7 +31,7 @@ import java.util.Stack;
 
 import jp.gr.javacons.jim.DataReferencer;
 
-import org.F11.scada.applet.graph.GraphModel;
+import org.F11.scada.applet.graph.demand.DemandGraphModel;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
 import org.F11.scada.parser.graph.GraphState;
@@ -44,10 +44,11 @@ import org.xml.sax.Attributes;
  */
 public class GraphModelState implements State {
 	private static Logger logger;
-	
+
 	private GraphState graphState;
 	private Class modelClass;
 	List refList;
+	private int logint;
 
 	/**
 	 * 状態オブジェクトを生成します。
@@ -55,7 +56,7 @@ public class GraphModelState implements State {
 	public GraphModelState(String tagName, Attributes atts, GraphState graphState) {
 		this.graphState = graphState;
 		logger = Logger.getLogger(getClass().getName());
-		
+
 		String className = atts.getValue("class");
 		if (className == null) {
 			throw new IllegalArgumentException("attribute \"class\" is null.");
@@ -67,6 +68,11 @@ public class GraphModelState implements State {
 			throw new NoClassDefFoundError(e.getMessage());
 		}
 		refList = new ArrayList();
+		String logintStr = atts.getValue("logint");
+		if (logintStr == null) {
+			logintStr = "30";
+		}
+		logint = Integer.parseInt(logintStr);
 	}
 
 	/*
@@ -91,12 +97,13 @@ public class GraphModelState implements State {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Pop : " + DisplayState.toString(tagName, stack));
 			}
-			
+
 			try {
 				Class[] para = {DataReferencer[].class};
 				Constructor constructor = modelClass.getConstructor(para);
 				Object[] obj = {(DataReferencer[]) refList.toArray(new DataReferencer[0])};
-				GraphModel graphModel = (GraphModel) constructor.newInstance(obj);
+				DemandGraphModel graphModel = (DemandGraphModel) constructor.newInstance(obj);
+				graphModel.setLogint(logint);
 				graphState.setGraphModel(graphModel);
 			} catch (Exception ex) {
 				ex.printStackTrace();
