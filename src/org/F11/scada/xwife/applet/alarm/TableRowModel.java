@@ -29,22 +29,22 @@ import org.F11.scada.xwife.applet.alarm.event.CheckEvent;
 
 class TableRowModel {
 	public static final TableRowModel INIT_ROW_MODEL = new TableRowModel(
-			"",
-			false,
-			Integer.MIN_VALUE,
-			"",
-			Integer.MIN_VALUE,
-			"",
-			"",
-			Integer.MIN_VALUE,
-			"",
-			Integer.MIN_VALUE,
-			Integer.MIN_VALUE,
-			new Timestamp(0),
-			"",
-			"",
-			"",
-			false);
+		"",
+		false,
+		Integer.MIN_VALUE,
+		"",
+		Integer.MIN_VALUE,
+		"",
+		"",
+		Integer.MIN_VALUE,
+		"",
+		Integer.MIN_VALUE,
+		Integer.MIN_VALUE,
+		new Timestamp(0),
+		"",
+		"",
+		"",
+		false);
 	private final String jumpPath;
 	private final boolean autoJumpFlag;
 	private final int autoJumpPriority;
@@ -81,8 +81,7 @@ class TableRowModel {
 		message = getString(model, 0, 15);
 	}
 
-	private TableRowModel(
-			String jumpPath,
+	private TableRowModel(String jumpPath,
 			boolean autoJumpFlag,
 			int autoJumpPriority,
 			String alarmColor,
@@ -143,7 +142,7 @@ class TableRowModel {
 
 	/**
 	 * このイベントがOnなのかOffなのかを返します
-	 * 
+	 *
 	 * @return このイベントがOnなのかOffなのかを返します
 	 */
 	public boolean isOnoff() {
@@ -156,7 +155,7 @@ class TableRowModel {
 
 	/**
 	 * このオブジェクトが引数のものより小さい場合にtrueを返します。
-	 * 
+	 *
 	 * @param row 比較するオブジェクト
 	 * @return このオブジェクトが引数のものより小さい場合にtrueを返します。
 	 */
@@ -165,34 +164,63 @@ class TableRowModel {
 	}
 
 	public boolean equalsKey(TableRowModel row) {
-		return point == row.point && provider.equals(row.provider)
-				&& holder.equals(row.holder);
+		return point == row.point
+			&& provider.equals(row.provider)
+			&& holder.equals(row.holder);
 	}
 
 	public boolean equalsKey(CheckEvent evt) {
-		return jumpPath.equals(evt.getJumpPath())
-				&& autoJumpFlag == evt.isAutoJumpFlag()
-				&& autoJumpPriority == evt.getAutoJumpPriority()
-				&& alarmColor.equals(evt.getAlarmColor())
-				&& point == evt.getPoint()
-				&& provider.equals(evt.getProvider())
-				&& holder.equals(evt.getHolder());
+		return jumpPath != null
+			&& jumpPath.equals(evt.getJumpPath())
+			&& autoJumpFlag == evt.isAutoJumpFlag()
+			&& autoJumpPriority == evt.getAutoJumpPriority()
+			&& alarmColor != null
+			&& alarmColor.equals(evt.getAlarmColor())
+			&& point == evt.getPoint()
+			&& provider != null
+			&& provider.equals(evt.getProvider())
+			&& holder != null
+			&& holder.equals(evt.getHolder());
 	}
 
 	public String toString() {
-		return "jumpPath=" + jumpPath + ", autoJumpFlag=" + autoJumpFlag
-				+ ", autoJumpPriority=" + autoJumpPriority + ", alarmColor="
-				+ alarmColor + ", point=" + point + ", provider=" + provider
-				+ ", holder=" + holder + ", soundType=" + soundType
-				+ ", soundPath=" + soundPath + ", emailGroupId=" + emailGroupId
-				+ ", emailSendMode=" + emailSendMode + ", timestamp="
-				+ timestamp + ", unit=" + unit + ", kikiname=" + kikiname
-				+ ", message=" + message + ", onoff=" + onoff;
+		return "jumpPath="
+			+ jumpPath
+			+ ", autoJumpFlag="
+			+ autoJumpFlag
+			+ ", autoJumpPriority="
+			+ autoJumpPriority
+			+ ", alarmColor="
+			+ alarmColor
+			+ ", point="
+			+ point
+			+ ", provider="
+			+ provider
+			+ ", holder="
+			+ holder
+			+ ", soundType="
+			+ soundType
+			+ ", soundPath="
+			+ soundPath
+			+ ", emailGroupId="
+			+ emailGroupId
+			+ ", emailSendMode="
+			+ emailSendMode
+			+ ", timestamp="
+			+ timestamp
+			+ ", unit="
+			+ unit
+			+ ", kikiname="
+			+ kikiname
+			+ ", message="
+			+ message
+			+ ", onoff="
+			+ onoff;
 	}
 
 	/**
 	 * テスト用の確認メソッド
-	 * 
+	 *
 	 * @return プロバイダ_ホルダ
 	 */
 	String getHolderId() {

@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/applet/graph/demand/DemandGraph.java,v 1.22.2.9 2006/06/02 02:18:04 frdm Exp $
  * $Revision: 1.22.2.9 $
  * $Date: 2006/06/02 02:18:04 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -40,7 +40,6 @@ import java.beans.PropertyChangeListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +57,7 @@ import org.apache.log4j.Logger;
 
 /**
  * デマンド監視のグラフコンポーネントクラスです。
- * 
+ *
  * @todo 既知のバグ、スケールの上限を現在値より小さくすると、予想電力の表示が乱れる。
  */
 public class DemandGraph extends JPanel {
@@ -69,18 +68,33 @@ public class DemandGraph extends JPanel {
 
 	/**
 	 * コンストラクタ デマンド監視のグラフコンポーネントを生成します。
-	 * 
+	 *
 	 * @param gmodel グラフモデル
 	 * @param pmodel グラフプロパティモデル
 	 */
-	public DemandGraph(
-			GraphModel gmodel,
+	public DemandGraph(GraphModel gmodel,
 			GraphPropertyModel pmodel,
 			boolean alarmTimeMode,
 			Color stringColor,
-			boolean colorSetting) {
+			boolean colorSetting,
+			int axisInterval,
+			double demandTime,
+			String graphBack,
+			String graphLine,
+			String graphBaseLine) {
 		super(new BorderLayout());
-		view = new DemandGraphView(pmodel, gmodel, alarmTimeMode, colorSetting, stringColor);
+		view =
+			new DemandGraphView(
+				pmodel,
+				gmodel,
+				alarmTimeMode,
+				colorSetting,
+				stringColor,
+				axisInterval,
+				demandTime,
+				graphBack,
+				graphLine,
+				graphBaseLine);
 		add(view, BorderLayout.CENTER);
 		VerticallyScale vs =
 			VerticallyScale.createRightStringScale(pmodel, 0, stringColor);
@@ -112,7 +126,7 @@ public class DemandGraph extends JPanel {
 		/** 現在表示しているデータのスタートインデックス */
 		private int currentStartIndex;
 		/** 現在表示しているX軸目盛りのリスト */
-		private List currentAxisList;
+		private List<String> currentAxisList;
 		/** グラフ描画領域 */
 		private Rectangle graphViewBounds;
 		/** ロギングAPI */
@@ -123,22 +137,33 @@ public class DemandGraph extends JPanel {
 		private final boolean alarmTimeMode;
 
 		private final boolean colorSetting;
-		
+
 		private final Color stringColor;
 
+		private int axisInterval;
+
+		private double demandTime;
+
+		private String graphBack;
+		private String graphLine;
+		private String graphBaseLine;
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param graphPropertyModel グラフプロパティ・モデルの参照
 		 * @param graphModel グラフモデルの参照
 		 */
-		DemandGraphView(
-				GraphPropertyModel graphPropertyModel,
+		DemandGraphView(GraphPropertyModel graphPropertyModel,
 				GraphModel graphModel,
 				boolean alarmTimeMode,
 				boolean colorSetting,
-				Color stringColor) {
+				Color stringColor,
+				int axisInterval,
+				double demandTime,
+				String graphBack,
+				String graphLine,
+				String graphBaseLine) {
 			super();
 			logger = Logger.getLogger(getClass().getName());
 			this.graphModel = graphModel;
@@ -149,6 +174,11 @@ public class DemandGraph extends JPanel {
 			this.colorSetting = colorSetting;
 			this.stringColor = stringColor;
 			graphColors = graphPropertyModel.getColors();
+			this.axisInterval = axisInterval;
+			this.demandTime = demandTime;
+			this.graphBack = graphBack;
+			this.graphLine = graphLine;
+			this.graphBaseLine = graphBaseLine;
 			setDoubleBuffered(true);
 			changeDisplayData();
 			rescale();
@@ -163,25 +193,18 @@ public class DemandGraph extends JPanel {
 		 */
 		private void changeDisplayData() {
 			synchronized (this) {
-				currentAxisList = new ArrayList();
-				// X軸のメモリ文字列(日付)を算出
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
+				currentAxisList = new ArrayList<String>();
 				for (int i = 0; i <= graphPropertyModel
 					.getHorizontalScaleCount(); i++) {
-					currentAxisList.add(timestamp);
-					cal.add(Calendar.MINUTE, 5);
-					timestamp = new Timestamp(cal.getTimeInMillis());
+					currentAxisList
+						.add(String.format("%d", i * axisInterval));
 				}
 			}
 		}
 
 		/**
 		 * コンポーネントを描画します。
-		 * 
+		 *
 		 * @param g グラフィックコンテキスト
 		 */
 		public void paintComponent(Graphics g) {
@@ -219,8 +242,7 @@ public class DemandGraph extends JPanel {
 							+ scaleOneHeight
 							* scaleCount
 							+ (int) Math.round(graphPropertyModel
-								.getVerticalMinimum(i)
-								* yScale[i]));
+								.getVerticalMinimum(i) * yScale[i]));
 				}
 			}
 			repaint();
@@ -228,7 +250,7 @@ public class DemandGraph extends JPanel {
 
 		/**
 		 * スケール・グリッド・目盛り等を描画します。
-		 * 
+		 *
 		 * @param g グラフィックコンテキスト
 		 */
 		private void drawAxis(Graphics2D g2d) {
@@ -242,7 +264,7 @@ public class DemandGraph extends JPanel {
 					+ scaleOneHeight
 					* scaleCount);
 			// 背景をネイビーに
-			g2d.setColor(ColorFactory.getColor("navy"));
+			g2d.setColor(ColorFactory.getColor(graphBack));
 			graphViewBounds = new Rectangle(this.getSize());
 			graphViewBounds.y = scaleInsets.top / 2;
 			graphViewBounds.height =
@@ -253,7 +275,7 @@ public class DemandGraph extends JPanel {
 			g2d.fill(graphViewBounds);
 			logger.debug("graphViewBounds : " + graphViewBounds);
 			// 色を白に
-			g2d.setColor(ColorFactory.getColor("white"));
+			g2d.setColor(ColorFactory.getColor(graphBaseLine));
 			// X軸描画
 			int scaleOneWidth =
 				graphPropertyModel.getHorizontalPixcelWidth()
@@ -265,22 +287,20 @@ public class DemandGraph extends JPanel {
 			FontMetrics metrics = g2d.getFontMetrics();
 			int strHeight = metrics.getHeight();
 			synchronized (this) {
-				Iterator it = currentAxisList.iterator();
-				SimpleDateFormat timeFormat = new SimpleDateFormat("m");
+				Iterator<String> it = currentAxisList.iterator();
 				for (int i = baseOrigin.x, j = 0, strWidth = 0; i <= baseOrigin.x
 					+ scaleOneWidth
 					* scaleCountWidth; i += scaleOneWidth, j++) {
 
 					g2d.setStroke(new BasicStroke());
 					// 描画色を白に
-					g2d.setColor(ColorFactory.getColor("white"));
+					g2d.setColor(ColorFactory.getColor(graphLine));
 					// 目盛りの線を描画
 					g2d.drawLine(i, baseOrigin.y, i, baseOrigin.y
 						+ graphPropertyModel.getScaleOneHeightPixel());
 					// 目盛りの下に日付と時間を描画
-					Date timestamp = (Date) it.next();
+					String timeString = it.next();
 					g2d.setColor(stringColor);
-					String timeString = timeFormat.format(timestamp);
 					strWidth = metrics.stringWidth(timeString);
 					g2d.drawString(timeString, i - strWidth / 2, baseOrigin.y
 						+ graphPropertyModel.getScaleOneHeightPixel()
@@ -297,7 +317,7 @@ public class DemandGraph extends JPanel {
 							dash,
 							0.0f);
 					g2d.setStroke(bs);
-					g2d.setColor(ColorFactory.getColor("cornflowerblue"));
+					g2d.setColor(ColorFactory.getColor(graphLine));
 					g2d.drawLine(
 						i,
 						baseOrigin.y
@@ -319,7 +339,7 @@ public class DemandGraph extends JPanel {
 					dash,
 					0.0f);
 			g2d.setStroke(bs);
-			g2d.setColor(ColorFactory.getColor("cornflowerblue"));
+			g2d.setColor(ColorFactory.getColor(graphLine));
 			for (int i = baseOrigin.y - scaleOneHeight; i >= scaleInsets.top; i -=
 				scaleOneHeight) {
 				g2d.drawLine(baseOrigin.x, i, baseOrigin.x
@@ -330,7 +350,7 @@ public class DemandGraph extends JPanel {
 
 		/**
 		 * タイムスタンプをグラフのX軸座標に変換します。
-		 * 
+		 *
 		 * @param timestamp タイムスタンプ
 		 * @return X軸座標
 		 */
@@ -431,7 +451,7 @@ public class DemandGraph extends JPanel {
 
 		/**
 		 * データをグラフ座標に変換します。
-		 * 
+		 *
 		 * @param x X軸座標
 		 * @param y シリーズデータ
 		 * @param series シリーズ
@@ -544,11 +564,16 @@ public class DemandGraph extends JPanel {
 				double countPerPixel =
 					(double) graphPropertyModel.getHorizontalPixcelWidth() / 30D;
 
+				double countPerPixel2 =
+					(double) graphPropertyModel.getHorizontalPixcelWidth()
+						/ demandTime;
+
 				double[] alarmTimes = demandGraphModel.getAlarmTimes();
 				for (int i = 0; i < alarmTimes.length; i++) {
 					g2d.setColor(graphColors[i]);
 					long x =
-						Math.round(origin[0].x + alarmTimes[i] * countPerPixel);
+						Math
+							.round(origin[0].x + alarmTimes[i] * countPerPixel2);
 					long y = 0;
 					if (alarmTimeMode) {
 						y =
@@ -589,8 +614,7 @@ public class DemandGraph extends JPanel {
 		}
 
 		// グラフの上を越すときの処理
-		private Point dataToPoint(
-				double x,
+		private Point dataToPoint(double x,
 				double y,
 				double x2,
 				double y2,
@@ -609,8 +633,9 @@ public class DemandGraph extends JPanel {
 					+ tmpx2
 					+ " y2:"
 					+ tmpy2);
-				return new Point((int) Math.round(tmpx2), (int) Math
-					.round(tmpy2));
+				return new Point(
+					(int) Math.round(tmpx2),
+					(int) Math.round(tmpy2));
 			}
 			logger.debug("(2) x:" + x + " y:" + y + " x2:" + x2 + " y2:" + y2);
 			return new Point((int) Math.round(x2) - 1, (int) Math.round(y2));
