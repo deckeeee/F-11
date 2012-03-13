@@ -33,12 +33,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -61,11 +61,12 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 	private final JTextField trdDlgHeight = new JTextField();
 	private final JTextField separateScheduleLimit = new JTextField();
 	private final JTextField soundOnHolder = new JTextField();
-	private final JFormattedTextField treeFontSize =
-		new JFormattedTextField(new DecimalFormat("###"));
-	private final JFormattedTextField soundTimerTime =
-		new JFormattedTextField(new DecimalFormat("#####"));
+	private final JFormattedTextField treeFontSize = new JFormattedTextField(
+		new DecimalFormat("###"));
+	private final JFormattedTextField soundTimerTime = new JFormattedTextField(
+		new DecimalFormat("#####"));
 	private final JTextField columnConfig = new JTextField();
+	private final JTextField finishPass = new JTextField();
 
 	public ClientConfTab(Frame parent, StreamManager manager) {
 		super();
@@ -79,7 +80,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		// シンボルの初期値表示
 		mainPanel.add(new JLabel("シンボル初期値表示："));
 		initialText.setText(manager
-				.getClientConf("initialtext", "initial data"));
+			.getClientConf("initialtext", "initial data"));
 		initialText.getDocument().addDocumentListener(this);
 		mainPanel.add(initialText);
 		// エラー時表示
@@ -111,7 +112,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("起動時にキャッシュページを読み込む："));
 		JComboBox cb = new JComboBox(new String[] { "する", "しない" });
 		if ("false".equals(manager.getClientConf(
-				"parser.AppletFrameDefine.receiveCache", "false"))) {
+			"parser.AppletFrameDefine.receiveCache",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -120,14 +122,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"parser.AppletFrameDefine.receiveCache",
-										"true");
+						manager.setClientConf(
+							"parser.AppletFrameDefine.receiveCache",
+							"true");
 					} else {
 						manager.setClientConf(
-								"parser.AppletFrameDefine.receiveCache",
-								"false");
+							"parser.AppletFrameDefine.receiveCache",
+							"false");
 					}
 				}
 			}
@@ -139,8 +140,9 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		 */
 		mainPanel.add(new JLabel("閉じるボタン(Xボタン)で、確認ダイアログ："));
 		cb = new JComboBox(new String[] { "する", "しない" });
-		if ("true".equals(manager.getClientConf("xwife.applet.Applet.isClose",
-				"true"))) {
+		if ("true".equals(manager.getClientConf(
+			"xwife.applet.Applet.isClose",
+			"true"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -149,11 +151,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
-						manager.setClientConf("xwife.applet.Applet.isClose",
-								"false");
+						manager.setClientConf(
+							"xwife.applet.Applet.isClose",
+							"false");
 					} else {
-						manager.setClientConf("xwife.applet.Applet.isClose",
-								"true");
+						manager.setClientConf(
+							"xwife.applet.Applet.isClose",
+							"true");
 					}
 				}
 			}
@@ -163,7 +167,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("立ち上げ時にクライアントを最大化："));
 		cb = new JComboBox(new String[] { "する", "しない" });
 		if ("false".equals(manager.getClientConf(
-				"xwife.applet.Applet.maximized", "false"))) {
+			"xwife.applet.Applet.maximized",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -172,11 +177,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
-						manager.setClientConf("xwife.applet.Applet.maximized",
-								"true");
+						manager.setClientConf(
+							"xwife.applet.Applet.maximized",
+							"true");
 					} else {
-						manager.setClientConf("xwife.applet.Applet.maximized",
-								"false");
+						manager.setClientConf(
+							"xwife.applet.Applet.maximized",
+							"false");
 					}
 				}
 			}
@@ -190,12 +197,14 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		JPanel panel = new JPanel(new GridLayout(1, 0));
 		panel.add(new JLabel("横幅：", JLabel.RIGHT));
 		treeWidth.setText(manager.getClientConf(
-				"xwife.applet.Applet.treeWidth", "150"));
+			"xwife.applet.Applet.treeWidth",
+			"150"));
 		treeWidth.getDocument().addDocumentListener(this);
 		panel.add(treeWidth);
 		panel.add(new JLabel("高さ：", JLabel.RIGHT));
 		treeHeight.setText(manager.getClientConf(
-				"xwife.applet.Applet.treeHeight", "775"));
+			"xwife.applet.Applet.treeHeight",
+			"775"));
 		treeHeight.getDocument().addDocumentListener(this);
 		panel.add(treeHeight);
 		mainPanel.add(panel);
@@ -203,7 +212,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報・状態発生時スクリーンセーバー解除："));
 		cb = new JComboBox(new String[] { "する", "しない" });
 		if ("false".equals(manager.getClientConf(
-				"xwife.applet.Applet.screenSaver", "false"))) {
+			"xwife.applet.Applet.screenSaver",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -213,10 +223,12 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
 						manager.setClientConf(
-								"xwife.applet.Applet.screenSaver", "true");
+							"xwife.applet.Applet.screenSaver",
+							"true");
 					} else {
 						manager.setClientConf(
-								"xwife.applet.Applet.screenSaver", "false");
+							"xwife.applet.Applet.screenSaver",
+							"false");
 					}
 				}
 			}
@@ -226,7 +238,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("ツールチップの最大表示時間(ミリ秒)："));
 		panel = new JPanel(new GridLayout(1, 0));
 		dismissDelay.setText(manager.getClientConf(
-				"xwife.applet.Applet.dismissDelay", "10000"));
+			"xwife.applet.Applet.dismissDelay",
+			"10000"));
 		dismissDelay.getDocument().addDocumentListener(this);
 		panel.add(dismissDelay);
 		// ツールチップのカスタム表示方法
@@ -235,7 +248,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		panel.add(label);
 		cb = new JComboBox(new String[] { "カスタム", "標準" });
 		if ("false".equals(manager.getClientConf(
-				"xwife.applet.Applet.customTipLocation", "false"))) {
+			"xwife.applet.Applet.customTipLocation",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -244,14 +258,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("カスタム".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"xwife.applet.Applet.customTipLocation",
-										"true");
+						manager.setClientConf(
+							"xwife.applet.Applet.customTipLocation",
+							"true");
 					} else {
 						manager.setClientConf(
-								"xwife.applet.Applet.customTipLocation",
-								"false");
+							"xwife.applet.Applet.customTipLocation",
+							"false");
 					}
 				}
 			}
@@ -275,12 +288,14 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		panel = new JPanel(new GridLayout(1, 0));
 		panel.add(new JLabel("横幅：", JLabel.RIGHT));
 		schDlgWidth.setText(manager.getClientConf(
-				"xwife.applet.Applet.schedule.dialog.width", "157"));
+			"xwife.applet.Applet.schedule.dialog.width",
+			"157"));
 		schDlgWidth.getDocument().addDocumentListener(this);
 		panel.add(schDlgWidth);
 		panel.add(new JLabel("高さ：", JLabel.RIGHT));
 		schDlgHeight.setText(manager.getClientConf(
-				"xwife.applet.Applet.schedule.dialog.height", "217"));
+			"xwife.applet.Applet.schedule.dialog.height",
+			"217"));
 		schDlgHeight.getDocument().addDocumentListener(this);
 		panel.add(schDlgHeight);
 		mainPanel.add(panel);
@@ -289,12 +304,14 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		panel = new JPanel(new GridLayout(1, 0));
 		panel.add(new JLabel("横幅：", JLabel.RIGHT));
 		trdDlgWidth.setText(manager.getClientConf(
-				"xwife.applet.Applet.trend.dialog.width", "157"));
+			"xwife.applet.Applet.trend.dialog.width",
+			"157"));
 		trdDlgWidth.getDocument().addDocumentListener(this);
 		panel.add(trdDlgWidth);
 		panel.add(new JLabel("高さ：", JLabel.RIGHT));
 		trdDlgHeight.setText(manager.getClientConf(
-				"xwife.applet.Applet.trend.dialog.height", "217"));
+			"xwife.applet.Applet.trend.dialog.height",
+			"217"));
 		trdDlgHeight.getDocument().addDocumentListener(this);
 		panel.add(trdDlgHeight);
 		mainPanel.add(panel);
@@ -312,7 +329,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("編集可能シンボルでマウスカーソル手形："));
 		cb = new JComboBox(new String[] { "する", "しない" });
 		if ("false".equals(manager.getClientConf(
-				"xwife.applet.Applet.symbol.handcursor", "false"))) {
+			"xwife.applet.Applet.symbol.handcursor",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -321,14 +339,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"xwife.applet.Applet.symbol.handcursor",
-										"true");
+						manager.setClientConf(
+							"xwife.applet.Applet.symbol.handcursor",
+							"true");
 					} else {
 						manager.setClientConf(
-								"xwife.applet.Applet.symbol.handcursor",
-								"false");
+							"xwife.applet.Applet.symbol.handcursor",
+							"false");
 					}
 				}
 			}
@@ -337,10 +354,9 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		// プライオリティによる自動ジャンプの制御
 		mainPanel.add(new JLabel("プライオリティによる自動ジャンプ："));
 		cb = new JComboBox(new String[] { "する", "しない" });
-		if ("false"
-				.equals(manager.getClientConf(
-						"org.F11.scada.xwife.applet.alarm.PriorityController",
-						"false"))) {
+		if ("false".equals(manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.PriorityController",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -350,14 +366,14 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
 						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.PriorityController",
-										"true");
+							.setClientConf(
+								"org.F11.scada.xwife.applet.alarm.PriorityController",
+								"true");
 					} else {
 						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.PriorityController",
-										"false");
+							.setClientConf(
+								"org.F11.scada.xwife.applet.alarm.PriorityController",
+								"false");
 					}
 				}
 			}
@@ -381,7 +397,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		cb = new JComboBox(new String[] { "する", "しない" });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.applet.dialog.isConfirm", "false"))) {
+			"org.F11.scada.applet.dialog.isConfirm",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -390,14 +407,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"org.F11.scada.applet.dialog.isConfirm",
-										"true");
+						manager.setClientConf(
+							"org.F11.scada.applet.dialog.isConfirm",
+							"true");
 					} else {
 						manager.setClientConf(
-								"org.F11.scada.applet.dialog.isConfirm",
-								"false");
+							"org.F11.scada.applet.dialog.isConfirm",
+							"false");
 					}
 				}
 			}
@@ -421,6 +437,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		columnConfig(mainPanel);
 		setNomalSize(mainPanel);
 		setShowScreenLock(mainPanel);
+		setFinishPass(mainPanel);
+		finishPass(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -431,10 +449,9 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		// スケジュール操作で個別表示の有無
 		mainPanel.add(new JLabel("スケジュール操作で個別表示の有無："));
 		JComboBox cb = new JComboBox(new String[] { "する", "しない" });
-		if ("false".equals(manager
-				.getClientConf(
-						"org.F11.scada.applet.schedule.point.SeparateSchedule",
-						"false"))) {
+		if ("false".equals(manager.getClientConf(
+			"org.F11.scada.applet.schedule.point.SeparateSchedule",
+			"false"))) {
 			cb.setSelectedIndex(1);
 		} else {
 			cb.setSelectedIndex(0);
@@ -444,14 +461,14 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
 						manager
-								.setClientConf(
-										"org.F11.scada.applet.schedule.point.SeparateSchedule",
-										"true");
+							.setClientConf(
+								"org.F11.scada.applet.schedule.point.SeparateSchedule",
+								"true");
 					} else {
 						manager
-								.setClientConf(
-										"org.F11.scada.applet.schedule.point.SeparateSchedule",
-										"false");
+							.setClientConf(
+								"org.F11.scada.applet.schedule.point.SeparateSchedule",
+								"false");
 					}
 				}
 			}
@@ -464,7 +481,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("スケジュール機器一覧表示の行数"));
 		JPanel panel = new JPanel(new GridLayout(1, 0));
 		separateScheduleLimit.setText(manager.getClientConf(
-				"org.F11.scada.applet.schedule.point.limit", "25"));
+			"org.F11.scada.applet.schedule.point.limit",
+			"25"));
 		separateScheduleLimit.getDocument().addDocumentListener(this);
 		panel.add(separateScheduleLimit);
 		mainPanel.add(panel);
@@ -474,7 +492,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報一覧に種別を表示："));
 		JComboBox cb = new JComboBox(new String[] { "しない", "する" });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.alarm.showSortColumn", "false"))) {
+			"org.F11.scada.xwife.applet.alarm.showSortColumn",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -483,15 +502,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("する".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.showSortColumn",
-										"true");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.alarm.showSortColumn",
+							"true");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.showSortColumn",
-										"false");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.alarm.showSortColumn",
+							"false");
 					}
 				}
 			}
@@ -505,7 +522,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "前の状態を保持", "警報一覧を表示" });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.typeDmode", "false"))) {
+			"org.F11.scada.xwife.applet.typeDmode",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -515,12 +533,12 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("警報一覧を表示".equals(e.getItem())) {
 						manager.setClientConf(
-								"org.F11.scada.xwife.applet.typeDmode", "true");
+							"org.F11.scada.xwife.applet.typeDmode",
+							"true");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.typeDmode",
-										"false");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.typeDmode",
+							"false");
 					}
 				}
 			}
@@ -534,7 +552,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "しない", "する" });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.AppletD.tabsync", "false"))) {
+			"org.F11.scada.xwife.applet.AppletD.tabsync",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -544,12 +563,12 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("しない".equals(e.getItem())) {
 						manager.setClientConf(
-								"org.F11.scada.xwife.applet.AppletD.tabsync",
-								"false");
+							"org.F11.scada.xwife.applet.AppletD.tabsync",
+							"false");
 					} else {
 						manager.setClientConf(
-								"org.F11.scada.xwife.applet.AppletD.tabsync",
-								"true");
+							"org.F11.scada.xwife.applet.AppletD.tabsync",
+							"true");
 					}
 				}
 			}
@@ -562,7 +581,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("ツリーのフォントサイズ(初期値12)"));
 		JPanel panel = new JPanel(new GridLayout(1, 0));
 		treeFontSize.setText(manager.getClientConf(
-				"org.F11.scada.xwife.applet.pagetree.font", "12"));
+			"org.F11.scada.xwife.applet.pagetree.font",
+			"12"));
 		treeFontSize.setInputVerifier(new NumberVerifier("数値"));
 		treeFontSize.setFocusLostBehavior(JFormattedTextField.COMMIT);
 		treeFontSize.getDocument().addDocumentListener(this);
@@ -598,7 +618,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "しない", "する" });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.alarm.soundTimer", "false"))) {
+			"org.F11.scada.xwife.applet.alarm.soundTimer",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -608,12 +629,12 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("しない".equals(e.getItem())) {
 						manager.setClientConf(
-								"org.F11.scada.xwife.applet.alarm.soundTimer",
-								"false");
+							"org.F11.scada.xwife.applet.alarm.soundTimer",
+							"false");
 					} else {
 						manager.setClientConf(
-								"org.F11.scada.xwife.applet.alarm.soundTimer",
-								"true");
+							"org.F11.scada.xwife.applet.alarm.soundTimer",
+							"true");
 					}
 				}
 			}
@@ -626,7 +647,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報音タイマー："));
 		JPanel panel = new JPanel(new GridLayout(1, 0));
 		soundTimerTime.setText(manager.getClientConf(
-				"org.F11.scada.xwife.applet.alarm.soundTimerTime", "5000"));
+			"org.F11.scada.xwife.applet.alarm.soundTimerTime",
+			"5000"));
 		soundTimerTime.setInputVerifier(new NumberVerifier("数値"));
 		soundTimerTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
 		soundTimerTime.getDocument().addDocumentListener(this);
@@ -640,7 +662,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "しない", "する" });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.isViewWeek", "false"))) {
+			"org.F11.scada.xwife.applet.isViewWeek",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -650,13 +673,12 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("しない".equals(e.getItem())) {
 						manager.setClientConf(
-								"org.F11.scada.xwife.applet.isViewWeek",
-								"false");
+							"org.F11.scada.xwife.applet.isViewWeek",
+							"false");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.isViewWeek",
-										"true");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.isViewWeek",
+							"true");
 					}
 				}
 			}
@@ -669,10 +691,11 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報音禁止をクライアントで共有："));
 		JPanel panel = new JPanel(new GridLayout(1, 0));
 		soundOnHolder.setText(manager.getClientConf(
-				"xwife.applet.Applet.soundOnHolder", ""));
+			"xwife.applet.Applet.soundOnHolder",
+			""));
 		soundOnHolder.getDocument().addDocumentListener(this);
 		soundOnHolder
-				.setToolTipText("共有する場合はホルダIDを入力。何も入力しない場合は従来通り、各クライアント毎で警報音禁止状態を保持します。");
+			.setToolTipText("共有する場合はホルダIDを入力。何も入力しない場合は従来通り、各クライアント毎で警報音禁止状態を保持します。");
 		panel.add(soundOnHolder);
 		mainPanel.add(panel);
 	}
@@ -682,10 +705,9 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		label.setToolTipText("属性を警報一覧に表示するか設定");
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "する", "しない" });
-		if ("true"
-				.equals(manager.getClientConf(
-						"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
-						"true"))) {
+		if ("true".equals(manager.getClientConf(
+			"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+			"true"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -695,14 +717,14 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("しない".equals(e.getItem())) {
 						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
-										"false");
+							.setClientConf(
+								"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+								"false");
 					} else {
 						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
-										"true");
+							.setClientConf(
+								"org.F11.scada.xwife.applet.alarm.showAttributeColumn",
+								"true");
 					}
 				}
 			}
@@ -716,7 +738,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "しない", "する", });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.applet.schedule.todayOrTomorrow", "false"))) {
+			"org.F11.scada.applet.schedule.todayOrTomorrow",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -725,15 +748,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("しない".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"org.F11.scada.applet.schedule.todayOrTomorrow",
-										"false");
+						manager.setClientConf(
+							"org.F11.scada.applet.schedule.todayOrTomorrow",
+							"false");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.applet.schedule.todayOrTomorrow",
-										"true");
+						manager.setClientConf(
+							"org.F11.scada.applet.schedule.todayOrTomorrow",
+							"true");
 					}
 				}
 			}
@@ -746,10 +767,11 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(new JLabel("警報一覧列移動設定："));
 		JPanel panel = new JPanel(new GridLayout(1, 0));
 		columnConfig.setText(manager.getClientConf(
-				"org.F11.scada.columnConfig", ""));
+			"org.F11.scada.columnConfig",
+			""));
 		columnConfig.getDocument().addDocumentListener(this);
 		columnConfig
-				.setToolTipText("警報一覧の列を「列名1:移動先の列1, 列名2:移動先の列2... ,列名n:移動先の列n」で設定します。");
+			.setToolTipText("警報一覧の列を「列名1:移動先の列1, 列名2:移動先の列2... ,列名n:移動先の列n」で設定します。");
 		panel.add(columnConfig);
 		mainPanel.add(panel);
 	}
@@ -760,7 +782,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "戻さない", "戻す", });
 		if ("false".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.alarm.setNomalSize", "false"))) {
+			"org.F11.scada.xwife.applet.alarm.setNomalSize",
+			"false"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -769,15 +792,13 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("戻さない".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.setNomalSize",
-										"false");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.alarm.setNomalSize",
+							"false");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.alarm.setNomalSize",
-										"true");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.alarm.setNomalSize",
+							"true");
 					}
 				}
 			}
@@ -791,7 +812,8 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "表示", "隠す", });
 		if ("true".equals(manager.getClientConf(
-				"org.F11.scada.xwife.applet.isShowScreenLock", "true"))) {
+			"org.F11.scada.xwife.applet.isShowScreenLock",
+			"true"))) {
 			cb.setSelectedIndex(0);
 		} else {
 			cb.setSelectedIndex(1);
@@ -800,20 +822,61 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					if ("表示".equals(e.getItem())) {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.isShowScreenLock",
-										"true");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.isShowScreenLock",
+							"true");
 					} else {
-						manager
-								.setClientConf(
-										"org.F11.scada.xwife.applet.isShowScreenLock",
-										"false");
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.isShowScreenLock",
+							"false");
 					}
 				}
 			}
 		});
 		mainPanel.add(cb);
+	}
+
+	private void setFinishPass(JPanel mainPanel) {
+		JLabel label = new JLabel("クライアント終了時に認証を行う：");
+		label.setToolTipText("クライアント終了時に認証を行う");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "行わない", "行う", });
+		if ("false".equals(manager.getClientConf(
+			"org.F11.scada.applet.dialog.isPassword",
+			"false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("行わない".equals(e.getItem())) {
+						manager.setClientConf(
+							"org.F11.scada.applet.dialog.isPassword",
+							"false");
+					} else {
+						manager.setClientConf(
+							"org.F11.scada.applet.dialog.isPassword",
+							"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
+	}
+
+	private void finishPass(JPanel mainPanel) {
+		// 警報一覧列移動設定
+		mainPanel.add(new JLabel("終了時パスワード："));
+		JPanel panel = new JPanel(new GridLayout(1, 0));
+		finishPass.setText(manager.getClientConf(
+			"org.F11.scada.applet.dialog.password",
+			"password"));
+		finishPass.getDocument().addDocumentListener(this);
+		finishPass.setToolTipText("クライアント終了時のパスワードを設定します");
+		panel.add(finishPass);
+		mainPanel.add(panel);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
@@ -834,42 +897,57 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		} else if (e.getDocument() == errorText.getDocument()) {
 			manager.setClientConf("errortext", errorText.getText());
 		} else if (e.getDocument() == treeWidth.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.treeWidth", treeWidth
-					.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.treeWidth",
+				treeWidth.getText());
 		} else if (e.getDocument() == treeHeight.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.treeHeight", treeHeight
-					.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.treeHeight",
+				treeHeight.getText());
 		} else if (e.getDocument() == dismissDelay.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.dismissDelay",
-					dismissDelay.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.dismissDelay",
+				dismissDelay.getText());
 		} else if (e.getDocument() == schDlgWidth.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.schedule.dialog.width",
-					schDlgWidth.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.schedule.dialog.width",
+				schDlgWidth.getText());
 		} else if (e.getDocument() == schDlgHeight.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.schedule.dialog.height",
-					schDlgHeight.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.schedule.dialog.height",
+				schDlgHeight.getText());
 		} else if (e.getDocument() == trdDlgWidth.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.trend.dialog.width",
-					trdDlgWidth.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.trend.dialog.width",
+				trdDlgWidth.getText());
 		} else if (e.getDocument() == trdDlgHeight.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.trend.dialog.height",
-					trdDlgHeight.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.trend.dialog.height",
+				trdDlgHeight.getText());
 		} else if (e.getDocument() == separateScheduleLimit.getDocument()) {
-			manager.setClientConf("org.F11.scada.applet.schedule.point.limit",
-					separateScheduleLimit.getText());
+			manager.setClientConf(
+				"org.F11.scada.applet.schedule.point.limit",
+				separateScheduleLimit.getText());
 		} else if (e.getDocument() == treeFontSize.getDocument()) {
-			manager.setClientConf("org.F11.scada.xwife.applet.pagetree.font",
-					treeFontSize.getText());
+			manager.setClientConf(
+				"org.F11.scada.xwife.applet.pagetree.font",
+				treeFontSize.getText());
 		} else if (e.getDocument() == soundTimerTime.getDocument()) {
 			manager.setClientConf(
-					"org.F11.scada.xwife.applet.alarm.soundTimerTime",
-					soundTimerTime.getText());
+				"org.F11.scada.xwife.applet.alarm.soundTimerTime",
+				soundTimerTime.getText());
 		} else if (e.getDocument() == soundOnHolder.getDocument()) {
-			manager.setClientConf("xwife.applet.Applet.soundOnHolder",
-					soundOnHolder.getText());
+			manager.setClientConf(
+				"xwife.applet.Applet.soundOnHolder",
+				soundOnHolder.getText());
 		} else if (e.getDocument() == columnConfig.getDocument()) {
-			manager.setClientConf("org.F11.scada.columnConfig", columnConfig
-					.getText());
+			manager.setClientConf(
+				"org.F11.scada.columnConfig",
+				columnConfig.getText());
+		} else if (e.getDocument() == finishPass.getDocument()) {
+			manager.setClientConf(
+				"org.F11.scada.applet.dialog.password",
+				finishPass.getText());
 		}
 	}
 

@@ -80,6 +80,7 @@ import org.F11.scada.theme.DefaultWifeTheme;
 import org.F11.scada.util.JavaVersion;
 import org.F11.scada.xwife.WifeWindowAdapter;
 import org.F11.scada.xwife.explorer.Explorer;
+import org.F11.scada.xwife.explorer.timeset.TimeSetUtilImpl;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -109,6 +110,7 @@ public class WifeMain extends JPanel {
 	private PointCommentService pointCommentService;
 	private SchedulePointService schedulePointService;
 	private AccessControl accessControl;
+	private TimeSetUtilImpl timeSetUtilImpl;
 
 	/** Creates new WifeMain */
 	public WifeMain(int rmiReceivePort) throws Exception {
@@ -220,6 +222,7 @@ public class WifeMain extends JPanel {
 
 		addExplorer(container);
 
+		timeSetUtilImpl = new TimeSetUtilImpl();
 		Runtime runtime = Runtime.getRuntime();
 		runtime.addShutdownHook(new Thread() {
 			public void run() {
@@ -264,7 +267,7 @@ public class WifeMain extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void displayInfo() {
 		logger.info(System.getProperty("java.vendor"));

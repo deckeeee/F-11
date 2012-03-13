@@ -49,10 +49,18 @@ public abstract class LoggingSchedule {
 	public static final LoggingSchedule TENMINUTE = new TenMinuteSchedule();
 	/** 時間隔のロギングスケジュール */
 	public static final LoggingSchedule HOUR = new HourSchedule();
+	/** 時間隔のロギングスケジュール(CSV出力が当日) */
+	public static final LoggingSchedule TDHOUR = new HourSchedule();
 	/** 日間隔のロギングスケジュール */
 	public static final LoggingSchedule DAILY = new DailySchedule();
+	/** 日間隔のロギングスケジュール(CSV出力が当月1～末日) */
+	public static final LoggingSchedule TMDAILY = new DailySchedule();
 	/** 月間隔のロギングスケジュール */
 	public static final LoggingSchedule MONTHLY = new MonthlySchedule();
+	/** 月間隔のロギングスケジュール(CSV出力が前年4～3月)  */
+	public static final LoggingSchedule MONTHLY4 = new MonthlySchedule();
+	/** 月間隔のロギングスケジュール(CSV出力が本年4～3月)  */
+	public static final LoggingSchedule TYMONTHLY4 = new MonthlySchedule();
 	/** 年間隔のロギングスケジュール */
 	public static final LoggingSchedule YEARLY = new YearlySchedule();
 	/** 一定間隔のロギングスケジュール */

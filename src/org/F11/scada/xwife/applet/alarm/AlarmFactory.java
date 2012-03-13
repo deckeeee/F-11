@@ -31,6 +31,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.BevelBorder;
 
 import org.F11.scada.Globals;
+import org.F11.scada.parser.alarm.AlarmDefine;
 import org.F11.scada.xwife.applet.AbstractWifeApplet;
 
 public class AlarmFactory {
@@ -52,8 +53,7 @@ public class AlarmFactory {
 		}
 	}
 
-	private JComponent getCareerPanel(
-			AbstractWifeApplet wifeApplet,
+	private JComponent getCareerPanel(AbstractWifeApplet wifeApplet,
 			boolean changePage) {
 		CareerPanel careerPanel = new CareerPanel(wifeApplet);
 		AlarmStats newMsg = new AlarmStats(wifeApplet);
@@ -65,11 +65,17 @@ public class AlarmFactory {
 		return createAlarmPanel(wifeApplet, careerPanel, newMsg);
 	}
 
-	private JComponent getAlarmTabPane(
-			AbstractWifeApplet wifeApplet,
+	private JComponent getAlarmTabPane(AbstractWifeApplet wifeApplet,
 			boolean changePage) {
 		AlarmTabbedPane alarmTabPane =
 			new AlarmTabbedPane(wifeApplet, JTabbedPane.TOP);
+
+		AlarmDefine alarmDefine = new AlarmDefine("/resources/AlarmDefine.xml");
+		alarmTabPane.setSelectedIndex(alarmDefine
+			.getAlarmConfig()
+			.getAlarmTableConfig()
+			.getDefaultTabNo());
+
 		AlarmStats newMsg = new AlarmStats(wifeApplet);
 		alarmTabPane.addTableModelListener(newMsg);
 		PriorityController controller =
@@ -80,8 +86,7 @@ public class AlarmFactory {
 		return createAlarmPanel(wifeApplet, alarmTabPane, newMsg);
 	}
 
-	private JComponent createAlarmPanel(
-			AbstractWifeApplet wifeApplet,
+	private JComponent createAlarmPanel(AbstractWifeApplet wifeApplet,
 			JComponent alarmTabPane,
 			AlarmStats newMsg) {
 		JPanel panelNewAlarm = new JPanel(new BorderLayout());

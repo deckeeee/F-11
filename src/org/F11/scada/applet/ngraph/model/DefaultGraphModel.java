@@ -20,7 +20,6 @@
 
 package org.F11.scada.applet.ngraph.model;
 
-import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,8 +31,6 @@ import java.util.SortedMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.swing.JOptionPane;
 
 import org.F11.scada.applet.graph.DefaultSelectiveValueListHandlerFactory;
 import org.F11.scada.applet.graph.SelectiveValueListHandlerFactory;
@@ -115,9 +112,9 @@ public class DefaultGraphModel extends AbstractGraphModel {
 	private void serverError(RemoteException e) {
 		String errorMessage = "データ取り込みにてサーバーでエラーが発生しました。\n";
 		logger.error(errorMessage, e);
-		JOptionPane.showMessageDialog(null, errorMessage
-			+ printStackTrace(e.getStackTrace()), "サーバーエラー",
-				JOptionPane.ERROR_MESSAGE);
+//		JOptionPane.showMessageDialog(null, errorMessage
+//			+ printStackTrace(e.getStackTrace()), "サーバーエラー",
+//				JOptionPane.ERROR_MESSAGE);
 	}
 
 	private String printStackTrace(StackTraceElement[] stackTrace) {

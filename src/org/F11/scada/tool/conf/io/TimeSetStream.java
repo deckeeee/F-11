@@ -58,14 +58,14 @@ public class TimeSetStream {
 			$("MINUTE", "•ªŠÔŠu"),
 			$("TENMINUTE", "10•ªŠÔŠu"),
 			$("HOUR", "ŽžŠÔŠu"),
-			$("MONTH", "“úŠÔŠu"),
-			$("MONTH", "ŒŽŠÔŠu"),
+			$("DAILY", "“úŠÔŠu"),
+			$("MONTHLY", "ŒŽŠÔŠu"),
 			$("YEARLY", "”NŠÔŠu"),
 			$("•ªŠÔŠu", "MINUTE"),
 			$("10•ªŠÔŠu", "TENMINUTE"),
 			$("ŽžŠÔŠu", "HOUR"),
-			$("“úŠÔŠu", "MONTH"),
-			$("ŒŽŠÔŠu", "MONTH"),
+			$("“úŠÔŠu", "DAILY"),
+			$("ŒŽŠÔŠu", "MONTHLY"),
 			$("”NŠÔŠu", "YEARLY"));
 	}
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.io.postgresql.padding;
@@ -29,14 +29,14 @@ import org.seasar.framework.container.S2Container;
 
 /**
  * レコード補完ロジックのマップを生成します
- * 
+ *
  * @author maekawa
  *
  */
 public abstract class PaddingMapFactory {
 	/**
 	 * レコード補完ロジックのマップを生成します
-	 * 
+	 *
 	 * @return レコード補完ロジックのマップを生成します
 	 */
 	public static Map<String, PaddingLogic> createLogicMap() {
@@ -47,8 +47,12 @@ public abstract class PaddingMapFactory {
 		map.put("MINUTE", new Minute(utility, 1));
 		map.put("TENMINUTE", new Minute(utility, 10));
 		map.put("HOUR", new Hour(utility));
+		map.put("TDHOUR", new Hour(utility));
 		map.put("DAILY", new Daily(utility));
+		map.put("TMDAILY", new Daily(utility));
 		map.put("MONTHLY", new Monthly(utility));
+		map.put("MONTHLY4", new Monthly(utility));
+		map.put("TYMONTHLY4", new Monthly(utility));
 		map.put("YEARLY", new Yearly(utility));
 		map.put("ONESECOND", new Second(utility, 1));
 		map.put("QMINUTE", new Minute(utility, 15));
@@ -66,6 +70,7 @@ public abstract class PaddingMapFactory {
 		map.put("ONEMINUTE", new Minute(utility, 1));
 		map.put("BMS", new Minute(utility, 1));
 		map.put("MINUTEHOUROUT", new Minute(utility, 1));
+		map.put("ONEHOURMONTHOUT2", new Hour(utility));
 		return map;
 	}
 }

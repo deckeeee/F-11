@@ -304,7 +304,7 @@ public class AlarmDefineTab extends JScrollPane implements DocumentListener {
 		mainPanel.add(initPage);
 		// クライアントタイトル
 		mainPanel.add(new JLabel("クライアントタイトル："));
-		titleText.setText(manager.getAlarmDefine("/alarm/title/text", "F-11"));
+		titleText.setText(manager.getAlarmDefine("/alarm/title/text", "F-11").replaceAll("&amp;", "&"));
 		titleText.getDocument().addDocumentListener(this);
 		mainPanel.add(titleText);
 		// タイトルアイコン

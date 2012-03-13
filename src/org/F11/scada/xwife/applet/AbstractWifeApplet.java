@@ -107,6 +107,7 @@ import org.F11.scada.util.PageHistory;
 import org.F11.scada.util.PageHistoryImpl;
 import org.F11.scada.util.RmiUtil;
 import org.F11.scada.util.ThreadUtil;
+import org.F11.scada.xwife.ClientPasswordAdapter;
 import org.F11.scada.xwife.ClientWindowAdapter;
 import org.F11.scada.xwife.applet.alarm.ActionTimerTask;
 import org.F11.scada.xwife.applet.alarm.LimitedAction;
@@ -182,18 +183,15 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		MetalLookAndFeel.setCurrentTheme(new DefaultWifeTheme());
 	}
 
-	abstract protected void lookup()
-		throws MalformedURLException,
-		RemoteException,
-		NotBoundException;
+	abstract protected void lookup() throws MalformedURLException,
+			RemoteException, NotBoundException;
 
 	abstract protected void layoutContainer() throws IOException, SAXException;
 
 	/**
 	 * アプレットを初期化します。ユーザー主体情報もここで初期化されます。
 	 */
-	public AbstractWifeApplet(boolean isStandalone, boolean soundoffAtStarted)
-			throws RemoteException {
+	public AbstractWifeApplet(boolean isStandalone, boolean soundoffAtStarted) throws RemoteException {
 		this.isStandalone = isStandalone;
 		this.soundoffAtStarted = soundoffAtStarted;
 		try {
@@ -227,8 +225,9 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		configuration = new ClientConfiguration();
 		splashScreen = new SplashScreen(this, configuration);
 		boolean splashOn =
-			configuration.getBoolean("org.F11.scada.xwife.applet.splash.on",
-					false);
+			configuration.getBoolean(
+				"org.F11.scada.xwife.applet.splash.on",
+				false);
 		splashScreen.setVisible(splashOn);
 		splashScreen.incrementValue();
 
@@ -256,7 +255,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	private void lookupCollector() {
 		int maxRetry =
 			Integer.parseInt(EnvironmentManager.get(
-					"/server/rmi/collectorserver/retry/count", "-1"));
+				"/server/rmi/collectorserver/retry/count",
+				"-1"));
 		if (maxRetry < 0) {
 			for (int i = 1;; i++) {
 				try {
@@ -299,7 +299,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	private void lookupOperationLogging() {
 		loggingService =
 			(OperationLoggingService) RmiUtil
-					.lookupServer(OperationLoggingService.class);
+				.lookupServer(OperationLoggingService.class);
 	}
 
 	private void setLoggerConfig() {
@@ -308,19 +308,19 @@ public abstract class AbstractWifeApplet extends JApplet implements
 			file.mkdirs();
 			URL url =
 				AbstractWifeApplet.class
-						.getResource("/resources/applet_log4j.xml");
+					.getResource("/resources/applet_log4j.xml");
 			if (url != null) {
 				DOMConfigurator.configure(url);
 			} else {
 				url =
 					AbstractWifeApplet.class
-							.getResource("/resources/xwife_applet_log4j.properties");
+						.getResource("/resources/xwife_applet_log4j.properties");
 				PropertyConfigurator.configure(url);
 			}
 		} else {
 			URL url =
 				AbstractWifeApplet.class
-						.getResource("/resources/xwife_applet_log4j.properties");
+					.getResource("/resources/xwife_applet_log4j.properties");
 			PropertyConfigurator.configure(url);
 		}
 	}
@@ -333,7 +333,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		ToolTipManager manager = ToolTipManager.sharedInstance();
 		manager.setInitialDelay(0);
 		manager.setDismissDelay(configuration.getInt(
-				"xwife.applet.Applet.dismissDelay", 10000));
+			"xwife.applet.Applet.dismissDelay",
+			10000));
 		manager.setReshowDelay(0);
 
 		try {
@@ -422,9 +423,10 @@ public abstract class AbstractWifeApplet extends JApplet implements
 				this.subject = sub;
 				fireSubjectChanged();
 				changeTree();
-				loggingService.login(sub.getUserName(), InetAddress
-						.getLocalHost().getHostAddress(), new Timestamp(System
-						.currentTimeMillis()));
+				loggingService.login(
+					sub.getUserName(),
+					InetAddress.getLocalHost().getHostAddress(),
+					new Timestamp(System.currentTimeMillis()));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -454,8 +456,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 			Subject oldSubject = this.subject;
 			initSubject();
 			loggingService.logout(oldSubject.getUserName(), InetAddress
-					.getLocalHost().getHostAddress(), new Timestamp(System
-					.currentTimeMillis()));
+				.getLocalHost()
+				.getHostAddress(), new Timestamp(System.currentTimeMillis()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -616,8 +618,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 
 		for (Iterator it = ret.iterator(), eit = editables.iterator(); it
-				.hasNext()
-			&& eit.hasNext();) {
+			.hasNext() && eit.hasNext();) {
 			Editable ed = (Editable) eit.next();
 			Boolean[] permissions = (Boolean[]) it.next();
 			setEditable(ed, permissions);
@@ -632,12 +633,9 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		editable.setEditable(b);
 	}
 
-	private void createContainer()
-		throws SAXException,
-		IOException,
-		MalformedURLException,
-		RemoteException,
-		DataProviderDoesNotSupportException {
+	private void createContainer() throws SAXException, IOException,
+			MalformedURLException, RemoteException,
+			DataProviderDoesNotSupportException {
 		DataProviderProxyDefine proxyDefine =
 			new DataProviderProxyDefine(session, this);
 		splashScreen.incrementValue();
@@ -666,7 +664,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	private boolean isReceiveCache() {
 		return configuration.getBoolean(
-				"parser.AppletFrameDefine.receiveCache", false);
+			"parser.AppletFrameDefine.receiveCache",
+			false);
 	}
 
 	/**
@@ -675,24 +674,26 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	protected Box createBandFButton() {
 		JButton treeBack =
 			new JButton(GraphicManager.get(configuration.getString(
-					"BandFButton.backIcon",
-					"/toolbarButtonGraphics/navigation/Back16.gif")));
+				"BandFButton.backIcon",
+				"/toolbarButtonGraphics/navigation/Back16.gif")));
 		Dimension preferredSize =
-			new Dimension(configuration.getInt("BandFButton.width", 20),
-					configuration.getInt("BandFButton.height", 20));
+			new Dimension(
+				configuration.getInt("BandFButton.width", 20),
+				configuration.getInt("BandFButton.height", 20));
 		treeBack.setPreferredSize(preferredSize);
 		treeBack.setToolTipText("戻る");
 		JButton treeForward =
 			new JButton(GraphicManager.get(configuration.getString(
-					"BandFButton.forwardIcon",
-					"/toolbarButtonGraphics/navigation/Forward16.gif")));
+				"BandFButton.forwardIcon",
+				"/toolbarButtonGraphics/navigation/Forward16.gif")));
 		treeForward.setPreferredSize(preferredSize);
 		treeForward.setToolTipText("進む");
 
 		treeBack.addActionListener(PageHistoryActionFactory.createBackAction(
-				history, this));
+			history,
+			this));
 		treeForward.addActionListener(PageHistoryActionFactory
-				.createForwardAction(history, this));
+			.createForwardAction(history, this));
 
 		Box treeBox = Box.createHorizontalBox();
 		treeBox.add(treeBack);
@@ -716,7 +717,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 			DefaultMutableTreeNode root =
 				(DefaultMutableTreeNode) tree.getModel().getRoot();
 			for (Enumeration e = root.depthFirstEnumeration(); e
-					.hasMoreElements();) {
+				.hasMoreElements();) {
 				DefaultMutableTreeNode node =
 					(DefaultMutableTreeNode) e.nextElement();
 				TreeNode[] tn = node.getPath();
@@ -744,8 +745,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		/** pageMap オブジェクトの参照 */
 		private final AbstractWifeApplet applet;
 		/** スレッドプール */
-		private final ExecutorService executorService =
-			Executors.newSingleThreadExecutor();
+		private final ExecutorService executorService = Executors
+			.newSingleThreadExecutor();
 		private final JLabel label = new JLabel("Now Loading...");
 		private Future future = new FutureTask(new Runnable() {
 			public void run() {
@@ -791,7 +792,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 				synchronized (future) {
 					future =
 						executorService
-								.submit(new PageChangeTask(selNode, argv));
+							.submit(new PageChangeTask(selNode, argv));
 				}
 			}
 		}
@@ -801,8 +802,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 				String key = ((PageTreeNode) selNode.getUserObject()).getKey();
 				synchronized (currentBase) {
 					return (BasePane.DUMMY_PAGE == currentBase || !currentBase
-							.getPageName().equals(key))
-						&& selNode.isLeaf();
+						.getPageName()
+						.equals(key)) && selNode.isLeaf();
 				}
 			} else {
 				return false;
@@ -843,8 +844,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 
 		private class PageChangeTask implements Runnable {
-			private final Logger logger =
-				Logger.getLogger(PageChangeTask.class);
+			private final Logger logger = Logger
+				.getLogger(PageChangeTask.class);
 			private final PageTreeNode pgnode;
 			private final Object argv;
 
@@ -858,21 +859,25 @@ public abstract class AbstractWifeApplet extends JApplet implements
 					// logger.info("session : " + applet.session);
 					if (null != argv) {
 						final Map pageMap =
-							applet.frameDef.getPage(pgnode.getKey(),
-									applet.session, argv);
+							applet.frameDef.getPage(
+								pgnode.getKey(),
+								applet.session,
+								argv);
 						setMain(pageMap);
 					} else {
 						final Map pageMap =
-							applet.frameDef.getPage(pgnode.getKey(),
-									applet.session);
+							applet.frameDef.getPage(
+								pgnode.getKey(),
+								applet.session);
 						setMain(pageMap);
 					}
 				} catch (BasePaneNotFoundException bex) {
 					logger.error("page not found from server.", bex);
-					JOptionPane.showMessageDialog(applet, pgnode
-						+ "ページがサーバーにありませんでした。\n初期表示ページを表示します。",
-							"Page not found from server",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(
+						applet,
+						pgnode + "ページがサーバーにありませんでした。\n初期表示ページを表示します。",
+						"Page not found from server",
+						JOptionPane.ERROR_MESSAGE);
 					showInitPage();
 				}
 			}
@@ -881,9 +886,10 @@ public abstract class AbstractWifeApplet extends JApplet implements
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						removeAll();
-						add((JComponent) pageMap
+						add(
+							(JComponent) pageMap
 								.get(AppletFrameDefine.ITEM_KEY_TOOLBAR),
-								BorderLayout.SOUTH);
+							BorderLayout.SOUTH);
 						revalidate();
 						repaint();
 
@@ -893,7 +899,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 							}
 							currentBase =
 								(BasePane) pageMap
-										.get(AppletFrameDefine.ITEM_KEY_PANE);
+									.get(AppletFrameDefine.ITEM_KEY_PANE);
 							currentBase.revalidate();
 							applet.spane.setRightComponent(currentBase);
 						}
@@ -1012,12 +1018,22 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	 * @param frame 親フレーム
 	 */
 	protected static void setCloseAction(JFrame frame, AbstractWifeApplet applet) {
-		if (isClose(applet)) {
+		if (isPassword(applet)) {
+			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			frame.addWindowListener(new ClientPasswordAdapter(frame, applet));
+		} else if (isClose(applet)) {
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		} else {
 			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			frame.addWindowListener(new ClientWindowAdapter(frame));
 		}
+	}
+
+	private static boolean isPassword(AbstractWifeApplet applet) {
+		return !applet.isStandalone
+			|| applet.getConfiguration().getBoolean(
+				"org.F11.scada.applet.dialog.isPassword",
+				false);
 	}
 
 	/**
@@ -1026,9 +1042,10 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	 * @return ClientConfiguration.xmlの設定より、閉じるボタンの挙動を返します。
 	 */
 	protected static boolean isClose(AbstractWifeApplet applet) {
-		ClientConfiguration configuration = new ClientConfiguration();
 		return !applet.isStandalone
-			|| configuration.getBoolean("xwife.applet.Applet.isClose", true);
+			|| applet.getConfiguration().getBoolean(
+				"xwife.applet.Applet.isClose",
+				true);
 	}
 
 	/**
@@ -1036,13 +1053,14 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	 */
 	public void pressShiftKey() {
 		if (isStandalone) {
-			if (configuration.getBoolean("xwife.applet.Applet.screenSaver",
-					false)
-				&& isCheck) {
+			if (configuration.getBoolean(
+				"xwife.applet.Applet.screenSaver",
+				false) && isCheck) {
 				RobotUtil.getInstance().keyClick(KeyEvent.VK_SHIFT);
 				isCheck = false;
-				screenSaverTimer.schedule(new ActionTimerTask(this),
-						SCREEN_SAVER_TIME);
+				screenSaverTimer.schedule(
+					new ActionTimerTask(this),
+					SCREEN_SAVER_TIME);
 			}
 		}
 	}

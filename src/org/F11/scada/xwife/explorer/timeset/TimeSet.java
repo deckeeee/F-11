@@ -66,9 +66,9 @@ import org.xml.sax.SAXException;
 
 /**
  * 時刻設定パネルクラスです。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class TimeSet extends JPanel implements ExplorerElement {
 	private static final long serialVersionUID = -347087975394647855L;
