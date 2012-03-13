@@ -403,8 +403,8 @@ public abstract class AbstractAlarmPanel extends JPanel {
 
 	protected Component getAlarmTable() {
 		JTabbedPane tabbedPane = createAlarmTables();
-		tabbedPane.setSelectedIndex(alarmDefine.getAlarmConfig()
-				.getAlarmTableConfig().getDefaultTabNo());
+//		tabbedPane.setSelectedIndex(alarmDefine.getAlarmConfig()
+//				.getAlarmTableConfig().getDefaultTabNo());
 		createOperationFinder(tabbedPane);
 		return tabbedPane;
 	}

@@ -35,10 +35,18 @@ public class CsvScheduleFactory {
 			return new OneMinuteSchedule();
 		} else if ("HOUR".equalsIgnoreCase(name)) {
 			return new HourSchedule();
+		} else if ("TDHOUR".equalsIgnoreCase(name)) {
+			return new TDHourSchedule();
 		} else if ("DAILY".equalsIgnoreCase(name)) {
 			return new DailySchedule();
+		} else if ("TMDAILY".equalsIgnoreCase(name)) {
+			return new TMDailySchedule();
 		} else if ("MONTHLY".equalsIgnoreCase(name)) {
 			return new MonthlySchedule();
+		} else if ("MONTHLY4".equalsIgnoreCase(name)) {
+			return new Monthly4Schedule();
+		} else if ("TYMONTHLY4".equalsIgnoreCase(name)) {
+			return new TYMonthly4Schedule();
 		} else if ("YEARLY".equalsIgnoreCase(name)) {
 			return new YearlySchedule();
 		} else if ("BMS".equalsIgnoreCase(name)) {

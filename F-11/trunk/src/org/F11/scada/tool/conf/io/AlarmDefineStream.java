@@ -49,7 +49,7 @@ public class AlarmDefineStream {
 		String ret = n.getAttribute(attrname);
 		if (ret == null || ret.length() <= 0)
 			return def;
-		return ret;
+		return ret.replaceAll("&", "&amp;");
 	}
 
 	public void putData(String key, String value) {
