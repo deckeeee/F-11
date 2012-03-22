@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor.service;
@@ -107,11 +107,27 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 		spd.setUnit(unit);
 		spd.setName(name);
 		spd.setMark(mark);
-		spd.setMin(min);
-		spd.setMax(max);
-		spd.setVerticalFormat(verticalFormat);
+		spd.setMin(getMin(min));
+		spd.setMax(getMax(max));
+		spd.setVerticalFormat(getVerticalFormat(verticalFormat));
 		spd.setHolder(holder);
-		spd.setConvert(convert);
+		spd.setConvert(getConvert(convert));
 		return spd;
+	}
+
+	private Float getMin(Float min) {
+		return min != null ? min : new Float("0");
+	}
+
+	private Float getMax(Float max) {
+		return max != null ? max : new Float("1");
+	}
+
+	private String getVerticalFormat(String verticalFormat) {
+		return verticalFormat != null ? verticalFormat : "0";
+	}
+
+	private String getConvert(String convert) {
+		return convert != null ? convert : "";
 	}
 }

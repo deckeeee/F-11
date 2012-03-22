@@ -24,8 +24,11 @@ package org.F11.scada.server.logging.report.schedule;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
+import org.apache.log4j.Logger;
+
 public class Monthly4Schedule implements CsvSchedule {
 	private final OutputState state = new DummyOutputState();
+	private final Logger logger = Logger.getLogger(Monthly4Schedule.class);
 
 	public Timestamp startTime(long now, boolean startMode) {
 		Calendar cal = Calendar.getInstance();
@@ -34,14 +37,14 @@ public class Monthly4Schedule implements CsvSchedule {
 		int m = cal.get(Calendar.MONTH);
 		cal.clear();
 		if (m <= Calendar.APRIL) {
-			cal.add(Calendar.YEAR, -1);
+			y = y - 1;
 		}
 		if (startMode) {
 			cal.set(y, Calendar.MAY, 1);
 		} else {
 			cal.set(y, Calendar.MAY, 1);
 		}
-		System.out.println("S:" + new Timestamp(cal.getTimeInMillis()));
+		logger.info("S:" + new Timestamp(cal.getTimeInMillis()));
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
@@ -52,14 +55,14 @@ public class Monthly4Schedule implements CsvSchedule {
 		int y = cal.get(Calendar.YEAR);
 		int m = cal.get(Calendar.MONTH);
 		if (m >= Calendar.MAY) {
-			cal.add(Calendar.YEAR, 1);
+			y = y + 1;
 		}
 		if (startMode) {
 			cal.set(y, Calendar.APRIL, 30, 23, 59);
 		} else {
 			cal.set(y, Calendar.APRIL, 30, 23, 59);
 		}
-		System.out.println("E:" + new Timestamp(cal.getTimeInMillis()));
+		logger.info("E:" + new Timestamp(cal.getTimeInMillis()));
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
