@@ -20,7 +20,7 @@
 
 package org.F11.scada.applet.ngraph.draw;
 
-import static java.lang.Math.round;
+import static java.lang.Math.*;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -34,7 +34,6 @@ import org.F11.scada.applet.ngraph.GraphProperties;
 import org.F11.scada.applet.ngraph.LogData;
 import org.F11.scada.applet.ngraph.SeriesProperties;
 import org.F11.scada.data.ConvertValue;
-import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.commons.collections.primitives.DoubleIterator;
 import org.apache.commons.collections.primitives.DoubleList;
@@ -50,11 +49,10 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 		super(properties);
 	}
 
-	public void drawSeries(
-		Graphics g,
-		int currentIndex,
-		LogData[] displayDatas,
-		boolean isAllSpanDisplayMode) {
+	public void drawSeries(Graphics g,
+			int currentIndex,
+			LogData[] displayDatas,
+			boolean isAllSpanDisplayMode) {
 		Insets insets = properties.getInsets();
 		long lastDate = displayDatas[currentIndex].getDate().getTime();
 		long startDate = lastDate - properties.getHorizontalLineSpan();
@@ -71,8 +69,10 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 				int y1 = getY(i1.next(), seriesIndex);
 				int y2 = getY(i2.next(), seriesIndex);
 				SeriesProperties sp =
-					properties.getSeriesGroup().getSeriesProperties().get(
-							seriesIndex);
+					properties
+						.getSeriesGroup()
+						.getSeriesProperties()
+						.get(seriesIndex);
 				if (sp.isVisible()) {
 					g.setColor(sp.getColor());
 					g.drawLine(x1, y1 + insets.top, x2, y2 + insets.top);
@@ -89,8 +89,18 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 	private int getY(double value, int seriesIndex) {
 		SeriesProperties sp =
 			properties.getSeriesGroup().getSeriesProperties().get(seriesIndex);
-		float max = sp.getMax();
-		float min = sp.getMin();
+		DataHolder holder =
+			Manager.getInstance().findDataHolder(
+				sp.getHolderString().getHolderId());
+		float max = 0;
+		float min = 0;
+		if (isDigital(holder)) {
+			max = 1.1f;
+			min = -0.1f;
+		} else {
+			max = sp.getMax();
+			min = sp.getMin();
+		}
 		float os = properties.getVerticalLine() / getHalfVerticalCount();
 		float r = os / (max - min);
 		float dispMax = os * seriesIndex;
@@ -105,18 +115,19 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 		return properties.getVerticalCount() / 2F;
 	}
 
-	public void drawVerticalString(
-		Graphics g,
-		int top,
-		int x,
-		int y,
-		int i,
-		int drawSeriesIndex) {
+	public void drawVerticalString(Graphics g,
+			int top,
+			int x,
+			int y,
+			int i,
+			int drawSeriesIndex) {
 		if (properties.isVisibleVerticalString()) {
 			if (isDrawDateString(i, drawSeriesIndex)) {
 				SeriesProperties p =
-					properties.getSeriesGroup().getSeriesProperties().get(
-							drawSeriesIndex);
+					properties
+						.getSeriesGroup()
+						.getSeriesProperties()
+						.get(drawSeriesIndex);
 				float max = p.getMax();
 				DecimalFormat f = new DecimalFormat(p.getVerticalFormat());
 				float number =
@@ -125,7 +136,7 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 						* ((max - p.getMin()) / properties.getVerticalCount() * getHalfVerticalCount());
 				DataHolder holder =
 					Manager.getInstance().findDataHolder(
-							p.getHolderString().getHolderId());
+						p.getHolderString().getHolderId());
 				if (isDigital(holder)) {
 					digitalDraw(g, top, x, y, p, number);
 				} else {
@@ -135,13 +146,12 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 		}
 	}
 
-	private void digitalDraw(
-		Graphics g,
-		int top,
-		int x,
-		int y,
-		SeriesProperties p,
-		float number) {
+	private void digitalDraw(Graphics g,
+			int top,
+			int x,
+			int y,
+			SeriesProperties p,
+			float number) {
 		String dateStr = "";
 		if (number == 0F) {
 			dateStr = "OFF";
@@ -151,37 +161,36 @@ public class SegmentasionGraphDraw extends AbstractGraphDraw {
 		FontMetrics metrics = g.getFontMetrics();
 		if (p.isVisible()) {
 			g.setColor(p.getColor());
-			g.drawString(dateStr, x
-				- metrics.stringWidth(dateStr)
-				- properties.getScalePixcelSize(), Math.round(top
-				+ y
-				+ metrics.getAscent()
-				/ DATE_STRING_RATE));
+			g.drawString(
+				dateStr,
+				x
+					- metrics.stringWidth(dateStr)
+					- properties.getScalePixcelSize(),
+				Math.round(top + y + metrics.getAscent() / DATE_STRING_RATE));
 		}
 	}
 
-	private void analogDraw(
-		Graphics g,
-		int top,
-		int x,
-		int y,
-		SeriesProperties p,
-		float number,
-		DataHolder holder) {
+	private void analogDraw(Graphics g,
+			int top,
+			int x,
+			int y,
+			SeriesProperties p,
+			float number,
+			DataHolder holder) {
 		ConvertValue converter =
 			(ConvertValue) holder
-					.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+				.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
 		double ref = converter.convertInputValueUnlimited(number);
 		String dateStr = converter.convertStringValueUnlimited(ref);
 		FontMetrics metrics = g.getFontMetrics();
 		if (p.isVisible()) {
 			g.setColor(p.getColor());
-			g.drawString(dateStr, x
-				- metrics.stringWidth(dateStr)
-				- properties.getScalePixcelSize(), Math.round(top
-				+ y
-				+ metrics.getAscent()
-				/ DATE_STRING_RATE));
+			g.drawString(
+				dateStr,
+				x
+					- metrics.stringWidth(dateStr)
+					- properties.getScalePixcelSize(),
+				Math.round(top + y + metrics.getAscent() / DATE_STRING_RATE));
 		}
 	}
 

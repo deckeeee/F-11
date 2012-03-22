@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -60,16 +60,16 @@ import org.apache.log4j.Logger;
 
 /**
  * 折れ線グラフを表示するコンポーネント
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		Colleague {
 	private static final long serialVersionUID = -7135402419995170758L;
 	/** 参照データ表示の為にグラフ画面クリック時に発生するイベント名称 */
-	public static final String GRAPH_CLICKED_CHANGE =
-		GraphView.class.getName() + "graph.clicked.change";
+	public static final String GRAPH_CLICKED_CHANGE = GraphView.class.getName()
+		+ "graph.clicked.change";
 	/** 基本描画ストローク */
 	private static final BasicStroke BASIC_STROKE = new BasicStroke();
 	/** 縦目盛点線ストローク */
@@ -107,12 +107,11 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフコンポーネントを初期化します
-	 * 
+	 *
 	 * @param model グラフモデル
 	 * @param properties グラフプロパティー
 	 */
-	public GraphView(
-			Mediator mediator,
+	public GraphView(Mediator mediator,
 			GraphModel model,
 			GraphProperties properties) {
 		this.mediator = mediator;
@@ -130,7 +129,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * スパン略表示と全表示の描画オブジェクトを生成しマップで返します。
-	 * 
+	 *
 	 * @return スパン略表示と全表示の描画オブジェクトを生成しマップで返します。
 	 */
 	private Map<Boolean, GraphDraw> getGraphDrawMap() {
@@ -171,7 +170,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 縦軸のグリッドライン(点線)を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void drawVerticalGridLine(Graphics g) {
@@ -206,7 +205,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 横軸の日時文字列を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void drawHorizontalString(Graphics g) {
@@ -214,6 +213,10 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		g.setFont(graphProperties.getFont());
 		Insets insets = graphProperties.getInsets();
 		long horizontalLineSpan = graphProperties.getHorizontalLineSpan();
+		boolean zerodata = false;
+		if (displayDatas[scrollBarIndex] == LogData.ZERO) {
+			zerodata = true;
+		}
 		long startDate =
 			displayDatas[scrollBarIndex].getDate().getTime()
 				- horizontalLineSpan;
@@ -222,10 +225,22 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		for (long i = 0; i <= horizontalLineSpan; i += span) {
 			Date date = new Date(startDate + i);
 			int x1 = getX(date, startDate);
-			drawHorizontalString(g, insets, date, x1, graphProperties
-				.getDateFormat(), 1.4F);
-			drawHorizontalString(g, insets, date, x1, graphProperties
-				.getTimeFormat(), 2.4F);
+			drawHorizontalString(
+				g,
+				insets,
+				date,
+				x1,
+				graphProperties.getDateFormat(),
+				1.4F,
+				zerodata);
+			drawHorizontalString(
+				g,
+				insets,
+				date,
+				x1,
+				graphProperties.getTimeFormat(),
+				2.4F,
+				zerodata);
 		}
 	}
 
@@ -242,26 +257,31 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 					.isAllSpanDisplayMode()) == 0;
 	}
 
-	private void drawHorizontalString(
-			Graphics g,
+	private void drawHorizontalString(Graphics g,
 			Insets insets,
 			Date date,
 			int x2,
 			String format,
-			float z) {
-		FastDateFormat f = FastDateFormat.getInstance(format);
-		String dateStr = f.format(date);
+			float z,
+			boolean zerodata) {
+		String dateStr = "";
+		if (!zerodata) {
+			FastDateFormat f = FastDateFormat.getInstance(format);
+			dateStr = f.format(date);
+		}
 		FontMetrics metrics = g.getFontMetrics();
-		g.drawString(dateStr, (x2 - metrics.stringWidth(dateStr) / 2)
-			+ insets.left, insets.top
-			+ Math.round(graphProperties.getVerticalLine()
-				+ metrics.getAscent()
-				* z));
+		g.drawString(
+			dateStr,
+			(x2 - metrics.stringWidth(dateStr) / 2) + insets.left,
+			insets.top
+				+ Math.round(graphProperties.getVerticalLine()
+					+ metrics.getAscent()
+					* z));
 	}
 
 	/**
 	 * 横軸線と目盛線を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void paintHorizontalLine(Graphics g) {
@@ -274,17 +294,20 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		for (int i = 0; i <= horizontalLine; i++) {
 			int x1 = horizontalLine - i;
 			if (isWriteHScale(i)) {
-				g.drawLine(x1 + insets.left, vertical + insets.top, x1
-					+ insets.left, vertical
-					+ graphProperties.getScalePixcelSize()
-					+ insets.top);
+				g.drawLine(
+					x1 + insets.left,
+					vertical + insets.top,
+					x1 + insets.left,
+					vertical
+						+ graphProperties.getScalePixcelSize()
+						+ insets.top);
 			}
 		}
 	}
 
 	/**
 	 * 縦軸線を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void paintVerticalLine(Graphics g) {
@@ -294,7 +317,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 左縦軸を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void drawLeft(Graphics g) {
@@ -309,7 +332,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 左縦軸の文字列(スケール)を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void drawLeftString(Graphics g) {
@@ -332,7 +355,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 右縦軸のを描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void drawRight(Graphics g) {
@@ -348,8 +371,11 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		g2d.setFont(graphProperties.getFont());
 		for (int i = 0; i <= graphProperties.getVerticalCount(); i++) {
 			int vs = i * verticalScale;
-			g2d.drawLine(x1, top + vs, x1
-				+ graphProperties.getScalePixcelSize(), top + vs);
+			g2d.drawLine(
+				x1,
+				top + vs,
+				x1 + graphProperties.getScalePixcelSize(),
+				top + vs);
 		}
 		if (graphProperties.isAllSpanDisplayMode()) {
 			drawAllSpan(g);
@@ -358,7 +384,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * スパン全表示用の右縦軸を描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void drawAllSpan(Graphics g) {
@@ -381,15 +407,25 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 				for (int j = 0; j <= graphProperties.getVerticalCount(); j++) {
 					int vs = j * verticalScale;
 					g2d.setColor(graphProperties.getLineColor());
-					g2d.drawLine(x2, top + vs, x2
-						+ graphProperties.getScalePixcelSize(), top + vs);
-					gd.drawVerticalString(g, top, x2
-						+ graphProperties.getScalePixcelSize(), vs, j, sp
-						.getIndex());
+					g2d.drawLine(
+						x2,
+						top + vs,
+						x2 + graphProperties.getScalePixcelSize(),
+						top + vs);
+					gd.drawVerticalString(
+						g,
+						top,
+						x2 + graphProperties.getScalePixcelSize(),
+						vs,
+						j,
+						sp.getIndex());
 				}
 				g2d.setColor(graphProperties.getLineColor());
-				gd.drawUnitMark(g, top, x2
-					+ graphProperties.getScalePixcelSize(), sp.getIndex());
+				gd.drawUnitMark(
+					g,
+					top,
+					x2 + graphProperties.getScalePixcelSize(),
+					sp.getIndex());
 				i++;
 			}
 		}
@@ -412,7 +448,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフをクリック(参照値表示)した場合の、参照位置の縦線の描画
-	 * 
+	 *
 	 * @param g
 	 */
 	private void paintGraphClickedPoint(Graphics g) {
@@ -423,8 +459,11 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			g2d.setColor(graphProperties.getLineColor());
 			g2d.setStroke(CLICK_POINT_STROKE);
 			Insets insets = graphProperties.getInsets();
-			g2d.drawLine(x, insets.top, x, insets.top
-				+ graphProperties.getVerticalLine());
+			g2d.drawLine(
+				x,
+				insets.top,
+				x,
+				insets.top + graphProperties.getVerticalLine());
 			g2d.setStroke(BASIC_STROKE);
 			// 逆三角を描画する
 			g2d.fill(getPolygon(x, insets));
@@ -454,7 +493,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフモデルを返します
-	 * 
+	 *
 	 * @return グラフモデルを返します
 	 */
 	public GraphModel getModel() {
@@ -463,7 +502,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフモデルを設定します。
-	 * 
+	 *
 	 * @param newModel グラフモデル
 	 */
 	public void setModel(GraphModel newModel) {
@@ -481,7 +520,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 表示データの配列を返します。
-	 * 
+	 *
 	 * @return 表示データの配列を返します。
 	 */
 	public LogData[] getDisplayDatas() {
@@ -490,7 +529,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフプロパティオブジェクトを返します。
-	 * 
+	 *
 	 * @return グラフプロパティオブジェクトを返します。
 	 */
 	public GraphProperties getGraphProperties() {
@@ -499,7 +538,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * スクロールバーの変更イベント発生時に呼ばれます。
-	 * 
+	 *
 	 * @param e 変更イベントオブジェクト
 	 */
 	public void adjustmentValueChanged(AdjustmentEvent e) {
@@ -535,7 +574,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 表示データ範囲を変更します
-	 * 
+	 *
 	 */
 	public void changeDataArea() {
 		isAllDataDisplayMode = isAllDataDisplayMode ? false : true;
@@ -544,7 +583,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 表示データ範囲モードを返します。
-	 * 
+	 *
 	 * @return 全データ表示モードであれば true をそうでなければ false を返します。
 	 */
 	public boolean isAllDataDisplayMode() {
@@ -553,7 +592,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * スパン表示モードを変更します
-	 * 
+	 *
 	 */
 	public void changeSpanDisplayMode() {
 		graphProperties.setAllSpanDisplayMode(graphProperties
@@ -563,7 +602,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 分離・合成表示を変更します
-	 * 
+	 *
 	 */
 	public void changeDrawSeriesMode() {
 		graphProperties.setCompositionMode((graphProperties.isCompositionMode()
@@ -589,7 +628,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 選択されているシリーズのインデックスを設定します
-	 * 
+	 *
 	 * @param selectSeriesIndex シリーズのインデックス
 	 */
 	public void setSelectSeries(int selectSeriesIndex) {
@@ -599,7 +638,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * シリーズの最大値を設定します
-	 * 
+	 *
 	 * @param maxCount シリーズの最大値
 	 */
 	public void setSeriesMaxCount(int maxCount) {
@@ -609,7 +648,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * クリックされた位置の参照値データを返します。
-	 * 
+	 *
 	 * @return クリックされた位置の参照値データを返します
 	 */
 	public LogData getGraphClickedData() {
@@ -618,7 +657,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * クリックされた位置の参照値データを設定します。
-	 * 
+	 *
 	 * @param logData クリックされた位置の参照値データ
 	 */
 	public void setGraphClickedData(LogData logData) {
@@ -627,7 +666,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフをクリックした時のx座標を設定します。
-	 * 
+	 *
 	 * @param p グラフをクリックした時の座標
 	 */
 	public void setGraphClickedPoint(Point p) {
@@ -663,15 +702,14 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 横スケールの表示プロパティを設定します
-	 * 
+	 *
 	 * @param horizontalCount 目盛の数
 	 * @param horizontalForAllSpanMode スパン全表示時の目盛ひとつの長さ(ピクセル)
 	 * @param horizontalForSelectSpanMode スパン略表示時の目盛ひとつの長さ(ピクセル)
 	 * @param horizontalLineSpan 横スケール全体が示す時間(ミリ秒)
 	 * @param recordeSpan レコードの間隔(ミリ秒)
 	 */
-	public void setHorizontalScale(
-			int horizontalCount,
+	public void setHorizontalScale(int horizontalCount,
 			int horizontalForAllSpanMode,
 			int horizontalForSelectSpanMode,
 			long horizontalLineSpan,
@@ -687,7 +725,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * スパン表示モードにあわせて、グラフの横軸の長さを返します(ピクセル)
-	 * 
+	 *
 	 * @return グラフの横軸の長さを返します(ピクセル)
 	 */
 	public int getHorizontalLine() {
@@ -715,19 +753,19 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフモデルの変更イベントリスナー
-	 * 
+	 *
 	 * @author maekawa
-	 * 
+	 *
 	 */
 	private static class GraphModelListener implements PropertyChangeListener,
 			Colleague {
 		private final Mediator mediator;
 		private PropertyChangeEvent event;
-		private SortedMap<Date, LogData> mainMap =
-			new TreeMap<Date, LogData>(new ReverseDateComparator());
+		private SortedMap<Date, LogData> mainMap = new TreeMap<Date, LogData>(
+			new ReverseDateComparator());
 
-		private final Logger logger =
-			Logger.getLogger(GraphModelListener.class);
+		private final Logger logger = Logger
+			.getLogger(GraphModelListener.class);
 
 		GraphModelListener(Mediator mediator) {
 			this.mediator = mediator;
@@ -791,9 +829,9 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * グラフのクリックを検知するマウスリスナー
-	 * 
+	 *
 	 * @author maekawa
-	 * 
+	 *
 	 */
 	private static class GraphMouseListener extends MouseAdapter implements
 			Colleague {
@@ -821,16 +859,19 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 			GraphProperties graphProperties = view.getGraphProperties();
 			Insets insets = graphProperties.getInsets();
 			Rectangle r =
-				new Rectangle(insets.left, insets.top, view.getHorizontalLine()
-					+ graphProperties.getScalePixcelSize(), graphProperties
-					.getVerticalLine());
+				new Rectangle(
+					insets.left,
+					insets.top,
+					view.getHorizontalLine()
+						+ graphProperties.getScalePixcelSize(),
+					graphProperties.getVerticalLine());
 			return r.contains(p);
 		}
 	}
 
 	/**
 	 * 日時を降順でミリ秒、秒を無視するコンパレータを返します
-	 * 
+	 *
 	 * @return 日時を降順でミリ秒、秒を無視するコンパレータを返します
 	 */
 	private static Comparator<LogData> getComparator() {
@@ -854,7 +895,7 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 
 	/**
 	 * 横グリッドの点線ストロークを返します
-	 * 
+	 *
 	 * @return 横グリッドの点線ストロークを返します
 	 */
 	private static BasicStroke getGridLineStroke() {

@@ -17,7 +17,7 @@ FROM
   LEFT JOIN point_table p ON i.point = p.point
    LEFT JOIN analog_type_table a ON i.analog_type_id = a.analog_type_id
 WHERE
- i.data_type IN(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+ i.data_type IN(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
  AND i.holder != 'ERR_HOLDER'
  AND i.holder IN /*holders*/('D_2200_BcdSingle', 'D_2201_BcdSingle')
   /*IF dto.unit != null*/AND p.unit LIKE /*dto.unit*/'CV'/*END*/

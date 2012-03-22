@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor.component;
@@ -38,16 +38,21 @@ import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
 
 /**
  * エディタのシリーズプロパティのテーブルモデル
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class SeriesPropertyTableModel extends AbstractTableModel implements
 		MouseListener, KeyListener {
 	private static final int MAX_SERIES = 8;
 	private static final long serialVersionUID = -5850823694570225954L;
-	private static final String[] titles =
-		{ "", "最小値", "最大値", "記号", "機器名称", "単位" };
+	private static final String[] titles = {
+		"",
+		"最小値",
+		"最大値",
+		"記号",
+		"機器名称",
+		"単位" };
 	private List<SeriesPropertyData> seriesPropertyDatas;
 	private List<SeriesPropertyData> backupSeriesPropertyDatas;
 	private Map<Integer, String> colorMap;
@@ -77,7 +82,7 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (null != seriesPropertyDatas) {
 			SeriesPropertyData rowData = seriesPropertyDatas.get(rowIndex);
-			DecimalFormat f = new DecimalFormat(rowData.getVerticalFormat());
+			DecimalFormat f = new DecimalFormat(getFormat(rowData));
 			switch (columnIndex) {
 			case 0:
 				return rowData.getColorObject();
@@ -97,6 +102,10 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 		} else {
 			return "";
 		}
+	}
+
+	private String getFormat(SeriesPropertyData rowData) {
+		return rowData.getVerticalFormat();
 	}
 
 	@Override
@@ -191,10 +200,13 @@ public class SeriesPropertyTableModel extends AbstractTableModel implements
 		if (seriesPropertyDatas.size() < MAX_SERIES) {
 			seriesPropertyDatas.add(seriesPropertyData);
 			resetIndexAndColor();
-			fireTableRowsInserted(seriesPropertyDatas.size(), seriesPropertyDatas
-				.size());
+			fireTableRowsInserted(
+				seriesPropertyDatas.size(),
+				seriesPropertyDatas.size());
 		} else {
-			JOptionPane.showMessageDialog(null, "1グループの登録は" + MAX_SERIES + "ポイントまでです。");
+			JOptionPane.showMessageDialog(null, "1グループの登録は"
+				+ MAX_SERIES
+				+ "ポイントまでです。");
 		}
 	}
 
