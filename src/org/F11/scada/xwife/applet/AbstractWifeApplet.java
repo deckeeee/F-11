@@ -109,6 +109,7 @@ import org.F11.scada.util.RmiUtil;
 import org.F11.scada.util.ThreadUtil;
 import org.F11.scada.xwife.ClientPasswordAdapter;
 import org.F11.scada.xwife.ClientWindowAdapter;
+import org.F11.scada.xwife.ShutdownThread;
 import org.F11.scada.xwife.applet.alarm.ActionTimerTask;
 import org.F11.scada.xwife.applet.alarm.LimitedAction;
 import org.apache.commons.configuration.Configuration;
@@ -188,6 +189,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	abstract protected void layoutContainer() throws IOException, SAXException;
 
+	public static final int END_PORT = 49153;
+
 	/**
 	 * アプレットを初期化します。ユーザー主体情報もここで初期化されます。
 	 */
@@ -250,6 +253,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 
 		splashScreen.incrementValue();
+		ShutdownThread shutdownThread = new ShutdownThread(END_PORT);
 	}
 
 	private void lookupCollector() {

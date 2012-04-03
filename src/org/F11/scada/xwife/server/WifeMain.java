@@ -78,6 +78,7 @@ import org.F11.scada.server.schedule.SchedulePointService;
 import org.F11.scada.server.timeset.TimeSetManager;
 import org.F11.scada.theme.DefaultWifeTheme;
 import org.F11.scada.util.JavaVersion;
+import org.F11.scada.xwife.ShutdownThread;
 import org.F11.scada.xwife.WifeWindowAdapter;
 import org.F11.scada.xwife.explorer.Explorer;
 import org.F11.scada.xwife.explorer.timeset.TimeSetUtilImpl;
@@ -96,6 +97,7 @@ public class WifeMain extends JPanel {
 	private static Logger logger;
 
 	public static final int RMI_RECV_PORT_SERVER = 50001;
+	public static final int END_PORT = 49152;
 
 	private FrameDefineManager frameDef;
 	private ValueListHandlerManager valueListHandlerManager;
@@ -126,32 +128,40 @@ public class WifeMain extends JPanel {
 
 		S2Container container = S2ContainerUtil.getS2Container();
 
-		DataProviderFactory dataProviderFactory = (DataProviderFactory) container
+		DataProviderFactory dataProviderFactory =
+			(DataProviderFactory) container
 				.getComponent(DataProviderFactory.class);
 		frameDef = (FrameDefineManager) container.getComponent("frameManager");
 
 		for (Iterator it = dataProviderFactory.create().iterator(); it
-				.hasNext();) {
+			.hasNext();) {
 			WifeDataProvider dp = (WifeDataProvider) it.next();
 			dp.setSendRequestSupport(frameDef);
 			dp.start();
 		}
 
-		boolean isUseFormula = Boolean.valueOf(
-				EnvironmentManager.get(
+		boolean isUseFormula =
+			Boolean
+				.valueOf(
+					EnvironmentManager.get(
 						"/server/formula/isUseFormula",
 						"false")).booleanValue();
 		if (isUseFormula) {
 			ItemDao itemDao = (ItemDao) container.getComponent(ItemDao.class);
-			HolderRegisterBuilder builder = (HolderRegisterBuilder) container
+			HolderRegisterBuilder builder =
+				(HolderRegisterBuilder) container
 					.getComponent(HolderRegisterBuilder.class);
-			AlarmReferencer alarm = (AlarmReferencer) container
+			AlarmReferencer alarm =
+				(AlarmReferencer) container
 					.getComponent(WifeDataProvider.PARA_NAME_ALARM);
-			AlarmReferencer demand = (AlarmReferencer) container
+			AlarmReferencer demand =
+				(AlarmReferencer) container
 					.getComponent(WifeDataProvider.PARA_NAME_DEMAND);
-			ItemFormulaService service = (ItemFormulaService) container
+			ItemFormulaService service =
+				(ItemFormulaService) container
 					.getComponent(ItemFormulaService.class);
-			WifeDataProvider dp = new FormulaDataProviderImpl(
+			WifeDataProvider dp =
+				new FormulaDataProviderImpl(
 					30000,
 					itemDao,
 					builder,
@@ -162,41 +172,43 @@ public class WifeMain extends JPanel {
 			dp.start();
 		}
 
-		valueListHandlerManager = new ValueListHandlerManagerImpl(
-				rmiReceivePort);
-		LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
-				valueListHandlerManager));
-//		 LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
-//		 new DummyValueListHandlerManager()));
-		selectiveValueListHandler = new SelectiveValueListHandlerManager(
-				rmiReceivePort);
+		valueListHandlerManager =
+			new ValueListHandlerManagerImpl(rmiReceivePort);
+		LoggingManager logManager =
+			new LoggingManager(new F11LoggingHandler(valueListHandlerManager));
+		// LoggingManager logManager = new LoggingManager(new F11LoggingHandler(
+		// new DummyValueListHandlerManager()));
+		selectiveValueListHandler =
+			new SelectiveValueListHandlerManager(rmiReceivePort);
 		new LoggingManager(new SelectiveLoggingHandler(
-				selectiveValueListHandler));
-		selectiveAllDataValueListHandlerManager = new SelectiveAllDataValueListHandlerManager(
-				rmiReceivePort);
+			selectiveValueListHandler));
+		selectiveAllDataValueListHandlerManager =
+			new SelectiveAllDataValueListHandlerManager(rmiReceivePort);
 		new LoggingManager(new SelectiveAllDataLoggingHandler(
-				selectiveAllDataValueListHandlerManager));
-		bargraph2ValueListHandlerManager = new BarGraph2ValueListHandlerManager(rmiReceivePort);
+			selectiveAllDataValueListHandlerManager));
+		bargraph2ValueListHandlerManager =
+			new BarGraph2ValueListHandlerManager(rmiReceivePort);
 		new LoggingManager(new BarGraph2LoggingHandler(
-				bargraph2ValueListHandlerManager));
+			bargraph2ValueListHandlerManager));
 
 		new TimeSetManager();
 
-		FrameEditHandlerFactory factory = new FrameEditHandlerFactory(
+		FrameEditHandlerFactory factory =
+			new FrameEditHandlerFactory(
 				rmiReceivePort,
 				frameDef,
 				logManager.getTaskMap());
 		frameEditHandler = factory.createFrameEditHandler();
-		AutoPrintEditorFactory autoPrintEditorFactory = (AutoPrintEditorFactory) container
+		AutoPrintEditorFactory autoPrintEditorFactory =
+			(AutoPrintEditorFactory) container
 				.getComponent(AutoPrintEditorFactory.class);
-		AutoPrintEditor autoPrintEditor = autoPrintEditorFactory
-				.getAutoPrintEditor();
-		serverEditHandler = new ServerEditManager(
-				rmiReceivePort,
-				autoPrintEditor);
+		AutoPrintEditor autoPrintEditor =
+			autoPrintEditorFactory.getAutoPrintEditor();
+		serverEditHandler =
+			new ServerEditManager(rmiReceivePort, autoPrintEditor);
 
-		managerDelegator = (ManagerDelegator) container
-				.getComponent(ManagerDelegator.class);
+		managerDelegator =
+			(ManagerDelegator) container.getComponent(ManagerDelegator.class);
 
 		setTreeDeployer();
 
@@ -206,12 +218,14 @@ public class WifeMain extends JPanel {
 
 		alarmListFinder = new AlarmListFinderDelegator(rmiReceivePort);
 
-		operationLoggingFinderService = (OperationLoggingFinderService) container
+		operationLoggingFinderService =
+			(OperationLoggingFinderService) container
 				.getComponent("finderservice");
-		pointCommentService = (PointCommentService) container
-				.getComponent("commentService");
+		pointCommentService =
+			(PointCommentService) container.getComponent("commentService");
 		if (WifeUtilities.isSchedulePoint()) {
-			schedulePointService = (SchedulePointService) container
+			schedulePointService =
+				(SchedulePointService) container
 					.getComponent("scheduleService");
 			schedulePointService.init();
 		}
@@ -229,6 +243,8 @@ public class WifeMain extends JPanel {
 				logger.info("JavaVMが停止しました。");
 			}
 		});
+
+		setEndServer();
 	}
 
 	private void setPageDeployer() {
@@ -236,7 +252,8 @@ public class WifeMain extends JPanel {
 		Condition condition = lock.newCondition();
 		frameDef.setLock(lock);
 		frameDef.setCondition(condition);
-		PageFileDeploymentScanner pageScanner = new PageFileDeploymentScanner(
+		PageFileDeploymentScanner pageScanner =
+			new PageFileDeploymentScanner(
 				new PageFileDeployer(frameDef),
 				lock,
 				condition);
@@ -246,9 +263,9 @@ public class WifeMain extends JPanel {
 	}
 
 	private void setTreeDeployer() {
-		PageFileDeploymentScanner treeScanner = new PageFileDeploymentScanner(
-				new TreeFileDeployer(frameDef.getTreeDefineManager()),
-				5000L);
+		PageFileDeploymentScanner treeScanner =
+			new PageFileDeploymentScanner(new TreeFileDeployer(
+				frameDef.getTreeDefineManager()), 5000L);
 		File menu = new File("treedefine");
 		logger.info("Tree Define root : " + menu.getAbsolutePath());
 		treeScanner.addFile(menu);
@@ -260,8 +277,8 @@ public class WifeMain extends JPanel {
 	}
 
 	private void startupWait() throws InterruptedException {
-		String waitTimeStr = EnvironmentManager
-				.get("/server/startup/wait", "0");
+		String waitTimeStr =
+			EnvironmentManager.get("/server/startup/wait", "0");
 		long waitTime = Long.parseLong(waitTimeStr);
 		Thread.sleep(waitTime * 1000);
 	}
@@ -296,7 +313,8 @@ public class WifeMain extends JPanel {
 		if (url != null) {
 			DOMConfigurator.configure(url);
 		} else {
-			url = clazz
+			url =
+				clazz
 					.getResource("/resources/xwife_server_main_log4j.properties");
 			PropertyConfigurator.configure(url);
 		}
@@ -306,6 +324,10 @@ public class WifeMain extends JPanel {
 		S2Container container = S2ContainerUtil.getS2Container();
 		Service service = (Service) container.getComponent("serviceExecutor");
 		service.start();
+	}
+
+	private void setEndServer() {
+		ShutdownThread shutdownThread = new ShutdownThread(END_PORT);
 	}
 
 	/**
@@ -340,9 +362,9 @@ public class WifeMain extends JPanel {
 				if (!lock.createNewFile()) {
 					logger.info("F-11 Data Server Already start up.");
 					showDialog(
-							"F-11 サーバーは既に起動しています。\n起動していないのにこのダイアログが表示される場合は、\n../lock/lock ファイルを削除して再起動して下さい。",
-							"F-11 Data Server Already start up.",
-							JOptionPane.ERROR_MESSAGE);
+						"F-11 サーバーは既に起動しています。\n起動していないのにこのダイアログが表示される場合は、\n../lock/lock ファイルを削除して再起動して下さい。",
+						"F-11 Data Server Already start up.",
+						JOptionPane.ERROR_MESSAGE);
 					System.exit(1);
 					return;
 				}
@@ -359,7 +381,8 @@ public class WifeMain extends JPanel {
 			System.setSecurityManager(new RMISecurityManager());
 		}
 
-		int port = Integer.parseInt(EnvironmentManager.get(
+		int port =
+			Integer.parseInt(EnvironmentManager.get(
 				"/server/rmi/managerdelegator/port",
 				"1099"));
 		try {
@@ -368,12 +391,12 @@ public class WifeMain extends JPanel {
 			logger.warn("既にRmiRegistryが起動しています", e);
 		}
 
-		int rmiReceivePort = Integer.parseInt(EnvironmentManager.get(
+		int rmiReceivePort =
+			Integer.parseInt(EnvironmentManager.get(
 				"/server/rmi/managerdelegator/rmiReceivePort",
 				"" + RMI_RECV_PORT_SERVER));
-		JFrame frame = new JFrame(EnvironmentManager.get(
-				"/server/title",
-				"F-11 Server"));
+		JFrame frame =
+			new JFrame(EnvironmentManager.get("/server/title", "F-11 Server"));
 		try {
 			WifeMain main = new WifeMain(rmiReceivePort);
 
@@ -385,9 +408,9 @@ public class WifeMain extends JPanel {
 		} catch (Exception e) {
 			logger.fatal("サーバー起動時にエラーが発生しました。", e);
 			showDialog(
-					"サーバー起動時にエラーが発生しました。\nサーバー起動を終了します。",
-					"サーバー起動時にエラーが発生しました。",
-					JOptionPane.ERROR_MESSAGE);
+				"サーバー起動時にエラーが発生しました。\nサーバー起動を終了します。",
+				"サーバー起動時にエラーが発生しました。",
+				JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 			return;
 		}
