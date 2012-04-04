@@ -16,6 +16,7 @@ public class ShutdownThread implements Runnable {
 
 	public ShutdownThread(int port) {
 		this.port = port;
+		logger.info("終了コマンド受付ポート = " + port);
 		thread = new Thread(this);
 		thread.setDaemon(true);
 		thread.start();

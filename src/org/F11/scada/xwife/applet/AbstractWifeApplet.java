@@ -189,7 +189,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	abstract protected void layoutContainer() throws IOException, SAXException;
 
-	public static final int END_PORT = 49153;
+	public static final int END_PORT = 64100;
 
 	/**
 	 * アプレットを初期化します。ユーザー主体情報もここで初期化されます。
@@ -253,7 +253,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 
 		splashScreen.incrementValue();
-		ShutdownThread shutdownThread = new ShutdownThread(END_PORT);
+		ShutdownThread shutdownThread = new ShutdownThread(END_PORT + referenceCount);
 	}
 
 	private void lookupCollector() {

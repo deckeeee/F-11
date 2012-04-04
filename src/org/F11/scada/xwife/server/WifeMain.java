@@ -97,7 +97,7 @@ public class WifeMain extends JPanel {
 	private static Logger logger;
 
 	public static final int RMI_RECV_PORT_SERVER = 50001;
-	public static final int END_PORT = 49152;
+	public static final int END_PORT = 64000;
 
 	private FrameDefineManager frameDef;
 	private ValueListHandlerManager valueListHandlerManager;
