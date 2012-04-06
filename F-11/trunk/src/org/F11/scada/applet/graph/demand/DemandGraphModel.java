@@ -278,5 +278,6 @@ public class DemandGraphModel
 
 	public void setLogint(int logint) {
 		this.logint = logint;
+		changeData();
 	}
 }

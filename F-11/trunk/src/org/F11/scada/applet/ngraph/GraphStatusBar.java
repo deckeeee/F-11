@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph;
@@ -40,9 +40,9 @@ import org.F11.scada.applet.ngraph.event.GraphChangeEvent;
 
 /**
  * グラフ表示を変更するボタンと参照データの日時を表示するコンポーネントクラス
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 	private static final long serialVersionUID = 3577124294020824114L;
@@ -60,19 +60,17 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 		super(new BorderLayout());
 		this.mediator = mediator;
 		setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-		add(
-			getCenter(graphProperties.getHorizontalScaleButtonProperty()),
-			BorderLayout.CENTER);
+		add(getCenter(graphProperties), BorderLayout.CENTER);
 	}
 
-	private Component getCenter(
-			List<HorizontalScaleButtonProperty> buttonProperties) {
+	private Component getCenter(GraphProperties graphProperties) {
 		Box box = Box.createHorizontalBox();
 		box.add(getChangeDataArea());
-		box.add(getChangeVerticalMode());
-		box.add(getChangeDrawSeriesMode());
+		box.add(getChangeVerticalMode(graphProperties));
+		box.add(getChangeDrawSeriesMode(graphProperties));
 		dataCycleLabel = new JLabel("データ周期：1分");
-		setHorizontalScaleButtons(box, buttonProperties);
+		setHorizontalScaleButtons(box,
+				graphProperties.getHorizontalScaleButtonProperty());
 		box.add(Box.createHorizontalGlue());
 		box.add(dataCycleLabel);
 		box.add(Box.createHorizontalStrut(10));
@@ -88,58 +86,67 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 		return button;
 	}
 
-	private Component getChangeVerticalMode() {
-		JButton button = new JButton("ｽｹｰﾙ略表示");
-		button.setMargin(BUTTON_INSETS);
-		verticalModeListener =
-			new VerticalModeListener(this, "ｽｹｰﾙ略表示", "ｽｹｰﾙ全表示");
-		button.addActionListener(verticalModeListener);
-		return button;
+	private Component getChangeVerticalMode(GraphProperties graphProperties) {
+		if (graphProperties.isAllSpanDisplayMode()) {
+			JButton button = new JButton("ｽｹｰﾙ全表示");
+			button.setMargin(BUTTON_INSETS);
+			verticalModeListener = new VerticalModeListener(this, "ｽｹｰﾙ全表示",
+					"ｽｹｰﾙ略表示");
+			button.addActionListener(verticalModeListener);
+			return button;
+		} else {
+			JButton button = new JButton("ｽｹｰﾙ略表示");
+			button.setMargin(BUTTON_INSETS);
+			verticalModeListener = new VerticalModeListener(this, "ｽｹｰﾙ略表示",
+					"ｽｹｰﾙ全表示");
+			button.addActionListener(verticalModeListener);
+			return button;
+		}
 	}
 
-	private Component getChangeDrawSeriesMode() {
-		JButton button = new JButton("合成表示");
-		button.setMargin(BUTTON_INSETS);
-		drawSeriesModeListener =
-			new DrawSeriesModeListener(this, "合成表示", "分離表示");
-		button.addActionListener(drawSeriesModeListener);
-		return button;
+	private Component getChangeDrawSeriesMode(GraphProperties graphProperties) {
+		if (graphProperties.isCompositionMode()) {
+			JButton button = new JButton("合成表示");
+			button.setMargin(BUTTON_INSETS);
+			drawSeriesModeListener = new DrawSeriesModeListener(this, "合成表示",
+					"分離表示");
+			button.addActionListener(drawSeriesModeListener);
+			return button;
+		} else {
+			JButton button = new JButton("分離表示");
+			button.setMargin(BUTTON_INSETS);
+			drawSeriesModeListener = new DrawSeriesModeListener(this, "分離表示",
+					"合成表示");
+			button.addActionListener(drawSeriesModeListener);
+			return button;
+		}
 	}
 
-	private void setHorizontalScaleButtons(
-			Box box,
+	private void setHorizontalScaleButtons(Box box,
 			List<HorizontalScaleButtonProperty> buttonProperties) {
 		box.add(Box.createHorizontalStrut(50));
-		scaleButtonlisteners =
-			new HorizontalScaleButtonListener[buttonProperties.size()];
+		scaleButtonlisteners = new HorizontalScaleButtonListener[buttonProperties
+				.size()];
 		int i = 0;
 		for (HorizontalScaleButtonProperty property : buttonProperties) {
-			scaleButtonlisteners[i] =
-				getButtonListener(dataCycleLabel, property);
-			box
-				.add(getButton(scaleButtonlisteners[i], property
-					.getButtonText()));
+			scaleButtonlisteners[i] = getButtonListener(dataCycleLabel,
+					property);
+			box.add(getButton(scaleButtonlisteners[i], property.getButtonText()));
 			i++;
 		}
 	}
 
 	private HorizontalScaleButtonListener getButtonListener(
-			JLabel dataCycleLabel,
-			HorizontalScaleButtonProperty property) {
-		return new HorizontalScaleButtonListener(
-			this,
-			dataCycleLabel,
-			property.getLabelText(),
-			property.getHorizontalCount(),
-			property.getHorizontalAllSpanMode(),
-			property.getHorizontalSelectSpanMode(),
-			property.getHorizontalLineSpan(),
-			property.getRecordeSpan(),
-			property.getLogName());
+			JLabel dataCycleLabel, HorizontalScaleButtonProperty property) {
+		return new HorizontalScaleButtonListener(this, dataCycleLabel,
+				property.getLabelText(), property.getHorizontalCount(),
+				property.getHorizontalAllSpanMode(),
+				property.getHorizontalSelectSpanMode(),
+				property.getHorizontalLineSpan(), property.getRecordeSpan(),
+				property.getLogName());
 	}
 
-	private Component getButton(
-			HorizontalScaleButtonListener l,
+	private Component getButton(HorizontalScaleButtonListener l,
 			String buttonText) {
 		JButton button = new JButton(buttonText);
 		button.setMargin(BUTTON_INSETS);
@@ -163,7 +170,7 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 			isDataAreaListener = true;
 		} else if (drawSeriesModeListener == colleague) {
 			drawSeriesModeListener
-				.performColleagueChange(getGraphChangeEvent());
+					.performColleagueChange(getGraphChangeEvent());
 		} else if (verticalModeListener == colleague) {
 			verticalModeListener.performColleagueChange(getGraphChangeEvent());
 		} else {
@@ -278,16 +285,10 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 		private final long recordeSpan;
 		private final String logName;
 
-		public HorizontalScaleButtonListener(
-				Mediator mediator,
-				JLabel label,
-				String labelText,
-				int horizontalCount,
-				int horizontalForAllSpanMode,
-				int horizontalForSelectSpanMode,
-				long horizontalLineSpan,
-				long recordeSpan,
-				String logName) {
+		public HorizontalScaleButtonListener(Mediator mediator, JLabel label,
+				String labelText, int horizontalCount,
+				int horizontalForAllSpanMode, int horizontalForSelectSpanMode,
+				long horizontalLineSpan, long recordeSpan, String logName) {
 			this.mediator = mediator;
 			this.label = label;
 			this.labelText = labelText;
@@ -305,12 +306,9 @@ public class GraphStatusBar extends JPanel implements Mediator, Colleague {
 
 		public void performColleagueChange(GraphChangeEvent e) {
 			label.setText("データ周期：" + labelText);
-			e.getView().setHorizontalScale(
-				horizontalCount,
-				horizontalForAllSpanMode,
-				horizontalForSelectSpanMode,
-				horizontalLineSpan,
-				logName);
+			e.getView().setHorizontalScale(horizontalCount,
+					horizontalForAllSpanMode, horizontalForSelectSpanMode,
+					horizontalLineSpan, logName);
 			int min = (int) (horizontalLineSpan / recordeSpan) + 1;
 			int maxRecord = e.getProperties().getMaxRecord();
 			e.getScrollBar().setMinimum(Math.min(min, maxRecord));

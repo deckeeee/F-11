@@ -51,16 +51,12 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 	public List<SeriesPropertyData> getSeriesPropertyDataList(
 			SeriesPropertyData spd) {
 		try {
-			List<PointTableDto> pointList =
-				(List<PointTableDto>) alarmRef.invoke(
-					"UnitSearchService",
-					new Object[] {
-						spd,
-						page
-							.getTrend3Data()
-							.getHorizontalScaleButtonProperty()
-							.get(0)
-							.getLogName() });
+			List<PointTableDto> pointList = (List<PointTableDto>) alarmRef
+					.invoke("UnitSearchService", new Object[] {
+							spd,
+							page.getTrend3Data()
+									.getHorizontalScaleButtonProperty().get(0)
+									.getLogName() });
 			return convertList(pointList);
 		} catch (RemoteException e) {
 			logger.error("ポイント情報取り込みにて、サーバーエラーが発生しました。:", e);
@@ -69,37 +65,47 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 	}
 
 	private List<SeriesPropertyData> convertList(List<PointTableDto> pointList) {
-		ArrayList<SeriesPropertyData> unitList =
-			new ArrayList<SeriesPropertyData>(pointList.size());
+		ArrayList<SeriesPropertyData> unitList = new ArrayList<SeriesPropertyData>(
+				pointList.size());
 		for (PointTableDto pointTableDto : pointList) {
 			unitList.add(getSeriesPropertyData(
-				0,
-				true,
-				null,
-				pointTableDto.getUnit(),
-				pointTableDto.getName(),
-				pointTableDto.getUnitMark(),
-				pointTableDto.getMin(),
-				pointTableDto.getMax(),
-				pointTableDto.getFormat(),
-				pointTableDto.getProvider() + "_" + pointTableDto.getHolder(),
-				pointTableDto.getConvert()));
+					0,
+					true,
+					null,
+					pointTableDto.getUnit(),
+					pointTableDto.getName(),
+					pointTableDto.getUnitMark(),
+					getMin(pointTableDto),
+					getMax(pointTableDto),
+					pointTableDto.getFormat(),
+					pointTableDto.getProvider() + "_"
+							+ pointTableDto.getHolder(),
+					pointTableDto.getConvert(), pointTableDto.getPoint()));
 		}
 		return unitList;
 	}
 
-	private SeriesPropertyData getSeriesPropertyData(
-			int index,
-			boolean visible,
-			String color,
-			String unit,
-			String name,
-			String mark,
-			Float min,
-			Float max,
-			String verticalFormat,
-			String holder,
-			String convert) {
+	private Float getMin(PointTableDto pointTableDto) {
+		return pointTableDto.getMin();
+	}
+
+	private Float getMax(PointTableDto pointTableDto) {
+		Float min = pointTableDto.getMin();
+		Float max = pointTableDto.getMax();
+		String convert = pointTableDto.getConvert();
+		if (null == convert) {
+			return null;
+		} else if ("ANALOG".equalsIgnoreCase(convert)) {
+			return max;
+		} else {
+			return min * -1;
+		}
+	}
+
+	private SeriesPropertyData getSeriesPropertyData(int index,
+			boolean visible, String color, String unit, String name,
+			String mark, Float min, Float max, String verticalFormat,
+			String holder, String convert, Integer point) {
 		SeriesPropertyData spd = new SeriesPropertyData();
 		spd.setIndex(index);
 		spd.setVisible(visible);
@@ -112,6 +118,7 @@ public class UnitSearchServiceImpl implements UnitSearchService {
 		spd.setVerticalFormat(getVerticalFormat(verticalFormat));
 		spd.setHolder(holder);
 		spd.setConvert(getConvert(convert));
+		spd.setPoint(point);
 		return spd;
 	}
 
