@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor;
@@ -29,9 +29,9 @@ import org.F11.scada.applet.symbol.ColorFactory;
 
 /**
  * ページ定義のシリーズプロパティー
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class SeriesPropertyData implements Serializable {
 	private static final long serialVersionUID = 888380556791138788L;
@@ -47,6 +47,7 @@ public class SeriesPropertyData implements Serializable {
 	private String verticalFormat;
 	private String holder;
 	private String convert;
+	private Integer point;
 
 	public SeriesPropertyData() {
 	}
@@ -64,6 +65,7 @@ public class SeriesPropertyData implements Serializable {
 		verticalFormat = src.verticalFormat;
 		holder = src.holder;
 		convert = src.convert;
+		point = src.point;
 	}
 
 	public Integer getIndex() {
@@ -163,21 +165,41 @@ public class SeriesPropertyData implements Serializable {
 		this.convert = convert;
 	}
 
+	public Integer getPoint() {
+		return point;
+	}
+
+	public void setPoint(Integer point) {
+		this.point = point;
+	}
+
 	public String getXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("        <series-property");
 		sb.append(getAttribute("index", index));
 		sb.append(getAttribute("visible", visible));
 		sb.append(getAttribute("color", color));
-		sb.append(getAttribute("unit", unit));
-		sb.append(getAttribute("name", name));
-		sb.append(getAttribute("mark", mark));
+		sb.append(getAttribute("unit", getDollarUnit(point)));
+		sb.append(getAttribute("name", getDollarName(point)));
+		sb.append(getAttribute("mark", getDollarMark(point)));
 		sb.append(getAttribute("min", min));
 		sb.append(getAttribute("max", max));
 		sb.append(getAttribute("verticalFormat", verticalFormat));
 		sb.append(getAttribute("holder", holder));
+		sb.append(getAttribute("point", point));
 		sb.append(getAttribute("convert", convert)).append("/>\n");
 		return sb.toString();
 	}
 
+	private String getDollarUnit(Integer point) {
+		return "$(" + point + "_unit)";
+	}
+
+	private String getDollarName(Integer point) {
+		return "$(" + point + "_name)";
+	}
+
+	private String getDollarMark(Integer point) {
+		return "$(" + point + "_unit_mark)";
+	}
 }

@@ -48,7 +48,7 @@ public class AlarmMailImpl implements AlarmMail {
 
 	/**
 	 * @throws IOException
-	 * 
+	 *
 	 */
 	public AlarmMailImpl() throws IOException {
 		environments = new SmtpEnvironments();
@@ -122,6 +122,8 @@ public class AlarmMailImpl implements AlarmMail {
 				sb.append(rs.getString("kikiname"));
 				sb.append(" ");
 				sb.append(rs.getString("message"));
+				sb.append(" ");
+				sb.append(rs.getString("attname"));
 			} catch (SQLException e) {
 				logger.error("メール送信処理 (DB読み取りエラー)", e);
 				return;

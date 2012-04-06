@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.applet.ngraph.editor;
@@ -71,9 +71,9 @@ import org.apache.log4j.Logger;
 
 /**
  * グラフ操作ダイアログ
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class EditorMainPanel extends JDialog implements Mediator {
 	private static final long serialVersionUID = -1995919687610018906L;
@@ -157,6 +157,7 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		searchUnit.setEnabled(false);
 		searchMark.setEnabled(false);
 		searchName.setEnabled(false);
+		unitUpdateButton.setEnabled(false);
 
 		setSearchBox();
 

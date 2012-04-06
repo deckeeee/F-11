@@ -19,6 +19,7 @@
 package org.F11.scada.applet.operationlog;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -61,13 +62,13 @@ public class OperationLoggingFinder extends JPanel {
     private JTextField nameField;
     private JTextField messageField;
     private final OperationLoggingTableModel tableModel;
-    
+
     public OperationLoggingFinder(OperationLoggingTableModel tableModel) {
         super(new GridBagLayout());
         this.tableModel = tableModel;
         initComponents();
         setBorder(new TitledBorder("検索条件"));
-        setSize(550, 150);
+//        setSize(850, 150);
     }
 
     private void initComponents() {
@@ -79,10 +80,8 @@ public class OperationLoggingFinder extends JPanel {
         nameLabel = new JLabel("ポイント名称");
         messageLabel = new JLabel("ポイント詳細");
         startDate = createJDateChooser();
-        startDate.setDate(new Date());
         fromLabel = new JLabel("～");
         endDate = createJDateChooser();
-        endDate.setDate(new Date());
         userField = new JTextField(15);
         ipField = new JTextField(15);
         nameField = new JTextField(15);
@@ -114,7 +113,7 @@ public class OperationLoggingFinder extends JPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = GridBagConstraints.WEST;
         add(nameLabel, gridBagConstraints);
-        
+
         if (tableModel.isPrefix()) {
             gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 0;
@@ -169,17 +168,16 @@ public class OperationLoggingFinder extends JPanel {
         gridBagConstraints.gridy = 5;
         add(searchButton, gridBagConstraints);
     }
-    
+
     private JDateChooser createJDateChooser() {
-        JCalendar calendar = new JCalendar();
-        calendar.setSundayForeground(Color.RED);
-        calendar.setDecorationBackgroundVisible(true);
-        calendar.setDecorationBordersVisible(true);
-        calendar.setWeekOfYearVisible(false);
-        JDateChooser chooser = new JDateChooser(calendar, "yyyy/MM/dd", false, null);
+        JDateChooser chooser = new JDateChooser(new Date());
+        chooser.setPreferredSize(new Dimension(120, 20));
+        chooser.setMaximumSize(new Dimension(120, 20));
+        chooser.setMinimumSize(new Dimension(120, 20));
+        chooser.getJCalendar().setWeekOfYearVisible(false);
         return chooser;
     }
-    
+
     static class SearchActionLister implements ActionListener {
         private final OperationLoggingFinder finder;
         SearchActionLister(OperationLoggingFinder finder) {
