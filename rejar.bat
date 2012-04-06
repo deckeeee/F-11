@@ -25,7 +25,9 @@ jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\images_f11
 jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\itext-1.02b.jar f-11
 jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jasperreports-0.5.3.jar f-11
 jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\javassist-3.0.jar f-11
-jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jcalendar.jar f-11
+jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jcalendar-1.4.jar f-11
+jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jgoodies-common-1.2.0.jar f-11
+jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jgoodies-looks-2.4.1.jar f-11
 jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jim.jar f-11
 jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jlfgr-1_0.jar f-11
 jarsigner -keystore .keystore -storepass freedom9713 webapps\ROOT\lib\jta.jar f-11
