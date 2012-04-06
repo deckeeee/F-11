@@ -14,14 +14,14 @@
 		<icon kind="splash" href="images/F-11LOGO.gif"/>
 		<shortcut online="false">
 			<desktop/>
-			<menu submenu="My Corporation Apps"/>
+			<menu submenu="F-11"/>
 		</shortcut>
 	</information> 
 	<security> 
 		<all-permissions/> 
 	</security> 
 	<resources> 
-		<j2se version="1.5+" java-vm-args="-Xmx512m -Xms256m"/> 
+		<j2se version="1.5+" java-vm-args="-Dcom.sun.management.jmxremote -Xmx512m -Xms256m"/> 
 		<jar href="lib/F-11.jar"/> 
 		<jar href="lib/commons-beanutils-core.jar"/> 
 		<jar href="lib/commons-collections-3.1.jar"/> 
@@ -38,9 +38,13 @@
 		<jar href="lib/xercesImpl.jar"/> 
 		<jar href="lib/xml-apis.jar"/> 
 		<jar href="lib/commons-configuration-1.1.jar"/> 
-		<jar href="lib/jcalendar.jar"/> 
+        <jar href="lib/jcalendar-1.4.jar"/> 
+        <jar href="lib/jgoodies-common-1.2.0.jar"/> 
+        <jar href="lib/jgoodies-looks-2.4.1.jar"/> 
 		<jar href="lib/images_f11.jar"/> 
 		<jar href="lib/resources.jar"/> 
+		<jar href="lib/s2-dao-1.0.39.jar"/>
+		<jar href="lib/mysql-connector-java-3.1.13-bin.jar"/>
 	</resources> 
 	<application-desc main-class="org.F11.scada.xwife.applet.WifeAppletD"/> 
 </jnlp> 
