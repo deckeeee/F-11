@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.alarm.mail;
@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 
 /**
  * SMTP-AUTH対応の警報メール送信クラス
- * 
+ *
  * @author maekawa
  *
  */
@@ -116,6 +116,8 @@ public class AlarmMailSmtpAuthImpl implements AlarmMail {
 				sb.append(rs.getString("kikiname"));
 				sb.append(" ");
 				sb.append(rs.getString("message"));
+				sb.append(" ");
+				sb.append(rs.getString("attname"));
 			} catch (SQLException e) {
 				logger.error("メール送信処理 (DB読み取りエラー)", e);
 				return;
