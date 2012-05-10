@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/xwife/server/impl/Attic/WifeDataProviderImpl.java,v 1.1.2.34 2007/10/19 10:07:00 frdm Exp $
  * $Revision: 1.1.2.34 $
  * $Date: 2007/10/19 10:07:00 $
- * 
+ *
  * =============================================================================
  * Projrct    F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All
  * Rights Reserved.
@@ -75,15 +75,16 @@ import org.apache.log4j.Logger;
 
 /**
  * データプロバイダクラスです。通信でPLCからデータを取得して、データホルダーに値を設定していきます。
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class WifeDataProviderImpl extends AbstractDataProvider implements
 		WifeDataProvider {
 	private static final long serialVersionUID = -4052507689962832517L;
 	private static Logger logger = Logger.getLogger(WifeDataProviderImpl.class);
-	private static final Class[][] TYPE_INFO =
-		{ { DataHolder.class, WifeData.class } };
+	private static final Class[][] TYPE_INFO = { {
+		DataHolder.class,
+		WifeData.class } };
 
 	/* スレッド */
 	private Thread thread;
@@ -110,8 +111,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	/**
 	 * コンストラクタ
 	 */
-	public WifeDataProviderImpl(
-			Environment plc,
+	public WifeDataProviderImpl(Environment plc,
 			ItemDao itemDao,
 			HolderRegisterBuilder builder,
 			AlarmReferencer alarm,
@@ -120,8 +120,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		this(32, plc, itemDao, builder, alarm, demand, communicaterFactory);
 	}
 
-	public WifeDataProviderImpl(
-			int holderSize,
+	public WifeDataProviderImpl(int holderSize,
 			Environment plc,
 			ItemDao itemDao,
 			HolderRegisterBuilder builder,
@@ -161,8 +160,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 				.valueOf(
 					EnvironmentManager.get(
 						"/server/isPageChangeInterrupt",
-						"true"))
-				.booleanValue();
+						"true")).booleanValue();
 		unExecuteCommands = new LinkedBlockingQueue<Set<WifeCommand>>();
 		initWaitTime = getInitWaitTime();
 		logger.info("initWaitTime=" + initWaitTime);
@@ -179,10 +177,13 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	}
 
 	/**
-	 * データホルダをこのプロバイダに追加します。パフォーマンスを維持する為、あえて排他処理をしていません。スレッドが起動した後にホルダの追加や削除をする場合は、かならず{@link #lock()}メソッドを呼び出して、スレッドのロックを取得してください。追加や削除が完了した後はや{@link #unlock()}メソッドを呼び出してロックを外してください。
-	 * 
+	 * データホルダをこのプロバイダに追加します。パフォーマンスを維持する為、あえて排他処理をしていません。
+	 * スレッドが起動した後にホルダの追加や削除をする場合は、かならず{@link #lock()}
+	 * メソッドを呼び出して、スレッドのロックを取得してください。追加や削除が完了した後はや{@link #unlock()}
+	 * メソッドを呼び出してロックを外してください。
+	 *
 	 * @param dh 追加するデータホルダ
-	 * 
+	 *
 	 * @return データホルダの追加ができた場合 true をそうでない場合 false を返します。
 	 */
 	public boolean addDataHolder(DataHolder dh)
@@ -211,10 +212,13 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	}
 
 	/**
-	 * データホルダをこのプロバイダから削除します。パフォーマンスを維持する為、あえて排他処理をしていません。スレッドが起動した後にホルダの追加や削除をする場合は、かならず{@link #lock()}メソッドを呼び出して、スレッドのロックを取得してください。追加や削除が完了した後はや{@link #unlock()}メソッドを呼び出してロックを外してください。
-	 * 
+	 * データホルダをこのプロバイダから削除します。パフォーマンスを維持する為、あえて排他処理をしていません。
+	 * スレッドが起動した後にホルダの追加や削除をする場合は、かならず{@link #lock()}
+	 * メソッドを呼び出して、スレッドのロックを取得してください。追加や削除が完了した後はや{@link #unlock()}
+	 * メソッドを呼び出してロックを外してください。
+	 *
 	 * @param dh 削除するデータホルダ
-	 * 
+	 *
 	 * @return データホルダの削除ができた場合 true をそうでない場合 false を返します。
 	 */
 	public boolean removeDataHolder(DataHolder dh)
@@ -248,11 +252,14 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 
 	/**
 	 * ページ切り替え再表示の時に呼び出される。
-	 * 
+	 *
 	 * @param dhs 再読み込みするデータホルダ
 	 */
 	public void syncRead(DataHolder[] dhs)
 			throws DataProviderDoesNotSupportException {
+		if (isNetError()) {
+			return;
+		}
 		LinkedHashSet defines = new LinkedHashSet(dhs.length);
 		for (int i = 0; i < dhs.length; i++) {
 			DataHolder dh = dhs[i];
@@ -263,15 +270,20 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		syncRead(defines, false, true);
 	}
 
+	private boolean isNetError() {
+		return isNetError(
+			getDataHolder(Globals.ERR_HOLDER),
+			WifeDataDigital.valueOfTrue(0));
+	}
+
 	/**
 	 * ページ切り替えの初期読み出しでのみ呼び出し可能です。このメソッドを呼び出す前にlockを持っていなければなりません。
-	 * 
+	 *
 	 * @param defines
 	 * @param sameDataBalk
 	 * @param waitInitWait
 	 */
-	private void syncRead(
-			Set defines,
+	private void syncRead(Set defines,
 			boolean sameDataBalk,
 			boolean waitInitWait) {
 		DataHolder errdh = getDataHolder(Globals.ERR_HOLDER);
@@ -281,7 +293,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 				Thread.sleep(initWaitTime);
 			}
 			bytedataMap = communicater.syncRead(defines, sameDataBalk);
-			if (sameDataBalk && isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
+			if (sameDataBalk
+				&& isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
 				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0));
 			}
 		} catch (InterruptedException e) {
@@ -357,9 +370,14 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		// 他のクライアントへ通知する
 		long entryTime = dh.getTimeStamp().getTime();
 		synchronized (holderJurnal) {
-			TimeIncrementWrapper.put(entryTime, new HolderData(dh
-				.getDataHolderName(), wd.toByteArray(), entryTime, (Map) dh
-				.getParameter(DemandDataReferencer.GRAPH_DATA)), holderJurnal);
+			TimeIncrementWrapper.put(
+				entryTime,
+				new HolderData(
+					dh.getDataHolderName(),
+					wd.toByteArray(),
+					entryTime,
+					(Map) dh.getParameter(DemandDataReferencer.GRAPH_DATA)),
+				holderJurnal);
 		}
 	}
 
@@ -392,6 +410,15 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		Thread thisThread = Thread.currentThread();
 
 		while (thread == thisThread) {
+			if (isNetError()) {
+				long waitTime = getNodeErrorWaitTime();
+				try {
+					logger.info("通信エラー " + waitTime + "ミリ秒スレッド停止");
+					Thread.sleep(waitTime);
+				} catch (InterruptedException e) {
+					continue;
+				}
+			}
 			if (unExecuteCommands.isEmpty()) {
 				syncRead(getCommandDefines());
 			} else {
@@ -402,6 +429,16 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			} catch (InterruptedException e) {
 				continue;
 			}
+		}
+	}
+
+	private long getNodeErrorWaitTime() {
+		try {
+			return Long.parseLong(EnvironmentManager.get(
+				"/server/nodeErrorWaitTime",
+				"0"));
+		} catch (NumberFormatException e) {
+			return 0L;
 		}
 	}
 
@@ -483,18 +520,25 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 					synchronized (holderJurnal) {
 						setJurnal(readData, entryTime, dh);
 					}
-					logger.error("setValue BAD (BCD Convert error) "
-						+ dh.getDataHolderName()
-						+ dh.getTimeStamp().toString(), e);
+					logger.error(
+						"setValue BAD (BCD Convert error) "
+							+ dh.getDataHolderName()
+							+ dh.getTimeStamp().toString(),
+						e);
 				}
 			}
 		}
 	}
 
 	private void setJurnal(byte[] readData, long entryTime, DataHolder dh) {
-		TimeIncrementWrapper.put(entryTime, new HolderData(dh
-			.getDataHolderName(), readData, entryTime, (Map) dh
-			.getParameter(DemandDataReferencer.GRAPH_DATA)), holderJurnal);
+		TimeIncrementWrapper.put(
+			entryTime,
+			new HolderData(
+				dh.getDataHolderName(),
+				readData,
+				entryTime,
+				(Map) dh.getParameter(DemandDataReferencer.GRAPH_DATA)),
+			holderJurnal);
 	}
 
 	public Class[][] getProvidableDataHolderTypeInfo() {
@@ -517,7 +561,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 
 	/**
 	 * 引数のlong値(更新日付のlong値)より上のHolderDataを返します。
-	 * 
+	 *
 	 * @param t
 	 * @return HolderData[]
 	 */
@@ -530,8 +574,9 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			SortedMap smap = holderJurnal.tailMap(new Long(t + getDataOffset));
 			list = new ArrayList(smap.values());
 		}
-		sendRequestSupport.setSendRequestDateMap(session, System
-			.currentTimeMillis());
+		sendRequestSupport.setSendRequestDateMap(
+			session,
+			System.currentTimeMillis());
 		return list;
 	}
 

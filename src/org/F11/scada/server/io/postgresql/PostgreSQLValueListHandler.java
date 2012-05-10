@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/io/postgresql/PostgreSQLValueListHandler.java,v 1.13.2.9 2006/05/15 09:50:30 frdm Exp $
  * $Revision: 1.13.2.9 $
  * $Date: 2006/05/15 09:50:30 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -63,13 +63,12 @@ import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
 /**
- * ロギングデータのハンドラクラスです。
- * 定義されたロギングデータをデータストレージより読みとります。
- * 
+ * ロギングデータのハンドラクラスです。 定義されたロギングデータをデータストレージより読みとります。
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
-public class PostgreSQLValueListHandler
-		implements Runnable, ValueListHandlerElement, LoggingDataListener, Service {
+public class PostgreSQLValueListHandler implements Runnable,
+		ValueListHandlerElement, LoggingDataListener, Service {
 	/** デバイス名(通常はテーブル名) */
 	private String loggingTableName;
 	/** データホルダーのリスト */
@@ -83,39 +82,43 @@ public class PostgreSQLValueListHandler
 	private Iterator valueIterator;
 	/** キー（タイムスタンプ）の反復子 */
 	private Iterator keyIterator;
-	
+
 	/** ロギングイベントキュー */
 	private LoggingDataEventQueue queue;
 	/** スレッドオブジェクト */
 	private Thread thread;
-	
+
 	private final ItemUtil util;
 
 	/** ロギングAPI */
-	private final Logger logger = Logger.getLogger(PostgreSQLValueListHandler.class);;
+	private final Logger logger = Logger
+		.getLogger(PostgreSQLValueListHandler.class);;
 
-	/** 内部保持するロギングデータの最大レコード数 */	
+	/** 内部保持するロギングデータの最大レコード数 */
 	public static final int MAX_MAP_SIZE;
 	static {
-		String maxRecord = EnvironmentManager.get("/server/logging/maxrecord", "4096");
+		String maxRecord =
+			EnvironmentManager.get("/server/logging/maxrecord", "4096");
 		MAX_MAP_SIZE = Integer.parseInt(maxRecord);
 	}
-	
+
 	/** 内部保持データ更新後通知先リスト */
 	private List loggingDataListeners;
-	
+
 	private MultiRecordDefineDao dao_;
 
 	/**
 	 * クライアントハンドラインターフェイスオブジェクトを生成します。
+	 *
 	 * @param loggingTableName テーブル名
 	 * @param dataHolders データホルダーのリスト
 	 * @param selectHandler データセレクトハンドラ
 	 * @throws RemoteException レジストリに接続できない場合
 	 * @throws MalformedURLException 名前が適切な形式の URL でない場合
 	 */
-	public PostgreSQLValueListHandler(
-			String loggingTableName, List dataHolders, SelectHandler selectHandler) {
+	public PostgreSQLValueListHandler(String loggingTableName,
+			List dataHolders,
+			SelectHandler selectHandler) {
 		super();
 		this.loggingTableName = loggingTableName;
 		this.dataHolders = dataHolders;
@@ -124,7 +127,9 @@ public class PostgreSQLValueListHandler
 		loggingDataListeners = new ArrayList();
 		S2Container container = S2ContainerUtil.getS2Container();
 		util = (ItemUtil) container.getComponent("itemutil");
-		dao_ = (MultiRecordDefineDao)container.getComponent(MultiRecordDefineDao.class);
+		dao_ =
+			(MultiRecordDefineDao) container
+				.getComponent(MultiRecordDefineDao.class);
 
 		try {
 			createMasterSortedMap();
@@ -133,7 +138,7 @@ public class PostgreSQLValueListHandler
 			if (msg != null && msg.equals(SelectHandler.TABLE_NOT_FOUND)) {
 				masterSortedMap = new TreeMap();
 			} else {
-	        	logger.error("", e);
+				logger.error("", e);
 			}
 		}
 		start();
@@ -145,8 +150,8 @@ public class PostgreSQLValueListHandler
 		masterSortedMap = new TreeMap();
 
 		List list = selectHandler.select(loggingTableName, dataHolders);
-		
-		for (Iterator it = list.iterator(); it.hasNext(); ) {
+
+		for (Iterator it = list.iterator(); it.hasNext();) {
 			LoggingRowData data = (LoggingRowData) it.next();
 			masterSortedMap.put(data.getTimestamp(), data.getList());
 		}
@@ -163,6 +168,7 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * 次のレコードが存在する場合に true を返します。
+	 *
 	 * @return 次のレコードが存在する場合に true を存在しない場合は false を返します。
 	 */
 	public boolean hasNext() {
@@ -171,6 +177,7 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * レコードオブジェクトを返し、ポインタを次に進めます。
+	 *
 	 * @return レコードオブジェクト
 	 */
 	public Object next() {
@@ -181,6 +188,7 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * レコードの最初のキー（タイムスタンプ）を返します。
+	 *
 	 * @return レコードの最初のキー（タイムスタンプ）
 	 */
 	public Object firstKey() {
@@ -189,6 +197,7 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * レコードの最後のキー（タイムスタンプ）を返します。
+	 *
 	 * @return レコードの最後のキー（タイムスタンプ）
 	 */
 	public Object lastKey() {
@@ -197,9 +206,23 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * タイムスタンプが引数 key 以前のレコードを検索し、ポインタを位置づけます。
+	 *
 	 * @param key 検索するレコードのタイムスタンプ
 	 */
 	public void findRecord(Timestamp key) {
+		if (isCreateMaster()) {
+			masterSortedMap.clear();
+			try {
+				createMasterSortedMap();
+			} catch (SQLException e) {
+				String msg = e.getMessage();
+				if (msg != null && msg.equals(SelectHandler.TABLE_NOT_FOUND)) {
+					masterSortedMap = new TreeMap();
+				} else {
+					logger.error("", e);
+				}
+			}
+		}
 		SortedMap tailMap = masterSortedMap.tailMap(key);
 		SortedMap headMap = masterSortedMap.headMap(key);
 		SortedMap sortedMap = null;
@@ -213,34 +236,45 @@ public class PostgreSQLValueListHandler
 		}
 		createValueIterator(sortedMap);
 	}
-	
+
+	private boolean isCreateMaster() {
+		return Boolean
+			.valueOf(EnvironmentManager.get("/server/isCreateMaster", "true"))
+			.booleanValue();
+	}
+
 	/*
-	 * @see org.F11.scada.server.event.LoggingDataListener#changeLoggingData(LoggingDataEvent)
+	 * @see org.F11.scada.server.event.LoggingDataListener#changeLoggingData(
+	 * LoggingDataEvent)
 	 */
 	public void changeLoggingData(LoggingDataEvent event) {
 		queue.enqueue(event);
 	}
-	
+
 	/**
 	 * イベントキューに入れられた、変更イベントを取り出しマップオブジェクトを更新します。
 	 */
 	public void run() {
 		Thread ct = Thread.currentThread();
-		
+
 		while (ct == thread) {
 			LoggingDataEvent event = (LoggingDataEvent) queue.dequeue();
 			updateMasterSortedMap(event);
 			fireChangeLoggingData(event);
 		}
 	}
-	
+
 	private void updateMasterSortedMap(LoggingDataEvent event) {
 		logger.debug("updateSortedMap method." + event);
 		List holders = event.getHolders();
-		MultiRecordDefine multiRecord  = getMultiRecordDefine();
+		MultiRecordDefine multiRecord = getMultiRecordDefine();
 		if (multiRecord != null) {
-			Map valuesMap = util.createDateHolderValuesMap(holders, loggingTableName, multiRecord);
-			synchronized(this) {
+			Map valuesMap =
+				util.createDateHolderValuesMap(
+					holders,
+					loggingTableName,
+					multiRecord);
+			synchronized (this) {
 				masterSortedMap.putAll(valuesMap);
 				if (masterSortedMap.size() > MAX_MAP_SIZE) {
 					masterSortedMap.remove(masterSortedMap.firstKey());
@@ -249,8 +283,9 @@ public class PostgreSQLValueListHandler
 			}
 		} else {
 			Timestamp timestamp = event.getTimeStamp();
-			DoubleList values = util.createHolderValue(holders, loggingTableName);
-			synchronized(this) {
+			DoubleList values =
+				util.createHolderValue(holders, loggingTableName);
+			synchronized (this) {
 				masterSortedMap.put(timestamp, values);
 				if (masterSortedMap.size() > MAX_MAP_SIZE) {
 					masterSortedMap.remove(masterSortedMap.firstKey());
@@ -259,7 +294,7 @@ public class PostgreSQLValueListHandler
 			}
 		}
 	}
-	
+
 	/**
 	 * keyで指定された時刻以降のロギングデータをMapインスタンスで返します。
 	 */
@@ -267,24 +302,26 @@ public class PostgreSQLValueListHandler
 		Timestamp searchKey = new Timestamp(key.getTime() + 1);
 		logger.debug("searchKey:" + searchKey);
 		Map tailMap = null;
-		synchronized(this) {
+		synchronized (this) {
 			tailMap = new HashMap(masterSortedMap.tailMap(searchKey));
 		}
-		
+
 		logger.debug("update data:" + tailMap);
 		return tailMap;
 	}
-	
+
 	/**
 	 * 初期化用データのSortedMapを返します。
+	 *
 	 * @return 初期化用データのSortedMapを返します。
 	 */
 	public SortedMap getInitialData() {
 		return new TreeMap(masterSortedMap);
 	}
-	
+
 	/**
 	 * 保持しているデータが更新された後に通知する先を追加します。
+	 *
 	 * @param listener
 	 */
 	public synchronized void addLoggingDataListener(LoggingDataListener listener) {
@@ -293,6 +330,7 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * 通知先を削除します。
+	 *
 	 * @param listener
 	 */
 	public synchronized void removeLoggingDataListener(LoggingDataListener listener) {
@@ -301,33 +339,34 @@ public class PostgreSQLValueListHandler
 
 	/**
 	 * 更新イベントを発火します。
+	 *
 	 * @param event
-	 */	
+	 */
 	private synchronized void fireChangeLoggingData(LoggingDataEvent event) {
-		for (Iterator it = loggingDataListeners.iterator(); it.hasNext();){
-			LoggingDataListener listener = (LoggingDataListener)it.next();
+		for (Iterator it = loggingDataListeners.iterator(); it.hasNext();) {
+			LoggingDataListener listener = (LoggingDataListener) it.next();
 			listener.changeLoggingData(event);
 		}
 	}
-	
-    public void start() {
-        if (thread == null) {
-    		thread = new Thread(this);
-    		thread.setName(getClass().getName());
-    		thread.start();
-        }
-    }
 
-    public void stop() {
-        if (thread != null) {
-            Thread th = thread;
-            thread = null;
-            th.interrupt();
-        }
-    }
+	public void start() {
+		if (thread == null) {
+			thread = new Thread(this);
+			thread.setName(getClass().getName());
+			thread.start();
+		}
+	}
 
-    private MultiRecordDefine getMultiRecordDefine() {
-    	MultiRecordDefine multiRecord = null;
+	public void stop() {
+		if (thread != null) {
+			Thread th = thread;
+			thread = null;
+			th.interrupt();
+		}
+	}
+
+	private MultiRecordDefine getMultiRecordDefine() {
+		MultiRecordDefine multiRecord = null;
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
@@ -335,7 +374,13 @@ public class PostgreSQLValueListHandler
 			con = ConnectionUtil.getConnection();
 			st = con.createStatement();
 			DatabaseMetaData metaData = con.getMetaData();
-			rs = DatabaseMetaDataUtil.getTables(metaData, "", "", "multi_record_define_table", null);
+			rs =
+				DatabaseMetaDataUtil.getTables(
+					metaData,
+					"",
+					"",
+					"multi_record_define_table",
+					null);
 			// テーブルが存在するか調査
 			rs.last();
 			if (0 < rs.getRow()) {
@@ -347,7 +392,7 @@ public class PostgreSQLValueListHandler
 				multiRecord = dao_.getMultiRecordDefine(loggingTableName);
 			}
 		} catch (SQLException e) {
-        	logger.error("", e);
+			logger.error("", e);
 		} finally {
 			if (rs != null) {
 				try {
@@ -371,10 +416,10 @@ public class PostgreSQLValueListHandler
 				}
 			}
 		}
-    	return multiRecord;
-    }
-    
-    public List<HolderString> getHolders() {
-    	return dataHolders;
-    }
+		return multiRecord;
+	}
+
+	public List<HolderString> getHolders() {
+		return dataHolders;
+	}
 }
