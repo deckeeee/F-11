@@ -35,7 +35,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.Manager;
+
 import org.F11.scada.EnvironmentManager;
+import org.F11.scada.Globals;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.data.BCDConvertException;
 import org.F11.scada.data.WifeData;
@@ -61,8 +65,11 @@ import org.apache.log4j.Logger;
 public final class PostgreSQLUtility implements SQLUtility {
 	public static final String DATE_FIELD_NAME = "f_date";
 	private static final String REVISION_FIELD_NAME = "f_revision";
-	private static final String PRIMARY_KEY =
-		"PRIMARY KEY(" + DATE_FIELD_NAME + ", " + REVISION_FIELD_NAME + ")";
+	private static final String PRIMARY_KEY = "PRIMARY KEY("
+		+ DATE_FIELD_NAME
+		+ ", "
+		+ REVISION_FIELD_NAME
+		+ ")";
 
 	private final Map itemArrayPool;
 	private final Map itemPool;
@@ -72,8 +79,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 	private static Logger logger = Logger.getLogger(PostgreSQLUtility.class);
 
-	public PostgreSQLUtility(
-			ItemUtil itemUtil,
+	public PostgreSQLUtility(ItemUtil itemUtil,
 			CommunicaterFactory communicaterFactory) {
 		itemArrayPool = new ConcurrentHashMap();
 		itemPool = new ConcurrentHashMap();
@@ -97,8 +103,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @param values 値
 	 * @return INSERT SQL の文字列
 	 */
-	public String getInsertString(
-			String tableName,
+	public String getInsertString(String tableName,
 			String[] columnNames,
 			Object[] values) {
 		if (columnNames.length != values.length)
@@ -134,8 +139,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @param timestamp 更新日付
 	 * @return INSERT SQL の文字列
 	 */
-	public String getInsertString(
-			String tableName,
+	public String getInsertString(String tableName,
 			List dataHolders,
 			Timestamp timestamp,
 			int revision) {
@@ -169,7 +173,11 @@ public final class PostgreSQLUtility implements SQLUtility {
 					communicaterFactory.createCommunicator(environment);
 				communicater.addReadCommand(commands);
 				SyncReadWrapper wrapper = new SyncReadWrapper();
-				Map bytedataMap = wrapper.syncRead(communicater, commands);
+				Map bytedataMap =
+					wrapper.syncRead(
+						communicater,
+						commands,
+						isNetError(provider));
 
 				for (Iterator itemIt = itemList.iterator(), commandIt =
 					commands.iterator(); itemIt.hasNext()
@@ -202,10 +210,12 @@ public final class PostgreSQLUtility implements SQLUtility {
 									+ wd.getClass().getName());
 						}
 					} catch (BCDConvertException e) {
-						logger.error("BCD変換エラー発生、初期値をログに書き込みます。"
-							+ item.getProvider()
-							+ "_"
-							+ item.getHolder(), e);
+						logger.error(
+							"BCD変換エラー発生、初期値をログに書き込みます。"
+								+ item.getProvider()
+								+ "_"
+								+ item.getHolder(),
+							e);
 						if (wd instanceof WifeDataAnalog) {
 							values.add(new Double(0));
 						} else if (wd instanceof WifeDataDigital) {
@@ -222,8 +232,17 @@ public final class PostgreSQLUtility implements SQLUtility {
 		} catch (Exception e) {
 			logger.error("ロギングSQL生成時エラー", e);
 		}
-		return getInsertString(tableName, (String[]) columnNames
-			.toArray(new String[0]), values.toArray());
+		return getInsertString(
+			tableName,
+			(String[]) columnNames.toArray(new String[0]),
+			values.toArray());
+	}
+
+	private boolean isNetError(String provider) {
+		DataHolder errHolder =
+			Manager.getInstance().findDataHolder(provider, Globals.ERR_HOLDER);
+		WifeDataDigital wd = WifeDataDigital.valueOfTrue(0);
+		return wd.equals(errHolder.getValue());
 	}
 
 	/**
@@ -235,8 +254,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @param timestamp 更新日付
 	 * @return 項目名の配列と値の配列のリスト
 	 */
-	public List getColumnValueString(
-			String tableName,
+	public List getColumnValueString(String tableName,
 			List dataHolders,
 			MultiRecordDefine multiRecordDefine,
 			Connection con) {
@@ -319,11 +337,14 @@ public final class PostgreSQLUtility implements SQLUtility {
 						recno
 							* byteRecSize
 							+ (int) (item.getComMemoryAddress() - multiRecordDefine
-								.getComMemoryAddress())
-							* 2;
+								.getComMemoryAddress()) * 2;
 					byte[] data = new byte[wd.getWordSize() * 2];
-					System.arraycopy(srcBytes, byteOffset, data, 0, wd
-						.getWordSize() * 2);
+					System.arraycopy(
+						srcBytes,
+						byteOffset,
+						data,
+						0,
+						wd.getWordSize() * 2);
 					// logger.debug(item.getProvider() + " " + item.getHolder()
 					// + ": byte(" + WifeUtilities.toString(data) + ")");
 					try {
@@ -466,8 +487,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @param primaryKey プライマリキー文字列
 	 * @return CREATE SQL の文字列
 	 */
-	public String getCreateString(
-			String tableName,
+	public String getCreateString(String tableName,
 			String[] columnNames,
 			Object[] values,
 			String primaryKey) {
@@ -572,8 +592,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @param value 値
 	 * @return ALTER SQL の文字列
 	 */
-	public String getAlterString(
-			String tableName,
+	public String getAlterString(String tableName,
 			String columnName,
 			Object value) {
 
@@ -701,8 +720,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectTimeString(
-			String name,
+	public String getSelectTimeString(String name,
 			List dataHolder,
 			Timestamp time) {
 		String[] columnNames = createFieldNames(dataHolder);
@@ -773,8 +791,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectBefore(
-			String name,
+	public String getSelectBefore(String name,
 			List dataHolder,
 			Timestamp start,
 			int limit) {
@@ -797,8 +814,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectAfter(
-			String name,
+	public String getSelectAfter(String name,
 			List dataHolder,
 			Timestamp start,
 			int limit) {
@@ -807,8 +823,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 		StringBuffer b = new StringBuffer();
 		b.append(getSelectString(name, columnNames));
 		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		b.append(" WHERE f_revision = 0 AND f_date >= '").append(
-			f.format(start)).append("'");
+		b
+			.append(" WHERE f_revision = 0 AND f_date >= '")
+			.append(f.format(start))
+			.append("'");
 		b.append(" ORDER BY ");
 		b.append(DATE_FIELD_NAME);
 		b.append(" ASC LIMIT ");
@@ -819,8 +837,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectAllString(
-			String name,
+	public String getSelectAllString(String name,
 			List dataHolder,
 			int limit,
 			List<String> tables) {
@@ -828,8 +845,10 @@ public final class PostgreSQLUtility implements SQLUtility {
 
 		StringBuffer b = new StringBuffer();
 		b.append(getSelectString(name, columnNames, tables));
-		b.append(" WHERE ").append(tables.get(0)).append(
-			".f_revision = 0 ORDER BY ");
+		b
+			.append(" WHERE ")
+			.append(tables.get(0))
+			.append(".f_revision = 0 ORDER BY ");
 		b.append(tables.get(0)).append(".");
 		b.append(DATE_FIELD_NAME);
 		b.append(" DESC LIMIT ");
@@ -838,8 +857,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	private Object getSelectString(
-			String name,
+	private Object getSelectString(String name,
 			String[] columnNames,
 			List<String> tables) {
 		StringBuffer buffer = new StringBuffer();
@@ -878,8 +896,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		}
 	}
 
-	public String getSelectTimeString(
-			String name,
+	public String getSelectTimeString(String name,
 			List dataHolder,
 			Timestamp time,
 			List<String> tables) {
@@ -907,8 +924,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectAfter(
-			String name,
+	public String getSelectAfter(String name,
 			List dataHolder,
 			Timestamp start,
 			int limit,
@@ -937,8 +953,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectBefore(
-			String name,
+	public String getSelectBefore(String name,
 			List dataHolder,
 			Timestamp start,
 			int limit,
@@ -971,9 +986,13 @@ public final class PostgreSQLUtility implements SQLUtility {
 		String[] columnNames = createFieldNames(dataHolder, tables);
 
 		StringBuffer b = new StringBuffer();
-		b.append(getSelectString(name, columnNames, tables)).append(
-			" ORDER BY ").append(tables.get(0)).append(".").append(
-			DATE_FIELD_NAME).append(" ASC LIMIT 1");
+		b
+			.append(getSelectString(name, columnNames, tables))
+			.append(" ORDER BY ")
+			.append(tables.get(0))
+			.append(".")
+			.append(DATE_FIELD_NAME)
+			.append(" ASC LIMIT 1");
 
 		return b.toString();
 	}
@@ -981,9 +1000,13 @@ public final class PostgreSQLUtility implements SQLUtility {
 	public String getLastData(String name, List dataHolder, List<String> tables) {
 		String[] columnNames = createFieldNames(dataHolder, tables);
 		StringBuffer b = new StringBuffer();
-		b.append(getSelectString(name, columnNames, tables)).append(
-			" ORDER BY ").append(tables.get(0)).append(".").append(
-			DATE_FIELD_NAME).append(" DESC LIMIT 1");
+		b
+			.append(getSelectString(name, columnNames, tables))
+			.append(" ORDER BY ")
+			.append(tables.get(0))
+			.append(".")
+			.append(DATE_FIELD_NAME)
+			.append(" DESC LIMIT 1");
 
 		return b.toString();
 	}
@@ -998,8 +1021,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 	 * @return 引数のタイムスタンプ範囲のデータを返します
 	 * @see #getSelectBefore(String, List, Timestamp, Timestamp)
 	 */
-	public String getSelectPeriod(
-			String name,
+	public String getSelectPeriod(String name,
 			List dataHolder,
 			Timestamp start,
 			Timestamp end) {
@@ -1026,8 +1048,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getSelectPeriod(
-			String name,
+	public String getSelectPeriod(String name,
 			List dataHolder,
 			Timestamp start,
 			Timestamp end,
@@ -1059,8 +1080,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 		return b.toString();
 	}
 
-	public String getPaddingSql(
-			String tableName,
+	public String getPaddingSql(String tableName,
 			List<HolderString> dataHolders,
 			Timestamp timestamp,
 			int revision) {
@@ -1082,7 +1102,9 @@ public final class PostgreSQLUtility implements SQLUtility {
 			columnNames.add("f_" + hs.getProvider() + "_" + hs.getHolder());
 			values.add(zero);
 		}
-		return getInsertString(tableName, (String[]) columnNames
-			.toArray(new String[0]), values.toArray());
+		return getInsertString(
+			tableName,
+			(String[]) columnNames.toArray(new String[0]),
+			values.toArray());
 	}
 }

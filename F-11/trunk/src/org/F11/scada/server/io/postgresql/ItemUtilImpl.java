@@ -34,6 +34,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.Manager;
+
+import org.F11.scada.Globals;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.data.BCDConvertException;
 import org.F11.scada.data.ConvertValue;
@@ -59,7 +63,7 @@ import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 
 /**
- * 
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public final class ItemUtilImpl implements ItemUtil {
@@ -90,13 +94,12 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#createConvertValue(java.util
 	 * .Collection, java.lang.String)
 	 */
-	public ConvertValue[] createConvertValue(
-			Collection holders,
+	public ConvertValue[] createConvertValue(Collection holders,
 			String tablename) {
 		Item[] items = getItems(holders, itemPool);
 
@@ -120,7 +123,7 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#getItems(java.util.Collection
 	 * , java.util.Map)
@@ -137,7 +140,7 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#getItem(org.F11.scada.server
 	 * .register.HolderString, java.util.Map)
@@ -154,7 +157,7 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#getItemMap(org.F11.scada.
 	 * server.entity.Item[])
@@ -175,9 +178,16 @@ public final class ItemUtilImpl implements ItemUtil {
 		return map;
 	}
 
+	private boolean isNetError(String provider) {
+		DataHolder errHolder =
+			Manager.getInstance().findDataHolder(provider, Globals.ERR_HOLDER);
+		WifeDataDigital wd = WifeDataDigital.valueOfTrue(0);
+		return wd.equals(errHolder.getValue());
+	}
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#createHolderValue(java.util
 	 * .Collection, java.lang.String)
@@ -189,6 +199,7 @@ public final class ItemUtilImpl implements ItemUtil {
 		try {
 			for (Iterator it = itemMap.keySet().iterator(); it.hasNext();) {
 				String provider = (String) it.next();
+
 				List itemList = (List) itemMap.get(provider);
 				// commandsはHashSetに置き換えができません。
 				ArrayList commands = new ArrayList(items.length);
@@ -202,7 +213,11 @@ public final class ItemUtilImpl implements ItemUtil {
 					communicaterFactory.createCommunicator(environment);
 				communicater.addReadCommand(commands);
 				SyncReadWrapper wrapper = new SyncReadWrapper();
-				Map bytedataMap = wrapper.syncRead(communicater, commands);
+				Map bytedataMap =
+					wrapper.syncRead(
+						communicater,
+						commands,
+						isNetError(provider));
 				providerBytedataMap.put(provider, bytedataMap);
 			}
 		} catch (Exception e) {
@@ -268,14 +283,13 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#createDateHolderValuesMap
 	 * (java.util.Collection, java.lang.String,
 	 * org.F11.scada.server.entity.MultiRecordDefine)
 	 */
-	public Map createDateHolderValuesMap(
-			Collection dataHolders,
+	public Map createDateHolderValuesMap(Collection dataHolders,
 			String tableName,
 			MultiRecordDefine multiRecordDefine) {
 		Map timeMap = new HashMap();
@@ -329,8 +343,7 @@ public final class ItemUtilImpl implements ItemUtil {
 					|| multiRecordDefine.getComMemoryAddress() > item
 						.getComMemoryAddress()
 					|| multiRecordDefine.getComMemoryAddress() + byteRecSize < item
-						.getComMemoryAddress()
-						+ wd.getWordSize()) {
+						.getComMemoryAddress() + wd.getWordSize()) {
 					throw new IllegalArgumentException("多レコード データ定義がブロック範囲外です。"
 						+ item.getProvider()
 						+ " "
@@ -340,11 +353,14 @@ public final class ItemUtilImpl implements ItemUtil {
 					recno
 						* byteRecSize
 						+ (int) (item.getComMemoryAddress() - multiRecordDefine
-							.getComMemoryAddress())
-						* 2;
+							.getComMemoryAddress()) * 2;
 				byte[] data = new byte[wd.getWordSize() * 2];
-				System.arraycopy(srcBytes, byteOffset, data, 0, wd
-					.getWordSize() * 2);
+				System.arraycopy(
+					srcBytes,
+					byteOffset,
+					data,
+					0,
+					wd.getWordSize() * 2);
 				try {
 					wd = wd.valueOf(data);
 					if (wd instanceof WifeDataAnalog) {
@@ -407,7 +423,7 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#createConvertValueMap(java
 	 * .util.Collection, java.lang.String)
@@ -440,7 +456,7 @@ public final class ItemUtilImpl implements ItemUtil {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.F11.scada.server.io.postgresql.ItemUtil#createConvertValueMap(java
 	 * .util.Collection)

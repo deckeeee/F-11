@@ -37,7 +37,46 @@ import org.apache.log4j.Logger;
 public class SyncReadWrapper {
 	private static Logger log = Logger.getLogger(SyncReadWrapper.class);
 
-	public Map syncRead(Communicater communicater, List commands) {
+	/**
+	 * このメソッドは通信エラーを考慮しません。通信エラーを考慮する
+	 * {@link SyncReadWrapper#syncRead(Communicater, List, boolean)}を使用して下さい。
+	 *
+	 * @param communicater 通信オブジェクト
+	 * @param commands 通信対象オブジェクト
+	 * @return コマンドとバイト列のマップ
+	 */
+	@Deprecated
+	public Map<WifeCommand, byte[]> syncRead(Communicater communicater,
+			List<WifeCommand> commands) {
+		try {
+			return communicater.syncRead(commands, false);
+		} catch (InterruptedException e) {
+			errorLogging(e);
+			return getZeroByteArray(commands);
+		} catch (IOException e) {
+			errorLogging(e);
+			return getZeroByteArray(commands);
+		} catch (WifeException e) {
+			errorLogging(e);
+			return getZeroByteArray(commands);
+		}
+	}
+
+	/**
+	 * 通信コマンドのリストを対象に、通信オブジェクトから値を読み込み、通信コマンドと対応するバイト配列のMapオブジェクトを返します。
+	 * 通信エラーが発生している場合、ゼロのバイト配列を返します。
+	 *
+	 * @param communicater 通信オブジェクト
+	 * @param commands 通信コマンドのリスト
+	 * @param err 通信エラー状態
+	 * @return コマンドとバイト列のマップ
+	 */
+	public Map<WifeCommand, byte[]> syncRead(Communicater communicater,
+			List<WifeCommand> commands,
+			boolean err) {
+		if (err) {
+			return getZeroByteArray(commands);
+		}
 		try {
 			return communicater.syncRead(commands, false);
 		} catch (InterruptedException e) {
@@ -53,14 +92,15 @@ public class SyncReadWrapper {
 	}
 
 	private void errorLogging(Throwable t) {
-//		ThreadUtil.printSS(); // for JDK 1.4.x
+		// ThreadUtil.printSS(); // for JDK 1.4.x
 		log.error("通信エラー", t);
 	}
 
-	private Map getZeroByteArray(Collection commands) {
-		HashMap map = new HashMap(commands.size());
-		for (Iterator i = commands.iterator(); i.hasNext();) {
-			WifeCommand command = (WifeCommand) i.next();
+	private Map<WifeCommand, byte[]> getZeroByteArray(Collection<WifeCommand> commands) {
+		HashMap<WifeCommand, byte[]> map =
+			new HashMap<WifeCommand, byte[]>(commands.size());
+		for (Iterator<WifeCommand> i = commands.iterator(); i.hasNext();) {
+			WifeCommand command = i.next();
 			byte[] data = new byte[command.getWordLength() * 2];
 			Arrays.fill(data, (byte) 0x00);
 			map.put(command, data);

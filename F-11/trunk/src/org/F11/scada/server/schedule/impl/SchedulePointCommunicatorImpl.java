@@ -29,15 +29,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.DataProviderDoesNotSupportException;
 import jp.gr.javacons.jim.Manager;
 
+import org.F11.scada.Globals;
 import org.F11.scada.data.BCDConvertException;
 import org.F11.scada.data.ConvertValue;
 import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
+import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.data.WifeDataSchedule;
 import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.exception.RemoteRuntimeException;
@@ -61,11 +64,9 @@ import org.F11.scada.server.schedule.point.dto.SchedulePointRowDto;
 import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator {
 	private final Logger logger = Logger
-			.getLogger(SchedulePointCommunicatorImpl.class);
+		.getLogger(SchedulePointCommunicatorImpl.class);
 	private ItemUtil itemUtil;
 	private Map itemPool = new ConcurrentHashMap();
 	private CommunicaterFactory communicaterFactory;
@@ -93,28 +94,37 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 			throws SchedulePointException {
 		defineManager.addDataHolders(getHolderSet(dto));
 		Manager manager = Manager.getInstance();
-		DataHolder dh = manager.findDataHolder(dto.getGroupNoProvider(), dto
-				.getGroupNoHolder());
+		DataHolder dh =
+			manager.findDataHolder(
+				dto.getGroupNoProvider(),
+				dto.getGroupNoHolder());
 		if (null == dh) {
-			String errMsg = "スケジュールNo.のデータホルダが見つかりません。"
-					+ dto.getGroupNoProvider() + " " + dto.getGroupNoHolder();
+			String errMsg =
+				"スケジュールNo.のデータホルダが見つかりません。"
+					+ dto.getGroupNoProvider()
+					+ " "
+					+ dto.getGroupNoHolder();
 			SchedulePointException e = new SchedulePointException(errMsg);
 			logger.error(errMsg, e);
 			throw e;
 		}
-		ConvertValue convertValue = (ConvertValue) dh
-				.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-		double value = convertValue.convertInputValue(dto.getGroupNo()
-				.intValue());
+		ConvertValue convertValue =
+			(ConvertValue) dh.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+		double value =
+			convertValue.convertInputValue(dto.getGroupNo().intValue());
 		WifeDataAnalog data = (WifeDataAnalog) dh.getValue();
 		WifeDataAnalog newData = (WifeDataAnalog) data.valueOf(value);
 		try {
-			service.logging(dh, newData.valueOf(value), dto.getUser(), dto
-					.getIpAddress(), dto.getTimestamp());
+			service.logging(
+				dh,
+				newData.valueOf(value),
+				dto.getUser(),
+				dto.getIpAddress(),
+				dto.getTimestamp());
 			dh.setValue(
-					newData.valueOf(value),
-					new Date(),
-					WifeQualityFlag.GOOD);
+				newData.valueOf(value),
+				new Date(),
+				WifeQualityFlag.GOOD);
 			dh.syncWrite();
 		} catch (DataProviderDoesNotSupportException e) {
 			logger.error("データホルダ書き込みエラー", e);
@@ -129,8 +139,15 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	private Set getHolderSet(SchedulePointRowDto dto) {
 		HashSet set = new HashSet();
 		set.add(new HolderString(dto.getGroupNoProvider(), dto
-				.getGroupNoHolder()));
+			.getGroupNoHolder()));
 		return set;
+	}
+
+	private boolean isNetError(String provider) {
+		DataHolder errHolder =
+			Manager.getInstance().findDataHolder(provider, Globals.ERR_HOLDER);
+		WifeDataDigital wd = WifeDataDigital.valueOfTrue(0);
+		return wd.equals(errHolder.getValue());
 	}
 
 	public List getHolderData(List dto) {
@@ -151,10 +168,15 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 				Communicater communicater = getCommunicater(provider);
 				communicater.addReadCommand(commands);
 				SyncReadWrapper wrapper = new SyncReadWrapper();
-				Map bytedataMap = wrapper.syncRead(communicater, commands);
+				Map bytedataMap =
+					wrapper.syncRead(
+						communicater,
+						commands,
+						isNetError(provider));
 
-				for (Iterator itemIt = itemList.iterator(), commandIt = commands
-						.iterator(); itemIt.hasNext() && commandIt.hasNext();) {
+				for (Iterator itemIt = itemList.iterator(), commandIt =
+					commands.iterator(); itemIt.hasNext()
+					&& commandIt.hasNext();) {
 					Item item = (Item) itemIt.next();
 					WifeData wd = WifeDataUtil.getWifeData(item);
 					WifeCommand wc = (WifeCommand) commandIt.next();
@@ -164,9 +186,9 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 						if (wd instanceof WifeDataAnalog) {
 							WifeDataAnalog wda = (WifeDataAnalog) wd;
 							setSchedulePointRows(
-									schePointRows,
-									item,
-									new Integer((int) wda.doubleValue()));
+								schePointRows,
+								item,
+								new Integer((int) wda.doubleValue()));
 						} else {
 							getException(wd);
 						}
@@ -174,9 +196,9 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 						logger.error("BCD変換エラー発生、0をグループNo.に書き込みます", e);
 						if (wd instanceof WifeDataAnalog) {
 							setSchedulePointRows(
-									schePointRows,
-									item,
-									new Integer(0));
+								schePointRows,
+								item,
+								new Integer(0));
 						} else {
 							getException(wd);
 						}
@@ -192,12 +214,11 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 
 	private void getException(WifeData wd) {
 		throw new IllegalArgumentException(
-				"value is not WifeDataDigital and WifeDataAnalog! : "
-						+ wd.getClass().getName());
+			"value is not WifeDataDigital and WifeDataAnalog! : "
+				+ wd.getClass().getName());
 	}
 
-	private void setSchedulePointRows(
-			ArrayList schePointRows,
+	private void setSchedulePointRows(ArrayList schePointRows,
 			Item item,
 			Integer groupNo) {
 		SchedulePointRowDto schePointRow = new SchedulePointRowDto();
@@ -209,8 +230,8 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 
 	private Communicater getCommunicater(String provider) throws Exception {
 		Environment environment = EnvironmentMap.get(provider);
-		Communicater communicater = communicaterFactory
-				.createCommunicator(environment);
+		Communicater communicater =
+			communicaterFactory.createCommunicator(environment);
 		return communicater;
 	}
 
@@ -219,7 +240,7 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 		for (Iterator i = dto.iterator(); i.hasNext();) {
 			SchedulePointRowDto row = (SchedulePointRowDto) i.next();
 			holderStrings.add(new HolderString(row.getGroupNoProvider(), row
-					.getGroupNoHolder()));
+				.getGroupNoHolder()));
 		}
 		return holderStrings;
 	}
@@ -227,8 +248,7 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	/**
 	 * @deprecated
 	 */
-	public void duplicateSeparateSchedule(
-			ScheduleGroupDto src,
+	public void duplicateSeparateSchedule(ScheduleGroupDto src,
 			SchedulePointRowDto[] dest) {
 		Set set = getHolderSet(dest);
 		try {
@@ -247,14 +267,14 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	 */
 	private void masterToSeparate(ScheduleGroupDto src, Set set) {
 		Manager manager = Manager.getInstance();
-		DataHolder master = manager.findDataHolder(src.getProvider(), src
-				.getHolder());
+		DataHolder master =
+			manager.findDataHolder(src.getProvider(), src.getHolder());
 		if (null != master) {
 			WifeDataSchedule masterSche = (WifeDataSchedule) master.getValue();
 			for (Iterator i = set.iterator(); i.hasNext();) {
 				HolderString hs = (HolderString) i.next();
-				DataHolder dh = manager.findDataHolder(hs.getProvider(), hs
-						.getHolder());
+				DataHolder dh =
+					manager.findDataHolder(hs.getProvider(), hs.getHolder());
 				if (null != dh) {
 					WifeDataSchedule sche = (WifeDataSchedule) dh.getValue();
 					sche = sche.duplicateTodayAndTomorrow(masterSche);
@@ -270,8 +290,10 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 				}
 			}
 		} else {
-			logger.error("コピー元のホルダが存在しません : " + src.getProvider() + "_"
-					+ src.getHolder());
+			logger.error("コピー元のホルダが存在しません : "
+				+ src.getProvider()
+				+ "_"
+				+ src.getHolder());
 		}
 	}
 
@@ -291,22 +313,27 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	private void masterToSeparate(DuplicateSeparateScheduleDto dto, Set set) {
 		Manager manager = Manager.getInstance();
 		ScheduleGroupDto src = dto.getSrc();
-		DataHolder master = manager.findDataHolder(src.getProvider(), src
-				.getHolder());
+		DataHolder master =
+			manager.findDataHolder(src.getProvider(), src.getHolder());
 		if (null != master) {
 			WifeDataSchedule masterSche = (WifeDataSchedule) master.getValue();
 			try {
 				for (Iterator i = set.iterator(); i.hasNext();) {
 					HolderString hs = (HolderString) i.next();
-					DataHolder dh = manager.findDataHolder(hs.getProvider(), hs
-							.getHolder());
+					DataHolder dh =
+						manager
+							.findDataHolder(hs.getProvider(), hs.getHolder());
 					logger.info(dh.getValue());
 					if (null != dh) {
-						WifeDataSchedule sche = (WifeDataSchedule) dh
-								.getValue();
+						WifeDataSchedule sche =
+							(WifeDataSchedule) dh.getValue();
 						sche = sche.duplicateTodayAndTomorrow(masterSche);
-						service.logging(dh, sche, dto.getUser(), dto
-								.getIpAddress(), dto.getTimestamp());
+						service.logging(
+							dh,
+							sche,
+							dto.getUser(),
+							dto.getIpAddress(),
+							dto.getTimestamp());
 						dh.setValue(sche, new Date(), WifeQualityFlag.GOOD);
 						try {
 							dh.syncWrite();
@@ -321,8 +348,10 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 				logger.error("操作ロギングでエラーが発生しました", e);
 			}
 		} else {
-			logger.error("コピー元のホルダが存在しません : " + src.getProvider() + "_"
-					+ src.getHolder());
+			logger.error("コピー元のホルダが存在しません : "
+				+ src.getProvider()
+				+ "_"
+				+ src.getHolder());
 		}
 	}
 
@@ -331,7 +360,7 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 		for (int i = 0; i < dest.length; i++) {
 			SchedulePointRowDto dto = dest[i];
 			set.add(new HolderString(dto.getSeparateProvider(), dto
-					.getSeparateHolder()));
+				.getSeparateHolder()));
 		}
 		return set;
 	}
@@ -353,10 +382,15 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 				Communicater communicater = getCommunicater(provider);
 				communicater.addReadCommand(commands);
 				SyncReadWrapper wrapper = new SyncReadWrapper();
-				Map bytedataMap = wrapper.syncRead(communicater, commands);
+				Map bytedataMap =
+					wrapper.syncRead(
+						communicater,
+						commands,
+						isNetError(provider));
 
-				for (Iterator itemIt = itemList.iterator(), commandIt = commands
-						.iterator(); itemIt.hasNext() && commandIt.hasNext();) {
+				for (Iterator itemIt = itemList.iterator(), commandIt =
+					commands.iterator(); itemIt.hasNext()
+					&& commandIt.hasNext();) {
 					Item item = (Item) itemIt.next();
 					WifeData wd = WifeDataUtil.getWifeData(item);
 					WifeCommand wc = (WifeCommand) commandIt.next();
@@ -378,28 +412,36 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	private List getHolderData(SchedulePointRowDto rowdto) {
 		ArrayList l = new ArrayList();
 		l.add(new HolderString(rowdto.getSeparateProvider(), rowdto
-				.getSeparateHolder()));
+			.getSeparateHolder()));
 		return l;
 	}
 
-	public void updateSeperateSchedule(
-			SchedulePointRowDto dto,
+	public void updateSeperateSchedule(SchedulePointRowDto dto,
 			Date date,
 			WifeDataSchedule data) {
 		defineManager.addDataHolders(getScheduleHolderSet(dto));
 		Manager manager = Manager.getInstance();
-		DataHolder dh = manager.findDataHolder(dto.getSeparateProvider(), dto
-				.getSeparateHolder());
+		DataHolder dh =
+			manager.findDataHolder(
+				dto.getSeparateProvider(),
+				dto.getSeparateHolder());
 		if (null == dh) {
-			String errMsg = "スケジュールのデータホルダが見つかりません。"
-					+ dto.getSeparateProvider() + " " + dto.getSeparateHolder();
+			String errMsg =
+				"スケジュールのデータホルダが見つかりません。"
+					+ dto.getSeparateProvider()
+					+ " "
+					+ dto.getSeparateHolder();
 			SchedulePointException e = new SchedulePointException(errMsg);
 			logger.error(errMsg, e);
 			throw e;
 		}
 		try {
-			service.logging(dh, data, dto.getUser(), dto.getIpAddress(), dto
-					.getTimestamp());
+			service.logging(
+				dh,
+				data,
+				dto.getUser(),
+				dto.getIpAddress(),
+				dto.getTimestamp());
 			dh.setValue(data, date, WifeQualityFlag.GOOD);
 			dh.syncWrite();
 		} catch (DataProviderDoesNotSupportException e) {
