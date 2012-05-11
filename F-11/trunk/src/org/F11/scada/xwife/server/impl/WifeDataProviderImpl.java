@@ -408,16 +408,13 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	 */
 	public void run() {
 		Thread thisThread = Thread.currentThread();
+		boolean init = true;
 
 		while (thread == thisThread) {
-			if (isNetError()) {
-				long waitTime = getNodeErrorWaitTime();
-				try {
-					logger.info("通信エラー " + waitTime + "ミリ秒スレッド停止");
-					Thread.sleep(waitTime);
-				} catch (InterruptedException e) {
-					continue;
-				}
+			// 最初から通信エラーの場合、起動時に止まってしまう為、起動直後は一度コンティニューする。
+			if (init) {
+				init = false;
+				continue;
 			}
 			if (unExecuteCommands.isEmpty()) {
 				syncRead(getCommandDefines());
@@ -429,16 +426,6 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			} catch (InterruptedException e) {
 				continue;
 			}
-		}
-	}
-
-	private long getNodeErrorWaitTime() {
-		try {
-			return Long.parseLong(EnvironmentManager.get(
-				"/server/nodeErrorWaitTime",
-				"0"));
-		} catch (NumberFormatException e) {
-			return 0L;
 		}
 	}
 
