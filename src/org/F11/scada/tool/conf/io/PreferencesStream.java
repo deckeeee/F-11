@@ -189,7 +189,6 @@ public class PreferencesStream {
 		pw.println(getXmlProp("/server/calendar/message/special03","“ÁŽê“ú3"));
 		pw.println(getXmlProp("/server/calendar/message/special04","“ÁŽê“ú4"));
 		pw.println(getXmlProp("/server/calendar/message/special05","“ÁŽê“ú5"));
-		pw.println(getXmlProp("/server/nodeErrorWaitTime","0"));
 		pw.println("</environment>");
 		pw.close();
 		edited = false;

@@ -65,7 +65,6 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 
 	private final JTextField clientMax = new JTextField();
 	private final JTextField clientMaxPage = new JTextField();
-	private final JTextField nodeErrorWaitTime = new JTextField();
 
 	public PreferencesTab(Frame parent, StreamManager manager) {
 		super();
@@ -262,7 +261,6 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		clientMax(mainPanel);
 		clientMaxPage(mainPanel);
 		calendar(mainPanel);
-		nodeErrorWaitTime(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -767,11 +765,12 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		JLabel comp = new JLabel("ｸﾗｲｱﾝﾄ最大接続数ｴﾗｰﾍﾟｰｼﾞ：");
 		comp.setToolTipText("ｸﾗｲｱﾝﾄ最大接続数を超えた時に表示する、ﾍﾟｰｼﾞIDを設定します。");
 		mainPanel.add(comp);
-		clientMaxPage.setText(manager.getPreferences("/server/clientMaxPage", "connectmax"));
+		clientMaxPage.setText(manager.getPreferences(
+			"/server/clientMaxPage",
+			"connectmax"));
 		clientMaxPage.getDocument().addDocumentListener(this);
 		mainPanel.add(clientMaxPage);
 	}
-
 
 	private void calendar(JPanel mainPanel) {
 		// 警報一覧印字設定
@@ -783,15 +782,6 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			}
 		});
 		mainPanel.add(but);
-	}
-
-	private void nodeErrorWaitTime(JPanel mainPanel) {
-		JLabel comp = new JLabel("ﾉｰﾄﾞｴﾗｰﾘｶﾊﾞﾘｰﾀｲﾑ(ミリ秒)：");
-		comp.setToolTipText("通信ｴﾗｰ後リトライ待機時間をミリ秒で設定します。");
-		mainPanel.add(comp);
-		nodeErrorWaitTime.setText(manager.getPreferences("/server/nodeErrorWaitTime", "0"));
-		nodeErrorWaitTime.getDocument().addDocumentListener(this);
-		mainPanel.add(nodeErrorWaitTime);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
@@ -864,9 +854,9 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		} else if (e.getDocument() == clientMax.getDocument()) {
 			manager.setPreferences("/server/clientMax", clientMax.getText());
 		} else if (e.getDocument() == clientMaxPage.getDocument()) {
-			manager.setPreferences("/server/clientMaxPage", clientMaxPage.getText());
-		} else if (e.getDocument() == nodeErrorWaitTime.getDocument()) {
-			manager.setPreferences("/server/nodeErrorWaitTime", nodeErrorWaitTime.getText());
+			manager.setPreferences(
+				"/server/clientMaxPage",
+				clientMaxPage.getText());
 		}
 	}
 }
