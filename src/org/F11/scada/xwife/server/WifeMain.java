@@ -77,6 +77,7 @@ import org.F11.scada.server.register.HolderRegisterBuilder;
 import org.F11.scada.server.schedule.SchedulePointService;
 import org.F11.scada.server.timeset.TimeSetManager;
 import org.F11.scada.theme.DefaultWifeTheme;
+import org.F11.scada.theme.Version;
 import org.F11.scada.util.JavaVersion;
 import org.F11.scada.xwife.ShutdownThread;
 import org.F11.scada.xwife.WifeWindowAdapter;
@@ -298,6 +299,7 @@ public class WifeMain extends JPanel {
 		logger.info(System.getProperty("java.vm.name"));
 		logger.info(System.getProperty("os.name"));
 		logger.info(System.getProperty("os.version"));
+		logger.info("F-11 Version : " + Version.getVersion());
 	}
 
 	/**
