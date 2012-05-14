@@ -102,6 +102,7 @@ import org.F11.scada.security.auth.login.AuthenticationDialog;
 import org.F11.scada.security.auth.login.Authenticationable;
 import org.F11.scada.server.operationlog.OperationLoggingService;
 import org.F11.scada.theme.DefaultWifeTheme;
+import org.F11.scada.theme.Version;
 import org.F11.scada.util.FontUtil;
 import org.F11.scada.util.PageHistory;
 import org.F11.scada.util.PageHistoryImpl;
@@ -221,6 +222,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		logger.info(System.getProperty("os.name"));
 		logger.info(System.getProperty("os.version"));
 		logger.info("Stand Alone Mode : " + this.isStandalone);
+		logger.info("F-11 Version : " + Version.getVersion());
 
 		session = new Session();
 		logger.info("SessionID : " + session.toString());
