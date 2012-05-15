@@ -408,14 +408,8 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	 */
 	public void run() {
 		Thread thisThread = Thread.currentThread();
-		boolean init = true;
 
 		while (thread == thisThread) {
-			// 最初から通信エラーの場合、起動時に止まってしまう為、起動直後は一度コンティニューする。
-			if (init) {
-				init = false;
-				continue;
-			}
 			if (unExecuteCommands.isEmpty()) {
 				syncRead(getCommandDefines());
 			} else {
