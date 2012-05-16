@@ -99,8 +99,7 @@ public class SchedulePointFinder {
 		this(frame, pageId, new SchedulePointTableModelImpl(frame), changer);
 	}
 
-	public SchedulePointFinder(
-			Frame frame,
+	public SchedulePointFinder(Frame frame,
 			String pageId,
 			SchedulePointTableModel model,
 			PageChanger changer) {
@@ -125,7 +124,8 @@ public class SchedulePointFinder {
 
 	private int getLimit() {
 		return getClientConfiguration().getInt(
-				"org.F11.scada.applet.schedule.point.limit", 25);
+			"org.F11.scada.applet.schedule.point.limit",
+			25);
 	}
 
 	private Configuration getClientConfiguration() {
@@ -134,15 +134,16 @@ public class SchedulePointFinder {
 	}
 
 	private void init(Frame frame, SchedulePointTableModel model)
-		throws RemoteException {
+			throws RemoteException {
 		dialog = new JDialog(frame, "スケジュール操作", true);
 		dialog.addWindowListener(new WindowListenerImpl());
 		JTabbedPane tab =
 			new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 		tab.addTab("スケジュール機器一覧", getMainPanel(model));
 		if (isSeparateSchedule() && !isTodayOrTomorrow()) {
-			tab.addTab("マスタ→個別転送",
-					new DuplicateMasterToSeparate(dialog, pageId));
+			tab.addTab(
+				"マスタ→個別転送",
+				new DuplicateMasterToSeparate(dialog, pageId));
 		}
 		dialog.getContentPane().add(tab);
 		dialog.setSize(1030, 800);
@@ -153,7 +154,8 @@ public class SchedulePointFinder {
 
 	private boolean isTodayOrTomorrow() {
 		return getClientConfiguration().getBoolean(
-				"org.F11.scada.applet.schedule.todayOrTomorrow", false);
+			"org.F11.scada.applet.schedule.todayOrTomorrow",
+			false);
 	}
 
 	private Component getMainPanel(SchedulePointTableModel model) {
@@ -270,8 +272,9 @@ public class SchedulePointFinder {
 
 	private Component getSearchButton(SchedulePointTableModel model) {
 		JButton searchButton =
-			new JButton("検索", GraphicManager
-					.get("/toolbarButtonGraphics/general/Find24.gif"));
+			new JButton(
+				"検索",
+				GraphicManager.get("/toolbarButtonGraphics/general/Find24.gif"));
 		searchButton.addActionListener(new FindAction(model, dialog));
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 30, 15, 30));
@@ -284,8 +287,11 @@ public class SchedulePointFinder {
 		tablePanel.add(getButtonPanel(model), BorderLayout.NORTH);
 		JTable table = getTable(model);
 		JScrollPane pane = new JScrollPane(table);
-		pane.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0,
-				15, 10, 15), BorderFactory.createTitledBorder("スケジュール機器一覧")));
+		pane.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(
+			0,
+			15,
+			10,
+			15), BorderFactory.createTitledBorder("スケジュール機器一覧")));
 		tablePanel.add(pane, BorderLayout.CENTER);
 		tablePanel.add(getSelectButton(table), BorderLayout.SOUTH);
 		return tablePanel;
@@ -317,24 +323,29 @@ public class SchedulePointFinder {
 			TableUtil.setPreferredWidth(kobetuWidth, 4, columnModel);
 		} else {
 			TableUtil
-					.setPreferredWidth(nameWidth + kobetuWidth, 3, columnModel);
+				.setPreferredWidth(nameWidth + kobetuWidth, 3, columnModel);
 		}
 
-		table.addMouseListener(new TableListener(dialog, isSeparateSchedule(),
-				pageId, changer));
+		table.addMouseListener(new TableListener(
+			dialog,
+			isSeparateSchedule(),
+			pageId,
+			changer));
 		return table;
 	}
 
 	private boolean isSeparateSchedule() {
 		ClientConfiguration configuration = new ClientConfiguration();
 		return configuration.getBoolean(
-				"org.F11.scada.applet.schedule.point.SeparateSchedule", false);
+			"org.F11.scada.applet.schedule.point.SeparateSchedule",
+			false);
 	}
 
 	private Component getButtonPanel(SchedulePointTableModel model) {
 		JPanel panel = new JPanel();
 		JButton prev =
-			new JButton(GraphicManager
+			new JButton(
+				GraphicManager
 					.get("/toolbarButtonGraphics/navigation/Back24.gif"));
 		prev.setToolTipText("前ページ");
 		prev.addActionListener(new PrevAction(model, dialog));
@@ -343,7 +354,8 @@ public class SchedulePointFinder {
 		model.addTableModelListener(pageLabel);
 		panel.add(pageLabel);
 		JButton next =
-			new JButton(GraphicManager
+			new JButton(
+				GraphicManager
 					.get("/toolbarButtonGraphics/navigation/Forward24.gif"));
 		next.setToolTipText("次ページ");
 		next.addActionListener(new NextAction(model));
@@ -356,8 +368,12 @@ public class SchedulePointFinder {
 		box.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 15));
 		box.add(Box.createHorizontalGlue());
 		JButton modifyButton = new JButton("変更");
-		modifyButton.addActionListener(new ModifyAction(table, dialog,
-				isSeparateSchedule(), pageId, changer));
+		modifyButton.addActionListener(new ModifyAction(
+			table,
+			dialog,
+			isSeparateSchedule(),
+			pageId,
+			changer));
 		box.add(modifyButton);
 		box.add(Box.createHorizontalStrut(5));
 		JButton closeButton = new JButton("閉じる");
@@ -458,11 +474,11 @@ public class SchedulePointFinder {
 
 		public void actionPerformed(ActionEvent e) {
 			searchDto.setUnit(AttributesUtil.getNonNullString(unitField
-					.getText()));
+				.getText()));
 			searchDto.setName(AttributesUtil.getNonNullString(nameField
-					.getText()));
+				.getText()));
 			searchDto.setGroupName(AttributesUtil.getNonNullString(groupField
-					.getText()));
+				.getText()));
 			if (groupNonConnect.isSelected()) {
 				searchDto.setGroupNo(null);
 			} else {
@@ -485,8 +501,7 @@ public class SchedulePointFinder {
 		private final String pageId;
 		private final PageChanger changer;
 
-		TableListener(
-				JDialog dialog,
+		TableListener(JDialog dialog,
 				boolean isSeparateSchedule,
 				String pageId,
 				PageChanger changer) {
@@ -503,10 +518,16 @@ public class SchedulePointFinder {
 				int row = table.rowAtPoint(e.getPoint());
 				SchedulePointTableModel model =
 					(SchedulePointTableModel) table.getModel();
-				if (util.checkPermission(model, row)) {
+				if (util.checkPermission(model, row)
+					&& !util.isNetError(model, row)) {
 					SchedulePointModify modify =
-						new SchedulePointModify(dialog, model, row,
-								isSeparateSchedule, pageId, changer);
+						new SchedulePointModify(
+							dialog,
+							model,
+							row,
+							isSeparateSchedule,
+							pageId,
+							changer);
 					modify.setVisible(true);
 				}
 			}
@@ -521,8 +542,7 @@ public class SchedulePointFinder {
 		private final String pageId;
 		private final PageChanger changer;
 
-		ModifyAction(
-				JTable table,
+		ModifyAction(JTable table,
 				JDialog dialog,
 				boolean isSeparateSchedule,
 				String pageId,
@@ -540,10 +560,16 @@ public class SchedulePointFinder {
 			if (row >= 0) {
 				SchedulePointTableModel model =
 					(SchedulePointTableModel) table.getModel();
-				if (util.checkPermission(model, row)) {
+				if (util.checkPermission(model, row)
+					&& !util.isNetError(model, row)) {
 					SchedulePointModify modify =
-						new SchedulePointModify(dialog, model, row,
-								isSeparateSchedule, pageId, changer);
+						new SchedulePointModify(
+							dialog,
+							model,
+							row,
+							isSeparateSchedule,
+							pageId,
+							changer);
 					modify.setVisible(true);
 				}
 			}
@@ -586,8 +612,8 @@ public class SchedulePointFinder {
 	}
 
 	private static class CheckPermissionUtil {
-		private final Logger logger =
-			Logger.getLogger(CheckPermissionUtil.class);
+		private final Logger logger = Logger
+			.getLogger(CheckPermissionUtil.class);
 		private AccessControlable controlable;
 		private final JDialog dialog;
 
@@ -596,7 +622,7 @@ public class SchedulePointFinder {
 			try {
 				controlable =
 					(AccessControlable) Naming.lookup(WifeUtilities
-							.createRmiActionControl());
+						.createRmiActionControl());
 			} catch (MalformedURLException e) {
 				RmiErrorUtil.error(logger, e, dialog);
 			} catch (RemoteException e) {
@@ -611,12 +637,13 @@ public class SchedulePointFinder {
 			SchedulePointRowDto dto = model.getSchedulePointRowDto(row);
 			WifeDataProviderProxy proxy =
 				(WifeDataProviderProxy) manager.getDataProvider(dto
-						.getGroupNoProvider());
+					.getGroupNoProvider());
 			Subject subject = proxy.getSubject();
 			try {
 				List ret =
-					controlable.checkPermission(subject,
-							new String[][] { { getHolderId(dto) } });
+					controlable.checkPermission(
+						subject,
+						new String[][] { { getHolderId(dto) } });
 				Boolean[] b = (Boolean[]) ret.get(0);
 				return b[0].booleanValue();
 			} catch (RemoteException e) {
@@ -627,6 +654,15 @@ public class SchedulePointFinder {
 
 		private String getHolderId(SchedulePointRowDto dto) {
 			return dto.getGroupNoProvider() + "_" + dto.getGroupNoHolder();
+		}
+
+		public boolean isNetError(SchedulePointTableModel model, int row) {
+			Object o = model.getValueAt(row, 1);
+			if (o instanceof String) {
+				String s = (String) model.getValueAt(row, 1);
+				return s.length() == 0;
+			}
+			return false;
 		}
 	}
 }

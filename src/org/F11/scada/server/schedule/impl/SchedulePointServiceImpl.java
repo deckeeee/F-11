@@ -22,7 +22,6 @@
 package org.F11.scada.server.schedule.impl;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -41,11 +40,13 @@ import org.F11.scada.util.RmiUtil;
 import org.apache.log4j.Logger;
 
 public class SchedulePointServiceImpl implements SchedulePointService {
-	private final Logger logger = Logger.getLogger(SchedulePointServiceImpl.class);
+	private final Logger logger = Logger
+		.getLogger(SchedulePointServiceImpl.class);
 	private SchedulePointDao schedulePointDao;
 	private ScheduleGroupDao scheduleGroupDao;
 	private SchedulePointCommunicator communicator;
-	private List currentSchePointRows;
+
+	// private List<SchedulePointRowDto> currentSchePointRows;
 
 	public SchedulePointServiceImpl() {
 		RmiUtil.registryServer(this, SchedulePointService.class);
@@ -53,34 +54,14 @@ public class SchedulePointServiceImpl implements SchedulePointService {
 
 	public void init() {
 		List dto = schedulePointDao.getAllSchedulePoint();
-//		if (null == currentSchePointRows) {
-			currentSchePointRows = communicator.getHolderData(dto);
-			//schePointRowsはソート済み
-			for (Iterator i = currentSchePointRows.iterator(); i.hasNext();) {
-				SchedulePointRowDto rowDto = (SchedulePointRowDto) i.next();
-				schedulePointDao.updateScheduleGroupNo(rowDto);
-			}
-//		} else {
-//			List schePointRows = communicator.getHolderData(dto);
-//			//schePointRowsはソート済み
-//			for (Iterator i = select(schePointRows).iterator(); i.hasNext();) {
-//				SchedulePointRowDto rowDto = (SchedulePointRowDto) i.next();
-//				schedulePointDao.updateScheduleGroupNo(rowDto);
-//			}
-//		}
-	}
-
-	private List select(List schePointRows) {
-		ArrayList dtos = new ArrayList(schePointRows.size());
-		for (int i = 0; i < schePointRows.size(); i++) {
-			SchedulePointRowDto dto = (SchedulePointRowDto) schePointRows.get(i);
-			SchedulePointRowDto cdto = (SchedulePointRowDto) currentSchePointRows.get(i);
-			if (!dto.getGroupNo().equals(cdto.getGroupNo())) {
-				dtos.add(dto);
-				currentSchePointRows.set(i, dto);
-			}
+		List<SchedulePointRowDto> currentSchePointRows =
+			communicator.getHolderData(dto);
+		// schePointRowsはソート済み
+		for (Iterator<SchedulePointRowDto> i = currentSchePointRows.iterator(); i
+			.hasNext();) {
+			SchedulePointRowDto rowDto = (SchedulePointRowDto) i.next();
+			schedulePointDao.updateScheduleGroupNo(rowDto);
 		}
-		return dtos;
 	}
 
 	public void setSchedulePointDao(SchedulePointDao schedulePointDao) {
@@ -116,8 +97,7 @@ public class SchedulePointServiceImpl implements SchedulePointService {
 		return schedulePointDao.updateSchedulePoint(dto);
 	}
 
-	public void duplicateSeparateSchedule(
-			ScheduleGroupDto src,
+	public void duplicateSeparateSchedule(ScheduleGroupDto src,
 			SchedulePointRowDto[] dest) throws RemoteException {
 		communicator.duplicateSeparateSchedule(src, dest);
 	}
@@ -131,8 +111,7 @@ public class SchedulePointServiceImpl implements SchedulePointService {
 		return communicator.getSeparateSchedule(dto);
 	}
 
-	public void updateSeperateSchedule(
-			SchedulePointRowDto dto,
+	public void updateSeperateSchedule(SchedulePointRowDto dto,
 			Date date,
 			WifeDataSchedule data) throws RemoteException {
 		communicator.updateSeperateSchedule(dto, date, data);

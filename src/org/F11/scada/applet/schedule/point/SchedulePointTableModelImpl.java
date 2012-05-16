@@ -178,7 +178,7 @@ public class SchedulePointTableModelImpl extends AbstractTableModel implements
 		case 0:
 			return dto.getId();
 		case 1:
-			return dto.getGroupNo();
+			return dto.getGroupNo() == 2147483647 ? "" : dto.getGroupNo();
 		case 2:
 			return dto.getGroupName();
 		case 3:

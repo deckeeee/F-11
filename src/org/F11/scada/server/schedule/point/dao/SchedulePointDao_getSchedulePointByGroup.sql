@@ -4,6 +4,8 @@ SELECT
         ,CASE
             WHEN sp.group_no = 0
             THEN '未割付'
+            WHEN sp.group_no = 2147483647
+            THEN '通信エラー'
             ELSE gp.name
         END AS groupName
         ,p.unit AS unit

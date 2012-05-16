@@ -15,6 +15,7 @@ SELECT
         AND gt.holder = i.holder LEFT JOIN point_table p
             ON i.point = p.point
     WHERE
-/*IF dto.pageId != null*/gt.page_id = /*dto.pageId*/'schedule01'/*END*/
+       gt.group_no <> 2147483647
+/*IF dto.pageId != null*/ AND gt.page_id = /*dto.pageId*/'schedule01'/*END*/
     ORDER BY
         groupNo
