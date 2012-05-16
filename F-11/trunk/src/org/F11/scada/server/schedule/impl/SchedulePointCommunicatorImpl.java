@@ -35,6 +35,7 @@ import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.DataProviderDoesNotSupportException;
 import jp.gr.javacons.jim.Manager;
 
+import org.F11.scada.EnvironmentManager;
 import org.F11.scada.Globals;
 import org.F11.scada.data.BCDConvertException;
 import org.F11.scada.data.ConvertValue;
@@ -73,6 +74,16 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	private FrameDefineManager defineManager;
 	/** データ更新ログのサービスオブジェクト */
 	private OperationLoggingService service;
+	/** 通信エラーのポイントは編集付加にする(有/無) */
+	private boolean withoutNetError;
+
+	public SchedulePointCommunicatorImpl() {
+		withoutNetError =
+			Boolean
+				.valueOf(
+					EnvironmentManager.get("/server/withoutNetError", "false"))
+				.booleanValue();
+	}
 
 	public void setItemUtil(ItemUtil itemUtil) {
 		this.itemUtil = itemUtil;
@@ -188,7 +199,8 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 							setSchedulePointRows(
 								schePointRows,
 								item,
-								new Integer((int) wda.doubleValue()));
+								new Integer((int) wda.doubleValue()),
+								isNetError(provider));
 						} else {
 							getException(wd);
 						}
@@ -198,7 +210,8 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 							setSchedulePointRows(
 								schePointRows,
 								item,
-								new Integer(0));
+								new Integer(0),
+								isNetError(provider));
 						} else {
 							getException(wd);
 						}
@@ -220,11 +233,16 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 
 	private void setSchedulePointRows(ArrayList schePointRows,
 			Item item,
-			Integer groupNo) {
+			Integer groupNo,
+			boolean isNetError) {
 		SchedulePointRowDto schePointRow = new SchedulePointRowDto();
 		schePointRow.setGroupNoProvider(item.getProvider());
 		schePointRow.setGroupNoHolder(item.getHolder());
-		schePointRow.setGroupNo(groupNo);
+		if (withoutNetError && isNetError) {
+			schePointRow.setGroupNo(Integer.MAX_VALUE);
+		} else {
+			schePointRow.setGroupNo(groupNo);
+		}
 		schePointRows.add(schePointRow);
 	}
 

@@ -261,6 +261,7 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 		clientMax(mainPanel);
 		clientMaxPage(mainPanel);
 		calendar(mainPanel);
+		withoutNetError(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -782,6 +783,38 @@ public class PreferencesTab extends JScrollPane implements DocumentListener {
 			}
 		});
 		mainPanel.add(but);
+	}
+
+	private void withoutNetError(JPanel mainPanel) {
+		JLabel label = new JLabel("通信エラー時SCHエラー表示：");
+		label.setToolTipText("通信エラー時にSCH操作ポイントをエラー表示する機能の有無。");
+		mainPanel.add(label);
+		final JComboBox cb = new JComboBox();
+		cb.addItem("エラー表示しない");
+		cb.addItem("エラー表示する");
+		String prefix =
+			manager.getPreferences("/server/withoutNetError", "false");
+		if ("false".equals(prefix)) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("エラー表示しない".equals(e.getItem())) {
+						manager.setPreferences(
+							"/server/withoutNetError",
+							"false");
+					} else {
+						manager.setPreferences(
+							"/server/withoutNetError",
+							"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
