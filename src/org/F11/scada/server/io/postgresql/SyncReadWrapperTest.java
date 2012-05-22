@@ -38,7 +38,7 @@ public class SyncReadWrapperTest extends TestCase {
 	public void testSyncRead() throws Exception {
 		ArrayList commands = new ArrayList();
 		commands.add(new WifeCommand("P1", 0, 1, 0, 0, 1));
-		SyncReadWrapper wrapper = new SyncReadWrapper();
+		SyncReadWrapper wrapper = new SyncReadWrapper("P1");
 		Map map = wrapper.syncRead(new TestCommunicater(), commands);
 		byte[] data = (byte[]) map.get(commands.iterator().next());
 		assertTrue(Arrays.equals(new byte[] { 0x00, 0x00 }, data));

@@ -85,7 +85,7 @@ public class FileOutputService implements OutputService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.F11.scada.server.output.OutputService#write()
 	 */
 	public void write() {
@@ -105,7 +105,7 @@ public class FileOutputService implements OutputService {
 			Communicater communicater = desc.getCommunicater();
 			List commands = createCommand(provider, holders);
 			communicater.addReadCommand(commands);
-			SyncReadWrapper wrapper = new SyncReadWrapper();
+			SyncReadWrapper wrapper = new SyncReadWrapper(provider);
 			Map bytedataMap = wrapper.syncRead(communicater, commands);
 			List writeDatas = createWriteData(provider, holders, bytedataMap);
 

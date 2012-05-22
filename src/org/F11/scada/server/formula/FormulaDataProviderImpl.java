@@ -42,6 +42,7 @@ import jp.gr.javacons.jim.DataValueChangeListener;
 import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.EnvironmentManager;
+import org.F11.scada.Globals;
 import org.F11.scada.WifeException;
 import org.F11.scada.applet.expression.Expression;
 import org.F11.scada.data.HolderData;
@@ -218,6 +219,16 @@ public class FormulaDataProviderImpl extends AbstractDataProvider
 
 	public void unlock() {
 		lock.unlock();
+	}
+
+	public void addJurnal(long entryDate, WifeData value) {
+		synchronized (holderJurnal) {
+			TimeIncrementWrapper.put(entryDate, new HolderData(
+				Globals.ERR_HOLDER,
+				value.toByteArray(),
+				entryDate,
+				null), holderJurnal);
+		}
 	}
 
 	public void dataValueChanged(DataValueChangeEvent evt) {

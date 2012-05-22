@@ -178,7 +178,7 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 				}
 				Communicater communicater = getCommunicater(provider);
 				communicater.addReadCommand(commands);
-				SyncReadWrapper wrapper = new SyncReadWrapper();
+				SyncReadWrapper wrapper = new SyncReadWrapper(provider);
 				Map bytedataMap =
 					wrapper.syncRead(
 						communicater,
@@ -399,7 +399,7 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 				}
 				Communicater communicater = getCommunicater(provider);
 				communicater.addReadCommand(commands);
-				SyncReadWrapper wrapper = new SyncReadWrapper();
+				SyncReadWrapper wrapper = new SyncReadWrapper(provider);
 				Map bytedataMap =
 					wrapper.syncRead(
 						communicater,

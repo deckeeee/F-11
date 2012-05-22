@@ -172,7 +172,7 @@ public final class PostgreSQLUtility implements SQLUtility {
 				Communicater communicater =
 					communicaterFactory.createCommunicator(environment);
 				communicater.addReadCommand(commands);
-				SyncReadWrapper wrapper = new SyncReadWrapper();
+				SyncReadWrapper wrapper = new SyncReadWrapper(provider);
 				Map bytedataMap =
 					wrapper.syncRead(
 						communicater,
