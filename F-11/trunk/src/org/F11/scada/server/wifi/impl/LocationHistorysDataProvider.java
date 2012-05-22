@@ -72,7 +72,7 @@ public class LocationHistorysDataProvider extends AbstractDataProvider
     private final ItemDao itemDao;
 	private final HolderRegisterBuilder builder;
 	private SendRequestSupport sendRequestSupport;
-    
+
     public LocationHistorysDataProvider(
             String providerName,
             long pollingTime,
@@ -90,22 +90,22 @@ public class LocationHistorysDataProvider extends AbstractDataProvider
         this.builder = builder;
 		holderJurnal =
 			Collections.synchronizedSortedMap(new SingletonSortedMap());
-        
+
         Manager.getInstance().addDataProvider(this);
 
         setParameter(PARA_NAME_ALARM, alarm);
-        
+
         createHolders();
-        
+
         logger.info(getClass().getName() + " start.");
     }
-    
+
 
 	private void createHolders() {
 	    Item[] items = itemDao.getSystemItems(getDataProviderName(), true);
 	    builder.register(items);
 	}
-    
+
     public List getHoldersData(long t, Session session) {
 	    if (sendRequestSupport == null) {
 	        throw new IllegalStateException("sendRequestSupport noting.");
@@ -151,19 +151,19 @@ public class LocationHistorysDataProvider extends AbstractDataProvider
 			th.interrupt();
 		}
     }
-    
+
     public void asyncRead(DataHolder[] holders) {
         for (int i = 0; i < holders.length; i++) {
             asyncRead(holders[i]);
         }
     }
-    
+
     public void asyncRead(DataHolder holder) {
         String providerName = holder.getDataProvider().getDataProviderName();
         String holderName = holder.getDataHolderName();
 
         logger.debug(providerName + "_" + holderName + " read.");
-        
+
         if (terminalMap.containsKey(providerName, holderName)) {
             WiFiTerminal term = terminalMap.get(providerName, holderName);
             Timestamp time = getTimestamp(holder);
@@ -190,13 +190,13 @@ public class LocationHistorysDataProvider extends AbstractDataProvider
         }
         return time;
     }
-    
+
     private void setHolderData(DataHolder holder, LocationHistorys historys, WiFiTerminal term) {
         Rectangle rec = new Rectangle(term.getX(), term.getY(),
                 term.getWidth(), term.getHeight());
         Point point = new Point(historys.getXPosition(), Math.abs(historys.getYPosition()));
         boolean isTrue = rec.contains(point);
-        
+
         WifeData data = (WifeData) holder.getValue();
         if (data instanceof WifeDataDigital) {
             WifeDataDigital dd = (WifeDataDigital) data;
@@ -261,5 +261,8 @@ public class LocationHistorysDataProvider extends AbstractDataProvider
 
 
 	public void unlock() {
+	}
+
+	public void addJurnal(long entryDate, WifeData value) {
 	}
 }

@@ -95,7 +95,7 @@ public class LogDtoCreatorImpl implements LogDtoCreator {
 		Communicater communicater = communicaterFactory
 				.createCommunicator(environment);
 		communicater.addReadCommand(commands);
-		SyncReadWrapper wrapper = new SyncReadWrapper();
+		SyncReadWrapper wrapper = new SyncReadWrapper(provider);
 		Map bytedataMap = wrapper.syncRead(communicater, commands);
 		return bytedataMap;
 	}

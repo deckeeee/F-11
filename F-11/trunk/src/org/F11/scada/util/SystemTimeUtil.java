@@ -30,6 +30,8 @@ import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.DataProviderDoesNotSupportException;
 import jp.gr.javacons.jim.Manager;
 
+import org.F11.scada.Globals;
+import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.data.WifeDataTimestamp;
 import org.F11.scada.data.WifeQualityFlag;
 import org.apache.log4j.Logger;
@@ -38,7 +40,8 @@ public class SystemTimeUtil {
 	private final Logger logger = Logger.getLogger(SystemTimeUtil.class);
 
 	public void setSystemTime(String dataHolderID) {
-		DataHolder dataHolder = Manager.getInstance().findDataHolder(dataHolderID);
+		DataHolder dataHolder =
+			Manager.getInstance().findDataHolder(dataHolderID);
 		setSystemTime(dataHolder);
 	}
 
@@ -47,21 +50,36 @@ public class SystemTimeUtil {
 	}
 
 	private void writePcTime(DataHolder readDataHolder) {
+		DataHolder errdh =
+			readDataHolder.getDataProvider().getDataHolder(Globals.ERR_HOLDER);
+		if (errdh == null
+			|| WifeDataDigital.valueOfTrue(0).equals(errdh.getValue())) {
+			logger.error("通信エラー発生中：時計書込を中断します。");
+			return;
+		}
 		logger.info("write pc time " + readDataHolder);
 		Object obj = readDataHolder.getValue();
 		if (obj instanceof WifeDataTimestamp) {
-			if (readDataHolder.getQualityFlag() == WifeQualityFlag.GOOD) {
+			if (isNotError(readDataHolder)) {
 				WifeDataTimestamp ts =
 					(WifeDataTimestamp) readDataHolder.getValue();
 				Date date = ts.calendarValue().getTime();
 				setSystemTime(date);
 			}
 		} else {
-			logger.error("指定されたデータホルダ(" +
-					readDataHolder.getDataHolderName() +
-					")はWifeDataTimestampではありません : "
-					+ obj.getClass().getName());
+			logger.error("指定されたデータホルダ("
+				+ readDataHolder.getDataHolderName()
+				+ ")はWifeDataTimestampではありません : "
+				+ obj.getClass().getName());
 		}
+	}
+
+	private boolean isNotError(DataHolder readDataHolder) {
+		DataHolder errdh =
+			readDataHolder.getDataProvider().getDataHolder(Globals.ERR_HOLDER);
+		return readDataHolder.getQualityFlag() == WifeQualityFlag.GOOD
+			&& errdh != null
+			&& WifeDataDigital.valueOfFalse(0).equals(errdh.getValue());
 	}
 
 	public void setSystemTime(Date date) {
@@ -95,14 +113,18 @@ public class SystemTimeUtil {
 		}
 	}
 
-	private void setWindowsDate(Date date) throws IOException, InterruptedException {
-		String[] param = getParam(date, true, new SimpleDateFormat("yyyy/MM/dd"));
+	private void setWindowsDate(Date date) throws IOException,
+			InterruptedException {
+		String[] param =
+			getParam(date, true, new SimpleDateFormat("yyyy/MM/dd"));
 		Process pro = Runtime.getRuntime().exec(param);
 		pro.waitFor();
 	}
 
-	private void setWindowsTime(Date date) throws IOException, InterruptedException {
-		String[] param = getParam(date, false, new SimpleDateFormat("HH:mm:ss"));
+	private void setWindowsTime(Date date) throws IOException,
+			InterruptedException {
+		String[] param =
+			getParam(date, false, new SimpleDateFormat("HH:mm:ss"));
 		Process pro = Runtime.getRuntime().exec(param);
 		pro.waitFor();
 	}
@@ -140,9 +162,9 @@ public class SystemTimeUtil {
 			logger.error("指定されたデータホルダは登録されていません");
 		} else {
 			dh.setValue(
-					WifeDataTimestamp.valueOfType1(time),
-					new Date(),
-					WifeQualityFlag.GOOD);
+				WifeDataTimestamp.valueOfType1(time),
+				new Date(),
+				WifeQualityFlag.GOOD);
 			try {
 				dh.syncWrite();
 			} catch (DataProviderDoesNotSupportException e) {

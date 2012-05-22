@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/xwife/server/WifeDataProvider.java,v 1.51.2.11 2007/10/18 09:48:42 frdm Exp $
  * $Revision: 1.51.2.11 $
  * $Date: 2007/10/18 09:48:42 $
- * 
+ *
  * =============================================================================
  * Projrct    F-11 - Web SCADA for Java Copyright (C) 2002 Freedom, Inc. All
  * Rights Reserved.
@@ -30,6 +30,7 @@ import java.util.List;
 import jp.gr.javacons.jim.DataProvider;
 
 import org.F11.scada.Service;
+import org.F11.scada.data.WifeData;
 import org.F11.scada.server.frame.SendRequestSupport;
 import org.F11.scada.xwife.applet.Session;
 
@@ -64,7 +65,7 @@ public interface WifeDataProvider extends DataProvider, Runnable, Service {
 
 	/**
 	 * 引数のlong値(更新日付のlong値)より上のHolderDataを返します。
-	 * @param t 
+	 * @param t
 	 * @return HolderData[]
 	 */
 	public List getHoldersData(long t, Session session);
@@ -79,9 +80,16 @@ public interface WifeDataProvider extends DataProvider, Runnable, Service {
 	 * プロバイダのロックを開始します。ロックを開始する際、通信スレッドに割り込みをかけます。
 	 */
     void lock();
-    
+
 	/**
 	 * スレッドのロックを外します。
 	 */
     void unlock();
+
+    /**
+     *
+     * @param entryDate
+     * @param value
+     */
+    void addJurnal(long entryDate, WifeData value);
 }

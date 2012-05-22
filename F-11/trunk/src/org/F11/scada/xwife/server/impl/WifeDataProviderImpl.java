@@ -39,7 +39,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JComponent;
@@ -100,7 +99,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	private final HolderRegisterBuilder builder;
 	private SendRequestSupport sendRequestSupport;
 	private final long communicateWaitTime;
-	private final Lock lock = new ReentrantLock();
+	private final ReentrantLock lock = new ReentrantLock();
 	/** クライアントとの差分データ取得時のオフセット(時間がずれる為少し前からジャーナルを取得する) */
 	private final int getDataOffset;
 	private final boolean isPageChangeInterrupt;
@@ -345,10 +344,25 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 		return errdh != null && digital.equals(errdh.getValue());
 	}
 
+	public void addJurnal(long entryDate, WifeData value) {
+		synchronized (holderJurnal) {
+			TimeIncrementWrapper.put(entryDate, new HolderData(
+				Globals.ERR_HOLDER,
+				value.toByteArray(),
+				entryDate,
+				null), holderJurnal);
+		}
+	}
+
 	/**
 	 * PLCに非同期書込
 	 */
 	public void syncWrite(DataHolder dh) {
+		if (isNetError()) {
+			logger.warn("通信エラー発生中。書込通信を中断します。");
+			return;
+		}
+
 		Map defdata = new HashMap();
 		WifeCommand def_h = (WifeCommand) dh.getParameter(PARA_NAME_COMAND);
 		WifeData wd = (WifeData) dh.getValue();
@@ -364,7 +378,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			if (isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
 				setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0));
 			}
-			logger.warn("書込み通信エラー:", e);
+			logger.error("書込み通信エラー:", e);
 		}
 
 		// 他のクライアントへ通知する
@@ -413,7 +427,11 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 			if (unExecuteCommands.isEmpty()) {
 				syncRead(getCommandDefines());
 			} else {
-				syncRead(unExecuteCommands.poll(), false);
+				if (isNetError()) {
+					unExecuteCommands.clear();
+				} else {
+					syncRead(unExecuteCommands.poll(), false);
+				}
 			}
 			try {
 				Thread.sleep(communicateWaitTime);
@@ -596,7 +614,7 @@ public class WifeDataProviderImpl extends AbstractDataProvider implements
 	}
 
 	public void lock() {
-		if (isPageChangeInterrupt) {
+		if (isPageChangeInterrupt || isNetError()) {
 			thread.interrupt();
 		}
 		lock.lock();

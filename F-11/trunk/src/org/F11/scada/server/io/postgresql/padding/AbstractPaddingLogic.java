@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.io.postgresql.padding;
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 /**
  * レコード補完ロジックの基底クラスです。
- * 
+ *
  * @author maekawa
  *
  */
@@ -58,9 +58,9 @@ public abstract class AbstractPaddingLogic implements PaddingLogic {
 			st = con.createStatement();
 			rs = st.executeQuery(sql);
 			if (rs.next()) {
-				Timestamp maxTime = rs.getTimestamp("maxdate");
-				Timestamp beforeTime = beforeTime(timestamp);
-				if (!rs.wasNull() && !maxTime.equals(beforeTime)) {
+				Timestamp maxTime = rs.getTimestamp("maxdate"); //DBの最新タイムスタンプ
+				Timestamp beforeTime = beforeTime(timestamp); //現在ロギングのタイムスタンプの一つ前
+				if (!rs.wasNull() && beforeTime.after(maxTime)) {
 					insert(con, table, holderList, beforeTime, maxTime);
 				}
 			}
@@ -80,7 +80,7 @@ public abstract class AbstractPaddingLogic implements PaddingLogic {
 			List<HolderString> holderList,
 			Timestamp timestamp,
 			Timestamp maxTime) throws SQLException {
-		logger.info("insert:" + afterTime(maxTime) + "～" + timestamp);
+		logger.info("insert:" + "TABLE = " + table + " " + afterTime(maxTime) + "～" + timestamp);
 		Statement st = null;
 		try {
 			st = con.createStatement();

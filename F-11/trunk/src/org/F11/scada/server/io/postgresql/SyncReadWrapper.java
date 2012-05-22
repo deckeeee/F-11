@@ -24,18 +24,33 @@ package org.F11.scada.server.io.postgresql;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.Manager;
+
+import org.F11.scada.Globals;
 import org.F11.scada.WifeException;
+import org.F11.scada.data.WifeData;
+import org.F11.scada.data.WifeDataDigital;
+import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.server.communicater.Communicater;
 import org.F11.scada.server.event.WifeCommand;
+import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 
 public class SyncReadWrapper {
 	private static Logger log = Logger.getLogger(SyncReadWrapper.class);
+	private final String provider;
+
+	public SyncReadWrapper(String provider) {
+		this.provider = provider;
+	}
 
 	/**
 	 * このメソッドは通信エラーを考慮しません。通信エラーを考慮する
@@ -77,18 +92,47 @@ public class SyncReadWrapper {
 		if (err) {
 			return getZeroByteArray(commands);
 		}
+		WifeDataProvider dp =
+			(WifeDataProvider) Manager.getInstance().getDataProvider(provider);
+		DataHolder errdh = dp.getDataHolder(Globals.ERR_HOLDER);
+		Map<WifeCommand, byte[]> map = Collections.emptyMap();
 		try {
-			return communicater.syncRead(commands, false);
+			if (isNetError(errdh, WifeDataDigital.valueOfTrue(0))) {
+				setErrorHolder(errdh, WifeDataDigital.valueOfFalse(0), dp);
+			}
+			map = communicater.syncRead(commands, false);
 		} catch (InterruptedException e) {
+			setNetError(dp, errdh);
 			errorLogging(e);
-			return getZeroByteArray(commands);
+			map = getZeroByteArray(commands);
 		} catch (IOException e) {
+			setNetError(dp, errdh);
 			errorLogging(e);
-			return getZeroByteArray(commands);
+			map = getZeroByteArray(commands);
 		} catch (WifeException e) {
+			setNetError(dp, errdh);
 			errorLogging(e);
-			return getZeroByteArray(commands);
+			map = getZeroByteArray(commands);
 		}
+		return map;
+	}
+
+	private void setNetError(WifeDataProvider dp, DataHolder errdh) {
+		if (isNetError(errdh, WifeDataDigital.valueOfFalse(0))) {
+			setErrorHolder(errdh, WifeDataDigital.valueOfTrue(0), dp);
+		}
+	}
+
+	private boolean isNetError(DataHolder errdh, WifeDataDigital digital) {
+		return errdh != null && digital.equals(errdh.getValue());
+	}
+
+	private void setErrorHolder(DataHolder errdh,
+			WifeData value,
+			WifeDataProvider dp) {
+		long entryDate = System.currentTimeMillis();
+		errdh.setValue(value, new Date(entryDate), WifeQualityFlag.GOOD);
+		dp.addJurnal(entryDate, value);
 	}
 
 	private void errorLogging(Throwable t) {

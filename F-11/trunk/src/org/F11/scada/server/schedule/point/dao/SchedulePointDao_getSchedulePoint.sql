@@ -31,8 +31,8 @@ SELECT
 /*IF dto.unit != null*/AND p.unit LIKE /*dto.unit*/'%'/*END*/
 /*IF dto.name != null*/AND p.name LIKE /*dto.name*/'%'/*END*/
 /*IF dto.groupName != null*/AND gp.name LIKE /*dto.groupName*/'%'/*END*/
-/*IF dto.groupNo != null*/AND sp.group_no != /*dto.groupNo*/0
-  -- ELSE AND sp.group_no = 0
+/*IF dto.groupNo != null*/AND (sp.group_no != /*dto.groupNo*/0 AND sp.group_no != 2147483647)
+  -- ELSE AND sp.group_no IN (0, 2147483647)
 /*END*/
     ORDER BY
         groupNo
