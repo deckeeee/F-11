@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.seasar.dao.unit.S2DaoTestCase;
@@ -40,10 +39,8 @@ public class PointTableDaoTest extends S2DaoTestCase {
 		PointTableDto dto = new PointTableDto();
 		dto.setUnit("%AHU%");
 		dto.setName("%1F%");
-		ArrayList<String> l = new ArrayList<String>();
-		l.add("D_2200_BcdSingle");
-		l.add("D_2201_BcdSingle");
-		List<PointTableDto> dtos = dao.getPointTable(dto, l);
+		String s = "((i.provider='P1' AND i.holder='D_2200_BcdSingle') OR (i.provider='P1' AND i.holder='D_2201_BcdSingle'))";
+		List<PointTableDto> dtos = dao.getPointTable(dto, s);
 		System.out.println(dtos);
 	}
 }

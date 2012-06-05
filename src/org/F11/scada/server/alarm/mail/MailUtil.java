@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.alarm.mail;
@@ -53,9 +53,9 @@ import org.apache.log4j.Logger;
 
 /**
  * メール送信時の作業をまとめたユーティリティークラスです。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class MailUtil {
 	private final Logger logger = Logger.getLogger(MailUtil.class);
@@ -297,8 +297,7 @@ public class MailUtil {
 	public boolean isDisable(String holder) {
 		SmtpEnvironments environments = new SmtpEnvironments();
 		if (0 < environments.getDisableProvider().length()
-				&& 0 < environments.getDisableHolder().length()
-				&& !holder.equals(Globals.ERR_HOLDER)) {
+				&& 0 < environments.getDisableHolder().length()) {
 			// EMail禁止フラグの設定が有効で、値がtrue時にメール送信禁止
 			DataHolder dh = Manager.getInstance().findDataHolder(
 					environments.getDisableProvider(),

@@ -69,6 +69,10 @@ public class CsvScheduleFactory {
 			return new DailySchedule();
 		} else if ("EIGHTHOUR".equalsIgnoreCase(name)) {
 			return new EightHourSchedule();
+		} else if ("WEEKLY".equalsIgnoreCase(name)) {
+			return new WeeklySchedule();
+		} else if ("DAILYYEAROUT".equalsIgnoreCase(name)) {
+			return new DailyYearoutSchedule();
 		} else {
 			throw new IllegalArgumentException("指定されたスケジュールはありません。 " + name);
 		}
