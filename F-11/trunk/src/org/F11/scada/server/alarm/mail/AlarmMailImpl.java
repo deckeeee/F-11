@@ -121,9 +121,9 @@ public class AlarmMailImpl implements AlarmMail {
 				sb.append(" ");
 				sb.append(rs.getString("kikiname"));
 				sb.append(" ");
-				sb.append(rs.getString("message"));
-				sb.append(" ");
 				sb.append(rs.getString("attname"));
+				sb.append(" ");
+				sb.append(rs.getString("message"));
 			} catch (SQLException e) {
 				logger.error("メール送信処理 (DB読み取りエラー)", e);
 				return;

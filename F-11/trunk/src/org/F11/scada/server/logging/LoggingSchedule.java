@@ -35,6 +35,7 @@ import org.F11.scada.scheduling.DailyIterator;
 import org.F11.scada.scheduling.Schedule;
 import org.F11.scada.scheduling.Scheduler;
 import org.F11.scada.scheduling.SchedulerTask;
+import org.F11.scada.scheduling.WeeklyIterator;
 import org.F11.scada.util.ThreadUtil;
 import org.apache.log4j.Logger;
 
@@ -99,6 +100,10 @@ public abstract class LoggingSchedule {
 	public static final LoggingSchedule KANDEN = HOUR;
 	public static final LoggingSchedule NEWDAILY = new NewDailySchedule();
 	public static final LoggingSchedule EIGHTHOUR = HOUR;
+	/** 1時間毎ロギング、週末(日曜日)出力のスケジュール */
+	public static final LoggingSchedule WEEKLY = HOUR;
+	/** 1日ロギング、年間出力のスケジュール */
+	public static final LoggingSchedule DAILYYEAROUT = DAILY;
 
 	/** 最後にタスクを実行したカレンダーです。 */
 	protected Calendar startDate;

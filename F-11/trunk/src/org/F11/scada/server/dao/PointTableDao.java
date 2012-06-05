@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 package org.F11.scada.server.dao;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public interface PointTableDao {
 	public static final Class BEAN = PointTableDto.class;
-	
+
 	public String getPointTable_ARGS = "dto, holders";
-	List<PointTableDto> getPointTable(PointTableDto dto, List<String> holders);
+	List<PointTableDto> getPointTable(PointTableDto dto, String holders);
 }

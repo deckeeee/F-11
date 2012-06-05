@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.F11.scada.applet.ngraph.editor.SeriesPropertyData;
@@ -36,6 +37,7 @@ import org.F11.scada.server.io.postgresql.S2ContainerUtil;
 import org.F11.scada.server.logging.Column;
 import org.F11.scada.server.logging.LoggingRuleSet;
 import org.F11.scada.server.logging.Task;
+import org.F11.scada.server.register.HolderString;
 import org.apache.commons.digester.Digester;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
@@ -54,11 +56,11 @@ public class UnitSerachService implements InvokeHandler {
 		SeriesPropertyData unit = (SeriesPropertyData) args[0];
 		String logName = (String) args[1];
 		PointTableDto dto = getPointTableDto(unit);
-		List<String> l = Collections.emptyList();
+		List<HolderString> l = Collections.emptyList();
 		try {
 			l = getHolders(logName);
-			List<PointTableDto> pointTable = dao.getPointTable(dto, l);
-			// logger.info(pointTable);
+			String holderSql = getHolderSql(l);
+			List<PointTableDto> pointTable = dao.getPointTable(dto, holderSql);
 			return pointTable;
 		} catch (Exception e) {
 			logger.error("ポイントテーブル検索時にエラーが発生しました。", e);
@@ -66,8 +68,32 @@ public class UnitSerachService implements InvokeHandler {
 		}
 	}
 
-	private List<String> getHolders(String logName)
-			throws IOException,
+	private String getHolderSql(List<HolderString> l) {
+		StringBuilder b = new StringBuilder(l.size() * 30);
+		b.append("(");
+		for (Iterator<HolderString> i = l.iterator(); i.hasNext();) {
+			HolderString hs = i.next();
+			if (i.hasNext()) {
+				b
+					.append("(i.provider='")
+					.append(hs.getProvider())
+					.append("' AND i.holder='")
+					.append(hs.getHolder())
+					.append("') OR ");
+			} else {
+				b
+					.append("(i.provider='")
+					.append(hs.getProvider())
+					.append("' AND i.holder='")
+					.append(hs.getHolder())
+					.append("')");
+			}
+		}
+		b.append(")");
+		return b.toString();
+	}
+
+	private List<HolderString> getHolders(String logName) throws IOException,
 			SAXException {
 		Digester digester = new Digester();
 		digester.addRuleSet(new LoggingRuleSet());
@@ -90,7 +116,8 @@ public class UnitSerachService implements InvokeHandler {
 		return getHolders(logName, map);
 	}
 
-	private List<String> getHolders(String logName, HashMap<String, Task> map) {
+	private List<HolderString> getHolders(String logName,
+			HashMap<String, Task> map) {
 		if (map.isEmpty()) {
 			return Collections.emptyList();
 		} else {
@@ -104,9 +131,10 @@ public class UnitSerachService implements InvokeHandler {
 		}
 	}
 
-	private List<String> getHolders(HashMap<String, Task> map, String tables) {
+	private List<HolderString> getHolders(HashMap<String, Task> map,
+			String tables) {
 		String[] tableNames = tables.split(",");
-		ArrayList<String> l = new ArrayList<String>();
+		ArrayList<HolderString> l = new ArrayList<HolderString>();
 		for (String tableName : tableNames) {
 			Task task = map.get(tableName.trim());
 			l.addAll(getHolders(task));
@@ -114,11 +142,11 @@ public class UnitSerachService implements InvokeHandler {
 		return l;
 	}
 
-	private List<String> getHolders(Task task) {
+	private List<HolderString> getHolders(Task task) {
 		List<Column> columns = task.getColumns();
-		ArrayList<String> l = new ArrayList<String>(columns.size());
+		ArrayList<HolderString> l = new ArrayList<HolderString>(columns.size());
 		for (Column column : columns) {
-			l.add(column.getHolder());
+			l.add(new HolderString(column.getProvider(), column.getHolder()));
 		}
 		return l;
 	}

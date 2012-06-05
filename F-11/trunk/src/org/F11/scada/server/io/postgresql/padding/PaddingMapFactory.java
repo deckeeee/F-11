@@ -71,6 +71,8 @@ public abstract class PaddingMapFactory {
 		map.put("BMS", new Minute(utility, 1));
 		map.put("MINUTEHOUROUT", new Minute(utility, 1));
 		map.put("ONEHOURMONTHOUT2", new Hour(utility));
+		map.put("WEEKLY", new Hour(utility));
+		map.put("DAILYYEAROUT", new Daily(utility));
 		return map;
 	}
 }
