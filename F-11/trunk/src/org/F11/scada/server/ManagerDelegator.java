@@ -197,6 +197,9 @@ public class ManagerDelegator extends UnicastRemoteObject implements
 	}
 
 	private boolean isSetValue(DataHolder dh, Object dataValue) {
+		if (AlarmDataProvider.INIT_ALARM.equalsIgnoreCase(dh.getDataHolderName())) {
+			return false;
+		}
 		return true;
 	}
 

@@ -58,15 +58,15 @@ public class ItemDaoTest extends S2DaoTestCase {
 
         Item[] items = itemDao.getSystemItems("P2", true);
         assertNotNull(items);
-        assertEquals(1, items.length);
+        assertEquals(4, items.length);
         Item item = items[0];
         assertEquals(new Integer(0), item.getPoint());
         assertEquals("P2", item.getProvider());
         assertEquals("D_1900000_Digital", item.getHolder());
         assertEquals(0, item.getComCycle());
         assertTrue(item.isComCycleMode());
-        assertEquals(0, item.getComMemoryKinds());
-        assertEquals(10000, item.getComMemoryAddress());
+        assertEquals(90, item.getComMemoryKinds());
+        assertEquals(0, item.getComMemoryAddress());
         assertFalse(item.isBFlag());
         assertEquals(0, item.getMessageId());
         assertEquals(0, item.getAttributeId());
@@ -100,8 +100,8 @@ public class ItemDaoTest extends S2DaoTestCase {
         assertEquals("D_1900000_Digital", item.getHolder());
         assertEquals(0, item.getComCycle());
         assertTrue(item.isComCycleMode());
-        assertEquals(0, item.getComMemoryKinds());
-        assertEquals(10000, item.getComMemoryAddress());
+        assertEquals(90, item.getComMemoryKinds());
+        assertEquals(0, item.getComMemoryAddress());
         assertFalse(item.isBFlag());
         assertEquals(0, item.getMessageId());
         assertEquals(0, item.getAttributeId());

@@ -47,6 +47,8 @@ import org.F11.scada.applet.ClientConfiguration;
 import org.F11.scada.applet.DataProviderProxy;
 import org.F11.scada.applet.ServerErrorUtil;
 import org.F11.scada.data.DataAccessable;
+import org.F11.scada.data.WifeData;
+import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.server.alarm.AlarmTableJournal;
 import org.F11.scada.server.alarm.table.AlarmTableModel;
@@ -55,6 +57,7 @@ import org.F11.scada.server.alarm.table.TableUtil;
 import org.F11.scada.util.ThreadUtil;
 import org.F11.scada.xwife.applet.alarm.event.CheckEvent;
 import org.F11.scada.xwife.server.AlarmDataProvider;
+import org.F11.scada.xwife.server.WifeDataProvider;
 import org.apache.log4j.Logger;
 
 /**
@@ -66,8 +69,10 @@ import org.apache.log4j.Logger;
 public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		DataProviderProxy, Runnable {
 	private static final long serialVersionUID = 8882469370969606556L;
-	private static final Class<?>[][] TYPE_INFO =
-		{ { DataHolder.class, AlarmTableModel.class } };
+	private static final Class<?>[][] TYPE_INFO = { {
+		DataHolder.class,
+		AlarmTableModel.class,
+		WifeData.class} };
 
 	public static final String CHECK_EVENT =
 		"org.F11.scada.xwife.applet.AlarmDataProviderProxy.checkEvent";
@@ -82,6 +87,10 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 
 	private long cycleTime = 1000L;
 
+	private final AbstractWifeApplet wifeApplet;
+
+	private volatile boolean isInit = true;
+
 	/**
 	 * 最終ポイント変更日時
 	 *
@@ -92,11 +101,11 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 	/** サーバーコネクションエラーの有無 */
 	private Exception serverError;
 
-	public AlarmDataProviderProxy()
-			throws DataProviderDoesNotSupportException,
+	public AlarmDataProviderProxy(AbstractWifeApplet wifeApplet) throws DataProviderDoesNotSupportException,
 			RemoteException {
 		super();
 		logger = Logger.getLogger(getClass().getName());
+		this.wifeApplet = wifeApplet;
 		ClientConfiguration config = new ClientConfiguration();
 		cycleTime = config.getLong("xwife.applet.Applet.proxy.cycleTime", 1000);
 
@@ -127,16 +136,14 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 
 		DataProvider dataProvider =
 			Manager.getInstance().getDataProvider(
-					AlarmDataProvider.PROVIDER_NAME);
+				AlarmDataProvider.PROVIDER_NAME);
 		if (dataProvider == null) {
 			init();
 		}
 	}
 
-	private void lookup()
-		throws MalformedURLException,
-		RemoteException,
-		NotBoundException {
+	private void lookup() throws MalformedURLException, RemoteException,
+			NotBoundException {
 		String collectorServer = WifeUtilities.createRmiManagerDelegator();
 		logger.debug("collectorServer : " + collectorServer);
 
@@ -152,8 +159,51 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 
 		while (thread == thisThread) {
 			syncRead();
+			try {
+				initAlarm();
+			} catch (RemoteException e) {
+				logger.error("", e);
+			} catch (DataProviderDoesNotSupportException e) {
+				logger.error("", e);
+			}
 			ThreadUtil.sleep(cycleTime);
 		}
+	}
+
+	private void initAlarm() throws RemoteException,
+			DataProviderDoesNotSupportException {
+		if (isInit) {
+			WifeDataDigital o =
+				(WifeDataDigital) alarmRef.getValue(
+					AlarmDataProvider.PROVIDER_NAME,
+					AlarmDataProvider.INIT_ALARM);
+			DataHolder dh = getDataHolder(AlarmDataProvider.INIT_ALARM);
+			dh.setValue(o, new Date(), WifeQualityFlag.GOOD);
+			if (o.isOnOff(true)) {
+				String sound =
+					(String) alarmRef.getValue(
+						AlarmDataProvider.PROVIDER_NAME,
+						AlarmDataProvider.INIT_ALARM_SOUND);
+				logger.info("Init Alarm Sound Path = " + sound);
+				wifeApplet.playAlarm(sound);
+				isInit = false;
+			}
+		}
+	}
+
+	private void setInitialAlarmHolder()
+			throws DataProviderDoesNotSupportException {
+		DataHolder initAlarmHolder = new DataHolder();
+		initAlarmHolder.setValueClass(WifeData.class);
+		initAlarmHolder.setValue(
+			WifeDataDigital.valueOfFalse(0),
+			new Date(),
+			WifeQualityFlag.INITIAL);
+		initAlarmHolder.setDataHolderName(AlarmDataProvider.INIT_ALARM);
+		initAlarmHolder.setParameter(
+			WifeDataProvider.PARA_NAME_CYCLEREAD,
+			Boolean.FALSE);
+		addDataHolder(initAlarmHolder);
 	}
 
 	public void start() {
@@ -172,9 +222,8 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		}
 	}
 
-	private void init()
-		throws DataProviderDoesNotSupportException,
-		RemoteException {
+	private void init() throws DataProviderDoesNotSupportException,
+			RemoteException {
 
 		setDataProviderName(AlarmDataProvider.PROVIDER_NAME);
 		addDataHolder(AlarmDataProvider.SUMMARY);
@@ -182,18 +231,19 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		addDataHolder(AlarmDataProvider.CAREER);
 		addDataHolder(AlarmDataProvider.OCCURRENCE);
 		addDataHolder(AlarmDataProvider.NONCHECK);
+		setInitialAlarmHolder();
 		Manager.getInstance().addDataProvider(this);
 	}
 
-	private void addDataHolder(String providerName)
-		throws RemoteException,
-		DataProviderDoesNotSupportException {
+	private void addDataHolder(String providerName) throws RemoteException,
+			DataProviderDoesNotSupportException {
 		DataHolder dh = new DataHolder();
 		dh.setDataHolderName(providerName);
 		dh.setValueClass(AlarmTableModel.class);
 		AlarmTableModel model =
 			(AlarmTableModel) alarmRef.getValue(
-					AlarmDataProvider.PROVIDER_NAME, providerName);
+				AlarmDataProvider.PROVIDER_NAME,
+				providerName);
 		dh.setValue(model, new Date(), WifeQualityFlag.INITIAL);
 		addDataHolder(dh);
 	}
@@ -212,11 +262,10 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		setCheckJournal();
 	}
 
-	private SortedMap<Long, PointTableBean[]> setCareer(
-		SortedMap<Long, PointTableBean[]> pointMap) {
+	private SortedMap<Long, PointTableBean[]> setCareer(SortedMap<Long, PointTableBean[]> pointMap) {
 		DataProvider dataProvider =
 			Manager.getInstance().getDataProvider(
-					AlarmDataProvider.PROVIDER_NAME);
+				AlarmDataProvider.PROVIDER_NAME);
 		DataHolder dh = dataProvider.getDataHolder(AlarmDataProvider.CAREER);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 		AlarmTableJournal jn = model.getLastJournal();
@@ -229,8 +278,10 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 
 		if (jn != null) {
 			SortedMap<Long, AlarmTableJournal> data =
-				getAlarmJournal(jn.getTimestamp().getTime(),
-						AlarmDataProvider.PROVIDER_NAME, dh.getDataHolderName());
+				getAlarmJournal(
+					jn.getTimestamp().getTime(),
+					AlarmDataProvider.PROVIDER_NAME,
+					dh.getDataHolderName());
 			model.setValue(data);
 		} else {
 			long ts = 0;
@@ -238,19 +289,21 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 				ts = ((Timestamp) model.getValueAt(0, "日時")).getTime();
 			}
 			SortedMap<Long, AlarmTableJournal> data =
-				getAlarmJournal(ts, AlarmDataProvider.PROVIDER_NAME, dh
-						.getDataHolderName());
+				getAlarmJournal(
+					ts,
+					AlarmDataProvider.PROVIDER_NAME,
+					dh.getDataHolderName());
 			model.setValue(data);
 		}
+
 		return pointMap;
 	}
 
-	private void setJournal(
-		SortedMap<Long, PointTableBean[]> pointMap,
-		String holderName) {
+	private void setJournal(SortedMap<Long, PointTableBean[]> pointMap,
+			String holderName) {
 		DataProvider dataProvider =
 			Manager.getInstance().getDataProvider(
-					AlarmDataProvider.PROVIDER_NAME);
+				AlarmDataProvider.PROVIDER_NAME);
 		DataHolder dh = dataProvider.getDataHolder(holderName);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 
@@ -259,8 +312,10 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		AlarmTableJournal jn = model.getLastJournal();
 		if (jn != null) {
 			SortedMap<Long, AlarmTableJournal> data =
-				getAlarmJournal(jn.getTimestamp().getTime(),
-						AlarmDataProvider.PROVIDER_NAME, dh.getDataHolderName());
+				getAlarmJournal(
+					jn.getTimestamp().getTime(),
+					AlarmDataProvider.PROVIDER_NAME,
+					dh.getDataHolderName());
 			model.setValue(data);
 		} else {
 			long ts = 0;
@@ -276,8 +331,10 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 				ts = Math.max(ts1, ts2);
 			}
 			SortedMap<Long, AlarmTableJournal> data =
-				getAlarmJournal(ts, AlarmDataProvider.PROVIDER_NAME, dh
-						.getDataHolderName());
+				getAlarmJournal(
+					ts,
+					AlarmDataProvider.PROVIDER_NAME,
+					dh.getDataHolderName());
 			model.setValue(data);
 		}
 	}
@@ -285,15 +342,17 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 	private void setCheckJournal() {
 		DataProvider dataProvider =
 			Manager.getInstance().getDataProvider(
-					AlarmDataProvider.PROVIDER_NAME);
+				AlarmDataProvider.PROVIDER_NAME);
 		DataHolder dh = dataProvider.getDataHolder(AlarmDataProvider.NONCHECK);
 		AlarmTableModel model = (AlarmTableModel) dh.getValue();
 
 		CheckEvent evt = model.getLastCheckEvent();
 		if (evt != null) {
 			SortedMap<Long, CheckEvent> data =
-				getCheckJournal(evt.getTimestamp().getTime(),
-						AlarmDataProvider.PROVIDER_NAME, dh.getDataHolderName());
+				getCheckJournal(
+					evt.getTimestamp().getTime(),
+					AlarmDataProvider.PROVIDER_NAME,
+					dh.getDataHolderName());
 			fireCheckEvent(model, data);
 		} else {
 			long ts = 0;
@@ -309,24 +368,24 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 				ts = Math.max(ts1, ts2);
 			}
 			SortedMap<Long, CheckEvent> data =
-				getCheckJournal(ts, AlarmDataProvider.PROVIDER_NAME, dh
-						.getDataHolderName());
+				getCheckJournal(
+					ts,
+					AlarmDataProvider.PROVIDER_NAME,
+					dh.getDataHolderName());
 			fireCheckEvent(model, data);
 		}
 	}
 
-	private void fireCheckEvent(
-		AlarmTableModel model,
-		SortedMap<Long, CheckEvent> data) {
+	private void fireCheckEvent(AlarmTableModel model,
+			SortedMap<Long, CheckEvent> data) {
 		for (CheckEvent event : data.values()) {
 			model.fireCheckEvent(event);
 		}
 	}
 
-	private SortedMap<Long, AlarmTableJournal> getAlarmJournal(
-		long ts,
-		String providerName,
-		String holderName) {
+	private SortedMap<Long, AlarmTableJournal> getAlarmJournal(long ts,
+			String providerName,
+			String holderName) {
 		SortedMap<Long, AlarmTableJournal> data = null;
 		for (int i = 1;; i++) {
 			if (i == Globals.RMI_METHOD_RETRY_COUNT) {
@@ -363,10 +422,9 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		return data;
 	}
 
-	private SortedMap<Long, CheckEvent> getCheckJournal(
-		long ts,
-		String providerName,
-		String holderName) {
+	private SortedMap<Long, CheckEvent> getCheckJournal(long ts,
+			String providerName,
+			String holderName) {
 		SortedMap<Long, CheckEvent> data = new TreeMap<Long, CheckEvent>();
 		for (int i = 1;; i++) {
 			if (i == Globals.RMI_METHOD_RETRY_COUNT) {
@@ -383,7 +441,8 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 				args[2] = new Long(ts);
 				data =
 					(SortedMap<Long, CheckEvent>) alarmRef.invoke(
-							"GetCheckEventJournal", args);
+						"GetCheckEventJournal",
+						args);
 				if (serverError != null && i >= Globals.RMI_METHOD_RETRY_COUNT) {
 					ServerErrorUtil.invokeServerRepair();
 					logger.error("Exception caught: ", serverError);
@@ -446,12 +505,11 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		return data;
 	}
 
-	private void setPointJournal(
-		AlarmTableModel model,
-		SortedMap<Long, PointTableBean[]> pointMap) {
+	private void setPointJournal(AlarmTableModel model,
+			SortedMap<Long, PointTableBean[]> pointMap) {
 		if (pointMap != null) {
 			for (Iterator<PointTableBean[]> it = pointMap.values().iterator(); it
-					.hasNext();) {
+				.hasNext();) {
 				PointTableBean[] b = (PointTableBean[]) it.next();
 				TableUtil.setPoint(model, b[0], b[1]);
 			}
@@ -459,7 +517,7 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 	}
 
 	public synchronized void syncWrite(DataHolder dh)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		if (serverError != null) {
 			return;
 		}
@@ -468,6 +526,8 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 			checkHistory(dh);
 		} else if (AlarmDataProvider.NONCHECK.equals(dh.getDataHolderName())) {
 			checkNoncheck(dh);
+		} else if (AlarmDataProvider.INIT_ALARM.equals(dh.getDataHolderName())) {
+			stopInitAlarm(dh);
 		}
 
 		if (serverError != null) {
@@ -483,13 +543,19 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		for (int i = 0; i < Globals.RMI_METHOD_RETRY_COUNT; i++) {
 			try {
 				Timestamp now = new Timestamp(System.currentTimeMillis());
-				alarmRef.setHistoryTable((Integer) model.getValueAt(row,
-						"point"), (String) model.getValueAt(row, "provider"),
-						(String) model.getValueAt(row, "holder"), now,
-						(Integer) dh.getParameter("row"));
-				alarmRef.invoke("AddCheckJournal",
-						new Object[] { new CheckEvent(dh.getDataHolderName(),
-								model, row, now) });
+				alarmRef.setHistoryTable(
+					(Integer) model.getValueAt(row, "point"),
+					(String) model.getValueAt(row, "provider"),
+					(String) model.getValueAt(row, "holder"),
+					now,
+					(Integer) dh.getParameter("row"));
+				alarmRef.invoke(
+					"AddCheckJournal",
+					new Object[] { new CheckEvent(
+						dh.getDataHolderName(),
+						model,
+						row,
+						now) });
 				serverError = null;
 				break;
 			} catch (Exception ex) {
@@ -529,39 +595,50 @@ public class AlarmDataProviderProxy extends AbstractDataProvider implements
 		}
 	}
 
+	private void stopInitAlarm(DataHolder dh) {
+		try {
+			alarmRef.setValue(
+				AlarmDataProvider.PROVIDER_NAME,
+				AlarmDataProvider.INIT_ALARM,
+				dh.getValue());
+		} catch (RemoteException e) {
+			logger.error("起動時警報音フラグ書込時にエラーが発生", e);
+		}
+	}
+
 	// Non Used Methods
 	public void asyncRead(DataHolder dh)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 
 	public void asyncRead(DataHolder[] dhs)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 
 	public void asyncWrite(DataHolder dh)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 
 	public void asyncWrite(DataHolder[] dhs)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 
 	public void syncRead(DataHolder dh)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 
 	public void syncRead(DataHolder[] dhs)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 
 	public void syncWrite(DataHolder[] dhs)
-		throws DataProviderDoesNotSupportException {
+			throws DataProviderDoesNotSupportException {
 		throw new DataProviderDoesNotSupportException();
 	}
 

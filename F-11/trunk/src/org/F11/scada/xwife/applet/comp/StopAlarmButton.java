@@ -20,6 +20,8 @@
 
 package org.F11.scada.xwife.applet.comp;
 
+import static org.F11.scada.xwife.server.AlarmDataProvider.*;
+
 import java.awt.event.ActionEvent;
 import java.util.Date;
 
@@ -32,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import jp.gr.javacons.jim.DataHolder;
+import jp.gr.javacons.jim.DataProviderDoesNotSupportException;
 import jp.gr.javacons.jim.DataReferencer;
 import jp.gr.javacons.jim.DataReferencerOwner;
 import jp.gr.javacons.jim.DataValueChangeEvent;
@@ -64,13 +67,15 @@ public class StopAlarmButton extends JButton {
 	private void initKeyEvent(final AbstractWifeApplet wifeApplet) {
 		String stopKey =
 			wifeApplet.getConfiguration().getString(
-					"xwife.applet.Applet.alarmStopKey", "F12");
+				"xwife.applet.Applet.alarmStopKey",
+				"F12");
 		Action key = new AbstractAction(stopKey) {
 			private static final long serialVersionUID = -2668128777789593884L;
 
 			public void actionPerformed(ActionEvent e) {
 				wifeApplet.stopAlarm();
 				writeAlarmButton(wifeApplet);
+				writeInitAlarmStop(wifeApplet);
 				logger.info("Œx•ñ‰¹’âŽ~");
 			}
 		};
@@ -86,7 +91,8 @@ public class StopAlarmButton extends JButton {
 	private void getWrtiteHolder(final AbstractWifeApplet wifeApplet) {
 		String value =
 			wifeApplet.getConfiguration().getString(
-					"xwife.applet.Applet.alarmStopKey.write", "");
+				"xwife.applet.Applet.alarmStopKey.write",
+				"");
 		if (!"".equals(value)) {
 			int p = value.indexOf('_');
 			if (0 < p) {
@@ -123,8 +129,10 @@ public class StopAlarmButton extends JButton {
 
 	private void writeDigital(DataHolder dh, WifeData wd) {
 		WifeDataDigital dd = (WifeDataDigital) wd;
-		dh.setValue((WifeData) dd.valueOf(TRUE_DATA), new Date(),
-				WifeQualityFlag.GOOD);
+		dh.setValue(
+			(WifeData) dd.valueOf(TRUE_DATA),
+			new Date(),
+			WifeQualityFlag.GOOD);
 		try {
 			dh.syncWrite();
 		} catch (Exception e) {
@@ -135,14 +143,13 @@ public class StopAlarmButton extends JButton {
 	private void createStopAlarmButtonListener(AbstractWifeApplet wifeApplet) {
 		String value =
 			wifeApplet.getConfiguration().getString(
-					"xwife.applet.Applet.alarmStopKey.event", "");
+				"xwife.applet.Applet.alarmStopKey.event",
+				"");
 		if (!"".equals(value)) {
 			boolean stopSoundOnly =
-				wifeApplet
-						.getConfiguration()
-						.getBoolean(
-								"xwife.applet.Applet.alarmStopKey.stopSoundOnly",
-								false);
+				wifeApplet.getConfiguration().getBoolean(
+					"xwife.applet.Applet.alarmStopKey.stopSoundOnly",
+					false);
 			if (stopSoundOnly) {
 				new StopAlarmButtonListener(value, wifeApplet);
 			} else {
@@ -151,10 +158,33 @@ public class StopAlarmButton extends JButton {
 		}
 	}
 
+	private void writeInitAlarmStop(AbstractWifeApplet wifeApplet) {
+		DataHolder dh =
+			Manager.getInstance().findDataHolder(PROVIDER_NAME, INIT_ALARM);
+		if (dh != null) {
+			WifeDataDigital wd = (WifeDataDigital) dh.getValue();
+			if (wd.isOnOff(true)) {
+				dh
+					.setValue(
+						wd.valueOf(false),
+						new Date(),
+						WifeQualityFlag.GOOD);
+				try {
+					dh.syncWrite();
+					logger.info("‹N“®ŽžŒx•ñ‰¹ƒtƒ‰ƒO ’âŽ~");
+				} catch (DataProviderDoesNotSupportException e) {
+					logger.error("", e);
+				}
+			}
+		} else {
+			logger.warn(PROVIDER_NAME + "_" + INIT_ALARM + " ‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+		}
+	}
+
 	private static class StopAlarmButtonListener implements
 			DataValueChangeListener, DataReferencerOwner, ReferencerOwnerSymbol {
-		private final Logger logger =
-			Logger.getLogger(StopAlarmButtonListener.class);
+		private final Logger logger = Logger
+			.getLogger(StopAlarmButtonListener.class);
 		private JButton button;
 		private AbstractWifeApplet wifeApplet;
 		private DataReferencer referencer;

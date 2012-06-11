@@ -52,22 +52,19 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 	/** 履歴検索オブジェクトのリモート参照 */
 	protected transient AlarmListFinder alarmListFinder;
 
-	public AbstractNewApplet(boolean isStandalone, boolean soundoffAtStarted)
-			throws RemoteException {
+	public AbstractNewApplet(boolean isStandalone, boolean soundoffAtStarted) throws RemoteException {
 		super(isStandalone, soundoffAtStarted);
 		logger = Logger.getLogger(getClass().getName());
 	}
 
-	protected void lookup()
-		throws MalformedURLException,
-		RemoteException,
-		NotBoundException {
+	protected void lookup() throws MalformedURLException, RemoteException,
+			NotBoundException {
 		accessControl =
 			(AccessControlable) Naming.lookup(WifeUtilities
-					.createRmiActionControl());
+				.createRmiActionControl());
 		alarmListFinder =
 			(AlarmListFinder) Naming.lookup(WifeUtilities
-					.createRmiAlarmListFinderManager());
+				.createRmiAlarmListFinderManager());
 	}
 
 	protected void layoutContainer() throws IOException, SAXException {
@@ -86,7 +83,8 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		spane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
 		// ツリーの横幅
 		spane.setDividerLocation(configuration.getInt(
-				"xwife.applet.Applet.treeWidth", 150));
+			"xwife.applet.Applet.treeWidth",
+			150));
 		spane.setDividerSize(10);
 		spane.setOneTouchExpandable(true);
 		spane.add(treePanel);
@@ -115,7 +113,8 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		mainSplit.setOneTouchExpandable(true);
 		// 警報以外の縦幅
 		mainSplit.setDividerLocation(configuration.getInt(
-				"xwife.applet.Applet.treeHeight", 775));
+			"xwife.applet.Applet.treeHeight",
+			775));
 		mainSplit.setDividerSize(10);
 		getContentPane().add(mainSplit);
 
@@ -126,10 +125,10 @@ public abstract class AbstractNewApplet extends AbstractWifeApplet {
 		 * path); SwingUtilities.invokeLater(new Runnable() { public void run()
 		 * { tree.setSelectionPath(path); tree.expandPath(path);
 		 * tree.requestFocusInWindow(); } });
-		 */splashScreen.incrementValue();
+		 */
+		splashScreen.incrementValue();
 	}
 
-	protected abstract JComponent createAlarmComponent(
-		AbstractNewApplet applet,
-		String alarmDefPath);
+	protected abstract JComponent createAlarmComponent(AbstractNewApplet applet,
+			String alarmDefPath);
 }
