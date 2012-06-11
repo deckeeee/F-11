@@ -28,8 +28,10 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -228,6 +230,10 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		logger.info("SessionID : " + session.toString());
 		history = new PageHistoryImpl();
 		configuration = new ClientConfiguration();
+		if (!isOnlyMe()) {
+			logger.error("既に起動されています");
+			System.exit(-1);
+		}
 		splashScreen = new SplashScreen(this, configuration);
 		boolean splashOn =
 			configuration.getBoolean(
@@ -255,7 +261,32 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 
 		splashScreen.incrementValue();
-		ShutdownThread shutdownThread = new ShutdownThread(END_PORT + referenceCount);
+		ShutdownThread shutdownThread =
+			new ShutdownThread(END_PORT + referenceCount);
+	}
+
+	public boolean isOnlyMe() {
+		boolean isOnlyMeMode =
+			configuration.getBoolean(
+				"org.F11.scada.xwife.applet.isOnlyMeMode",
+				false);
+		if (isOnlyMeMode) {
+			int port =
+				configuration.getInt(
+					"org.F11.scada.xwife.applet.isOnlyMePort",
+					52000);
+			try {
+				ServerSocket sock = new ServerSocket(port);
+			} catch (BindException e) {
+				return false;
+			} catch (Exception e) {
+				logger.error("起動時ダミーソケット生成時にエラーが発生", e);
+				return false;
+			}
+			return true;
+		} else {
+			return true;
+		}
 	}
 
 	private void lookupCollector() {
@@ -651,7 +682,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 		splashScreen.incrementValue();
 
-		AlarmDataProviderProxy adpp = new AlarmDataProviderProxy();
+		AlarmDataProviderProxy adpp = new AlarmDataProviderProxy(this);
 		adpp.start();
 		splashScreen.incrementValue();
 

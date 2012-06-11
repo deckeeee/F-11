@@ -2,7 +2,7 @@
  * $Header: /cvsroot/f-11/F-11/src/org/F11/scada/server/alarm/Attic/AlarmReferencerImpl.java,v 1.1.2.5 2007/10/03 10:24:00 frdm Exp $
  * $Revision: 1.1.2.5 $
  * $Date: 2007/10/03 10:24:00 $
- * 
+ *
  * =============================================================================
  * Projrct F-11 - Web SCADA for Java
  * Copyright (C) 2002 Freedom, Inc. All Rights Reserved.
@@ -28,6 +28,7 @@ package org.F11.scada.server.alarm;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -41,10 +42,17 @@ import jp.gr.javacons.jim.DataReferencer;
 import jp.gr.javacons.jim.DataReferencerOwner;
 import jp.gr.javacons.jim.DataValueChangeEvent;
 import jp.gr.javacons.jim.DataValueChangeListener;
+import jp.gr.javacons.jim.Manager;
 import jp.gr.javacons.jim.QualityFlag;
 
 import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataDigital;
+import org.F11.scada.data.WifeQualityFlag;
+import org.F11.scada.server.alarm.table.SoundStrategy;
+import org.F11.scada.server.dao.ItemDao;
+import org.F11.scada.server.entity.Item;
+import org.F11.scada.server.register.HolderString;
+import org.F11.scada.xwife.server.AlarmDataProvider;
 import org.apache.log4j.Logger;
 
 /**
@@ -56,8 +64,9 @@ public class AlarmReferencerImpl extends AbstractTableModel implements
 		DataReferencerOwner, DataValueChangeListener,
 		DelayDataValueChangeListener, AlarmReferencer {
 	private static final long serialVersionUID = -4066513908135069275L;
-	private static final Class[][] TYPE_INFO = { { DataHolder.class,
-			WifeData.class } };
+	private static final Class[][] TYPE_INFO = { {
+		DataHolder.class,
+		WifeData.class } };
 	/**
 	 * 取得するデータのリファレンサ
 	 */
@@ -68,6 +77,10 @@ public class AlarmReferencerImpl extends AbstractTableModel implements
 	private List alarmDataStores;
 	private EventDelayer delayer;
 	private final Logger logger = Logger.getLogger(AlarmReferencerImpl.class);
+	private volatile boolean isInit = true;
+	/** 警報音発生ロジック */
+	private SoundStrategy soundStrategy;
+	private ItemDao itemDao;
 
 	public AlarmReferencerImpl() {
 		super();
@@ -87,11 +100,60 @@ public class AlarmReferencerImpl extends AbstractTableModel implements
 		this.alarmDataStores = new ArrayList(alarmDataStores);
 	}
 
+	public void setSoundStrategy(SoundStrategy soundStrategy) {
+		logger.info("SoundStrategy Initialize.");
+		this.soundStrategy = soundStrategy;
+	}
+
+	public void setItemDao(ItemDao itemDao) {
+		logger.info("ItemDao Initialize.");
+		this.itemDao = itemDao;
+	}
+
 	private void fireDataValueChangeEventKey(DataValueChangeEventKey evt) {
+		initAlarm(evt);
+
 		for (Iterator it = alarmDataStores.iterator(); it.hasNext();) {
 			AlarmDataStore st = (AlarmDataStore) it.next();
 			st.put(evt);
 		}
+	}
+
+	private void initAlarm(DataValueChangeEventKey evt) {
+		if (isInit) {
+			Item item = itemDao.getItem(getHolderString(evt));
+			// 音有り警報が入った場合、初期警報音フラグをオン
+			logger.info("new event = " + evt.toString());
+			Integer sountType =
+				soundStrategy.getSoundType(
+					item.getAttribute().getSoundType(),
+					evt);
+			if (evt.getValue().booleanValue() && sountType != 0) {
+				DataHolder dh =
+					Manager.getInstance().findDataHolder(
+						AlarmDataProvider.PROVIDER_NAME,
+						AlarmDataProvider.INIT_ALARM);
+				dh.setValue(
+					WifeDataDigital.valueOfTrue(0),
+					new Date(),
+					WifeQualityFlag.GOOD);
+
+				DataHolder sdh =
+					Manager.getInstance().findDataHolder(
+						AlarmDataProvider.PROVIDER_NAME,
+						AlarmDataProvider.INIT_ALARM_SOUND);
+				sdh.setValue(
+					item.getOnSoundPath(),
+					new Date(),
+					WifeQualityFlag.GOOD);
+
+				isInit = false;
+			}
+		}
+	}
+
+	private HolderString getHolderString(DataValueChangeEventKey evt) {
+		return new HolderString(evt.getProvider(), evt.getHolder());
 	}
 
 	public void addReferencer(DataReferencer rf) {
@@ -171,13 +233,17 @@ public class AlarmReferencerImpl extends AbstractTableModel implements
 						return "OFF";
 					}
 				} else {
-					logger.error("デジタルホルダではありません = " + dr.getDataProviderName()
-							+ "_" + dr.getDataHolderName());
+					logger.error("デジタルホルダではありません = "
+						+ dr.getDataProviderName()
+						+ "_"
+						+ dr.getDataHolderName());
 					return "エラー";
 				}
 			} else {
-				logger.info("hoder null = " + dr.getDataProviderName() + "_"
-						+ dr.getDataHolderName());
+				logger.info("hoder null = "
+					+ dr.getDataProviderName()
+					+ "_"
+					+ dr.getDataHolderName());
 				return "エラー";
 			}
 		default:

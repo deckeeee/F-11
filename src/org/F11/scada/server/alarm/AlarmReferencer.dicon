@@ -4,6 +4,7 @@
 
 <components namespace="AlarmReferencer">
 	<include path="dao.dicon"/>
+	<include path="org/F11/scada/server/dao/ItemDao.dicon"/>
 	<component name="postgresql"
 		class="org.F11.scada.server.io.postgresql.PostgreSQLAlarmDataStore" />
 
@@ -11,7 +12,8 @@
 		<description>個別警報音設定テーブルDao</description>
 		<aspect>dao.interceptor</aspect>
 	</component>
-	<component class="org.F11.scada.server.alarm.table.postgresql.SoundStrategyImpl">
+	<component class="org.F11.scada.server.alarm.table.postgresql.SoundStrategyImpl"
+		name="sound">
 		<description>個別警報音設定テーブル対応音声発信ロジック</description>
 	</component>
 	<component class="org.F11.scada.server.alarm.table.postgresql.PostgreSQLStrategyFactory"

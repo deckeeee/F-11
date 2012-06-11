@@ -54,15 +54,18 @@ public class AlarmSoundLockButton extends JButton {
 		if ("".equals(soundOnHolderID)) {
 			addActionListener(new NomalActionListener(wifeApplet, this));
 		} else {
-			addActionListener(new HolderActionListener(wifeApplet, this,
-					soundOnHolderID));
+			addActionListener(new HolderActionListener(
+				wifeApplet,
+				this,
+				soundOnHolderID));
 		}
 		init(wifeApplet);
 	}
 
 	private String getSoundOnHolder(final AbstractWifeApplet wifeApplet) {
 		return wifeApplet.getConfiguration().getString(
-				"xwife.applet.Applet.soundOnHolder", "");
+			"xwife.applet.Applet.soundOnHolder",
+			"");
 	}
 
 	private void init(AbstractWifeApplet wifeApplet) {
@@ -72,8 +75,10 @@ public class AlarmSoundLockButton extends JButton {
 			if (dh != null) {
 				WifeData wd = (WifeData) dh.getValue();
 				if (wd instanceof WifeDataDigital) {
-					new StopSoundButtonListener(soundOnHolderID, this,
-							wifeApplet);
+					new StopSoundButtonListener(
+						soundOnHolderID,
+						this,
+						wifeApplet);
 				} else {
 					logger.error("ÉfÉWÉ^Éãà»äOÇÃÉfÅ[É^Ç™éwíËÇ≥ÇÍÇƒÇ¢Ç‹Ç∑ÅB : " + soundOnHolderID);
 				}
@@ -86,6 +91,8 @@ public class AlarmSoundLockButton extends JButton {
 	}
 
 	private static class NomalActionListener implements ActionListener {
+		private final Logger logger = Logger
+			.getLogger(NomalActionListener.class);
 		private final AbstractWifeApplet wifeApplet;
 		private final JButton button;
 
@@ -99,10 +106,12 @@ public class AlarmSoundLockButton extends JButton {
 				wifeApplet.setAlarmSoundLock(false);
 				button.setToolTipText("åxïÒâπã÷é~");
 				button.setIcon(GraphicManager.get("/images/sdlock.png"));
+				logger.info("åxïÒâπã÷é~");
 			} else {
 				wifeApplet.setAlarmSoundLock(true);
 				button.setToolTipText("åxïÒâπã÷é~âèú");
 				button.setIcon(GraphicManager.get("/images/sdunlock.png"));
+				logger.info("åxïÒâπã÷é~âèú");
 			}
 		}
 	}
@@ -110,14 +119,13 @@ public class AlarmSoundLockButton extends JButton {
 	private static class HolderActionListener implements ActionListener {
 		private static byte[] TRUE_DATA = { (byte) 0xFF, (byte) 0xFF };
 		private static byte[] FALSE_DATA = { (byte) 0x00, (byte) 0x00 };
-		private final Logger logger =
-			Logger.getLogger(HolderActionListener.class);
+		private final Logger logger = Logger
+			.getLogger(HolderActionListener.class);
 		private final AbstractWifeApplet wifeApplet;
 		private final JButton button;
 		private final String soundOnHolderID;
 
-		public HolderActionListener(
-				AbstractWifeApplet wifeApplet,
+		public HolderActionListener(AbstractWifeApplet wifeApplet,
 				JButton button,
 				String soundOnHolderID) {
 			this.wifeApplet = wifeApplet;
@@ -128,14 +136,15 @@ public class AlarmSoundLockButton extends JButton {
 		public void actionPerformed(ActionEvent evt) {
 			if (wifeApplet.isAlarmSoundLock()) {
 				writeAlarmButton(wifeApplet, FALSE_DATA);
+				logger.info("åxïÒâπã÷é~");
 			} else {
 				writeAlarmButton(wifeApplet, TRUE_DATA);
+				logger.info("åxïÒâπã÷é~âèú");
 			}
 		}
 
-		private void writeAlarmButton(
-			AbstractWifeApplet wifeApplet,
-			byte[] onoff) {
+		private void writeAlarmButton(AbstractWifeApplet wifeApplet,
+				byte[] onoff) {
 			DataHolder dh =
 				Manager.getInstance().findDataHolder(soundOnHolderID);
 			if (dh != null) {
@@ -154,8 +163,10 @@ public class AlarmSoundLockButton extends JButton {
 
 		private void writeDigital(DataHolder dh, WifeData wd, byte[] onoff) {
 			WifeDataDigital dd = (WifeDataDigital) wd;
-			dh.setValue((WifeData) dd.valueOf(onoff), new Date(),
-					WifeQualityFlag.GOOD);
+			dh.setValue(
+				(WifeData) dd.valueOf(onoff),
+				new Date(),
+				WifeQualityFlag.GOOD);
 			try {
 				dh.syncWrite();
 			} catch (Exception e) {
@@ -166,14 +177,13 @@ public class AlarmSoundLockButton extends JButton {
 
 	private static class StopSoundButtonListener implements
 			DataValueChangeListener, DataReferencerOwner, ReferencerOwnerSymbol {
-		private final Logger logger =
-			Logger.getLogger(StopSoundButtonListener.class);
+		private final Logger logger = Logger
+			.getLogger(StopSoundButtonListener.class);
 		private JButton button;
 		private AbstractWifeApplet wifeApplet;
 		private DataReferencer referencer;
 
-		StopSoundButtonListener(
-				String value,
+		StopSoundButtonListener(String value,
 				JButton button,
 				AbstractWifeApplet wifeApplet) {
 			this.button = button;
@@ -210,11 +220,13 @@ public class AlarmSoundLockButton extends JButton {
 					if (dd.isOnOff(false)) {
 						wifeApplet.setAlarmSoundLock(false);
 						button.setToolTipText("åxïÒâπã÷é~");
-						button.setIcon(GraphicManager.get("/images/sdlock.png"));
+						button
+							.setIcon(GraphicManager.get("/images/sdlock.png"));
 					} else {
 						wifeApplet.setAlarmSoundLock(true);
 						button.setToolTipText("åxïÒâπã÷é~âèú");
-						button.setIcon(GraphicManager.get("/images/sdunlock.png"));
+						button.setIcon(GraphicManager
+							.get("/images/sdunlock.png"));
 					}
 				}
 			}

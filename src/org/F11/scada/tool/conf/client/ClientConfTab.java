@@ -439,6 +439,7 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		setShowScreenLock(mainPanel);
 		setFinishPass(mainPanel);
 		finishPass(mainPanel);
+		setOnlyMeMode(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -877,6 +878,36 @@ public class ClientConfTab extends JScrollPane implements DocumentListener {
 		finishPass.setToolTipText("クライアント終了時のパスワードを設定します");
 		panel.add(finishPass);
 		mainPanel.add(panel);
+	}
+
+	private void setOnlyMeMode(JPanel mainPanel) {
+		JLabel label = new JLabel("クライアント二重起動防止を行う：");
+		label.setToolTipText("クライアント二重起動防止を行う");
+		mainPanel.add(label);
+		JComboBox cb = new JComboBox(new String[] { "行わない", "行う", });
+		if ("false".equals(manager.getClientConf(
+			"org.F11.scada.xwife.applet.isOnlyMeMode",
+			"false"))) {
+			cb.setSelectedIndex(0);
+		} else {
+			cb.setSelectedIndex(1);
+		}
+		cb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					if ("行わない".equals(e.getItem())) {
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.isOnlyMeMode",
+							"false");
+					} else {
+						manager.setClientConf(
+							"org.F11.scada.xwife.applet.isOnlyMeMode",
+							"true");
+					}
+				}
+			}
+		});
+		mainPanel.add(cb);
 	}
 
 	public void changedUpdate(DocumentEvent e) {
