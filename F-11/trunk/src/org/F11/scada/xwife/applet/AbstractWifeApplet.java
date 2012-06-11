@@ -194,6 +194,8 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 	public static final int END_PORT = 64100;
 
+	private ServerSocket dummySocket;
+
 	/**
 	 * アプレットを初期化します。ユーザー主体情報もここで初期化されます。
 	 */
@@ -276,7 +278,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 					"org.F11.scada.xwife.applet.isOnlyMePort",
 					52000);
 			try {
-				ServerSocket sock = new ServerSocket(port);
+				dummySocket = new ServerSocket(port);
 			} catch (BindException e) {
 				return false;
 			} catch (Exception e) {
