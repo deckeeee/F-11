@@ -193,7 +193,7 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	abstract protected void layoutContainer() throws IOException, SAXException;
 
 	public static final int END_PORT = 64100;
-
+	/** フィールドに保持しておかないとGCされる為 */
 	private ServerSocket dummySocket;
 
 	/**
@@ -234,6 +234,12 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		configuration = new ClientConfiguration();
 		if (!isOnlyMe()) {
 			logger.error("既に起動されています");
+			long max =
+				configuration.getLong(
+					"org.F11.scada.xwife.applet.OnlyMeDialog.max",
+					60L);
+			OnlyMeDialog d = new OnlyMeDialog(max * 1000L);
+			d.setVisible(true);
 			System.exit(-1);
 		}
 		splashScreen = new SplashScreen(this, configuration);

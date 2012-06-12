@@ -30,6 +30,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 
 import org.F11.scada.tool.conf.alarm.AlarmDefineTab;
 import org.F11.scada.tool.conf.client.ClientConf2Tab;
+import org.F11.scada.tool.conf.client.ClientConf3Tab;
 import org.F11.scada.tool.conf.client.ClientConfTab;
 import org.F11.scada.tool.conf.individual.IndividualTab;
 import org.F11.scada.tool.conf.pref.PreferencesTab;
@@ -71,6 +72,8 @@ public class ConfigFrame extends JFrame {
 				"「AlarmDefine.xml」の内容を設定します。");
 		tabbed.addTab("クライアント設定", null, new ClientConfTab(this, manager),
 				"「ClientConfiguration.xml」の内容を設定します。");
+		tabbed.addTab("クライアント設定2", null, new ClientConf3Tab(this, manager),
+		"「ClientConfiguration.xml」の内容を設定します。");
 		tabbed.addTab("クライアント履歴", null, new ClientConf2Tab(this, manager),
 				"「ClientConfiguration.xml」の履歴関連を設定します。");
 		tabbed.addTab("クライアントIP別", null, new IndividualTab(this, manager),
