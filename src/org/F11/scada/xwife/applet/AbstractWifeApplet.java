@@ -182,6 +182,12 @@ public abstract class AbstractWifeApplet extends JApplet implements
 	private boolean isCheck = true;
 	/** スクリーンセーバー解除の受付間隔(1分) */
 	private static final long SCREEN_SAVER_TIME = 60000L;
+	/** 終了コマンド待ちポート */
+	public static final int END_PORT = 64100;
+	/** 終了コマンド待ちスレッド */
+	private ShutdownThread shutdownThread;
+	/** クライアント二重起動防止ダミーソケット */
+	private ServerSocket dummySocket;
 
 	static {
 		MetalLookAndFeel.setCurrentTheme(new DefaultWifeTheme());
@@ -191,10 +197,6 @@ public abstract class AbstractWifeApplet extends JApplet implements
 			RemoteException, NotBoundException;
 
 	abstract protected void layoutContainer() throws IOException, SAXException;
-
-	public static final int END_PORT = 64100;
-	/** フィールドに保持しておかないとGCされる為 */
-	private ServerSocket dummySocket;
 
 	/**
 	 * アプレットを初期化します。ユーザー主体情報もここで初期化されます。
@@ -212,36 +214,13 @@ public abstract class AbstractWifeApplet extends JApplet implements
 
 		setLoggerConfig();
 
-		logger.info(System.getProperty("java.vendor"));
-		System.out.println("");
-		logger.info(System.getProperty("java.version"));
-		System.out.println("");
-		System.out.println("");
-		logger.info(System.getProperty("java.vm.specification.version"));
-		logger.info(System.getProperty("java.vm.specification.vendor"));
-		logger.info(System.getProperty("java.vm.specification.name"));
-		logger.info(System.getProperty("java.vm.version"));
-		logger.info(System.getProperty("java.vm.vendor"));
-		logger.info(System.getProperty("java.vm.name"));
-		logger.info(System.getProperty("os.name"));
-		logger.info(System.getProperty("os.version"));
-		logger.info("Stand Alone Mode : " + this.isStandalone);
-		logger.info("F-11 Version : " + Version.getVersion());
+		loginfo();
 
 		session = new Session();
 		logger.info("SessionID : " + session.toString());
 		history = new PageHistoryImpl();
 		configuration = new ClientConfiguration();
-		if (!isOnlyMe()) {
-			logger.error("既に起動されています");
-			long max =
-				configuration.getLong(
-					"org.F11.scada.xwife.applet.OnlyMeDialog.max",
-					60L);
-			OnlyMeDialog d = new OnlyMeDialog(max * 1000L);
-			d.setVisible(true);
-			System.exit(-1);
-		}
+		onlyMe();
 		splashScreen = new SplashScreen(this, configuration);
 		boolean splashOn =
 			configuration.getBoolean(
@@ -269,8 +248,46 @@ public abstract class AbstractWifeApplet extends JApplet implements
 		}
 
 		splashScreen.incrementValue();
-		ShutdownThread shutdownThread =
-			new ShutdownThread(END_PORT + referenceCount);
+		shutdownThread = new ShutdownThread(END_PORT + referenceCount);
+	}
+
+	private void onlyMe() {
+		if (!isOnlyMe()) {
+			logger.error("既に起動されています");
+			long max =
+				configuration.getLong(
+					"org.F11.scada.xwife.applet.OnlyMeDialog.max",
+					60L);
+			String title =
+				configuration.getString(
+					"org.F11.scada.xwife.applet.OnlyMeDialog.title",
+					"既にクライアントが起動しています");
+			String notes =
+				configuration.getString(
+					"org.F11.scada.xwife.applet.OnlyMeDialog.notes",
+					"既にクライアントが起動しています");
+			OnlyMeDialog d = new OnlyMeDialog(max * 1000L, title, notes);
+			d.setVisible(true);
+			System.exit(-1);
+		}
+	}
+
+	private void loginfo() {
+		logger.info(System.getProperty("java.vendor"));
+		System.out.println("");
+		logger.info(System.getProperty("java.version"));
+		System.out.println("");
+		System.out.println("");
+		logger.info(System.getProperty("java.vm.specification.version"));
+		logger.info(System.getProperty("java.vm.specification.vendor"));
+		logger.info(System.getProperty("java.vm.specification.name"));
+		logger.info(System.getProperty("java.vm.version"));
+		logger.info(System.getProperty("java.vm.vendor"));
+		logger.info(System.getProperty("java.vm.name"));
+		logger.info(System.getProperty("os.name"));
+		logger.info(System.getProperty("os.version"));
+		logger.info("Stand Alone Mode : " + this.isStandalone);
+		logger.info("F-11 Version : " + Version.getVersion());
 	}
 
 	public boolean isOnlyMe() {
