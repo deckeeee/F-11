@@ -19,50 +19,62 @@ import javax.swing.SwingUtilities;
 
 import org.F11.scada.util.FontUtil;
 
+/**
+ * クライアント二重起動時に表示する、自動で閉じるダイアログです。
+ *
+ * @author maekawa
+ *
+ */
 public class OnlyMeDialog extends JDialog {
 	private static final long serialVersionUID = -3271636626461992386L;
 	private static final long PRIOD_TIME = 1000L;
-	private static final String TITLE = "既にクライアントが起動しています";
 	private Timer timer;
 
-	public OnlyMeDialog(long max) {
+	/**
+	 * ダイアログのコンストラクタ
+	 *
+	 * @param max 閉じるまでの時間をミリ秒で指定
+	 * @param title 表題文字列を指定
+	 * @param notes ダイアログの文言を指定
+	 */
+	public OnlyMeDialog(long max, String title, String notes) {
 		super();
 		timer = new Timer(getClass().getName(), true);
 		timer.schedule(new DisposeTimerTask(this), max);
-		init(max);
+		init(max, title, notes);
 	}
 
-	private void init(long max) {
-		setTitle(TITLE);
+	private void init(long max, String title, String notes) {
+		setTitle(title);
 		setModal(true);
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		layoutComponent(max);
+		layoutComponent(max, notes);
 	}
 
-	private void layoutComponent(long max) {
+	private void layoutComponent(long max, String notes) {
 		Container container = getContentPane();
-		container.add(getCenter(max), BorderLayout.CENTER);
+		container.add(getCenter(max, notes), BorderLayout.CENTER);
 		container.add(getSouth(), BorderLayout.SOUTH);
 		pack();
 		setLocationRelativeTo(null);
 	}
 
-	private Component getCenter(long max) {
+	private Component getCenter(long max, String notes) {
 		JPanel p = new JPanel(new BorderLayout());
-		p.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
-		p.add(getNotes(max));
+		p.setBorder(BorderFactory.createEmptyBorder(25, 55, 25, 55));
+		p.add(getNotes(max, notes));
 		return p;
 	}
 
-	private Component getNotes(long max) {
+	private Component getNotes(long max, String notes) {
 		JPanel p = new JPanel(new GridLayout(2, 1));
-		JLabel mainLabel = new JLabel("既にクライアントが起動しています");
-		mainLabel.setFont(FontUtil.getFont("Monospaced-PLAIN-24"));
+		JLabel mainLabel = new JLabel(notes);
+		mainLabel.setFont(FontUtil.getFont("Monospaced-PLAIN-30"));
 		p.add(mainLabel);
 		long secTime = max / PRIOD_TIME;
 		JLabel secLabel = new JLabel(secTime + "秒後に終了します。");
-		secLabel.setFont(FontUtil.getFont("Monospaced-PLAIN-24"));
+		secLabel.setFont(FontUtil.getFont("Monospaced-PLAIN-30"));
 		timer.scheduleAtFixedRate(
 			new SecTimerTask(secLabel, secTime),
 			0,
@@ -80,7 +92,7 @@ public class OnlyMeDialog extends JDialog {
 	}
 
 	private Component getOkButton() {
-		JButton button = new JButton("OK");
+		JButton button = new JButton("終了");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -139,7 +151,8 @@ public class OnlyMeDialog extends JDialog {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new OnlyMeDialog(10000L).setVisible(true);
+				new OnlyMeDialog(10000L, "既にクライアントが起動しています", "既にクライアントが起動しています")
+					.setVisible(true);
 			}
 		});
 	}

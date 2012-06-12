@@ -23,6 +23,7 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import javax.swing.InputVerifier;
@@ -45,7 +46,10 @@ public class ClientConf3Tab extends JScrollPane implements DocumentListener {
 	private final Frame frameParent;
 	private final StreamManager manager;
 
-	private final JTextField closeDialogTime = new JTextField();
+	private final JFormattedTextField closeDialogTime =
+		new JFormattedTextField(new DecimalFormat("#####"));
+	private final JTextField closeDialogTitle = new JTextField();
+	private final JTextField closeDialogNotes = new JTextField();
 
 	public ClientConf3Tab(Frame parent, StreamManager manager) {
 		super();
@@ -58,6 +62,8 @@ public class ClientConf3Tab extends JScrollPane implements DocumentListener {
 		JPanel mainPanel = new JPanel(new GridLayout(0, 2));
 		setOnlyMeMode(mainPanel);
 		setCloseDialogTime(mainPanel);
+		setCloseDialogTitle(mainPanel);
+		setCloseDialogNotes(mainPanel);
 
 		JPanel scPanel = new JPanel(new BorderLayout());
 		scPanel.add(mainPanel, BorderLayout.NORTH);
@@ -69,6 +75,7 @@ public class ClientConf3Tab extends JScrollPane implements DocumentListener {
 		label.setToolTipText("クライアント二重起動防止を行う");
 		mainPanel.add(label);
 		JComboBox cb = new JComboBox(new String[] { "行わない", "行う", });
+		cb.setToolTipText("クライアント二重起動防止を行う");
 		if ("false".equals(manager.getClientConf(
 			"org.F11.scada.xwife.applet.isOnlyMeMode",
 			"false"))) {
@@ -95,7 +102,6 @@ public class ClientConf3Tab extends JScrollPane implements DocumentListener {
 	}
 
 	private void setCloseDialogTime(JPanel mainPanel) {
-		// 警報一覧列移動設定
 		JLabel label = new JLabel("二重起動ダイアログ表示秒：");
 		label.setToolTipText("二重起動ダイアログの表示時間を秒で設定します");
 		mainPanel.add(label);
@@ -103,9 +109,39 @@ public class ClientConf3Tab extends JScrollPane implements DocumentListener {
 		closeDialogTime.setText(manager.getClientConf(
 			"org.F11.scada.xwife.applet.OnlyMeDialog.max",
 			"60"));
+		closeDialogTime.setInputVerifier(new NumberVerifier("数値"));
+		closeDialogTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
 		closeDialogTime.getDocument().addDocumentListener(this);
-		closeDialogTime.setToolTipText("クライアント終了時のパスワードを設定します");
+		closeDialogTime.setToolTipText("二重起動ダイアログの表示時間を秒で設定します");
 		panel.add(closeDialogTime);
+		mainPanel.add(panel);
+	}
+
+	private void setCloseDialogTitle(JPanel mainPanel) {
+		JLabel label = new JLabel("二重起動ダイアログタイトル：");
+		label.setToolTipText("二重起動ダイアログタイトルを設定します");
+		mainPanel.add(label);
+		JPanel panel = new JPanel(new GridLayout(1, 0));
+		closeDialogTitle.setText(manager.getClientConf(
+			"org.F11.scada.xwife.applet.OnlyMeDialog.title",
+			"クライアント二重起動"));
+		closeDialogTitle.getDocument().addDocumentListener(this);
+		closeDialogTitle.setToolTipText("二重起動ダイアログタイトルを設定します");
+		panel.add(closeDialogTitle);
+		mainPanel.add(panel);
+	}
+
+	private void setCloseDialogNotes(JPanel mainPanel) {
+		JLabel label = new JLabel("二重起動ダイアログ文言：");
+		label.setToolTipText("二重起動ダイアログ文言を設定します");
+		mainPanel.add(label);
+		JPanel panel = new JPanel(new GridLayout(1, 0));
+		closeDialogNotes.setText(manager.getClientConf(
+			"org.F11.scada.xwife.applet.OnlyMeDialog.notes",
+			"既にクライアントが起動しています。"));
+		closeDialogNotes.getDocument().addDocumentListener(this);
+		closeDialogNotes.setToolTipText("二重起動ダイアログ文言を設定します");
+		panel.add(closeDialogNotes);
 		mainPanel.add(panel);
 	}
 
@@ -126,6 +162,14 @@ public class ClientConf3Tab extends JScrollPane implements DocumentListener {
 			manager.setClientConf(
 				"org.F11.scada.xwife.applet.OnlyMeDialog.max",
 				closeDialogTime.getText());
+		} else if (e.getDocument() == closeDialogTitle.getDocument()) {
+			manager.setClientConf(
+				"org.F11.scada.xwife.applet.OnlyMeDialog.title",
+				closeDialogTitle.getText());
+		} else if (e.getDocument() == closeDialogNotes.getDocument()) {
+			manager.setClientConf(
+				"org.F11.scada.xwife.applet.OnlyMeDialog.notes",
+				closeDialogNotes.getText());
 		}
 	}
 
