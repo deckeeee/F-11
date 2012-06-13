@@ -23,7 +23,7 @@ package org.F11.scada.server.entity;
 import java.io.Serializable;
 
 /**
- * summary_tableのエンティティクラス
+ * attribute_tableのエンティティクラス
  *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
