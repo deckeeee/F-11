@@ -67,6 +67,7 @@ public class Trend3Data implements Serializable {
 	private Boolean isVisibleVerticalString;
 	private Boolean isCompositionMode;
 	private Boolean isAllSpanDisplayMode;
+	private Integer verticalLineInterval;
 
 	public Integer getX() {
 		return x;
@@ -323,6 +324,14 @@ public class Trend3Data implements Serializable {
 		this.isAllSpanDisplayMode = isAllSpanDisplayMode;
 	}
 
+	public Integer getVerticalLineInterval() {
+		return verticalLineInterval;
+	}
+
+	public void setVerticalLineInterval(Integer verticalLineInterval) {
+		this.verticalLineInterval = verticalLineInterval;
+	}
+
 	public String getXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("    <trendgraph3");
@@ -359,6 +368,7 @@ public class Trend3Data implements Serializable {
 						isVisibleVerticalString));
 		sb.append(getAttribute("compositionMode", isCompositionMode));
 		sb.append(getAttribute("allSpanDisplayMode", isAllSpanDisplayMode));
+		sb.append(getAttribute("verticalLineInterval", verticalLineInterval));
 		sb.append(">\n");
 		sb.append("      <horizontalScaleButton>\n");
 		for (HorizontalScaleButtonProperty hp : horizontalScaleButtonProperties) {

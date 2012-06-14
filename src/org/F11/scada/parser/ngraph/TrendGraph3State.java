@@ -109,12 +109,13 @@ public class TrendGraph3State implements State {
 	private final Object argv;
 	/** トレンド操作ボタンの表示/非表示 */
 	private boolean isShowTrendOpButton;
+	/** 前スケール表示時、縦スケールの間隔(初期値56) */
+	private int verticalLineInterval;
 
 	/**
 	 * 状態を表すオブジェクトを生成します。
 	 */
-	public TrendGraph3State(
-			String tagName,
+	public TrendGraph3State(String tagName,
 			Attributes atts,
 			PageState pageState,
 			Object argv) {
@@ -174,6 +175,9 @@ public class TrendGraph3State implements State {
 		this.argv = argv;
 		isShowTrendOpButton =
 			Boolean.parseBoolean(getValue(atts, "showTrendOpButton", "true"));
+		verticalLineInterval =
+			Integer.parseInt(getValue(atts, "verticalLineInterval", "56"));
+
 	}
 
 	private String getValue(Attributes atts, String name, String def) {
@@ -245,6 +249,7 @@ public class TrendGraph3State implements State {
 		p.setCompositionMode(isCompositionMode);
 		p.setAllSpanDisplayMode(isAllSpanDisplayMode);
 		p.setShowTrendOpButton(isShowTrendOpButton);
+		p.setVerticalLineInterval(verticalLineInterval);
 
 		return p;
 	}
