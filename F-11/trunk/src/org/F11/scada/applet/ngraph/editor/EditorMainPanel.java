@@ -34,6 +34,7 @@ import java.io.StringReader;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -139,8 +140,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 					"" });
 			digester.parse(new StringReader(xml));
 		} catch (Exception e) {
-			logger.error("ファイルが無いか、サーバー接続エラーです。 : "
-				+ graphProperties.getPagefile(), e);
+			logger.error(
+				"ファイルが無いか、サーバー接続エラーです。 : " + graphProperties.getPagefile(),
+				e);
 		}
 		return page;
 	}
@@ -223,6 +225,16 @@ public class EditorMainPanel extends JDialog implements Mediator {
 		groupCreateButton.setMargin(new Insets(2, 2, 2, 2));
 		groupCreateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (!page.isWriteOk()) {
+					List<SeriesData> seriesDatas =
+						page.getTrend3Data().getSeriesDatas();
+					String gn =
+						seriesDatas.get(seriesDatas.size() - 1).getGroupName();
+					JOptionPane.showMessageDialog(rootPane, "新規グループ作成前にグループ「"
+						+ gn
+						+ "」にポイントを追加して下さい。");
+					return;
+				}
 				String groupName =
 					JOptionPane.showInputDialog("グループ名を入力してください");
 				if (null != groupName && !"".equals(groupName)) {
@@ -245,8 +257,9 @@ public class EditorMainPanel extends JDialog implements Mediator {
 				if (0 <= row) {
 					SeriesData sd = groupTableModel.getGroupData(row);
 					String groupName =
-						JOptionPane.showInputDialog("グループ名を入力してください", sd
-							.getGroupName());
+						JOptionPane.showInputDialog(
+							"グループ名を入力してください",
+							sd.getGroupName());
 					if (null != groupName) {
 						sd.setGroupName(groupName);
 						groupTableModel.updateRow(row);

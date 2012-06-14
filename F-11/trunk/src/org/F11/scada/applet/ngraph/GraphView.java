@@ -397,12 +397,11 @@ public class GraphView extends JPanel implements AdjustmentListener, Mediator,
 		g2d.setFont(graphProperties.getFont());
 		int x1 = left + horizontalLine;
 		int i = 1;
-		FontMetrics metrics = g.getFontMetrics();
 		GraphDraw gd = graphDrawMap.get(graphProperties.isCompositionMode());
 		for (SeriesProperties sp : sps) {
 			if (sp.isVisible()) {
-				// 全スパン表示時の間隔。シリーズが増えた場合減らす必要がある。自動ではないほうがよいか?
-				int stringWidth = metrics.stringWidth("0000000");
+				// 全スパン表示時の間隔。
+				int stringWidth = graphProperties.getVerticalLineInterval();
 				int x2 = x1 + i * stringWidth;
 				for (int j = 0; j <= graphProperties.getVerticalCount(); j++) {
 					int vs = j * verticalScale;

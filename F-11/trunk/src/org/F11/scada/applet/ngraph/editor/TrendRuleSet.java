@@ -68,7 +68,8 @@ public class TrendRuleSet extends RuleSetBase {
 			"visibleReferenceLine",
 			"visibleVerticalString",
 			"compositionMode",
-			"allSpanDisplayMode" };
+			"allSpanDisplayMode",
+			"verticalLineInterval"};
 	private static final String[] SERIES_ATTRIBUTE = { "groupNo", "groupName" };
 	private static final String[] SERIES_PROPERTIES =
 		{
