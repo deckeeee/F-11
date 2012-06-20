@@ -26,8 +26,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.F11.scada.server.event.LoggingDataEvent;
@@ -38,6 +36,7 @@ import org.F11.scada.server.io.postgresql.S2ContainerUtil;
 import org.F11.scada.server.logging.report.schedule.CsvSchedule;
 import org.F11.scada.server.logging.report.schedule.CsvScheduleFactory;
 import org.F11.scada.server.register.HolderString;
+import org.F11.scada.util.FileUtil;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
 
@@ -79,15 +78,14 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param name ロギング名
 	 * @param dataHolders データホルダーのリスト
 	 * @param midOffset
 	 * @param factoryName データ永続クラス名
 	 * @exception SQLException DBMSに接続できなかったとき
 	 */
-	public AbstractCsvoutTask(
-			String logg_name,
+	public AbstractCsvoutTask(String logg_name,
 			ValueListHandler handlerManager,
 			String schedule,
 			List<HolderString> dataHolders,
@@ -97,7 +95,8 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 			String csv_foot,
 			int keepCount,
 			long midOffset,
-			List<String> tables) throws NoSuchFieldException, IllegalAccessException {
+			List<String> tables) throws NoSuchFieldException,
+			IllegalAccessException {
 		super();
 
 		this.logg_name = logg_name;
@@ -128,14 +127,17 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 			if (startTime != null) {
 				// ファイル名変更
 				DateFormat fileDf = new SimpleDateFormat(csv_mid);
-				File newFile = new File(currDir + csv_head
-						+ fileDf.format(getMidTime(startTime)) + csv_foot);
+				File newFile =
+					new File(currDir
+						+ csv_head
+						+ fileDf.format(getMidTime(startTime))
+						+ csv_foot);
 				newFile.delete();
 				tmpFile.renameTo(newFile);
 			}
 			// 旧ファイル削除
 			FilenameFilter filter = new CsvFilter(csv_head, csv_foot);
-			removeOldFile(dir.listFiles(filter), keepCount);
+			FileUtil.removeOldFile(dir.listFiles(filter), keepCount);
 		}
 	}
 
@@ -145,58 +147,10 @@ public abstract class AbstractCsvoutTask implements LoggingDataListener {
 
 	/**
 	 * CSVファイル作成
-	 * 
+	 *
 	 * @param file 作成するCSVファイル
 	 * @return 先頭レコードの日付
 	 */
 	abstract protected Timestamp csvOut(File file);
 
-	/**
-	 * 指定件数を残し、編集日付の古い順にファイルを削除する
-	 * 
-	 * @param files ファイルの一覧
-	 * @param cnt 残す件数
-	 */
-	protected void removeOldFile(File[] files, int cnt) {
-		if (null == files || files.length <= cnt)
-			return;
-
-		ArrayList<File> fileList = new ArrayList<File>(files.length);
-		for (int i = 0; i < files.length; i++) {
-			fileList.add(files[i]);
-		}
-		while (cnt < fileList.size()) {
-			long first = System.currentTimeMillis();
-			File firstFile = null;
-			for (Iterator<File> it = fileList.iterator(); it.hasNext();) {
-				File file = it.next();
-				if (file.lastModified() < first) {
-					first = file.lastModified();
-					firstFile = file;
-				}
-			}
-			firstFile.delete();
-			fileList.remove(firstFile);
-		}
-	}
-
-	/**
-	 * 先頭文字と末尾文字を指定するファイルフィルタークラス
-	 * 
-	 * @author hori
-	 * 
-	 */
-	protected class CsvFilter implements FilenameFilter {
-		private String head;
-		private String foot;
-
-		public CsvFilter(String head, String foot) {
-			this.head = head;
-			this.foot = foot;
-		}
-
-		public boolean accept(File dir, String name) {
-			return name.startsWith(head) && name.endsWith(foot);
-		}
-	}
 }
