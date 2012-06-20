@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="Windows-31J"?> 
+<!-- JNLP File for F-11 Demo Application --> 
+<jnlp
+	spec="1.5+" 
+	codebase="http://192.168.0.130:8080/" 
+	href="F-11.jnlp"> 
+	<information> 
+		<title>F-11 Client</title> 
+		<vendor>Freedom, Inc.</vendor> 
+		<homepage href="http://www.f-11.org/"/> 
+		<description>F-11 Client</description> 
+		<description kind="short">F-11 Client</description> 
+		<icon href="images/F-11LOGO.gif"/>
+		<icon kind="splash" href="images/F-11LOGO.gif"/>
+		<shortcut online="false">
+			<desktop/>
+			<menu submenu="F-11"/>
+		</shortcut>
+	</information> 
+	<security> 
+		<all-permissions/> 
+	</security> 
+	<resources> 
+		<j2se version="1.5+" java-vm-args="-Dcom.sun.management.jmxremote -Xmx512m -Xms256m"/> 
+		<jar href="lib/F-11.jar"/> 
+		<jar href="lib/commons-beanutils-core.jar"/> 
+		<jar href="lib/commons-collections-3.1.jar"/> 
+		<jar href="lib/commons-dbcp-1.2.1.jar"/> 
+		<jar href="lib/commons-digester-1.7.jar"/> 
+		<jar href="lib/commons-lang-2.1.jar"/> 
+		<jar href="lib/commons-logging-1.0.4.jar"/> 
+		<jar href="lib/commons-pool-1.3.jar"/> 
+		<jar href="lib/commons-primitives-1.0.jar"/> 
+		<jar href="lib/jim.jar"/> 
+		<jar href="lib/jlfgr-1_0.jar"/> 
+		<jar href="lib/log4j-1.2.8.jar"/> 
+		<jar href="lib/xalan.jar"/> 
+		<jar href="lib/xercesImpl.jar"/> 
+		<jar href="lib/xml-apis.jar"/> 
+		<jar href="lib/commons-configuration-1.1.jar"/> 
+        <jar href="lib/jcalendar-1.4.jar"/> 
+        <jar href="lib/jgoodies-common-1.2.0.jar"/> 
+        <jar href="lib/jgoodies-looks-2.4.1.jar"/> 
+		<jar href="lib/images_f11.jar"/> 
+		<jar href="lib/resources.jar"/> 
+		<jar href="lib/s2-dao-1.0.39.jar"/>
+		<jar href="lib/mysql-connector-java-3.1.13-bin.jar"/>
+	</resources> 
+	<application-desc main-class="org.F11.scada.xwife.applet.WifeAppletD"/> 
+</jnlp> 
