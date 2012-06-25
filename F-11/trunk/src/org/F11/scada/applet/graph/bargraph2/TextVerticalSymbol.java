@@ -48,4 +48,11 @@ public class TextVerticalSymbol extends TextSymbol {
 		setAlign();
 	}
 
+	public double getMin() {
+		return min;
+	}
+
+	public double getMax() {
+		return max;
+	}
 }

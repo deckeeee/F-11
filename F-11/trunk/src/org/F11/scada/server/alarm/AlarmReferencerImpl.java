@@ -50,6 +50,7 @@ import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.data.WifeQualityFlag;
 import org.F11.scada.server.alarm.table.SoundStrategy;
 import org.F11.scada.server.dao.ItemDao;
+import org.F11.scada.server.entity.Attribute;
 import org.F11.scada.server.entity.Item;
 import org.F11.scada.server.register.HolderString;
 import org.F11.scada.xwife.server.AlarmDataProvider;
@@ -122,11 +123,15 @@ public class AlarmReferencerImpl extends AbstractTableModel implements
 	private void initAlarm(DataValueChangeEventKey evt) {
 		if (isInit) {
 			Item item = itemDao.getItem(getHolderString(evt));
-			// 音有り警報が入った場合、初期警報音フラグをオン
 			logger.info("new event = " + evt.toString());
+			// 音有り警報が入った場合、初期警報音フラグをオン
+			Attribute attribute = item.getAttribute();
+			if (attribute == null || attribute.getSoundType() == null) {
+				return;
+			}
 			Integer sountType =
 				soundStrategy.getSoundType(
-					item.getAttribute().getSoundType(),
+					attribute.getSoundType(),
 					evt);
 			if (evt.getValue().booleanValue() && sountType != 0) {
 				DataHolder dh =

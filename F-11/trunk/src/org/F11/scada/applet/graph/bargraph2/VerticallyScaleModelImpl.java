@@ -42,18 +42,26 @@ import javax.swing.text.JTextComponent;
 
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.applet.dialog.SelectedFieldNumberEditor;
+import org.F11.scada.xwife.applet.alarm.LimitedAction;
 import org.apache.log4j.Logger;
 
 public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 	/** ÉçÉMÉìÉOAPI */
-	private static Logger logger = Logger.getLogger(VerticallyScaleModelImpl.class);
+	private static Logger logger = Logger
+		.getLogger(VerticallyScaleModelImpl.class);
 	private Container parent;
-	private List<ChangePeriodButtonSymbol> buttonList = new ArrayList<ChangePeriodButtonSymbol>();
-	private List<TextVerticalSymbol> textList = new ArrayList<TextVerticalSymbol>();
-	private List<VerticallyScaleChangeListener> listeners = new ArrayList<VerticallyScaleChangeListener>();
+	private List<ChangePeriodButtonSymbol> buttonList =
+		new ArrayList<ChangePeriodButtonSymbol>();
+	private List<TextVerticalSymbol> textList =
+		new ArrayList<TextVerticalSymbol>();
+	private List<VerticallyScaleChangeListener> listeners =
+		new ArrayList<VerticallyScaleChangeListener>();
 
 	private PointProperty property;
 	private String pattern;
+	private boolean limiton;
+	private double min;
+	private double max;
 
 	public void changePoint(PointProperty prop, String pattern) {
 		this.property = prop;
@@ -89,8 +97,10 @@ public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 
 	private void fireScaleChange() {
 		for (TextVerticalSymbol symbol : textList) {
-			symbol.setPattern(pattern, property.getMinimums(),
-					property.getMaximums());
+			symbol.setPattern(
+				pattern,
+				property.getMinimums(),
+				property.getMaximums());
 			symbol.updateProperty();
 		}
 		for (VerticallyScaleChangeListener l : listeners) {
@@ -109,9 +119,22 @@ public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 		dialog.setLocation(new Point(p.x, p.y - size.height));
 		Rectangle bounds = dialog.getBounds();
 		bounds.setLocation(p);
-		dialog.setLocation(WifeUtilities.getInScreenPoint(
-				frame.getToolkit().getScreenSize(), bounds));
+		dialog.setLocation(WifeUtilities.getInScreenPoint(frame
+			.getToolkit()
+			.getScreenSize(), bounds));
 		dialog.setVisible(true);
+	}
+
+	public void setMin(double min) {
+		this.min = min;
+	}
+
+	public void setMax(double max) {
+		this.max = max;
+	}
+
+	public void setLimiton(boolean limiton) {
+		this.limiton = limiton;
 	}
 
 	/**
@@ -175,10 +198,23 @@ public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 		}
 
 		private void setMaxSpinner(JPanel mainPanel, GridBagConstraints c) {
-			SpinnerNumberModel maxModel = new SpinnerNumberModel(
-					scalemodel.property.getMaximums(), Long.MIN_VALUE,
-					Long.MAX_VALUE, 1);
-			maxSpinner = new JSpinner(maxModel);
+			if (scalemodel.limiton) {
+				SpinnerNumberModel maxModel =
+					new SpinnerNumberModel(
+						scalemodel.property.getMaximums(),
+						scalemodel.min,
+						scalemodel.max,
+						1);
+				maxSpinner = new JSpinner(maxModel);
+			} else {
+				SpinnerNumberModel maxModel =
+					new SpinnerNumberModel(
+						scalemodel.property.getMaximums(),
+						Long.MIN_VALUE,
+						Long.MAX_VALUE,
+						1);
+				maxSpinner = new JSpinner(maxModel);
+			}
 			setEditor(maxSpinner);
 
 			Dimension d = maxSpinner.getPreferredSize();
@@ -188,13 +224,14 @@ public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 		}
 
 		private void setEditor(JSpinner spinner) {
-			SelectedFieldNumberEditor editer = new SelectedFieldNumberEditor(
-					spinner);
+			SelectedFieldNumberEditor editer =
+				new SelectedFieldNumberEditor(spinner);
 			JFormattedTextField text = editer.getTextField();
 			text.addFocusListener(new FocusAdapter() {
 				public void focusGained(FocusEvent e) {
 					if (e.getSource() instanceof JTextComponent) {
-						final JTextComponent textComp = ((JTextComponent) e.getSource());
+						final JTextComponent textComp =
+							((JTextComponent) e.getSource());
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
 								textComp.selectAll();
@@ -207,10 +244,23 @@ public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 		}
 
 		private void setMinSpinner(JPanel mainPanel, GridBagConstraints c) {
-			SpinnerNumberModel minModel = new SpinnerNumberModel(
-					scalemodel.property.getMinimums(), Long.MIN_VALUE,
-					Long.MAX_VALUE, 1);
-			minSpinner = new JSpinner(minModel);
+			if (scalemodel.limiton) {
+				SpinnerNumberModel minModel =
+					new SpinnerNumberModel(
+						scalemodel.property.getMinimums(),
+						scalemodel.min,
+						scalemodel.max,
+						1);
+				minSpinner = new JSpinner(minModel);
+			} else {
+				SpinnerNumberModel minModel =
+					new SpinnerNumberModel(
+						scalemodel.property.getMinimums(),
+						Long.MIN_VALUE,
+						Long.MAX_VALUE,
+						1);
+				minSpinner = new JSpinner(minModel);
+			}
 			setEditor(minSpinner);
 
 			Dimension d = minSpinner.getPreferredSize();
@@ -229,6 +279,7 @@ public class VerticallyScaleModelImpl implements VerticallyScaleModel {
 			scalemodel.fireScaleChange();
 			dispose();
 		}
+
 		private double getSpinnerValue(JSpinner spinner) {
 			Number number = (Number) spinner.getValue();
 			return number.doubleValue();
