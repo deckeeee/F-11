@@ -26,7 +26,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,16 +106,20 @@ public class TextOutputCommand implements Command {
 
 	private void checkPath() {
 		if (isSpaceOrNull(defPath)) {
-			throw new IllegalStateException("出力定義ファイルパス名が設定されていません。");
+			throw new IllegalStateException("出力定義ファイルパス名(defPath)が設定されていません。");
 		}
 		if (isSpaceOrNull(outDir)) {
-			throw new IllegalStateException("出力ファイルフォルダが設定されていません。 ");
+			throw new IllegalStateException("出力ファイルフォルダ(outDir)が設定されていません。 ");
 		}
 		if (isSpaceOrNull(outHead)) {
-			throw new IllegalStateException("出力ファイルヘッダが設定されていません。 ");
+			throw new IllegalStateException("出力ファイルヘッダ(outHead)が設定されていません。 ");
 		}
 		if (isSpaceOrNull(outFoot)) {
-			throw new IllegalStateException("出力ファイル拡張子が設定されていません。 ");
+			throw new IllegalStateException("出力ファイル拡張子(outFoot)が設定されていません。 ");
+		}
+		if (!Charset.isSupported(csn)) {
+			throw new IllegalStateException("サポートされない文字エンコードが指定されました。csn = "
+				+ csn);
 		}
 	}
 
@@ -297,8 +303,10 @@ public class TextOutputCommand implements Command {
 							FileUtil
 								.getPrintWriter(getOutPath(), isAppend, csn);
 						writeFile(out);
-						log.info("TextOutputCommandTask 書込しました。");
+						log.info("TextOutputCommandTask 出力しました。 file = " + getOutPath());
 						break;
+					} catch (UnsupportedEncodingException e) {
+						log.info("サポートされない文字エンコードが指定されました。 csn = " + csn, e);
 					} catch (IOException e) {
 						logWrite(i);
 						sleep();

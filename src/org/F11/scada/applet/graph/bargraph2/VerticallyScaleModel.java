@@ -26,5 +26,7 @@ public interface VerticallyScaleModel {
 	public void addScaleChangeButtonSymbol(ChangePeriodButtonSymbol symbol);
 	public void setParent(Container parent);
 	public void addScaleChangeListener(VerticallyScaleChangeListener l);
-
+	public void setLimiton(boolean limiton);
+	public void setMin(double min);
+	public void setMax(double max);
 }

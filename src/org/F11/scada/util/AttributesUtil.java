@@ -21,7 +21,7 @@
 
 package org.F11.scada.util;
 
-import static org.F11.scada.cat.util.CollectionUtil.list;
+import static org.F11.scada.cat.util.CollectionUtil.*;
 
 import java.awt.Insets;
 import java.util.Collections;
@@ -123,8 +123,11 @@ public abstract class AttributesUtil {
 	public static Insets getInsets(String is) {
 		if (is != null) {
 			String[] s = is.split(",");
-			return new Insets(getNumber(s[0].trim()), getNumber(s[1].trim()),
-					getNumber(s[2].trim()), getNumber(s[3].trim()));
+			return new Insets(
+				getNumber(s[0].trim()),
+				getNumber(s[1].trim()),
+				getNumber(s[2].trim()),
+				getNumber(s[3].trim()));
 		} else {
 			return new Insets(50, 80, 60, 50);
 		}
@@ -140,6 +143,18 @@ public abstract class AttributesUtil {
 		} else {
 			try {
 				return Integer.parseInt(s);
+			} catch (Exception e) {
+				return init;
+			}
+		}
+	}
+
+	public static double getDoubleValue(String s, double init) {
+		if (isSpaceOrNull(s)) {
+			return init;
+		} else {
+			try {
+				return Double.parseDouble(s);
 			} catch (Exception e) {
 				return init;
 			}

@@ -20,11 +20,13 @@ import org.F11.scada.applet.graph.bargraph2.VerticallyScaleModel;
 import org.F11.scada.applet.graph.bargraph2.VerticallyScaleModelImpl;
 import org.F11.scada.parser.State;
 import org.F11.scada.parser.Util.DisplayState;
+import org.F11.scada.util.AttributesUtil;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 public class VerticallyScaleModelState implements State {
-	private static Logger logger = Logger.getLogger(VerticallyScaleModelState.class);
+	private static Logger logger = Logger
+		.getLogger(VerticallyScaleModelState.class);
 
 	private BarGraphModel model;
 	private VerticallyScaleModel vartical;
@@ -32,10 +34,16 @@ public class VerticallyScaleModelState implements State {
 	/**
 	 * 状態を表すオブジェクトを生成します。
 	 */
-	public VerticallyScaleModelState(String tagName, Attributes atts,
+	public VerticallyScaleModelState(String tagName,
+			Attributes atts,
 			BarGraphModel model) {
 		this.model = model;
 		vartical = new VerticallyScaleModelImpl();
+		vartical.setMin(AttributesUtil.getDoubleValue(atts.getValue("min"), 0));
+		vartical.setMax(AttributesUtil.getDoubleValue(
+			atts.getValue("max"),
+			Long.MAX_VALUE));
+		vartical.setLimiton(AttributesUtil.getBooleanValue("limiton", atts));
 	}
 
 	public void add(String tagName, Attributes atts, Stack stack) {
@@ -45,7 +53,8 @@ public class VerticallyScaleModelState implements State {
 		if (tagName.equals("textsymbol")) {
 			stack.push(new TextVerticalSymbolState(tagName, atts, vartical));
 		} else if (tagName.equals("scalechangebutton")) {
-			stack.push(new ScaleChangeButtonSymbolState(tagName, atts, vartical));
+			stack
+				.push(new ScaleChangeButtonSymbolState(tagName, atts, vartical));
 		} else {
 			logger.debug("tagName : " + tagName);
 		}
