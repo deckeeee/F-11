@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page_map>
+	<page width="1028" height="800" name="TRND0004" value="/images/base/back.png" cache="true">
+		<pagechangebutton x="1110" y="40" opaque="true" width="69" height="20" value="/images/pb_main.png" changeto="main" />
+
+		<trendgraph3
+			x="0"
+			y="0"
+			width="1028"
+			height="800"
+		    horizontalForAllSpanMode="1"
+			horizontalForSelectSpanMode="1"
+			horizontalCount="1"
+			horizontalLineSpan="1"
+			dateFormat="%1$tm"
+			timeFormat="%1$tH"
+			verticalScale="1"
+			verticalCount="1"
+			scalePixcelSize="1"
+			insets="50, 80, 60, 50"
+			font="Monospaced-PLAIN-1"
+			lineColor="black"
+			backGround="gray"
+			verticalScaleColor="white"
+			pagefile="trend1.xml"
+			seriesColors="yellow, magenta, cyan, red, lime, white"
+			maxRecord="2000"
+			visibleToolbar="true"
+			visibleSeries="true"
+			visibleStatus="true"
+			visibleScroolbar="true"
+			visibleReferenceLine="true"
+			visibleVerticalString="true"
+			compositionMode="true"
+			allSpanDisplayMode="true">
+			<horizontalScaleButton>
+				<horizontalScaleButton-property
+					buttonText="4時間" labelText="1分" horizontalCount="5"
+					horizontalAllSpanMode="112" horizontalSelectSpanMode="168"
+					horizontalLineSpan="18000000" recordeSpan="60000" logName="log_table_minute" />
+				<horizontalScaleButton-property
+					buttonText="12時間" labelText="1分" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="54000000" recordeSpan="60000" logName="log_table_minute" />
+				<horizontalScaleButton-property
+					buttonText="1日間" labelText="10分" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="86400000" recordeSpan="600000" logName="log_table_10_minute" />
+				<horizontalScaleButton-property
+					buttonText="3日間" labelText="10分" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="259200000" recordeSpan="600000" logName="log_table_10_minute" />
+				<horizontalScaleButton-property
+					buttonText="1週間" labelText="1時間" horizontalCount="8"
+					horizontalAllSpanMode="70" horizontalSelectSpanMode="105"
+					horizontalLineSpan="604800000" recordeSpan="3600000" logName="log_table_hour" />
+				<horizontalScaleButton-property
+					buttonText="1月間" labelText="1時間" horizontalCount="7"
+					horizontalAllSpanMode="80" horizontalSelectSpanMode="120"
+					horizontalLineSpan="18144000000" recordeSpan="3600000" logName="log_table_hour" />
+			</horizontalScaleButton>
+			<series groupNo="1" groupName="空調">
+				<series-property index="0" visible="true" color="yellow" unit="AHU-1-1" name="空調機-1-1"
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_500_BcdSingle" />
+				<series-property index="1" visible="true" color="magenta" unit="AHU-1-2" name="空調機-1-2"
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_501_BcdSingle" />
+				<series-property index="2" visible="true" color="cyan" unit="AHU-1-3" name="空調機-1-3"
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_502_BcdSingle" />
+				<series-property index="3" visible="true" color="red" unit="AHU-1-4" name="空調機-1-4"
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_503_BcdSingle" />
+				<series-property index="4" visible="true" color="lime" unit="AHU-1-5" name="空調機-1-5"
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_504_BcdSingle" />
+				<series-property index="5" visible="true" color="white" unit="AHU-1-6" name="空調機-1-6"
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_505_BcdSingle" />
+			</series>
+			<series groupNo="2" groupName="デマンド">
+				<series-property index="0" visible="true" color="yellow" unit="" name="東棟　受電　電流"
+				  mark="kW" verticalFormat="%3.0f" max="2000" min="0" holder="P1_D_3300_BcdSingle" />
+				<series-property index="1" visible="true" color="magenta" unit="" name="東棟　受電　電圧"
+				  mark="kW" verticalFormat="%3.0f" max="2000" min="0" holder="P1_D_3301_BcdSingle" />
+				<series-property index="2" visible="true" color="cyan" unit="" name="東棟　受電　電力"
+				  mark="kW" verticalFormat="%3.0f" max="5000" min="0" holder="P1_D_3307_BcdSingle" />
+				<series-property index="3" visible="true" color="red" unit="" name="東棟　受電　無効電力"
+				  mark="kW" verticalFormat="%3.0f" max="5000" min="0" holder="P1_D_3310_BcdSingle" />
+				<series-property index="4" visible="true" color="lime" unit="" name="東棟　受電　力率"
+				  mark="kW" verticalFormat="%3.0f" max="60" min="0" holder="P1_D_3316_BcdSingle" />
+				<series-property index="5" visible="false" color="white" unit="" name=""
+				  mark="" verticalFormat="%3.0f" max="100" min="0" holder="P1_D_3316_BcdSingle" />
+			</series>
+		</trendgraph3>
+	</page>
+</page_map>

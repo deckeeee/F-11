@@ -1,0 +1,13 @@
+ClientsDefine.xml
+
+クライアントのIPアドレス毎の設定ファイル。（将来、ClientConfiguration.xmlに統合される？）
+
+
+キー:意味
+
+client ipaddress： この設定を行うクライアントのIPアドレス。
+defaultuser name: デフォルトユーザー名。ログアウト時にこのユーザーでログインするのと同じ
+                  操作権限が与えられる。
+
+デフォルトユーザー名には、user_define_table にパスワードなし（password=''）で登録された
+ユーザーの username を設定する事。
