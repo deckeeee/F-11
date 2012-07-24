@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 /**
  * DailyIteratorのテストケース
+ *
  * @author Hideaki Maekawa <frdm@users.sourceforge.jp>
  */
 public class DailyIteratorTest extends TestCase {
@@ -32,6 +33,7 @@ public class DailyIteratorTest extends TestCase {
 
 	/**
 	 * Constructor for DailyIteratorTest.
+	 *
 	 * @param arg0
 	 */
 	public DailyIteratorTest(String arg0) {
@@ -41,8 +43,8 @@ public class DailyIteratorTest extends TestCase {
 	}
 
 	public void testNext() throws Exception {
-		DailyIterator it =
-			new DailyIterator(0, 0, 0, fmt.parse("2004/12/01 00:00:00"));
+		DailyIterator it = new DailyIterator(0, 0, 0,
+				fmt.parse("2004/12/01 00:00:00"));
 		assertEquals(fmt.parse("2004/12/01 00:00:00"), it.next());
 		assertEquals(fmt.parse("2004/12/02 00:00:00"), it.next());
 		assertEquals(fmt.parse("2004/12/03 00:00:00"), it.next());
@@ -76,9 +78,20 @@ public class DailyIteratorTest extends TestCase {
 		assertEquals(fmt.parse("2004/12/31 00:00:00"), it.next());
 		assertEquals(fmt.parse("2005/01/01 00:00:00"), it.next());
 
-		it =
-			new DailyIterator(1, 0, 0, fmt.parse("2004/12/01 20:00:00"));
+		it = new DailyIterator(1, 0, 0, fmt.parse("2004/12/01 20:00:00"));
 		assertEquals(fmt.parse("2004/12/02 01:00:00"), it.next());
 	}
 
+	public void testMilliofsetNext() throws Exception {
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.S");
+		DailyIterator it = new DailyIterator(0, 0, 0,
+				fmt.parse("2004/12/01 00:00:00.0"), 1);
+		assertEquals(fmt.parse("2004/12/01 00:00:00.1"), it.next());
+		assertEquals(fmt.parse("2004/12/02 00:00:00.1"), it.next());
+
+		it = new DailyIterator(0, 0, 0, fmt.parse("2004/12/01 00:00:00.0"),
+				900000);
+		assertEquals(fmt.parse("2004/12/01 00:15:00.0"), it.next());
+		assertEquals(fmt.parse("2004/12/02 00:15:00.0"), it.next());
+	}
 }
