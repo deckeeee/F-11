@@ -42,7 +42,9 @@ import jp.gr.javacons.jim.DataHolder;
 import jp.gr.javacons.jim.Manager;
 
 import org.F11.scada.data.ConvertValue;
+import org.F11.scada.data.WifeData;
 import org.F11.scada.data.WifeDataAnalog;
+import org.F11.scada.data.WifeDataDigital;
 import org.F11.scada.server.alarm.DataValueChangeEventKey;
 import org.F11.scada.server.logging.report.CsvFilter;
 import org.F11.scada.util.FileUtil;
@@ -79,6 +81,8 @@ public class TextOutputCommand implements Command {
 	private int errorRetryCount = 10;
 	/** 出力ファイル日時フォーマットのオフセット(秒) */
 	private long outMidOffset;
+	/** デジタルホルダの出力形式(trueならboolean形式、falseなら1 or 0で出力) */
+	private boolean isDigitalMode;
 	/** Logging API */
 	private static Logger log = Logger.getLogger(TextOutputCommand.class);
 	/** スレッドプール実行クラス */
@@ -279,6 +283,10 @@ public class TextOutputCommand implements Command {
 		this.isAppend = isAppend;
 	}
 
+	public void setDigitalMode(boolean isDigital) {
+		this.isDigitalMode = isDigital;
+	}
+
 	/**
 	 * Executor で実行されるタスクのクラスです。
 	 *
@@ -303,7 +311,8 @@ public class TextOutputCommand implements Command {
 							FileUtil
 								.getPrintWriter(getOutPath(), isAppend, csn);
 						writeFile(out);
-						log.info("TextOutputCommandTask 出力しました。 file = " + getOutPath());
+						log.info("TextOutputCommandTask 出力しました。 file = "
+							+ getOutPath());
 						break;
 					} catch (UnsupportedEncodingException e) {
 						log.info("サポートされない文字エンコードが指定されました。 csn = " + csn, e);
@@ -366,11 +375,26 @@ public class TextOutputCommand implements Command {
 						log.error("", e);
 						throw e;
 					} else {
-						WifeDataAnalog da = (WifeDataAnalog) dh.getValue();
-						ConvertValue conv =
-							(ConvertValue) dh
-								.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
-						out.print(conv.convertStringValue(da.doubleValue()));
+						WifeData wa = (WifeData) dh.getValue();
+						if (wa instanceof WifeDataAnalog) {
+							WifeDataAnalog da = (WifeDataAnalog) dh.getValue();
+							ConvertValue conv =
+								(ConvertValue) dh
+									.getParameter(WifeDataProvider.PARA_NAME_CONVERT);
+							out
+								.print(conv.convertStringValue(da.doubleValue()));
+						} else if (wa instanceof WifeDataDigital) {
+							WifeDataDigital da =
+								(WifeDataDigital) dh.getValue();
+							boolean bit = da.isOnOff(true);
+							out.print(getDigitalValue(bit));
+						} else {
+							IllegalStateException e =
+								new IllegalStateException(p.getValue()
+									+ " がデジタル又はアナログではありません。");
+							log.error("", e);
+							throw e;
+						}
 					}
 				} else if ("text".equalsIgnoreCase(p.getName())) {
 					out.print(p.getValue());
@@ -381,6 +405,14 @@ public class TextOutputCommand implements Command {
 					log.error("", e);
 					throw e;
 				}
+			}
+		}
+
+		private String getDigitalValue(boolean bit) {
+			if (isDigitalMode) {
+				return bit ? "true" : "false";
+			} else {
+				return bit ? "1" : "0";
 			}
 		}
 	}
