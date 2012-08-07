@@ -228,7 +228,7 @@ public class WifeMain extends JPanel {
 			schedulePointService =
 				(SchedulePointService) container
 					.getComponent("scheduleService");
-			schedulePointService.init();
+//			schedulePointService.init();
 		}
 
 		accessControl = new AccessControl(rmiReceivePort);
