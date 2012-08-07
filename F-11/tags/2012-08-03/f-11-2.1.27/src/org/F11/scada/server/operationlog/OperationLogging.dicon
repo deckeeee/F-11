@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components namespace="opelog">
+	<include path="dao.dicon"/>
+	
+	<component class="org.F11.scada.server.operationlog.dao.OperationLoggingDao">
+		<aspect>dao.interceptor</aspect>
+	</component>
+
+	<component class="org.F11.scada.server.operationlog.impl.OperationLoggingUtilImpl" />
+
+	<component class="org.F11.scada.server.operationlog.impl.OperationLoggingServiceImpl"
+		name="opelogservice">
+		<description>ManagerDelegatorで参照(生成)されます</description>
+	</component>
+</components>
