@@ -28,6 +28,7 @@ import org.F11.scada.util.FontUtil;
 public class OnlyMeDialog extends JDialog {
 	private static final long serialVersionUID = -3271636626461992386L;
 	private static final long PRIOD_TIME = 1000L;
+	private static final String END_PREFIX = "秒後にこのウィンドウを閉じます。";
 	private Timer timer;
 
 	/**
@@ -73,7 +74,7 @@ public class OnlyMeDialog extends JDialog {
 		mainLabel.setFont(FontUtil.getFont("Monospaced-PLAIN-30"));
 		p.add(mainLabel);
 		long secTime = max / PRIOD_TIME;
-		JLabel secLabel = new JLabel(secTime + "秒後に終了します。");
+		JLabel secLabel = new JLabel(secTime + END_PREFIX);
 		secLabel.setFont(FontUtil.getFont("Monospaced-PLAIN-30"));
 		timer.scheduleAtFixedRate(
 			new SecTimerTask(secLabel, secTime),
@@ -143,7 +144,7 @@ public class OnlyMeDialog extends JDialog {
 
 		@Override
 		public void run() {
-			label.setText(secTime + "秒後に終了します。");
+			label.setText(secTime + END_PREFIX);
 			--secTime;
 		}
 	}
