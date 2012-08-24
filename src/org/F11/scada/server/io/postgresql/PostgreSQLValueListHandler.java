@@ -239,7 +239,7 @@ public class PostgreSQLValueListHandler implements Runnable,
 
 	private boolean isCreateMaster() {
 		return Boolean
-			.valueOf(EnvironmentManager.get("/server/isCreateMaster", "false"))
+			.valueOf(EnvironmentManager.get("/server/isCreateMaster", "true"))
 			.booleanValue();
 	}
 

@@ -23,21 +23,20 @@ package org.F11.scada.server.logging.report.schedule;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-import org.apache.commons.lang.time.FastDateFormat;
-import org.apache.log4j.Logger;
-
 public class OneHourMonthOut2Schedule extends DailySchedule {
-	private final Logger logger = Logger.getLogger(OneHourMonthOut2Schedule.class);
 
 	public Timestamp startTime(long now, boolean startMode) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(now);
-		cal.add(Calendar.DAY_OF_MONTH, -1);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int date = cal.get(Calendar.DATE);
+		if (1 == date && 1 > hour) {
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+		}
 		int y = cal.get(Calendar.YEAR);
 		int m = cal.get(Calendar.MONTH);
 		cal.clear();
 		cal.set(y, m, 1, 1, 1);
-		logger.info("S:" + cal.toString());
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
@@ -46,10 +45,7 @@ public class OneHourMonthOut2Schedule extends DailySchedule {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(start.getTime());
 		cal.add(Calendar.MONTH, 1);
-//		cal.add(Calendar.MINUTE, -59);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 1);
-		logger.info("E:" + cal.toString());
+		cal.add(Calendar.MINUTE, -59);
 		return new Timestamp(cal.getTimeInMillis());
 	}
 }
