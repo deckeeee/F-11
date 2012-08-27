@@ -30,7 +30,7 @@ public class RemoveSchedulerTask extends SchedulerTask {
 	private static Logger logger = Logger.getLogger(RemoveSchedulerTask.class);
 	private final RemoveDao dao;
 	private final RemoveDto dto;
-	
+
 	public RemoveSchedulerTask(RemoveDao dao, RemoveDto dto) {
 		this.dao = dao;
 		this.dto = dto;
@@ -38,6 +38,10 @@ public class RemoveSchedulerTask extends SchedulerTask {
 	}
 
 	public void run() {
-		dao.remove(dto);
+		try {
+			dao.remove(dto);
+		} catch (Exception e) {
+			logger.warn("SQL実行時にエラーが発生。", e);
+		}
 	}
 }
