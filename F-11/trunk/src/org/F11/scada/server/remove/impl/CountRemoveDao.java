@@ -31,12 +31,13 @@ import org.F11.scada.server.remove.RemoveExecutorFactory;
 import org.apache.log4j.Logger;
 import org.seasar.extension.jdbc.impl.BasicSelectHandler;
 import org.seasar.framework.container.S2Container;
+import org.seasar.framework.exception.SQLRuntimeException;
 
 /**
  * 残レコード件数を指定して、レコードを削除するDaoクラスです。
- * 
+ *
  * @author maekawa
- * 
+ *
  */
 public class CountRemoveDao implements RemoveDao {
 	private static Logger logger = Logger.getLogger(CountRemoveDao.class);
@@ -64,7 +65,12 @@ public class CountRemoveDao implements RemoveDao {
 	}
 
 	private boolean isRemove(RemoveDto dto) {
-		return getCount(dto).intValue() > dto.getRemoveValue();
+		try {
+			return getCount(dto).intValue() > dto.getRemoveValue();
+		} catch (SQLRuntimeException e) {
+			logger.warn("件数カウントでエラーが発生。単にまだ、作成されていないテーブルかもしれません。", e);
+			return false;
+		}
 	}
 
 	private Number getCount(RemoveDto dto) {
