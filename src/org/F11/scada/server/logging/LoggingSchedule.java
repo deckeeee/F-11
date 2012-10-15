@@ -450,7 +450,6 @@ public abstract class LoggingSchedule {
 			if (minute % waitMinite != 0) {
 				minute += waitMinite - (minute % waitMinite);
 			}
-			cal.set(Calendar.MINUTE, minute);
 			timer.scheduleAtFixedRate(task, cal.getTime(), period);
 		}
 	}

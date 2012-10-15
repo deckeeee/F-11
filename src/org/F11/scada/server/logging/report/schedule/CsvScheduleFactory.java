@@ -30,7 +30,7 @@ public class CsvScheduleFactory {
 		} else if ("MINUTE".equalsIgnoreCase(name)) {
 			return new MinuteSchedule();
 		} else if (isTenminute(name)) {
-			return new TenMinuteSchedule();
+			return TenMinuteSchedule.getSomeMinuteSchedule(name);
 		} else if ("ONEMINUTE".equalsIgnoreCase(name)) {
 			return new OneMinuteSchedule();
 		} else if ("HOUR".equalsIgnoreCase(name)) {

@@ -58,6 +58,7 @@ import org.F11.scada.server.io.SelectHandler;
 import org.F11.scada.server.io.ValueListHandlerElement;
 import org.F11.scada.server.register.HolderString;
 import org.F11.scada.util.ConnectionUtil;
+import org.F11.scada.util.ThreadUtil;
 import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.log4j.Logger;
 import org.seasar.framework.container.S2Container;
@@ -210,6 +211,7 @@ public class PostgreSQLValueListHandler implements Runnable,
 	 * @param key 検索するレコードのタイムスタンプ
 	 */
 	public void findRecord(Timestamp key) {
+		ThreadUtil.sleep(5000L);
 		if (isCreateMaster()) {
 			masterSortedMap.clear();
 			try {

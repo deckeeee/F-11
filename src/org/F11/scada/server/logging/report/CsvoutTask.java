@@ -67,7 +67,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 	private final BitSet attributeSet;
 
 	/**
-	 * 
+	 *
 	 * @param logg_name
 	 * @param handlerManager
 	 * @param schedule
@@ -120,7 +120,7 @@ public class CsvoutTask extends AbstractCsvoutTask {
 
 	/**
 	 * CSVファイル作成
-	 * 
+	 *
 	 * @param file 作成するCSVファイル
 	 * @return 先頭レコードの日付
 	 */
