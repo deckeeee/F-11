@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN"
+	"http://www.seasar.org/dtd/components23.dtd">
+
+<components>
+	<include path="org/F11/scada/server/alarm/mail/dao/AlarmEmailSentService.dicon"/>
+
+	<component class="org.F11.scada.server.alarm.mail.SmtpEnvironments" name="environments" >
+	</component>
+	<component class="java.util.Properties" name="properties" >
+		<initMethod name="setProperty" >
+			<arg>"mail.smtp.host"</arg>
+			<arg>environments.servername</arg>
+		</initMethod>
+		<initMethod name="setProperty" >
+			<arg>"mail.smtp.auth"</arg>
+			<arg>"true"</arg>
+		</initMethod>
+	</component>
+	<component name="mailsession" >
+		@javax.mail.Session@getInstance(properties)
+	</component>
+	<component class="org.F11.scada.server.alarm.mail.send.SmtpAuthTransportCore" >
+		<arg>mailsession</arg>
+		<arg>environments</arg>
+	</component>
+
+	<component class="java.util.concurrent.LinkedBlockingQueue" />
+	<component class="org.F11.scada.server.alarm.mail.send.TransportServiceImpl" name="transport" >
+		<property name="retryCount">
+		@java.lang.Integer@parseInt(@org.F11.scada.EnvironmentManager@get("/server/mail/message/retry", "5"))
+		</property>
+		<property name="waitTime">
+		@java.lang.Long@parseLong(@org.F11.scada.EnvironmentManager@get("/server/mail/message/wait", "1000"))
+		</property>
+	</component>
+
+	<component class="org.F11.scada.server.alarm.mail.AlarmMailSmtpAuthImpl"
+		name="smtpAuthAlarmMail" >
+		<property name="transportService">transport</property>
+		<property name="session">mailsession</property>
+		<property name="environments">environments</property>
+	</component>
+</components>
