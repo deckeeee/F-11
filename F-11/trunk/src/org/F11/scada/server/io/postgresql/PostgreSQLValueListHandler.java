@@ -261,7 +261,9 @@ public class PostgreSQLValueListHandler implements Runnable,
 
 		while (ct == thread) {
 			LoggingDataEvent event = (LoggingDataEvent) queue.dequeue();
-			updateMasterSortedMap(event); //findRecordで再読込する為不要になった?
+			if (isCreateMaster()) {
+				updateMasterSortedMap(event); //findRecordで再読込する為不要になった?
+			}
 			fireChangeLoggingData(event);
 		}
 	}
