@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+
+<!-- 最新情報と警報・状態一覧の設定です -->
+
+<alarm>
+	<news backGround="aquamarine">
+		<font type="dialog" point="24" style="bold" />
+	</news>
+	<table backGround="aquamarine" headerBackGround="beige" headerForeGround="saddlebrown" defaultTabNo="2">
+		<font type="Serif" point="14" style="plain" />
+	</table>
+	<server message="サーバーコネクションエラー" sound="/sounds/wave/DANGER.WAV" />
+	
+	<page cacheMax="1" />
+
+	<!--
+	** Attribute ***
+		displayLogin true | false  ... It is the existence of a login button display to a tool bar at the time of an applet.
+	-->
+	<toolbar displayLogin="true" />
+	<init initPage="計測一覧表" />
+	<!-- title text="F-11 クライアント" image="/images/titleIcon.png" / -->
+	<title text="F-11 クライアント"/>
+</alarm>
