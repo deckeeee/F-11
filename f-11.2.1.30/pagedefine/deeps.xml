@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+	<f11:page name="deeps" value="/images/base/back.png">
+
+		<f11:imagesymboleditable value="/images/ffub2.png" x="0" y="0"
+			dlgname="Dialog4" tooltiptext="&lt;html&gt;&lt;font size=5&gt;ABC-EFG-010&lt;/font&gt;&lt;/html&gt;" dlgtitle="空調機1-1">
+			<f11:destination>
+				<f11:fixeddigital provider="P1"
+					holder="D_1900000_Digital" value="true" />
+			</f11:destination>
+			<f11:destination>
+				<f11:fixeddigital provider="P1"
+					holder="D_1900001_Digital" value="true" />
+			</f11:destination>
+			<f11:schedule schedule="P1_D_2000_Schedule" group="P1_D_600_BcdSingle"/>
+			<f11:pinpoint maxrow="99">
+				<f11:pinpoint-property holder="P1_D_1900001_Digital" />
+				<f11:pinpoint-property holder="P1_D_1900000_Digital" />
+			</f11:pinpoint>
+		</f11:imagesymboleditable>
+		<!--f11:imagesymbol value="/images/ffu_g.png" x="2" y="12" -->
+		<f11:imagesymbol value="" x="2" y="12"
+			visible="true">
+			<f11:if value="P1_D_1900001_Digital">
+				<f11:property value="/images/ffu_r.png" x="20" y="50" />
+			</f11:if>
+		</f11:imagesymbol>
+
+		<f11:stringdatasymbol value="P1_D_4100_StringData" x="0" y="400"
+			font="Monospaced" font_style="plain" font_size="16" width="400"
+			height="20">
+		</f11:stringdatasymbol>
+
+		<f11:textanalogsymboleditable value="P1_D_510_BcdSingle" visible="true" foreground="yellow" background="navy" x="0" y="410"
+		 h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" dlgtitle="テスト" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_510_BcdSingle"/>
+			</f11:destination>
+		</f11:textanalogsymboleditable>
+
+		<f11:trendjumpbutton x="5" y="50"
+		  value="/images/clipboard.png" changeto="TRND0001" argv="1" immediate="false" tooltiptext="トレンド1" message="トレンド1に移動します。" title="トレンド1に移動"/>
+		<f11:trendjumpbutton x="5" y="80"
+		  value="/images/clipboard.png" changeto="TRND0003" argv="1" immediate="false" tooltiptext="トレンド2" message="トレンド2に移動します。" title="トレンド2に移動"/>
+		<f11:trendjumpbutton x="5" y="110"
+		  value="/images/clipboard.png" changeto="TRND0004" argv="2" immediate="true" tooltiptext="トレンド4" message="トレンド4に移動します。" title="トレンド4に移動"/>
+
+
+		<f11:table foreground="white" background="navy" header_foreground="black" header_background="lightblue" x="5" y="130" width="110" height="80">
+			<f11:column>
+				<f11:title width="20" value="No" font="Monospaced" font_style="plain" font_size="17" />
+				<f11:title width="90" value="状態" font="Monospaced" font_style="plain" font_size="17" />
+			</f11:column>
+
+			<f11:data>
+				<f11:row>
+					<f11:textsymbol value="01" foreground="magenta" font="Monospaced" font_style="plain" font_size="17"/>
+	<!--12-->		<f11:textsymbol  opaque="true" font="Monospaced" font_style="plain" h_aligin="CENTER"
+					 value="エラー" background="yellow" foreground="black" font_size="18">
+						<f11:if value="P1_D_1900001_Digital">
+							<f11:property value="有効"        background="red"       foreground="white" font_size="18" blink="false"/>
+							<f11:property value="無効"        background="green"     foreground="white" font_size="18" blink="false"/>
+						</f11:if>
+					</f11:textsymbol>
+				</f11:row>
+			</f11:data>
+		</f11:table>
+	</f11:page>
+</f11:page_map>
