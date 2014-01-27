@@ -212,31 +212,33 @@ public class PostgreSQLValueListHandler implements Runnable,
 	 */
 	public void findRecord(Timestamp key) {
 		ThreadUtil.sleep(5000L);
-		if (isCreateMaster()) {
-			masterSortedMap.clear();
-			try {
-				createMasterSortedMap();
-			} catch (SQLException e) {
-				String msg = e.getMessage();
-				if (msg != null && msg.equals(SelectHandler.TABLE_NOT_FOUND)) {
-					masterSortedMap = new TreeMap();
-				} else {
-					logger.error("", e);
+		synchronized (this) {
+			if (isCreateMaster()) {
+				masterSortedMap.clear();
+				try {
+					createMasterSortedMap();
+				} catch (SQLException e) {
+					String msg = e.getMessage();
+					if (msg != null && msg.equals(SelectHandler.TABLE_NOT_FOUND)) {
+						masterSortedMap = new TreeMap();
+					} else {
+						logger.error("", e);
+					}
 				}
 			}
+			SortedMap tailMap = masterSortedMap.tailMap(key);
+			SortedMap headMap = masterSortedMap.headMap(key);
+			SortedMap sortedMap = null;
+			if (tailMap.containsKey(key) || headMap.isEmpty()) {
+				sortedMap = new TreeMap(tailMap);
+			} else {
+				Object lastKey = headMap.lastKey();
+				Object lastValue = headMap.get(lastKey);
+				sortedMap = new TreeMap(tailMap);
+				sortedMap.put(lastKey, lastValue);
+			}
+			createValueIterator(sortedMap);
 		}
-		SortedMap tailMap = masterSortedMap.tailMap(key);
-		SortedMap headMap = masterSortedMap.headMap(key);
-		SortedMap sortedMap = null;
-		if (tailMap.containsKey(key) || headMap.isEmpty()) {
-			sortedMap = new TreeMap(tailMap);
-		} else {
-			Object lastKey = headMap.lastKey();
-			Object lastValue = headMap.get(lastKey);
-			sortedMap = new TreeMap(tailMap);
-			sortedMap.put(lastKey, lastValue);
-		}
-		createValueIterator(sortedMap);
 	}
 
 	private boolean isCreateMaster() {
