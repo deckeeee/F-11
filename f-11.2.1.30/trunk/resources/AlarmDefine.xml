@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-31j"?>
+<alarm>
+	<news backGround="WHITE">
+		<font type="Monospaced" style="PLAIN" point="18" />
+		<linecount value="1" />
+	</news>
+	<table backGround="WHITE" headerBackGround="SILVER" headerForeGround="BLACK" defaultTabNo="2">
+		<font type="Monospaced" style="PLAIN" point="14" />
+		<linecount value="20" />
+	</table>
+	<server message="サーバーコネクションエラー" sound="/sounds/wave/DANGER.WAV" />
+	<toolbar displayLogin="true" />
+	<init initPage="グラフシンボル" />
+	<title text="A&amp;A" image="" />
+</alarm>

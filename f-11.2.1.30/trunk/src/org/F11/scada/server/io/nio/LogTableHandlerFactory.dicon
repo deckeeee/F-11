@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components>
+	<include path="resources/j2ee.dicon"/>
+	<include path="org/F11/scada/server/io/postgresql/ItemUtil.dicon"/>
+
+	<component name="basicUpdate"
+		class="org.seasar.extension.jdbc.impl.BasicUpdateHandler"
+		instance="prototype" >
+		<property name="sql">""</property>
+	</component>
+
+	<component name="basicBatchUpdate"
+		class="org.seasar.extension.jdbc.impl.BasicBatchHandler"
+		instance="prototype" >
+		<property name="sql">""</property>
+	</component>
+
+	<component name="selectBeanList"
+		class="org.seasar.extension.jdbc.impl.BasicSelectHandler"
+		instance="prototype" >
+		<property name="sql">""</property>
+		<property name="resultSetHandler">
+			<component class="org.seasar.extension.jdbc.impl.BeanListResultSetHandler" instance="prototype" >
+				<arg>@org.F11.scada.server.io.nio.dto.LogDto@class</arg>
+			</component>
+		</property>
+	</component>
+
+	<component name="selectBean"
+		class="org.seasar.extension.jdbc.impl.BasicSelectHandler"
+		instance="prototype" >
+		<property name="sql">""</property>
+		<property name="resultSetHandler">
+			<component class="org.seasar.extension.jdbc.impl.BeanResultSetHandler" instance="prototype" >
+				<arg>@org.F11.scada.server.io.nio.dto.LogDto@class</arg>
+			</component>
+		</property>
+	</component>
+
+	<component class="org.F11.scada.server.io.nio.impl.CreateLogTableDaoImpl"/>
+
+	<component class="org.F11.scada.server.io.nio.impl.LogTableDaoImpl"/>
+
+	<component class="java.util.concurrent.locks.ReentrantLock" />
+
+	<component class="org.F11.scada.server.io.nio.LogTableStoreHandler" instance="prototype" >
+		<property name="service">
+			<component class="org.F11.scada.server.io.nio.impl.LogTableStoreServiceImpl" instance="prototype" >
+				<aspect>j2ee.requiredTx</aspect>
+				<property name="logDtoCreator">
+					<component class="org.F11.scada.server.io.nio.impl.LogDtoCreatorImpl" instance="prototype" />
+				</property>
+			</component>
+		</property>
+		<property name="queue">
+			<component class="java.util.concurrent.LinkedBlockingQueue" instance="prototype" />
+		</property>
+	</component>
+
+	<component class="org.F11.scada.server.io.nio.impl.LogTableSelectServiceImpl" instance="prototype" />
+
+	<component class="org.F11.scada.server.io.nio.LogTableSelectHandler" instance="prototype" />
+</components>
