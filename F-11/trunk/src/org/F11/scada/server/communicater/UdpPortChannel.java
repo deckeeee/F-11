@@ -161,6 +161,13 @@ public final class UdpPortChannel implements PortListener, PortChannel {
 			if (listener != null) {
 				listener.recvPerformed(recvBuffer);
 			}
+		} else {
+			if (addr == null) {
+				log.info("UDPDEBUG:addr ‚ª null");
+			}
+			if (!recvBuffer.hasRemaining()) {
+				log.info("UDPDEBUG:recvBuffer ‚ª ‹ó");
+			}
 		}
 	}
 

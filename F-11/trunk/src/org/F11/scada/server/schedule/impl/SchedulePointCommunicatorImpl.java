@@ -157,6 +157,9 @@ public class SchedulePointCommunicatorImpl implements SchedulePointCommunicator 
 	private boolean isNetError(String provider) {
 		DataHolder errHolder =
 			Manager.getInstance().findDataHolder(provider, Globals.ERR_HOLDER);
+		if(errHolder == null) {
+			logger.error("¥◊∞ÉzÉãÉ_Å[ñ¢ìoò^ = " + provider);
+		}
 		WifeDataDigital wd = WifeDataDigital.valueOfTrue(0);
 		return wd.equals(errHolder.getValue());
 	}
