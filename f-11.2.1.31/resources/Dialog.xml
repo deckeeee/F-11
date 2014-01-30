@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- ダイアログ定義 -->
+<xwife:dialogmap xmlns:xwife="http://www.F11.org/scada">
+	<xwife:dialog name="0" width="350" height="110">
+		<xwife:button text="ＯＮ" x="15" y="10" width="200" height="60" action="21" foreground="white" background="red" font="Serif" font_style="ITALIC" font_size="36" />
+		<xwife:button text="ＯＦＦ" x="95" y="10" width="80" height="35" action="22"/>
+<!--		<xwife:button text="jump" x="175" y="10" width="80" height="35" action="23"/> -->
+		<xwife:button text="Cancel" x="255" y="20" width="80" height="25" action="6"/>
+	</xwife:dialog>
+	<xwife:tenkeydialog name="1" width="230" height="250"/>
+	<xwife:pftenkeydialog name="2" width="230" height="300"/>
+	<xwife:udlimitdialog name="4" width="200" height="200"/>
+	<!--xwife:udlimitdialog name="4" width="200" height="200" labels="ラベル1|ラベル2|ラベル3|ラベル4" titles="タイトル1|タイトル2|タイトル3|タイトル4"/-->
+	<xwife:tenkeydialognotab name="5" width="230" height="250"/>
+	<xwife:pflelaudlimitdialog name="6" width="200" height="200"/>
+	<xwife:pflaleudlimitdialog name="7" width="200" height="200"/>
+	<xwife:pflatenkeydialog name="8" width="230" height="300"/>
+	<xwife:pfletenkeydialog name="9" width="230" height="300"/>
+	<xwife:tenkeydialog name="12" width="230" height="250" dialogMin="0.1" dialogMax="100"/>
+	<xwife:graphicscheduleviewdialog name="3" width="1000" height="195" isSort="false"/>
+	<xwife:graphicscheduleviewdialog name="11" width="1000" height="195"/>
+	<xwife:graphicscheduleviewdialog name="13" width="1070" height="460" isSort="false" viewMode="7"/>
+	<xwife:pointcommentdialog name="10" width="380" height="220"/>
+	<xwife:pinpointdialog name="14" width="465" height="300" rowWidth1="150" rowWidth2="80" rowWidth3="50"/>
+
+	<xwife:dialog name="Dialog4" width="410" height="100">
+		<xwife:button text="ＯＮ" x="15" y="10" width="70" height="35" action="21"/>
+		<xwife:button text="ＯＦＦ" x="85" y="10" width="70" height="35" action="22"/>
+		<xwife:button text="個別ｽｹｼﾞｭｰﾙ"   x="155" y="20" width="100" height="25" action="5" schedule="3"/>
+		<xwife:button text="履歴"   x="255" y="20" width="60" height="25" action="4" schedule="14" />
+		<xwife:button text="Cancel" x="315" y="20" width="80" height="25" action="6"/>
+	</xwife:dialog>
+
+</xwife:dialogmap>
