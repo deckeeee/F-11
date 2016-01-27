@@ -121,7 +121,7 @@ public final class PlcCommunicater implements Communicater {
 	public Map<WifeCommand, byte[]> syncRead(Collection<WifeCommand> commands,
 			boolean sameDataBalk) throws InterruptedException, IOException,
 			WifeException {
-		lock.writeLock();
+		lock.readLock();
 		try {
 			log.debug("syncRead(" + commands.size() + ")");
 			// 集合コマンドを取得
@@ -156,7 +156,7 @@ public final class PlcCommunicater implements Communicater {
 			}
 			return commandDataMap;
 		} finally {
-			lock.writeUnlock();
+			lock.readUnlock();
 		}
 	}
 
