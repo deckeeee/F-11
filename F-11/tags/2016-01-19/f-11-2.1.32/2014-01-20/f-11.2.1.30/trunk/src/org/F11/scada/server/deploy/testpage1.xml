@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="Windows-31J"?>
-<f11:page_map xmlns:f11="http://www.F-11.org/scada">
-	<f11:page name="testpage1" value="/images/Base/KCHO_01.png" cacheClear="false">
-		<f11:pagechangebutton x="10" y="500" width="100" height="20" value="スケルトン" changeto="スケルトン" />
-	</f11:page>
-</f11:page_map>

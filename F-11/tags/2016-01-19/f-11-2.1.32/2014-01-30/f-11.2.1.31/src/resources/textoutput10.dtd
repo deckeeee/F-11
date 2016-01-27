@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="Windows-31J"?>
-<!--
-<!DOCTYPE textout PUBLIC "-//F-11 2.0//DTD F11 Textout Configuration//EN"
-	"http://f-11.sourceforge.jp/dtds/textoutput10.dtd">
--->
-<!ELEMENT textout (property+)>
-<!ELEMENT property (#PCDATA)>
-<!ATTLIST property name CDATA #REQUIRED
-                   value CDATA #REQUIRED>

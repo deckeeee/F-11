@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="Windows-31J"?>
- <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
- <properties>
-   <comment>プライオリティによる自動ジャンプの制御 true/false (初期値はfalse)</comment>
-   <entry key="org.F11.scada.xwife.applet.alarm.PriorityController">true</entry>
- </properties>
- 

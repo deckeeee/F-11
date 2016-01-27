@@ -1,1 +1,0 @@
-start javaw -classpath lib/Vamp.jar jp.co.frdm.Vamp.VampMain f11.vmp
