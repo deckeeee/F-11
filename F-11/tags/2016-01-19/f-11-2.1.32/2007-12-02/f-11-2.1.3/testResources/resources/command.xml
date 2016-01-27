@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<!--
+	コマンドプロバイダ定義
+-->
+
+<command-provider>
+<!--
+	<command provider="P1" holder="D_1900000_Digital">
+		<class className="org.F11.scada.server.command.FileWriteCommand">
+			<property name="path" value="c:/temp/D1900000.txt" />
+			<property name="errorRetryCount" value="1000" />
+			<property name="errorRetryTime" value="100" />
+		</class>
+		<class className="org.F11.scada.server.command.FileWriteCommand">
+			<property name="path" value="c:/temp/D1900000_1.txt" />
+			<property name="errorRetryCount" value="1000" />
+			<property name="errorRetryTime" value="100" />
+		</class>
+	</command>
+-->
+</command-provider>

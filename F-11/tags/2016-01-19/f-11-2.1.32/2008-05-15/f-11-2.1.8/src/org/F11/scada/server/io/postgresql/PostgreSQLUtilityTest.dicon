@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components>
+	<include path="org/F11/scada/server/dao/ItemArrayDao.dicon"/>
+	<include path="org/F11/scada/server/dao/ItemDao.dicon"/>
+
+	<component class="org.F11.scada.server.io.postgresql.ItemUtilImpl"
+		name="itemutil" instance="prototype" >
+		<property name="itemArrayDao">ItemArrayDao.itemarraydao</property>
+		<property name="itemDao">ItemDao.itemdao</property>
+		<property name="communicaterFactory">@org.F11.scada.server.io.postgresql.PostgreSQLUtilityTest@createCommunicaterFactoryMock()</property>
+	</component>
+
+	<component class="org.F11.scada.server.io.postgresql.ItemUtilImpl"
+		name="itemutil2" instance="prototype" >
+		<property name="itemArrayDao">ItemArrayDao.itemarraydao</property>
+		<property name="itemDao">ItemDao.itemdao</property>
+		<property name="communicaterFactory">@org.F11.scada.server.io.postgresql.PostgreSQLUtilityTest@createCommunicaterFactoryMock2()</property>
+	</component>
+
+	<component class="org.F11.scada.server.io.postgresql.PostgreSQLUtility" name="sql1">
+		<arg>itemutil</arg>
+		<arg>@org.F11.scada.server.io.postgresql.PostgreSQLUtilityTest@createCommunicaterFactoryMock()</arg>
+	</component>
+
+	<component class="org.F11.scada.server.io.postgresql.PostgreSQLUtility" name="sql2">
+		<arg>itemutil2</arg>
+		<arg>@org.F11.scada.server.io.postgresql.PostgreSQLUtilityTest@createCommunicaterFactoryMock2()</arg>
+	</component>
+</components>

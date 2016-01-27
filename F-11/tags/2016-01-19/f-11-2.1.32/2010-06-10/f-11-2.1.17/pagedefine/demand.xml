@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+    <f11:page name="デマンド監視" value="/images/base/back.png">
+        <f11:table background="navy" foreground="white"
+            header_background="lightblue" header_foreground="black"
+            height="135" width="160" x="10" y="50">
+            <f11:column>
+                <f11:title font="Dialog" font_size="12"
+                    font_style="plain" value="現在値" width="100"/>
+                <f11:title font="Dialog" font_size="12"
+                    font_style="plain" value="" width="60"/>
+            </f11:column>
+            <f11:data>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="lime"
+                        value="契約電力" visible="true" x="50" y="70"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="lime" value="P1_D_3300_BcdSingle"
+                        visible="true" x="150" y="70"/>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="cyan"
+                        value="目標電力" visible="true" x="50" y="90"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="cyan" value="P1_D_3301_BcdSingle"
+                        visible="true" x="150" y="90"/>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="yellow"
+                        value="予想電力" visible="true" x="50" y="110"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="yellow" value="P1_D_3310_BcdSingle"
+                        visible="true" x="150" y="110"/>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="red"
+                        value="現在デマンド" visible="true" x="50" y="130"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="red" value="P1_D_3307_BcdSingle"
+                        visible="true" x="150" y="130"/>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="white"
+                        value="最大デマンド" visible="true" x="50" y="150"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="white" value="P1_D_3318_BcdSingle"
+                        visible="true" x="150" y="150"/>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="white"
+                        value="残り電力" visible="true" x="50" y="170"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="white" value="P1_D_3308_BcdSingle"
+                        visible="true" x="150" y="170"/>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="white"
+                        value="平均電力" visible="true" x="50" y="190"/>
+                    <f11:textanalogsymbol background="navy"
+                        border="BebelDown" font="SansSerif"
+                        font_size="12" font_style="plain"
+                        foreground="white" value="P1_D_3309_BcdSingle"
+                        visible="true" x="150" y="190"/>
+                </f11:row>
+            </f11:data>
+        </f11:table>
+        <f11:table background="navy" foreground="white"
+            header_background="lightblue" header_foreground="black"
+            height="85" width="160" x="10" y="210">
+            <f11:column>
+                <f11:title font="Dialog" font_size="12"
+                    font_style="plain" value="設定パラメータ" width="100"/>
+                <f11:title font="Dialog" font_size="12"
+                    font_style="plain" value="" width="60"/>
+            </f11:column>
+            <f11:data>
+                <f11:row>
+                    <f11:textsymbol background="navy" blink="false"
+                        foreground="white" value="契約電力" visible="true"
+                        x="50" y="240"/>
+                    <f11:textanalogsymboleditable background="blue"
+                        blink="false" border="BebelDown" dlgname="1"
+                        dlgtitle="名称" font_style="plain"
+                        foreground="yellow" opaque="false"
+                        value="P1_D_3300_BcdSingle" visible="true"
+                        x="150" y="240">
+                        <f11:destination>
+                            <f11:variableanalog
+                                holder="D_3300_BcdSingle" provider="P1"/>
+                        </f11:destination>
+                    </f11:textanalogsymboleditable>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol background="navy" blink="false"
+                        foreground="white" value="目標電力" visible="true"
+                        x="50" y="260"/>
+                    <f11:textanalogsymboleditable background="blue"
+                        blink="false" border="BebelDown" dlgname="1"
+                        dlgtitle="名称" font_style="plain"
+                        foreground="yellow" opaque="false"
+                        value="P1_D_3301_BcdSingle" visible="true"
+                        x="150" y="260">
+                        <f11:destination>
+                            <f11:variableanalog
+                                holder="D_3301_BcdSingle" provider="P1"/>
+                        </f11:destination>
+                    </f11:textanalogsymboleditable>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="red"
+                        value="警報重レベル" visible="true" x="50" y="280"/>
+                    <f11:textanalogsymboleditable background="blue"
+                        blink="false" border="BebelDown" dlgname="1"
+                        dlgtitle="名称" font_style="plain"
+                        foreground="yellow" opaque="false"
+                        value="P1_D_3302_BcdSingle" visible="true"
+                        x="150" y="280">
+                        <f11:destination>
+                            <f11:variableanalog
+                                holder="D_3302_BcdSingle" provider="P1"/>
+                        </f11:destination>
+                    </f11:textanalogsymboleditable>
+                </f11:row>
+                <f11:row>
+                    <f11:textsymbol blink="false" foreground="yellow"
+                        value="警報軽レベル" visible="true" x="50" y="300"/>
+                    <f11:textanalogsymboleditable background="blue"
+                        blink="false" border="BebelDown" dlgname="1"
+                        dlgtitle="名称" font_style="plain"
+                        foreground="yellow" opaque="false"
+                        value="P1_D_3303_BcdSingle" visible="true"
+                        x="150" y="300">
+                        <f11:destination>
+                            <f11:variableanalog
+                                holder="D_3303_BcdSingle" provider="P1"/>
+                        </f11:destination>
+                    </f11:textanalogsymboleditable>
+                </f11:row>
+            </f11:data>
+        </f11:table>
+        <f11:table background="navy" foreground="white"
+            header_background="lightblue" header_foreground="black"
+            height="40" width="100" x="10" y="300">
+            <f11:column>
+                <f11:title font="Dialog" font_size="12"
+                    font_style="plain" value="デマンド警報" width="100"/>
+            </f11:column>
+            <f11:data>
+                <f11:row>
+                    <f11:textsymbol background="navy" blink="false"
+                        foreground="white" opaque="true" value="" visible="true">
+                        <f11:if value="P1_H_10301_Digital">
+                            <f11:property background="red" blink="true"
+                                foreground="white" value="デマンド重警報" visible="true"/>
+                            <f11:if value="P1_H_10300_Digital">
+                                <f11:property background="yellow"
+                                    blink="true" foreground="black"
+                                    value="デマンド軽警報" visible="true"/>
+                            </f11:if>
+                        </f11:if>
+                    </f11:textsymbol>
+                </f11:row>
+            </f11:data>
+        </f11:table>
+        <f11:demandgraph alarmTimeMode="true" border="BebelDown"
+            expectYCount="2" height="550" opaque="false"
+            scaleStringColor="white" visible="true" width="700" x="200" y="50">
+            <f11:graphmodel class="org.F11.scada.applet.graph.demand.DemandGraphModel">
+                <f11:property value="P1_D_3300_BcdSingle"/>
+                <f11:property value="P1_D_3301_BcdSingle"/>
+                <f11:property value="P1_D_3302_BcdSingle"/>
+                <f11:property value="P1_D_3303_BcdSingle"/>
+                <f11:property value="P1_D_3307_BcdSingle"/>
+                <f11:property value="P1_D_3310_BcdSingle"/>
+                <f11:property value="P1_D_3316_BcdSingle"/>
+            </f11:graphmodel>
+            <f11:graphproperty horizontalPixcelWidth="522"
+                horizontalScaleCount="6" horizontalScaleWidth="300000"
+                scaleOneHeightPixel="5" verticalScaleCount="10" verticalScaleHeight="45">
+                <f11:insets botom="50" left="10" right="10" top="60"/>
+                <f11:graphview botom="50" left="30" right="30" top="60"/>
+                <f11:color>
+                    <f11:name value="cyan"/>
+                    <f11:name value="magenta"/>
+                    <f11:name value="magenta"/>
+                    <f11:name value="lime"/>
+                    <f11:name value="cyan"/>
+                    <f11:name value="white"/>
+                </f11:color>
+                <f11:handler/>
+                <f11:series name="$(0_unit) $(0_name)" size="6">
+                    <f11:property name="minimums">
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                    </f11:property>
+                    <f11:property name="maximums">
+                        <f11:element value="2000"/>
+                        <f11:element value="1000"/>
+                        <f11:element value="1000"/>
+                        <f11:element value="1000"/>
+                        <f11:element value="1000"/>
+                        <f11:element value="1000"/>
+                    </f11:property>
+                    <f11:property name="inputminimums">
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                        <f11:element value="0"/>
+                    </f11:property>
+                    <f11:property name="inputmaximums">
+                        <f11:element value="4000"/>
+                        <f11:element value="4000"/>
+                        <f11:element value="4000"/>
+                        <f11:element value="4000"/>
+                        <f11:element value="4000"/>
+                        <f11:element value="4000"/>
+                    </f11:property>
+                    <f11:holder name="holder">
+                        <f11:name value="P1_D_3300_BcdSingle"/>
+                        <f11:name value="P1_D_3301_BcdSingle"/>
+                        <f11:name value="P1_D_3302_BcdSingle"/>
+                        <f11:name value="P1_D_3303_BcdSingle"/>
+                        <f11:name value="P1_D_3307_BcdSingle"/>
+                        <f11:name value="P1_D_3316_BcdSingle"/>
+                    </f11:holder>
+                </f11:series>
+            </f11:graphproperty>
+        </f11:demandgraph>
+    </f11:page>
+</f11:page_map>

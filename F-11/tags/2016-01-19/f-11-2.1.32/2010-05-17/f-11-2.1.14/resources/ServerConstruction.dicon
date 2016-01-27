@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components>
+	<component class="org.F11.scada.server.ServerConstruction" >
+		<initMethod name="setMainSystem">
+			<arg>@org.F11.scada.EnvironmentManager@get("/server/rmi/managerdelegator/name", "")</arg>
+			<arg>@org.F11.scada.EnvironmentManager@get("/server/rmi/managerdelegator/port", "1099")</arg>
+		</initMethod>
+		<description>ここから</description>
+		<!--
+		<initMethod name="addSubSystem" >
+			<arg>"192.168.0.126"</arg>
+			<arg>"1099"</arg>
+		</initMethod>
+		-->
+		<description>ここまでがサブの定義</description>
+	</component>	
+</components>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+<link rel="stylesheet" href="default.css" type="text/css">
+<title>演算子の説明</title>
+</head>
+
+<body>
+
+<h1>予約語</h1>
+
+<h2>演算子</h2>
+<table border="1" summary="演算子と意味">
+<tr><th>演算子</th><th>意味</th></tr>
+<tr><td>(</td><td>前括弧</td></tr>
+<tr><td>)</td><td>後ろ括弧</td></tr>
+<tr><td>!</td><td>否定(NOT)</td></tr>
+<tr><td>*</td><td>乗算</td></tr>
+<tr><td>/</td><td>除算</td></tr>
+<tr><td>+</td><td>加算</td></tr>
+<tr><td>-</td><td>減算</td></tr>
+<tr><td>&gt;</td><td>より大きい</td></tr>
+<tr><td>&lt;</td><td>より小さい</td></tr>
+<tr><td>&gt;=</td><td>以上</td></tr>
+<tr><td>&lt;=</td><td>以下</td></tr>
+<tr><td>==</td><td>等価</td></tr>
+<tr><td>!=</td><td>否等価(NOT=)</td></tr>
+<tr><td>^</td><td>べき乗</td></tr>
+<tr><td>&amp;&amp;</td><td>論理積</td></tr>
+<tr><td>||</td><td>論理和</td></tr>
+</table>
+<p>「pi」はπ(円周率)を表す定数です</p> 
+
+<dl>
+<dt>演算子の説明</dt>
+<dd><a href="http://www.y-adagio.com/public/standards/tr_javalang/15.doc.htm#4990">http://www.y-adagio.com/public/standards/tr_javalang/15.doc.htm#4990</a></dd>
+</dl>
+
+<p>※XMLでは「&gt;」「&lt;」「&amp;」が特殊文字になります。実際ページに表記する場合は、それぞれ「&amp;gt;」「&amp;lt;」「&amp;amp;」と記述します。</p>
+<p>特殊文字を記述してしまった場合は、以下のエラーがコンソールに表示されます。(&amp;の場合)</p>
+<pre>
+[2006-03-07 11:32:43,336] [main] ERROR (Digester.java:1558) - Parse Fatal Error at line 31 column 69: The entity name must immediately follow the '&amp;' in the entity reference.
+org.xml.sax.SAXParseException: The entity name must immediately follow the '&amp;' in the entity reference.
+	at org.apache.xerces.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at org.apache.xerces.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.XMLScanner.reportFatalError(Unknown Source)
+	at org.apache.xerces.impl.XMLScanner.scanAttributeValue(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanAttribute(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanStartElement(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+	at org.apache.xerces.parsers.AbstractSAXParser.parse(Unknown Source)
+	at org.apache.xerces.jaxp.SAXParserImpl$JAXPSAXParser.parse(Unknown Source)
+	at org.apache.commons.digester.Digester.parse(Digester.java:1666)
+	at org.F11.scada.server.command.CommandProvider.&lt;init&gt;(CommandProvider.java:104)
+	at org.F11.scada.server.command.CommandProvider.&lt;init&gt;(CommandProvider.java:73)
+	at org.F11.scada.xwife.server.WifeMain.&lt;init&gt;(WifeMain.java:162)
+	at org.F11.scada.xwife.server.WifeMain.main(WifeMain.java:268)
+</pre>
+
+
+<h2>関数</h2>
+<table border="1" summary="関数と意味">
+<tr><th>関数</th><th>意味</th></tr>
+<tr><td>abs</td><td>絶対値</td></tr>
+<tr><td>sin</td><td>サイン</td></tr>
+<tr><td>cos</td><td>コサイン</td></tr>
+<tr><td>tan</td><td>タンジェント</td></tr>
+<tr><td>asin</td><td>アークサイン</td></tr>
+<tr><td>acos</td><td>アークコサイン</td></tr>
+<tr><td>atan</td><td>アークタンジェント</td></tr>
+<tr><td>sqrt</td><td>平方根(√)</td></tr>
+</table>
+<dl>
+<dt>関数の説明</dt>
+<dd><a href="http://java.sun.com/j2se/1.4/ja/docs/ja/api/java/lang/Math.html">http://java.sun.com/j2se/1.4/ja/docs/ja/api/java/lang/Math.html</a></dd>
+</dl>
+
+<p><strong>数字、以上の文字列から始まるプロバイダ名は使用できません。</strong></p>
+
+<h2>例</h2>
+
+<dl>
+<dt>アナログデータを含む場合:数値が返ってくる場合(P1_Analog～はプロバイダ_ホルダ名)</dt>
+<dd>
+<pre>
+  value="P1_Analog1 + 100"
+  value="P1_Analog1 - P1_Analog2"
+  value="P1_Analog3 * (P1_Analog1 - P1_Analog2)"
+  value="sin P1_Analog3"
+  value="cos(P1_Analog3 * (P1_Analog1 - P1_Analog2))"
+</pre>
+</dd>
+<dt>アナログデータを含む場合:ブール値が返ってくる場合(P1_Analog～はプロバイダ_ホルダ名、
+P1_Digitalは内容がtrueのプロバイダ_ホルダ名)</dt>
+<dd>
+<pre>
+  value="P1_Analog1 &gt;= 0"
+    P1_Analog1が0以上ならtrue
+  value="P1_Analog1 &gt; 0 &amp;&amp; P1_Analog1 &lt; 100"
+    P1_Analog1が0より上かつ100未満ならtrue
+  value="P1_Analog1 &gt; 0 &amp;&amp; P1_Analog1 &lt; 100 &amp;&amp; P1_DIGITAL"
+    P1_Analog1が0より上かつ100未満かつP1_DIGITALがtrueならtrue
+</pre>
+</dd>
+<dt>デジタルデータを含む場合(P1_Digitalは内容がtrueのプロバイダ_ホルダ名)</dt>
+<dd>
+<pre>
+  value="P1_DIGITAL"
+    trueが返ります
+  value="!P1_DIGITAL"
+    falseが返ります
+  value="P1_DIGITAL &amp;&amp; P1_DIGITAL"
+    trueが返ります
+  value="P1_DIGITAL &amp;&amp; !P1_DIGITAL"
+    falseが返ります
+  value="P1_DIGITAL || !P1_DIGITAL"
+    trueが返ります
+  value="!P1_DIGITAL || !P1_DIGITAL"
+    falseが返ります
+</pre>
+</dd>
+</dl>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components namespace="org_F11_scada_server_remove">
+	<description>
+	テーブル自動削除の定義ファイルです。削除機能を使用しない場合は、
+	このファイル(RemoveDefine.dicon)を削除してください。
+	</description>
+
+	<include path="org/F11/scada/server/remove/RemoveDao.dicon"/>
+
+	<component class="org.F11.scada.server.remove.impl.RemoveServiceImpl">
+		<!-- 削除コンポーネントを指定 秒数:secondRemoveDao 件数:countRemoveDao -->
+		<property name="dao">countRemoveDao</property>
+		<!-- 削除テーブル追加はここから -->
+		<initMethod name="addSchedule" >
+			<arg>
+				<component class="org.F11.scada.server.remove.RemoveDto" >
+					<description>
+					tableName:テーブル名
+					dateFieldName:日時フィールド名
+					removeValue:削除判定値(何秒前を削除又は保持件数)
+					</description>
+					<property name="tableName">"log_table_minute"</property>
+					<property name="dateFieldName">"f_date"</property>
+					<property name="removeValue">30000</property>
+				</component>
+			</arg>
+			<arg>
+				<component class="org.F11.scada.scheduling.DailyIterator">
+					<description>毎日指定した時分秒に実行します</description>
+					<arg><description>時</description>19</arg>
+					<arg><description>分</description>10</arg>
+					<arg><description>秒</description>0</arg>
+				</component>
+				<!--
+				<component class="org.F11.scada.scheduling.MonthlyIterator">
+					<description>毎月指定した日時分秒に実行します</description>
+					<arg><description>日</description>1</arg>
+					<arg><description>時</description>1</arg>
+					<arg><description>分</description>0</arg>
+					<arg><description>秒</description>0</arg>
+				</component>
+				-->
+			</arg>
+		</initMethod>
+		<initMethod name="addSchedule" >
+			<arg>
+				<component class="org.F11.scada.server.remove.RemoveDto" >
+					<description>
+					tableName:テーブル名
+					dateFieldName:日時フィールド名
+					removeValue:削除判定値(何秒前を削除又は保持件数)
+					</description>
+					<property name="tableName">"alarm_email_sent_table"</property>
+					<property name="dateFieldName">"sentdate"</property>
+					<property name="removeValue">4</property>
+				</component>
+			</arg>
+			<arg>
+				<component class="org.F11.scada.scheduling.DailyIterator">
+					<description>毎日指定した時分秒に実行します</description>
+					<arg><description>時</description>19</arg>
+					<arg><description>分</description>10</arg>
+					<arg><description>秒</description>0</arg>
+				</component>
+			</arg>
+		</initMethod>
+		<!-- ここまでを編集してください -->
+	</component>
+
+	<component class="org.F11.scada.server.remove.impl.RemoveServiceImpl">
+		<!-- 削除コンポーネントを指定 秒数:secondRemoveDao 件数:countRemoveDao -->
+		<property name="dao">secondRemoveDao</property>
+		<!-- 削除テーブル追加はここから -->
+		<initMethod name="addSchedule" >
+			<arg>
+				<component class="org.F11.scada.server.remove.RemoveDto" >
+					<description>
+					tableName:テーブル名
+					dateFieldName:日時フィールド名
+					removeValue:削除判定値(何秒前を削除又は保持件数)
+					</description>
+					<property name="tableName">"log_table_hour"</property>
+					<property name="dateFieldName">"f_date"</property>
+					<property name="removeValue">864000</property>
+				</component>
+			</arg>
+			<arg>
+				<component class="org.F11.scada.scheduling.DailyIterator">
+					<description>毎日指定した時分秒に実行します</description>
+					<arg><description>時</description>19</arg>
+					<arg><description>分</description>10</arg>
+					<arg><description>秒</description>0</arg>
+				</component>
+				<!--
+				<component class="org.F11.scada.scheduling.MonthlyIterator">
+					<description>毎月指定した日時分秒に実行します</description>
+					<arg><description>日</description>1</arg>
+					<arg><description>時</description>1</arg>
+					<arg><description>分</description>0</arg>
+					<arg><description>秒</description>0</arg>
+				</component>
+				-->
+			</arg>
+		</initMethod>
+		<!-- ここまでを編集してください -->
+	</component>
+</components>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page_map>
+  <page width="1400" height="780" name="TRND0004" value="/images/base/back.png" cache="true">
+    <trendgraph3 x="0" y="0" width="1028" height="780" font="Monospaced-PLAIN-16" pagefile="pagedefine/trend4.xml" seriesColors="yellow, magenta, cyan, red, lime, white, orange, lightpink" maxRecord="10000" verticalLineInterval="72">
+      <horizontalScaleButton>
+        <horizontalScaleButton-property buttonText="4時間" labelText="1分" horizontalCount="5" horizontalAllSpanMode="112" horizontalSelectSpanMode="168" horizontalLineSpan="18000000" recordeSpan="60000" logName="log_table_minute"/>
+        <horizontalScaleButton-property buttonText="12時間" labelText="1分" horizontalCount="8" horizontalAllSpanMode="70" horizontalSelectSpanMode="105" horizontalLineSpan="54000000" recordeSpan="60000" logName="log_table_minute"/>
+        <horizontalScaleButton-property buttonText="1日間" labelText="10分" horizontalCount="8" horizontalAllSpanMode="70" horizontalSelectSpanMode="105" horizontalLineSpan="86400000" recordeSpan="600000" logName="log_table_10_minute"/>
+        <horizontalScaleButton-property buttonText="3日間" labelText="10分" horizontalCount="8" horizontalAllSpanMode="70" horizontalSelectSpanMode="105" horizontalLineSpan="259200000" recordeSpan="600000" logName="log_table_10_minute"/>
+        <horizontalScaleButton-property buttonText="1週間" labelText="1時間" horizontalCount="8" horizontalAllSpanMode="70" horizontalSelectSpanMode="105" horizontalLineSpan="604800000" recordeSpan="3600000" logName="log_table_hour"/>
+        <horizontalScaleButton-property buttonText="1月間" labelText="1時間" horizontalCount="7" horizontalAllSpanMode="80" horizontalSelectSpanMode="120" horizontalLineSpan="18144000000" recordeSpan="3600000" logName="log_table_hour"/>
+      </horizontalScaleButton>
+      <series groupNo="1" groupName="空調機">
+        <series-property index="0" visible="true" color="yellow" unit="$(8_unit)" name="$(8_name)" mark="$(8_unit_mark)" min="-0.5" max="0.5" verticalFormat=" 0.000" holder="P1_D_550_BcdSingle" point="8" convert="LALE"/>
+        <series-property index="1" visible="true" color="magenta" unit="$(37_unit)" name="$(37_name)" mark="$(37_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_501_BcdSingle" point="37" convert="ANALOG"/>
+        <series-property index="2" visible="true" color="cyan" unit="$(38_unit)" name="$(38_name)" mark="$(38_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_502_BcdSingle" point="38" convert="ANALOG"/>
+        <series-property index="3" visible="true" color="red" unit="$(39_unit)" name="$(39_name)" mark="$(39_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_503_BcdSingle" point="39" convert="ANALOG"/>
+        <series-property index="4" visible="true" color="lime" unit="$(40_unit)" name="$(40_name)" mark="$(40_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_504_BcdSingle" point="40" convert="ANALOG"/>
+        <series-property index="5" visible="true" color="white" unit="$(41_unit)" name="$(41_name)" mark="$(41_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_505_BcdSingle" point="41" convert="ANALOG"/>
+      </series>
+      <series groupNo="2" groupName="電力">
+        <series-property index="0" visible="true" color="yellow" unit="$(36_unit)" name="$(36_name)" mark="$(36_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_512_BcdSingle" point="36" convert="ANALOG"/>
+        <series-property index="1" visible="true" color="magenta" unit="$(8_unit)" name="$(8_name)" mark="$(8_unit_mark)" min="-0.5" max="0.5" verticalFormat=" 0.000" holder="P1_D_550_BcdSingle" point="8" convert="LALE"/>
+        <series-property index="2" visible="true" color="cyan" unit="$(42_unit)" name="$(42_name)" mark="$(42_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_506_BcdSingle" point="42" convert="ANALOG"/>
+        <series-property index="3" visible="true" color="red" unit="$(43_unit)" name="$(43_name)" mark="$(43_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_507_BcdSingle" point="43" convert="ANALOG"/>
+        <series-property index="4" visible="true" color="lime" unit="$(44_unit)" name="$(44_name)" mark="$(44_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_508_BcdSingle" point="44" convert="ANALOG"/>
+        <series-property index="5" visible="true" color="white" unit="$(45_unit)" name="$(45_name)" mark="$(45_unit_mark)" min="0.0" max="100.0" verticalFormat="00.0" holder="P1_D_509_BcdSingle" point="45" convert="ANALOG"/>
+      </series>
+    </trendgraph3>
+  </page>
+</page_map>

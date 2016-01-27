@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components.dtd">
+	
+<components namespace="HolderRegisterBuilder">
+	<include path="org/F11/scada/server/ManagerDelegator.dicon"/>
+
+	<component class="org.F11.scada.server.register.impl.HolderRegisterFactoryImpl">
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{0, 21}</arg>
+			<arg>	
+				<component class="org.F11.scada.server.register.impl.DigitalHolderRegister" />
+			</arg>
+		</initMethod>
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ,13 ,14}</arg>
+			<arg>
+				<component class="org.F11.scada.server.register.impl.AnalogHolderRegister" />
+			</arg>
+		</initMethod>
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{15}</arg>
+			<arg>
+				<component class="org.F11.scada.server.register.impl.CalendarHolderRegister" />
+			</arg>
+		</initMethod>
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{16}</arg>
+			<arg>
+				<component class="org.F11.scada.server.register.impl.ScheduleHolderRegister">
+					<property name="owner">managerDelegator</property>
+				</component>
+			</arg>
+		</initMethod>
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{17}</arg>
+			<arg>
+				<component class="org.F11.scada.server.register.impl.TimestampHolderRegister" />
+			</arg>
+		</initMethod>
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{18, 19, 20}</arg>
+			<arg>
+				<component class="org.F11.scada.server.register.impl.Analog4HolderRegister" />
+			</arg>
+		</initMethod>
+		<initMethod name="putHolderRegister">
+			<arg>new int[]{22}</arg>
+			<arg>
+				<component class="org.F11.scada.server.register.impl.StringDataHolderRegister" />
+			</arg>
+		</initMethod>
+	</component>
+
+	<component name="builder"
+		class="org.F11.scada.server.register.impl.HolderRegisterBuilderImpl" />
+</components>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+	<f11:page name="deeps" value="/images/base/back.png">
+
+		<f11:imagesymboleditable value="/images/ffub2.png" x="0" y="0"
+			dlgname="0" tooltiptext="&lt;html&gt;&lt;font size=36&gt;ABC-EFG-010&lt;/font&gt;&lt;/html&gt;">
+			<f11:destination>
+				<f11:fixeddigital provider="P1"
+					holder="D_1900000_Digital" value="true" />
+			</f11:destination>
+			<f11:destination>
+				<f11:fixeddigital provider="P1"
+					holder="D_1900001_Digital" value="true" />
+			</f11:destination>
+		</f11:imagesymboleditable>
+		<f11:imagesymbol value="/images/ffu_g.png" x="2" y="12"
+			visible="true">
+			<f11:if value="P1_D_1900001_Digital">
+				<f11:property value="/images/ffu_r.png" x="20" y="50" />
+			</f11:if>
+		</f11:imagesymbol>
+
+		<f11:stringdatasymbol value="P1_D_4100_StringData" x="0" y="100"
+			font="Monospaced" font_style="plain" font_size="16" width="400"
+			height="20">
+		</f11:stringdatasymbol>
+		
+		<f11:trendjumpbutton x="5" y="50"
+		  value="/images/clipboard.png" changeto="TRND0001" argv="1" immediate="false" tooltiptext="トレンド1" message="トレンド1に移動します。" title="トレンド1に移動"/>
+		<f11:trendjumpbutton x="5" y="80"
+		  value="/images/clipboard.png" changeto="TRND0003" argv="1" immediate="false" tooltiptext="トレンド2" message="トレンド2に移動します。" title="トレンド2に移動"/>
+	</f11:page>
+</f11:page_map>

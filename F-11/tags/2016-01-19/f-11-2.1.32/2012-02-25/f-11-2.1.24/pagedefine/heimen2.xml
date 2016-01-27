@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+	<!--
+メインメニュー
+	<f11:page name="メインメニュー" value="/images/base/back.png" width="700" height="500">
+		<f11:imageanimesymbol x="100" y="350" value="/images/anime/ahu_r_0.png" move="true"/>
+		<f11:imageanimesymbol x="140" y="350" value="/images/anime/maru_y_0.png" move="true">
+			<f11:if value="P1_D_1900000_Digital">
+				<f11:property move="true"/>
+				<f11:property move="false"/>
+			</f11:if>
+		</f11:imageanimesymbol>
+
+		<f11:imagesymboleditable value="/images/pac_y.png" blink="false" x="180" y="350" visible="true" dlgtitle="PAC" dlgname="0">
+			<f11:destination buttontext="投入">
+				<f11:fixeddigital provider="P1" holder="D_1900000_Digital" value="true"/>
+			</f11:destination>
+			<f11:destination buttontext="開放">
+				<f11:fixeddigital provider="P1" holder="D_1900001_Digital" value="true"/>
+			</f11:destination>
+		</f11:imagesymboleditable>
+	</f11:page>
+-->
+<!--
+空調平面図
+-->
+	<f11:page name="空調平面図2" value="/images/base/kcho_01.png" cache="false">
+		<f11:pagechangebutton x="10" y="500" width="100" height="20" value="スケルトン" changeto="スケルトン" />
+		<f11:programexecutebutton x="10" y="530" width="100" height="20" value="メモ帳" command="C:\WINNT\system32\notepad.exe" >
+			<f11:execparam value="E:\hori\Product_J\F-11\ReportExcel\ListOut.csv" />
+		</f11:programexecutebutton>
+
+		<f11:textanalogsymbol value="P1_D_500_BcdSingle" h_aligin="RIGHT" visible="true" foreground="black" font="SansSerif" font_style="plain" font_size="16" border="BebelDown" format="##0.0" x="418" y="210" tooltip="$(0_unit)">
+			<f11:if value="P1_D_1903000_Digital">
+				<f11:property foreground="red" blink="true" visible="false" />
+				<f11:if value="P1_D_1903001_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="black"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymbol>
+
+		<f11:imagesymbol value="/images/pac_y.png" blink="false" x="415" y="210" visible="true" tooltiptext="1番目">
+			<f11:if value="P1_D_1900000_Digital">
+				<f11:if value="P1_D_1900001_Digital">
+					<f11:property value="/images/pac_y.png" blink="true"/>
+					<f11:property value="/images/pac_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900001_Digital">
+					<f11:property value="/images/pac_r.png" blink="false"/>
+					<f11:property value="/images/pac_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol value="/images/pac_y.png" blink="false" x="485" y="210" visible="true" tooltiptext="2番目">
+			<f11:if value="P1_D_1900002_Digital">
+				<f11:property value="/images/pac_y.png" blink="true"/>
+				<f11:if value="P1_D_1900003_Digital">
+					<f11:property value="/images/pac_r.png" blink="false"/>
+					<f11:property value="/images/pac_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="560" y="210" visible="false">
+			<f11:if value="P1_D_1900004_Digital">
+				<f11:property value="/images/pac_y.png" blink="true" visible="true"/>
+				<f11:if value="P1_D_1900005_Digital">
+					<f11:property value="/images/pac_r.png" blink="false" visible="true"/>
+					<f11:property value="/images/pac_g.png" blink="false" visible="true"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="490" y="590" visible="false">
+			<f11:if value="P1_D_1900006_Digital">
+				<f11:if value="P1_D_1900007_Digital">
+					<f11:property value="/images/pac_y.png" blink="true" visible="true"/>
+					<f11:property value="/images/pac_y.png" blink="true" visible="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900007_Digital">
+					<f11:property value="/images/pac_r.png" blink="false" visible="true"/>
+					<f11:property value="/images/pac_g.png" blink="false" visible="true"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="635" y="590" visible="true">
+			<f11:if value="P1_D_1900008_Digital">
+				<f11:if value="P1_D_1900009_Digital">
+					<f11:property value="/images/pac_y.png" blink="true"/>
+					<f11:property value="/images/pac_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900009_Digital">
+					<f11:property value="/images/pac_r.png" blink="false"/>
+					<f11:property value="/images/pac_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="710" y="590" visible="true">
+			<f11:if value="P1_D_1900010_Digital">
+				<f11:if value="P1_D_1900011_Digital">
+					<f11:property value="/images/pac_y.png" blink="true"/>
+					<f11:property value="/images/pac_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900011_Digital">
+					<f11:property value="/images/pac_r.png" blink="false"/>
+					<f11:property value="/images/pac_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="410" y="185" visible="true">
+			<f11:if value="P1_D_1900012_Digital">
+				<f11:property value="/images/maru_y.png" blink="true"/>
+				<f11:property value="/images/maru_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="480" y="185" visible="true">
+			<f11:if value="P1_D_1900013_Digital">
+				<f11:property value="/images/maru_y.png" blink="true"/>
+				<f11:property value="/images/maru_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="555" y="185" visible="true">
+			<f11:if value="P1_D_1900014_Digital">
+				<f11:property value="/images/maru_y.png" blink="true"/>
+				<f11:property value="/images/maru_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="490" y="620" visible="true">
+			<f11:if value="P1_D_1900015_Digital">
+				<f11:property value="/images/maru_y.png" blink="true"/>
+				<f11:property value="/images/maru_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="635" y="620" visible="true">
+			<f11:if value="P1_D_1900100_Digital">
+				<f11:property value="/images/maru_y.png" blink="true"/>
+				<f11:property value="/images/maru_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="710" y="620" visible="true">
+			<f11:if value="P1_D_1900101_Digital">
+				<f11:property value="/images/maru_y.png" blink="true"/>
+				<f11:property value="/images/maru_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="850" y="305" visible="true">
+			<f11:if value="P1_D_1900102_Digital">
+				<f11:property value="/images/zou_y.png" blink="true"/>
+				<f11:property value="/images/zou_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="850" y="335" visible="true">
+			<f11:if value="P1_D_1900103_Digital">
+				<f11:property value="/images/gen_y.png" blink="true"/>
+				<f11:property value="/images/gen_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="799" y="387" visible="true">
+			<f11:if value="P1_D_1900104_Digital">
+				<f11:property value="/images/filter_y.png" blink="true"/>
+				<f11:property value="/images/filter_h.png" blink="false"/>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="880" y="207" visible="true">
+			<f11:if value="P1_D_1900105_Digital">
+				<f11:if value="P1_D_1900106_Digital">
+					<f11:property value="/images/fan_y.png" blink="true"/>
+					<f11:property value="/images/fan_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900106_Digital">
+					<f11:property value="/images/fan_r.png" blink="false"/>
+					<f11:property value="/images/fan_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="935" y="207" visible="true">
+			<f11:if value="P1_D_1900107_Digital">
+				<f11:if value="P1_D_1900108_Digital">
+					<f11:property value="/images/fan_y.png" blink="true"/>
+					<f11:property value="/images/fan_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900108_Digital">
+					<f11:property value="/images/fan_r.png" blink="false"/>
+					<f11:property value="/images/fan_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="860" y="380" visible="true">
+			<f11:if value="P1_D_1900109_Digital">
+				<f11:if value="P1_D_1900110_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900110_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="890" y="435" visible="true">
+			<f11:if value="P1_D_1900111_Digital">
+				<f11:if value="P1_D_1900112_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900112_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="935" y="435" visible="true">
+			<f11:if value="P1_D_1900113_Digital">
+				<f11:if value="P1_D_1900114_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900114_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="980" y="435" visible="true">
+			<f11:if value="P1_D_1900115_Digital">
+				<f11:if value="P1_D_1900200_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900200_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="800" y="565" visible="true">
+			<f11:if value="P1_D_1900201_Digital">
+				<f11:if value="P1_D_1900202_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900202_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="855" y="565" visible="true">
+			<f11:if value="P1_D_1900203_Digital">
+				<f11:if value="P1_D_1900204_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900204_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="910" y="565" visible="true">
+			<f11:if value="P1_D_1900205_Digital">
+				<f11:if value="P1_D_1900206_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900206_Digital">
+					<f11:property value="/images/ahu_r.png" blink="false"/>
+					<f11:property value="/images/ahu_g.png" blink="false"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+		<f11:imagesymbol x="965" y="565" visible="true">
+			<f11:if value="P1_D_1900207_Digital">
+				<f11:if value="P1_D_1900208_Digital">
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+					<f11:property value="/images/ahu_y.png" blink="true"/>
+				</f11:if>
+				<f11:if value="P1_D_1900208_Digital">
+					<f11:property value="/images/ahu_r.png"/>
+					<f11:property value="/images/ahu_g.png"/>
+				</f11:if>
+			</f11:if>
+		</f11:imagesymbol>
+<!--hoho-->
+		<f11:textpowerfactorsymboleditable value="P1_D_550_BcdSingle" x="300" y="315" width="60" height="20" visible="true" opaque="true" foreground="yellow" background="navy" blink="false" font="SansSerif" font_style="plain" border="BebelDown" dlgtitle="記号" dlgname="2">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_550_BcdSingle"/>
+			</f11:destination>
+		</f11:textpowerfactorsymboleditable>
+
+		<f11:textschedulesymboleditable value="P1_D_2200_BcdSingle" x="300" y="415" width="60" height="20" visible="true" foreground="white" background="navy" font="SansSerif" font_style="plain" font_size="20" border="BebelDown">
+			<f11:destination>
+				<f11:schedule provider="P1" holder="D_2000_Schedule"/>
+				<f11:variableanalog provider="P1" holder="D_2200_BcdSingle"/>
+			</f11:destination>
+		</f11:textschedulesymboleditable>
+
+		<f11:textpowerfactorsymboleditable value="P1_D_550_BcdSingle" x="440" y="337" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" width="60" height="20" dlgtitle="記号" dlgname="2">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_550_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903010_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903011_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textpowerfactorsymboleditable>
+
+		<f11:textanalogsymboleditable value="P1_D_524_BcdSingle" x="377" y="261" visible="true" opaque="true" foreground="limegreen" background="red" blink="false" font="SansSerif" font_style="plain" font_size="16" border="BebelDown" format="###0" width="60" height="20" dlgtitle="記号" dlgname="5">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_524_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_2000205_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_2000206_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_500_BcdSingle" x="440" y="315" width="60" height="20" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font="SansSerif" font_style="plain" border="BebelDown" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_500_BcdSingle"/>
+				<f11:fixedanalog provider="P1" holder="D_501_BcdSingle" value="11.0" />
+				<f11:variableanalog provider="P1" holder="D_502_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903000_Digital">
+				<f11:property visible="false" />
+				<f11:if value="P1_D_1903001_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_502_BcdSingle" x="560" y="315" width="60" height="20" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" dlgtitle="記号" dlgname="5">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_502_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903002_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903003_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_504_BcdSingle" x="680" y="315" width="60" height="20" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_504_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903004_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903005_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_506_BcdSingle" x="440" y="505" width="60" height="20" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_506_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903006_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903007_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_508_BcdSingle" x="560" y="505" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_508_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903006_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903007_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_510_BcdSingle" x="680" y="505" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_510_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903008_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903009_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<!--
+		<f11:textanalogsymboleditable value="P1_D_501_BcdSingle" x="440" y="337" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_501_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903010_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903011_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		-->
+		<f11:textanalogsymboleditable value="P1_D_503_BcdSingle" x="560" y="337" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_503_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903012_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903013_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_505_BcdSingle" x="680" y="337" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_505_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903014_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903015_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_507_BcdSingle" x="440" y="527" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_507_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903100_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903101_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_509_BcdSingle" x="560" y="527" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_509_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903102_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903103_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+		<f11:textanalogsymboleditable value="P1_D_511_BcdSingle" x="680" y="527" visible="true" opaque="false" foreground="limegreen" background="blue" blink="false" font_style="plain" font="SansSerif" border="BebelDown" format="##0.0" width="60" height="20" dlgtitle="記号" dlgname="1">
+			<f11:destination>
+				<f11:variableanalog provider="P1" holder="D_511_BcdSingle"/>
+			</f11:destination>
+			<f11:if value="P1_D_1903104_Digital">
+				<f11:property foreground="red" blink="true"/>
+				<f11:if value="P1_D_1903105_Digital">
+					<f11:property foreground="cyan" blink="true"/>
+					<f11:property foreground="limegreen"/>
+				</f11:if>
+			</f11:if>
+		</f11:textanalogsymboleditable>
+	</f11:page>
+</f11:page_map>

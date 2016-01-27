@@ -1,0 +1,19 @@
+操作ログの検索ページの生成方法
+
+　シンボルコンポーネント扱いなのでpageタグ内に指定すればよい。
+
+　タグ名称:operationlogging
+　　属性 x ........... x座標
+　　　　 y ........... y座標
+　　　　 width .... 横幅
+　　　　 height ... 縦幅
+
+例.
+
+<?xml version="1.0" encoding="Windows-31J"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+	<!-- 操作ログ検索 -->
+	<f11:page name="opelog" value="/images/Base/BACK.png" width="1028" height="757">
+		<f11:operationlogging x="0" y="0" width="1028" height="757" />
+	</f11:page>
+</f11:page_map>

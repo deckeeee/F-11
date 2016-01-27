@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="Unnamed" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+	<queryString><![CDATA[SELECT * FROM log_table_minute]]></queryString>
+	<field name="f_P1_D_507_BcdSingle" class="java.lang.Double">
+	</field>
+	<detail>
+		<band height="23">
+			<textField>
+				<reportElement positionType="Float" x="6" y="6" width="78" height="13"/>
+				<textElement>
+					<font fontName="さざなみゴシック"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{f_P1_D_507_BcdSingle}]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+			</elementGroup>
+		</band>
+	</detail>
+</jasperReport>

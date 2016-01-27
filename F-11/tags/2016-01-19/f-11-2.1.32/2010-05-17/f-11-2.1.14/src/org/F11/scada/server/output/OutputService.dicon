@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components namespace="output" >
+	<description>アナログデータをファイル出力する</description>
+	<include path="org/F11/scada/server/io/postgresql/ItemUtil.dicon"/>
+	
+	<component class="org.F11.scada.server.output.impl.Output"
+		name="outputThread" >
+		<property name="poolingTime">30000</property>
+		<initMethod name="addOutputService">
+			<arg>fileOutputService</arg>
+		</initMethod>
+	</component>
+	
+	<component class="org.F11.scada.server.output.impl.FileOutputService"
+		name="fileOutputService">
+		<property name="errorRetryCount">10</property>
+		<property name="errorRetryTime">1000</property>
+		<property name="itemUtil">itemutil</property>
+		<initMethod name="addFileOutputDesc">
+			<arg>analog1</arg>
+		</initMethod>
+		<initMethod name="addFileOutputDesc">
+			<arg>analog2</arg>
+		</initMethod>
+	</component>
+	
+	<component class="org.F11.scada.server.output.dto.FileOutputDesc"
+		name="analog1">
+		<property name="filePath">"c:/temp/analog1.txt"</property>
+		<property name="provider">"P1"</property>
+		<property name="communicaterFactory">CommunicaterFactory.communicaterFactory</property>
+		<initMethod name="addHolder" ><arg>"D_500_BcdSingle"</arg></initMethod>
+		<initMethod name="addHolder" ><arg>"D_502_BcdSingle"</arg></initMethod>
+	</component>
+	
+	<component class="org.F11.scada.server.output.dto.FileOutputDesc"
+		name="analog2">
+		<property name="filePath">"c:/temp/analog2.txt"</property>
+		<property name="provider">"P1"</property>
+		<property name="communicaterFactory">CommunicaterFactory.communicaterFactory</property>
+		<initMethod name="addHolder" ><arg>"D_501_BcdSingle"</arg></initMethod>
+	</component>
+</components>

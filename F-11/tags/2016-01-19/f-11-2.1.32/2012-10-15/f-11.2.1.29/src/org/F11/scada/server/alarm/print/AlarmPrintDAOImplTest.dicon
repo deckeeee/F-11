@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components.dtd">
+
+<components>
+	<!-- Test J2EE Setting -->
+	<component name="transactionManager"
+		class="org.seasar.extension.jta.TransactionManagerImpl"/>
+	<component name="requiredTx"
+		class="org.seasar.extension.tx.RequiredInterceptor"/>
+	<component name="xaDataSource"
+		class="org.seasar.extension.dbcp.impl.XADataSourceImpl">
+		<property name="driverClassName">
+			"org.hsqldb.jdbcDriver"
+		</property>
+		<property name="URL">
+			"jdbc:hsqldb:hsql://localhost/"
+		</property>
+		<property name="user">"sa"</property>
+		<property name="password">""</property>
+	</component>
+	
+	<component name="connectionPool"
+		class="org.seasar.extension.dbcp.impl.ConnectionPoolImpl">
+		<property name="timeout">600</property>
+		<property name="maxPoolSize">10</property>
+		<destroyMethod name="close"/>
+	</component>
+	<component name="dataSource"
+		class="org.seasar.extension.dbcp.impl.DataSourceImpl"/>
+
+	<!-- findAll -->
+	<component name="findAllBeanListHandler"
+		class="org.seasar.extension.jdbc.impl.BasicSelectHandler">
+		<description>find all data</description>
+		<property name="sql">
+			"SELECT CASE WHEN c.bit_value=TRUE THEN att.on_printer_color ELSE att.off_printer_color END as printer_color,
+			c.entrydate,p.unit, p.name as kikiname, att.name as alarmname, m.message
+			FROM point_table p,career_print_temp_table c,item_table i,message_table m,attribute_table att
+			WHERE p.point=i.point AND c.point=i.point AND c.provider=i.provider AND c.holder=i.holder AND
+			i.message_id=m.message_id AND c.bit_value=m.type AND i.attribute_id=att.attribute AND att.printer_mode=TRUE
+			ORDER BY c.entrydate"
+		</property>
+		<property name="resultSetHandler">
+			<component class="org.seasar.extension.jdbc.impl.BeanListResultSetHandler">
+				<arg>@org.F11.scada.server.alarm.print.PrintLineData@class</arg>
+			</component>
+		</property>
+	</component>
+
+	<!-- find -->
+	<component name="findBeanHandler"
+		class="org.seasar.extension.jdbc.impl.BasicSelectHandler">
+		<description>find data</description>
+		<property name="sql">
+			"SELECT CASE WHEN c.bit_value=TRUE THEN att.on_printer_color ELSE att.off_printer_color END as printer_color,
+			c.entrydate,p.unit, p.name as kikiname, att.name as alarmname, m.message
+			FROM point_table p,career_print_temp_table c,item_table i,message_table m,attribute_table att
+			WHERE p.point=i.point AND c.point=i.point AND c.provider=i.provider AND c.holder=i.holder AND
+			i.message_id=m.message_id AND c.bit_value=m.type AND i.attribute_id=att.attribute AND att.printer_mode=TRUE
+			AND p.point = ? AND i.provider = ? AND i.holder = ? AND c.entrydate >= ? AND c.bit_value = ?
+			ORDER BY c.entrydate"
+		</property>
+		<property name="resultSetHandler">
+			<component class="org.seasar.extension.jdbc.impl.BeanResultSetHandler">
+				<arg>@org.F11.scada.server.alarm.print.PrintLineData@class</arg>
+			</component>
+		</property>
+	</component>
+
+	<!-- insert -->
+	<component name="insertHandler"
+		class="org.seasar.extension.jdbc.impl.BasicUpdateHandler">
+		<description>insert data</description>
+		<property name="sql">
+			"INSERT INTO career_print_temp_table (point, provider, holder, entrydate, bit_value)
+			VALUES(?, ?, ?, ?, ?)"
+		</property>
+	</component>
+
+	<!-- deleteAll -->
+	<component name="deleteAllHandler"
+		class="org.seasar.extension.jdbc.impl.BasicUpdateHandler">
+		<description>delete all data</description>
+		<property name="sql">
+			"DELETE FROM career_print_temp_table"
+		</property>
+	</component>
+</components>

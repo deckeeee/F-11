@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+	<!-- 積算一覧 : B3-CP-14 -->
+	<f11:page name="SEKI0001" value="/images/base/back.png">
+		<f11:textsymbol value="積算一覧 : B3-CP-14" blink="false" x="30" y="18" visible="true" foreground="black" background="gray" font="Monospaced" font_style="BOLD" font_size="20" border="BebelDown"/>
+		<f11:table foreground="white" background="navy" header_foreground="black" header_background="lightblue" x="25" y="100" width="960" height="630">
+			<f11:column>
+				<f11:title width="20" value="No" font="Monospaced" font_style="plain" font_size="17" />
+				<f11:title width="90" value="記号" font="Monospaced" font_style="plain" font_size="17" />
+				<f11:title width="350" value="機器名称" font="Monospaced" font_style="plain" font_size="17" />
+				<f11:columngroup value="時間使用量" font="Monospaced" font_style="plain" font_size="17" >
+					<f11:title width="60" value="現在" font="Monospaced" font_style="plain" font_size="17" />
+					<f11:title width="60" value="上限" font="Monospaced" font_style="plain" font_size="17" />
+				</f11:columngroup> 
+				<f11:title width="40" value="単位" font="Monospaced" font_style="plain" font_size="17" />
+				<f11:columngroup value="日使用量" font="Monospaced" font_style="plain" font_size="17" >
+					<f11:title width="90" value="本日" font="Monospaced" font_style="plain" font_size="17" />
+					<f11:title width="90" value="前日" font="Monospaced" font_style="plain" font_size="17" />
+				</f11:columngroup> 
+				<f11:columngroup value="月使用量" font="Monospaced" font_style="plain" font_size="17" >
+					<f11:title width="90" value="本月" font="Monospaced" font_style="plain" font_size="17" />
+					<f11:title width="90" value="前月" font="Monospaced" font_style="plain" font_size="17" />
+				</f11:columngroup>
+			</f11:column>
+			<f11:data>
+
+				<!-- B2F 厨房ガス使用量 -->
+				<f11:row>
+					<f11:textsymbol value="01" foreground="magenta" font="Monospaced" font_style="plain" font_size="17"/>
+					<f11:textsymbol value="$(36_unit)" font="Monospaced" font_style="plain" font_size="17" foreground="white" background="navy"/>
+					<f11:textsymbol value="$(36_name)" font="Monospaced" font_style="plain" font_size="17" foreground="white" background="navy"/>
+					<f11:textanalogsymbol value="P1_D_500_BcdDouble" visible="true" foreground="limegreen" background="navy" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" >
+						<f11:if value="P1_D_1900000_Digital">
+							<f11:property foreground="red" blink="true"/>
+							<f11:property foreground="limegreen"/>
+						</f11:if>
+					</f11:textanalogsymbol>
+					<f11:textanalogsymboleditable value="P1_D_501_BcdSingle" visible="true" foreground="yellow" background="navy" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" dlgtitle="上限" dlgname="1">
+						<f11:destination>
+							<f11:variableanalog provider="P1" holder="D_502_BcdSingle"/>
+						</f11:destination>
+					</f11:textanalogsymboleditable>
+					<f11:textsymbol value="$(36_unit_mark)" font="Monospaced" font_style="plain" font_size="17" foreground="white" background="navy">
+					</f11:textsymbol>
+					<f11:textanalogsymboleditable value="P1_D_503_BcdSingle" visible="true" foreground="limegreen" background="navy" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" dlgtitle="本日" dlgname="1">
+						<f11:destination>
+							<f11:variableanalog provider="P1" holder="D_504_BcdSingle"/>
+						</f11:destination>
+					</f11:textanalogsymboleditable>
+					<f11:textanalogsymbol value="P1_D_505_BcdSingle" visible="true" foreground="limegreen" background="navy" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" />
+					<f11:textanalogsymboleditable value="P1_D_506_BcdSingle" visible="true" foreground="limegreen" background="navy" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" dlgtitle="本月" dlgname="1">
+						<f11:destination>
+							<f11:variableanalog provider="P1" holder="D_507_BcdSingle"/>
+						</f11:destination>
+					</f11:textanalogsymboleditable>
+					<f11:textanalogsymbol value="P1_D_508_BcdSingle" visible="true" foreground="limegreen" background="navy" h_aligin="RIGHT" font="Monospaced" font_style="plain" font_size="17" />
+				</f11:row>
+			</f11:data>
+		</f11:table>
+	</f11:page>
+
+</f11:page_map>

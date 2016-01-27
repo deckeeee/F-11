@@ -1,0 +1,1175 @@
+--------------------------------------------------------------------------------
+Ver2.0.29 2006/11/1
+--------------------------------------------------------------------------------
+■追加機能
+
+・7日分個別スケジュールの追加
+　使用する場合
+　　Dialog.xmlのgraphicscheduleviewdialogタグの属性viewMode="7"を設定して下さい。
+　　item_tableのdata_argv列に「SevenDays, 4」(7日分4回の意)と設定して下さい。
+・スケジュールに今日、明日を表示しないモードの追加
+　スケジュールページ設定のscheduleタグの属性isNonTandT="true"を設定して下さい。
+・確認ダイアログの追加
+　発停操作等のキャンセル以外のボタン、テンキーダイアログのOKボタンを押下した時に、
+　確認ダイアログを表示することが可能になりました。
+　使用する場合
+　　ClientConfiguration.xmlに以下を追加
+   <comment>確認ダイアログの有無(初期値はfalse)</comment>
+   <entry key="org.F11.scada.applet.dialog.isConfirm">true</entry>
+・メンテナンス-機器名称変更
+　検索項目追加
+　　単位、属性1～3
+　point_tableに任意の属性1～3の追加
+　属性名はwebapps\ROOT\vm\point\name\attribute.vmを変更してください。
+　※point_tableの構成変更が必要です。バージョンアップ方法を参照下さい。
+・上記属性をページ定義で使用可能です。
+　ポイント名称等と同様に、$(ポイント番号_attribute1～3)とすることで表示します。
+　例. $(00001_attribute1) $(00001_attribute2) $(00001_attribute3)
+・メンテナンス-操作ログダウンロード
+　タブ区切りテキスト形式でダウンロード可能です。
+　メニューを表示するには「メンテナンス管理」からユーザーを選択し「操作ログ　ダウンロード」に
+　チェックを入れてください。
+・メンテナンス-警報一覧　「検索文字列」で複数条件指定が可能に
+　空白で検索文字列を区切ることで、AND条件指定が可能になりました。
+・GODA対応
+　GODA用スケジュール
+　　10分毎の日報CSVファイルの出力
+　　Logging.xmlのtaskタグのschedule属性に"GODA"と指定します。
+　GODA用メール送信機能
+　　CSVファイルを添付したメールを送信します
+　　Explorer.diconにモジュールの追加設定を記述します。
+　　詳細はdocs\manual\GODA\Explorer.dicon.sampleを参照してください。
+　メンテナンスGODA用CSVファイルの出力
+
+■バグ修正
+
+[緊急]システムのクラッシュを伴う等、緊急に対応する必要のある不具合
+[重要]システムのクラッシュを伴わない、比較的軽度な不具合
+[些細]そのままでも特に問題ない不具合
+
+[重要]通信エラーが発生し、通信エラーを表示するページに移動した時、一度復旧してしまう
+        可能性がある不具合。
+
+■2.0.28からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.以下のSQLを実行
+ALTER TABLE point_table ADD attribute1 VARCHAR(255) NOT NULL;
+ALTER TABLE point_table ADD attribute2 VARCHAR(255) NOT NULL;
+ALTER TABLE point_table ADD attribute3 VARCHAR(255) NOT NULL;
+4.webappsフォルダを最新バージョンに上書きコピー
+5.rejarを実行
+6.setenv.batを上書きコピー
+
+--------------------------------------------------------------------------------
+Ver2.0.28 2006/9/26
+--------------------------------------------------------------------------------
+■追加機能
+
+・警報優先順位機能
+　優先順位が高い警報が発生した場合、それより優先順位が低い警報が発生しても、自動画面移動
+　をしません。但し、警報音は常に鳴ります。自動画面移動を復旧する為には、警報が復旧又は警報の
+　確認処理をします。
+　この機能を有効にする場合はClientConfiguration.xmlに以下のエントリーを追加して下さい。
+   <comment>プライオリティによる自動ジャンプの制御 true/false (初期値はfalse)</comment>
+   <entry key="org.F11.scada.xwife.applet.alarm.PriorityController">true</entry>
+　優先順位はitem_tableの自動ページジャンプ有無(auto_jump_flag)と自動ページジャンプ優先順位
+　(auto_jump_priority)で設定してください。
+
+・未復旧・未確認の警報一覧
+　表示させる場合にはClientConfiguration.xmlに以下のエントリーを追加して下さい。
+   <comment>未復旧一覧の表示/非表示 true/false (初期値はfalse)</comment>
+   <entry key="org.F11.scada.xwife.applet.alarm.occurrence">true</entry>
+   <comment>未確認一覧の表示/非表示 true/false (初期値はfalse)</comment>
+   <entry key="org.F11.scada.xwife.applet.alarm.noncheck">true</entry>
+
+・トレンドグラフの「全てのデータ/自動更新」の切り替えをボタンに変更しました。
+
+・起動時にスプラッシュスクリーンを表示。下部にシステム起動までのプログレスバーを表示します。
+　表示させる場合にはClientConfiguration.xmlに以下のエントリーを追加して下さい。
+   <comment>起動時のスプラッシュ設定</comment>
+   <entry key="org.F11.scada.xwife.applet.splash.on">true</entry><comment>スプラッシュの有無 初期値はfalse</comment>
+   <entry key="org.F11.scada.xwife.applet.splash.title">F-11 (c) 2002-2006 Freedom, Inc</entry><comment>スプラッシュのタイトル 初期値はシステム起動中</comment>
+   <entry key="org.F11.scada.xwife.applet.splash.image">/images/splash.png</entry><comment>スプラッシュに表示するイメージ 初期値はフリーダムのロゴ</comment>
+
+・スケジュール操作ログの回数の記録方法の設定
+　通常は1=0100：0200のように記録しますが、この設定で1回目=0100：0200のように、回数の
+　後ろに好みの文字列をつけることが可能になります。
+　resources/Preferences.xmlに以下を設定。
+	<!-- スケジュール操作ログの回数の記録方法 初期値(数字のみ) 指定するとその数字+文字列-->
+	<property key="/server/operationlog/impl/OperationLoggingUtilImpl" value="回目" />
+
+■バグ修正
+
+Ver.2.0.28よりバグ情報に以下の深刻度を付加します
+[緊急]システムのクラッシュを伴う等、緊急に対応する必要のある不具合
+[重要]システムのクラッシュを伴わない、比較的軽度な不具合
+[些細]そのままでも特に問題ない不具合
+
+[緊急]ページキャッシュの扱いに問題があり、アナログ値表示の更新が止まってしまう可能性があります。
+      Ver.2.0.25 - 27で発生します。
+      トレンドグラフは自動的にキャッシュされる為、現在値の更新が止まる可能性があります。
+      グラフ表示部やその他の表示部分は影響ありません。
+      トレンドグラフ以外のキャッシュ指定していないページでは全く問題ありません。
+      サーバー機能のみでクライアントを使用しない場合は、[些細]な問題なのでバージョンアップ
+      する必要はありません。
+
+[重要]「▲」ボタンを押下後のヒストリで確認処理(全確認を含む)をすると、そのクライアントの情報と
+      データベースしか更新しません。クライアントが一台でタイプBを使用している場合は、特に
+      問題ありません。タイプCでヒストリを表示している場合は、通常表示しているヒストリ一覧
+      に確認処理が反映されません。複数クライアントの場合は、確認処理の表示が他のクライント
+      に伝わりません。
+      2.0.28ではこの機能を削除しました。確認処理は通常のヒストリか未確認で行なってください。
+
+[重要]ページ変更でサーバー側の通信コマンド定義体がメモリーリークする不具合。
+      通信コマンド定義体は少量(30byte程)なので、急激にメモリを圧迫することはありませんが、
+      できる限りバージョンアップをお願いします。
+      サーバー機能のみでクライアントを使用しない場合は、[些細]な問題なのでバージョンアップ
+      する必要はありません。
+
+■2.0.27からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+4.以下のSQLを実行(未復旧・未確認を表示しない場合にも必要です)
+-- プライオリティ名テーブル
+CREATE TABLE priority_table (
+	id INTEGER NOT NULL
+	, name VARCHAR(255) NOT NULL
+	, PRIMARY KEY (id)
+);
+5.プライオリティ名テーブルのレコードを追加します。このテーブルに対象レコードが存在しない場合、未確認
+　一覧に何も表示されません。id - プライオリティ, name - プライオリティ名
+　プライオリティ機能を使用しない場合は、
+　INSERT INTO priority_table VALUES(0, '');
+　を実行して下さい。
+6.setenv.batを上書きコピー
+
+--------------------------------------------------------------------------------
+Ver2.0.27 2006/7/21
+--------------------------------------------------------------------------------
+■追加機能
+・▲ボタンで警報履歴抽出画面を表示する際に、初期化時に期間以外の条件を予め設定。
+　resources/ClientConfiguration.xmlに以下を設定。
+   <comment>何も設定しない時は各項目とも、全て表示するようになっています</comment>
+   <comment>初期値で選択する項目番号と項目名を縦棒(|)区切で記述</comment>
+   <entry key="xwife.applet.Applet.alarm.table.search.attribute">0|2</entry>
+   <entry key="xwife.applet.Applet.alarm.table.search.attributename">警報|火災警報</entry>
+   <comment>初期値で選択するラジオボタンを設定</comment>
+   <comment>条件：全て-SELECTALL 発生・運転のみ-SELECTTRUE 復旧・停止のみ-SELECTFALSE</comment>
+   <entry key="xwife.applet.Applet.alarm.table.search.alarmon">SELECTTRUE</entry>
+   <comment>確認(ヒストリのみ)：全て-SELECTALL 確認済み-SELECTTRUE 未確認-SELECTFALSE</comment>
+   <entry key="xwife.applet.Applet.alarm.table.search.checkon">SELECTTRUE</entry>
+・4値入力ダイアログで最初の一つ目のダイアログの各ラベル及び、二つ目のダイアログのタイトル設定が
+　可能になりました。
+　resources/Dialog.xmlで以下のように設定
+   <xwife:udlimitdialog name="4" width="200" height="200"
+     labels="ラベル1|ラベル2|ラベル3|ラベル4" titles="タイトル1|タイトル2|タイトル3|タイトル4"/>
+・メンテナンス機能-名称変更にページャー機能と検索機能が追加されました。
+
+■2.0.26からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.webappsフォルダを最新バージョンに上書きコピー
+4.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.26 2006/6/29
+--------------------------------------------------------------------------------
+些細な不具合の修正です。緊急なものではないので2.0.25から、急いでバージョンアップする必要は
+ありません。
+
+■バグ修正
+・statusbarの定義が無いと、クライアント初期化中にエラーが発生する不具合。
+　このバージョンから定義無しでも大丈夫になりました。
+・実質機能していなかったServerPatorolスレッドを消去しました。
+　これにより/resources/tree.txtを削除することが可能になりました。
+・サーバー起動時に一部の機能が異常終了していた場合に、続行可能なように振る舞っていた不具合。
+　このバージョンより、サーバー起動時になんらかのエラーがあれば、ダイアログを出して強制的に
+　サーバーを終了するようになりました。但し、Java 1.4ではダイアログが他のウィンドウの後ろに
+　隠れる可能性があります。Java 5.0では常に最前面に表示されます。
+
+■2.0.25からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.25 2006/6/22
+--------------------------------------------------------------------------------
+■バグ修正
+・ページ移動の時にサーバーの不要なホルダー情報を削除していない不具合。
+・ページ切り替えの時PLCの初期値を取りこぼす事がある不具合。
+
+■2.0.24からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.24 2006/6/8
+--------------------------------------------------------------------------------
+■追加機能
+・操作ログのデジタル表示で値(true, false)を表示しないオプション。
+　resources/ClientConfiguration.xmlに以下を設定。
+   <comment>操作ログ検索デジタル値の表示/非表示 true/false (初期値はtrue)</comment>
+   <entry key="operation.isDisplayDigital">false</entry>
+・デマンドグラフの縦スケールの文字色が重警報の色設定と連動している。任意の色を設定可能とした。
+　demandgraphタグのscaleStringColor属性に色を指定してください。
+例.
+　<f11:demandgraph …… scaleStringColor="white">
+・タイムスケジュールの時間データソート機能(いずれも初期値はfalseです)
+　グループスケジュール…scheduleタグのisSort属性にtrueを設定
+例.
+　<f11:schedule … isSort="true">
+　個別スケジュール…resources/Dialog.xmlでgraphicscheduleviewdialogタグのisSort属性にtrueを設定
+　設定したダイアログIDをtextschedulesymboleditableタグのdlgname属性で設定
+例.
+　<xwife:graphicscheduleviewdialog name="3" width="1000" height="195" isSort="true"/>
+　<f11:textschedulesymboleditable … dlgname="3">
+・アナログ値入力ダイアログ、最小値・最大値の設定
+　アナログの入力値が制限可能になりました。入力値・表示値共に0～4000のアナログに対して、
+　1～100までしか入力を許可しない等が可能になります。
+　resources/Dialog.xmlでtenkeydialog又はtenkeydialognotabタグのdialogMin, dialogMaxを設定
+　設定したダイアログIDを各シンボルタグのdlgname属性で設定
+例.
+　<xwife:tenkeydialog name="12" … dialogMin="1" dialogMax="100"/>
+　<f11:textanalogsymboleditable … dlgname="12">
+
+
+■バグ修正
+・チャタリング防止タイマーが正常に機能しない不具合。
+・バーグラフで縦スパン変更時に、最小値へ0より大きい値を入れると、グラフ表示がおかしくなる不具合。
+・Preferences.xmlの警報履歴の最大保持件数指定が機能していない不具合。
+・縦スケールのスパン変更ダイアログが、画面からはみ出た時に画面内に戻ら無い不具合。
+・個別スケジュールで使用ダイアログIDが無視されて、「3」固定になっていた不具合。
+
+■2.0.23からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.webappsフォルダを最新バージョンに上書きコピー
+4.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.23 2006/5/8
+--------------------------------------------------------------------------------
+
+■バグ修正
+・サーバー・クライアント間のデータ転送でパフォーマンスチューニング。
+・テーブル削除機能で、秒数指定と件数指定を同時に使用できない不具合。
+・マルチCPUでシンボルが表示されないことがある不具合。
+
+
+■2.0.22からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.22 2006/4/11
+--------------------------------------------------------------------------------
+
+■追加機能
+・サーバーのGUIを変更。
+　ツリー + メイン画面に変更しました。
+　/resources/Explorer.diconというファイルが追加されます。このファイルは必ず必要です。
+　デフォルトでは自動印字の設定パネルを非表示にしています。表示するためには/resources/Explorer.dicon
+　の該当部分のコメントアウトを外してください。
+・システム時計の変更。
+　サーバーのツリーメニュー内にあります。
+　　変更可能時間帯を指定する時は/resources/Preferences.xmlに以下を追加してください。
+	<!-- システム時刻変更可能時間帯 初期値(6～54分)-->
+	<property key="/server/systemtime/miunteMin" value="11"/>
+	<property key="/server/systemtime/miunteMax" value="49"/>
+　サーバー・クライアントが異なるマシンの場合、時刻合わせは別途NTPを使用して下さい。
+　NTPソフトは何を使用しても結構ですが、AdjustPC<http://www.vector.co.jp/soft/dl/win95/personal/se118017.html>
+　というものが使いやすいのでお勧めしておきます。
+・操作ログ検索でポイント詳細、及びポイント詳細で検索の追加
+　item_table.message_idとmessage_table.message_idを突き合わせて、ポイント詳細を検索画面に
+　出力することが可能になりました。ポイント詳細に使用するレコードは、message_table.typeを0にして
+　下さい。詳細はdocs/manual/point_syousai.htmlを参照ください。
+　　初期値ではポイント詳細を使用しない設定なので、この機能を有効にする時は/resources/Preferences.xmlに
+　　以下を追加してください。
+	<!-- 操作ログ検索一覧でポイント詳細を使用する -->
+	<property key="/server/operationlog/prefix" value="true"/>
+
+■バグ修正
+・サーバーコマンド実行機能でcommandタグを使用時に、定義したコマンドが実行されない
+　可能性がある不具合。
+・commons-dbcp-1.2.1.jar, commons-lang-2.1.jar, commons-pool-1.3.jar, jim.jar
+　resources.jar
+　をバージョンアップ。これに伴いsetenv.batとMETA-INF/MANIFEST.MFが変更されます。
+・カレンダーのボタンを連続クリックすると、エラーを発生する不具合。
+　各日付ボタンにタイマーを持たせ、250ms以上経たないとクリック処理を無視するよう変更しました。
+・書込兼読込のホルダに、値を書き込んだ際にPLCと画面が異なる場合がある不具合
+・ページ初期化後にImageSymbolの画像が表示されない場合がある不具合。
+・ツリーの切替とページジャンプが同時に起こると、レースコンディションが発生する不具合。
+・操作履歴一覧を昇順から降順にしました。
+
+■2.0.21からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3./resources/Explorer.diconをコピー
+4.setenv.batとMETA-INF/MANIFEST.MFを最新バージョンに上書きコピー
+5.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.21 2006/3/22
+--------------------------------------------------------------------------------
+
+■追加機能
+
+・マルチCPUに対応
+　このバージョンからハイパー・スレッディングをONの状態で使用しても大丈夫です。マルチCPUの方が
+　パフォーマンスがよいので、普通はハイパー・スレッディングをONにしておいてください。
+・クライアントの初期サイズと位置を設定可能になりました。但し、起動時最大化を設定している場合は
+　最大化が優先されます。
+　resources/ClientConfiguration.xmlに以下を設定。
+   <comment>クライアントのサイズと位置 初期値は(サイズ:1152, 864, 位置:0, 0)</comment>
+   <entry key="xwife.applet.Applet.frame.size.width">1280</entry>
+   <entry key="xwife.applet.Applet.frame.size.height">900</entry>
+   <entry key="xwife.applet.Applet.frame.location.x">50</entry>
+   <entry key="xwife.applet.Applet.frame.location.y">50</entry>
+・テーブル削除機能
+　詳細はdocs/manual/RemoveDefine.htmlを参照してください。
+　設定サンプルはdocs/manual/RemoveDefine.dicon.sampleにあります。
+・サーバーコマンド実行機能の拡張 
+　論理式判定による固定値の書き込み通信が可能になりました。A&AのEvent→Comm()のような事が
+　可能になります。
+　詳細はdocs/manual/command.txtを参照してください。
+　設定サンプルはresources/command.xml.sampleにあります。
+・警報音停止ボタンとデータホルダ(PLCデータ)を関連付ける事が可能になりました。
+　警報音停止デジタルイベント書き込み設定と、割り付けたホルダがfalseからtrueになった場合、
+　警報停止ボタンをクリックする設定です。
+　複数クライアントで警報音の停止をPLCで制御したい場合に使用してください。
+　resources/ClientConfiguration.xmlに以下を設定。
+　　<comment>警報音停止デジタルイベント書き込み設定。初期値は設定無し</comment>
+　　<entry key="xwife.applet.Applet.alarmStopKey.write">P1_D_1900200_Digital</entry>
+　　<comment>警報音停止デジタルイベント設定。初期値は設定無し</comment>
+　　<entry key="xwife.applet.Applet.alarmStopKey.event">P1_D_1900100_Digital</entry>
+・編集可能シンボル(～editable)上でマウスカーソルが手の形に変化するように設定可能になりました。
+　この機能を有効にしたい場合はresources/ClientConfiguration.xmlに以下を設定。
+   <comment>編集可能なシンボルでマウスカーソルを手の形{true : する, false : しない(初期値)}</comment>
+   <entry key="xwife.applet.Applet.symbol.handcursor">true</entry>
+・docs/manual/FFU_Tips.htmlを追加しました。
+　手の形マウスカーソルを使用する場合は、必ずお読みください。
+・デマンドグラフの警報レベルの線が、グラフの上限線を超えないようにする属性を追加。
+　demandgraphタグの属性alarmTimeModeがtrueになると警報レベルの線が
+　飛び出さなくなります。
+　例.
+　　<f11:demandgraph x="200" y="50" …  alarmTimeMode="true">
+・サーバーの再起動無しで、スケジュールのグループ名をメンテナンス画面から修正できるようになりました。
+　グループ名を変更した後にページの再読込(切替)を行ってください。
+
+
+■バグ修正
+
+・パフォーマンスチューニング。
+・マルチCPU(ハイパー・スレッディングによる擬似マルチCPUも含む)でクライアントを実行すると、
+　レース・コンディションによるエラーを発生する。
+・マルチCPU(ハイパー・スレッディングによる擬似マルチCPUも含む)になると起動(特にサーバー)が遅くなる現象。
+・マルチCPU(ハイパー・スレッディングによる擬似マルチCPUも含む)で実行すると、テーブル内シンボルの
+　点滅がエラーで止まる不具合。
+　※いずれもシングルCPUでエラー発生の可能性はありますが、処理方法の特性上発生しませんでした。
+・ページを変えるとツリーの幅が必ず初期値の幅になる不具合。
+・ツリーを連続クリックした場合にクライアントがメモリーリークを起こす。
+・デマンドグラフの重・軽警報設定、契約電力・目標電力の原点が、左に1ドットずれていた不具合。
+・通信エラーが復帰しない場合がある不具合。
+
+
+■2.0.20からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.20 2006/2/27
+--------------------------------------------------------------------------------
+■追加機能
+
+・自動印字に日報(アナログ用)を追加。auto_print_param_tableのscheduleにDAILY_ANALOG
+　と設定。前日00:00:00～23:59:59のデータを抽出します。
+・トレンドグラフの線の幅を指定可能。
+　trendgraph、trendgraph2、graphviewタグのstrokeWidthを設定します。floatで設定できますが、
+　画面に描画される時には、int扱いになるようです。
+例.
+　<f11:graphview background="navy" foreground="white" stringColor="black"
+     height="400" width="550" x="420" y="100" strokeWidth="2">
+・ロギングスケジュールにMINUTEHOUROUTを追加。manual/csvout.txtを参照してください。
+
+
+■バグ修正
+
+・パフォーマンス向上
+　ポイント定義文字列と画像ファイルを適時キャッシュ。空きメモリ量に依存しますが、2回目以降の
+　ページ表示が高速になります。
+・起動コマンド(starta.bat)のパラメタの変更。-XX:TargetSurvivorRatio=80を追加
+・docs/manual/memory.txtのcollector部を変更。(割当量を増加)
+・複数クライアント使用時に、フリーズする不具合(2.0.19のみ)。
+・警報音停止ボタンのクリックが機能しない不具合(2.0.18～2.0.19)。
+・クライアントのメモリーリーク(ページがキャッシュ指定されている場合は発生しません)
+　新たにeditableシンボルが表示される時(2.0.0～2.0.19)
+　新たにgraphviewが表示される時(2.0.10～2.0.19)
+・メンテナンス機能「自動印字設定」で、自動印字スケジュールが2つ以上の場合のみ
+　「同一時刻を設定しないでください。」を表示するように変更。
+
+■2.0.19からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.starta.bat, collector.batを最新バージョンに上書きコピーして、
+　クライアントは適当なメモリ割当量に変更してください。
+4.webappsフォルダを最新バージョンに上書きコピー
+5.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.19 2006/2/16
+--------------------------------------------------------------------------------
+■バグ修正
+
+・操作ログの検索項目「ポイント記号」を「ポイント名称」に、処理方法をポイント名のあいまい検索
+　に変更。
+・パフォーマンスチューニング。全体的に50～70%高速化しています。
+　XMLファイルのパース処理を最適化。
+　画像情報・ポイント名称を内部キャッシュに保持。
+　起動コマンド(start?.bat)のパラメタの変更。-server -XX:SurvivorRatio=2を追加-clientを削除
+・シンボル初期表示の不具合。
+・▲ボタンで警報履歴抽出画面を表示する際に、初期化時に期間を予め設定。
+　resources/ClientConfiguration.xmlに以下を設定。
+	<comment>警報履歴検索の初期表示範囲(日単位) (初期値は1日前)</comment>
+	<entry key="xwife.applet.Applet.alarm.table.search">2</entry>
+
+■2.0.18からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.startw.bat, starta.bat, collector.batを最新バージョンに上書きコピー
+3.rejarを実行
+
+■JavaSE5.0
+
+音声ファイルを再生すると、突然JavaVMがロック状態になるというバグ*1があり、
+使用を禁止していました。しかし、update 5リリースでこのバグが修正されたので、
+5.0の使用を解禁したいと思います。
+
+1.4.xとの混合運用は出来ません。クライアント・サーバーともに5.0を入れる必要があります。
+
+5.0を使用すると以下の点で優位になります
+　・メインストリームなのでバグ修正の対象になる。1.4.xはセキュリティFIXしか修正されません。
+　・jconsoleというモニタリングソフトを使用することが出来る。
+　・全体的に若干速くなる。
+
+上記の優位点があるため、今後はJavaSE5.0の使用をお勧めします。但し、F-11のプログラムは
+1.4.xバイナリでコンパイルするので、1.4.xで運用することが可能です。
+
+*1 http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6269854
+
+--------------------------------------------------------------------------------
+Ver2.0.18 2006/2/10
+--------------------------------------------------------------------------------
+■追加機能
+
+・警報メール送信エラー時の再送機能
+　リトライ回数・待機時間を設定するには/resources/Preferences.xmlに以下の項目を追加して下さい。
+　初期値はリトライ回数(5回)　待機時間(1000ミリ秒)となっています。
+	<!-- 送信メールエラー時リトライ回数 初期値は5回-->
+	<property key="/server/mail/message/retry" value="10" />
+	<!-- 送信メールエラー時リトライ待機時間(ミリ秒) 初期値は1000ミリ秒-->
+	<property key="/server/mail/message/wait" value="5000" />
+
+・警報音停止キー設定
+　F12以外に変更する場合は、resources/ClientConfiguration.xmlに以下を設定。
+   <comment>警報音停止キー設定。初期値は F12キー</comment>
+   <entry key="xwife.applet.Applet.alarmStopKey">F10</entry>
+
+　PFキー以外を指定することも可能です。
+　http://java.sun.com/j2se/1.5.0/ja/docs/ja/api/java/awt/event/KeyEvent.html
+　の「VK_」以降のキー名を指定可能です。
+
+・スケジュールのグループ一覧ダイアログのサイズ、　トレンドグラフのグループ一覧ダイアログのサイズ
+　が設定可能になりました。
+　初期値を変更する場合は、resources/ClientConfiguration.xmlに以下を設定。
+   <comment>スケジュールのグループ一覧ダイアログのサイズ(初期値は157, 217)</comment>
+   <entry key="xwife.applet.Applet.schedule.dialog.width">600</entry>
+   <entry key="xwife.applet.Applet.schedule.dialog.height">400</entry>
+
+   <comment>トレンドグラフのグループ一覧ダイアログのサイズ (初期値は157, 217)</comment>
+   <entry key="xwife.applet.Applet.trend.dialog.width">1000</entry>
+   <entry key="xwife.applet.Applet.trend.dialog.height">400</entry>
+
+・クライアントタイプCの追加
+　タイプA+タイプBです。最新履歴の部分がスクロール可能なテーブルになります。
+　履歴のみ(タブ無し)の表示とサマリ・ヒストリ・履歴(タブ付き)の表示を選択可能です。
+　タイプCの使用はstarta.batでorg.F11.scada.xwife.applet.WifeAppletCを設定してください。
+　ブラウザ上での表示はwebapps/ROOT/WifeApplet.htmlを修正してください。
+
+　以下のプロパティーが追加されています。
+
+　resources/ClientConfiguration.xml
+   <comment>タイプCの警報一覧部の高さ (初期値は180)</comment>
+   <entry key="xwife.applet.Applet.alarm.table.height">180</entry>
+   <comment>
+   　タイプCの警報一覧部の履歴表示モード (初期値は0)
+   　0:サマリ・ヒストリ・履歴を表示(タブ有り)
+   　1:履歴のみを表示(タブ無し)
+   </comment>
+   <entry key="xwife.applet.Applet.alarm.table.type">1</entry>
+
+ resources/Preferences.xml
+ 	<!-- 警報履歴の最大保持件数(ヒストリ・履歴　共用) 初期値は5000-->
+	<property key="/server/alarm/maxrow" value="5000" />
+ 
+・ダイアログボタンの文字色、背景色、フォント名、フォントスタイル、フォントサイズを指定可能にしました
+
+■バグ修正
+
+・トレンドグラフで横幅変更を行った時、スクロールバーが最初の位置になる不具合
+・ロギングCSV出力時にエラーが発生すると、ロギングスケジュールが停止してしまう不具合
+・ページ表示のパフォーマンス向上
+　連続でツリーをクリックした場合や警報ジャンプが大量に発生した場合、間のページ表示処理を
+　キャンセルするようにしました。
+・シンボルが初期表示を表示したままになる不具合を修正しました。
+
+■2.0.17からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.17 2006/2/6
+--------------------------------------------------------------------------------
+■追加機能
+
+・警報メールの送信日時を警報発生日時にするモードを追加
+　使用するには/resources/Preferences.xmlに以下の項目を追加して下さい。
+	<!-- E-Mail 送信日時を警報発生日時にする (true警報発生時 : false送信日時) -->
+	<!-- property key="/server/mail/message/datemode" value="true" / -->
+・警報メール送信時のログ出力追加
+
+■2.0.16からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.16 2006/1/26
+--------------------------------------------------------------------------------
+■追加機能
+
+・警報・状態発生時にスクリーンセーバーをOFFにするモード
+　resources/ClientConfiguration.xmlに
+   <comment>警報・状態発生時にスクリーンセーバーを解除する・しない(true or false)初期値はfalse</comment>
+　  <entry key="xwife.applet.Applet.screenSaver">true</entry>
+　を追加することでこの機能が動作します。
+　※ブラウザ上でクライアントを表示している場合は、この機能(スクリーンセーバーの解除)は使用できません。
+
+・シンボルのツールチップ(吹流し)のカスタム表示を追加
+　現状の表示方法ではマウスイベント(シンボルへの出入り)を検知できない場合がある為、
+　真下にマウスカーソルを移動させた時にツールチップが消えない現象が発生します。
+　これを防止する為ツールチップの表示をマウスカーソルの右斜め下に変更し、X軸はマウス
+　カーソルについて行く実装を追加しました。
+　又、ツールチップの最大表示時間(初期値は10秒)を設定し、消えない現象が発生した場合
+　にも対応できるようにしました。
+
+　resources/ClientConfiguration.xmlに
+   <comment>ツールチップの最大表示時間(ミリ秒)。初期値は10000</comment>
+   <entry key="xwife.applet.Applet.dismissDelay">5000</entry>
+   <comment>ツールチップのカスタム表示(標準:false, カスタム:true)。初期値はfalse</comment>
+   <entry key="xwife.applet.Applet.customTipLocation">true</entry>
+　を指定することで設定可能です。
+
+■バグ修正
+
+・ダイアログのサイズ変更が可能だった不具合
+・PLC-PC間の時刻合わせ機能で、readとwrite機能が同時に指定されていた場合、
+　時刻合わせがスケジュールのタイミングでなくほぼ毎秒になっていた不具合
+・数値入力ダイアログの入力エリアにフォーカスがある場合、入力値の上下限チェックが動作しない不具合
+・table(一覧表)で文字無しのツールチップが表示されていた不具合
+
+■2.0.15からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.rejarを実行
+3.念のためにSQLフォルダを最新バージョンに上書きコピー
+
+--------------------------------------------------------------------------------
+Ver2.0.15 2006/1/20
+--------------------------------------------------------------------------------
+■追加機能
+
+・警報メール送信履歴機能
+　使用するには/resources/Preferences.xmlに以下の項目を追加して下さい。
+
+	<!-- 送信メール記録の有無 初期値はfalse -->
+	<property key="/server/alarm/sentmail" value="true" />
+
+　テーブル作成が必要になります。詳細はバージョンアップ方法を参照ください。
+　メンテナンス画面から一覧を参照することが可能です。メンテナンス管理から
+　「警報メール　送信一覧」を許可してください。
+・docs/manual/memory.txtを追加。
+　起動バッチファイル(startw.bat, collector.bat, starta.bat)の、メモリ容量の指定方法と
+　容量を大体の目安で記述してあります。
+
+■バグ修正
+
+・警報メール送信のグループ設定で「@」直前の「.」がエラーになる
+・大量のシンボルを表示するページを読込時にキャッシュすると、画面更新が行われなくなる不具合
+・サンプルのresources/AlarmDefine.xmlで、当幅フォントを指定していなかった。
+
+■2.0.14からのバージョンアップ方法
+
+1.下記のSQLを実行(警報メール送信履歴機能を使用する場合のみ)
+CREATE TABLE alarm_email_sent_table (
+	alarm_email_sent_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	provider VARCHAR(100) NOT NULL,
+	holder VARCHAR(100) NOT NULL,
+	sentdate DATETIME NOT NULL,
+	value BOOL NOT NULL,
+	PRIMARY KEY (alarm_email_sent_id)
+);
+CREATE INDEX alarm_email_sent_provider_idx ON alarm_email_sent_table (provider, holder);
+CREATE INDEX alarm_email_sent_sentdate_idx ON alarm_email_sent_table (sentdate);
+
+CREATE TABLE alarm_email_sent_addresses_table (
+	alarm_email_sent_addresses_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	alarm_email_sent_id BIGINT NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	PRIMARY KEY (alarm_email_sent_addresses_id)
+);
+CREATE INDEX alarm_email_sent_address_id_idx ON alarm_email_sent_addresses_table (alarm_email_sent_id);
+CREATE INDEX alarm_email_sent_address_idx ON alarm_email_sent_addresses_table (address);
+
+2.classesフォルダを最新バージョンに上書きコピー
+3.webappsフォルダを最新バージョンに上書きコピー
+4.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.14 2005/12/21
+--------------------------------------------------------------------------------
+■バグ修正
+
+・トレンドグラフで「全てのデータ」モードが動作しない不具合。
+　※2.0.10～2.0.13で発生します。
+・警報音個別設定でデジタル以外が表示される不具合。
+
+■2.0.13からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.webappsフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.13 2005/12/16
+--------------------------------------------------------------------------------
+■追加機能
+
+・メール送信でメールアドレスをTO, CC, BCCの、いずれかに設定可能になりました。
+　キーが存在しない場合や、フィールド名が適切で無い場合は、TOに設定します。
+
+　resources/Preferences.xmlに
+	<!-- E-MAIL アドレス格納フィールド [TO, BCC, CC] -->
+	<property key="/server/mail/message/address/field" value="BCC" />
+　を追加して下さい。
+
+■バグ修正
+
+・時刻同期PLC→PCが動作しない不具合。
+・クライアントのスレッドリーク
+
+■2.0.12からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.12 2005/12/14
+--------------------------------------------------------------------------------
+■追加機能
+
+・属性毎、個別毎の警報音のOn/Off設定
+　メンテナンス画面から警報音On/Offの設定ができるようになりました。
+
+・固定値書き込みシンボル(imagesymbolfixededitable)
+　ダイアログを表示せずに、予め設定しておいた固定値を書き込むシンボルです。
+　fixeddigitalかfixedanalogを指定可能です。それ以外は無視して、書き込みをしません。
+　書き込み先に複数のポイントを指定することが可能です。
+　アナログ値はPLC内部値ではなく、変換値(工業値)を指定してください。ダイアログから入力する
+　代わりに、固定値を入力するイメージになります。
+
+例.
+<f11:imagesymbolfixededitable value="/images/button.png" x="0" y="0"
+		visible="true" tooltiptext="ボタン">
+	<f11:destination>
+		<f11:fixeddigital provider="P1" holder="D_1903001_Digital" value="true"/>
+		<f11:fixedanalog provider="P1" holder="D_500_BcdSingle" value="25"/>
+	</f11:destination>
+</f11:imagesymbolfixededitable>
+
+・キャッシュページをクライアント起動時に読込
+　resorces/ClientConfiguration.xmlの以下のキーをtrueにすることで機能します。
+  <entry key="parser.AppletFrameDefine.receiveCache">true</entry>
+
+・クライアントの閉じるボタン(Xボタン)で、確認ダイアログを出す。
+　resorces/ClientConfiguration.xmlの以下のキーを設定してください。
+　※Webブラウザでクライアントを立ち上げた時には、この機能は動作せず必ず終了します。
+
+   <comment>
+    閉じるボタン(Xボタン)で、確認ダイアログを出さずに閉じるかどうか。
+      true:確認ダイアログを出さずに閉じる。
+      false:確認ダイアログを出す。
+   </comment>
+   <entry key="xwife.applet.Applet.isClose">false</entry>
+
+・クライアント初期状態の設定
+　立ち上げ時にクライアントを最大化する・しない
+　ツリー部の縦横幅
+　を設定することが可能になりました。
+　resorces/ClientConfiguration.xmlの以下のキーを設定してください。
+
+   <comment>立ち上げ時にクライアントを最大化する・しない(true or false)</comment>
+   <entry key="xwife.applet.Applet.maximized">true</entry>
+   
+   <comment>
+   　ツリー部の縦横 {treeWidth 横幅 : treeHeight　高さ} (Pixcel)
+   　　縦：最大化＆タスクバー表示無し 805
+  　　 縦：最大化＆タスクバー表示有り 775　が適当なサイズ。
+  　　 横幅は適当に指定してください。
+   </comment>
+   <entry key="xwife.applet.Applet.treeWidth">170</entry>
+   <entry key="xwife.applet.Applet.treeHeight">775</entry>
+
+・アナログ値の16進数表示
+　アナログ値のフォーマット指定(analog_type_tableのformat列等)で、「0X桁数」か「0x桁数」
+　を指定すると16進数表示になります。アナログ値が桁数より大きい場合は、桁数までを表示します。
+
+　※但し、16進数入力は対応していません。
+
+　　0X桁数 --- 大文字で16進数表示
+　　0x桁数 --- 小文字で16進数表示
+　例.
+　　0X4 --- 16進数4桁表示(英字は大文字)
+　　0x2 --- 16進数2桁表示(英字は小文字)
+
+・ページ切替時の動作
+　ページ読込の際にスレッドを使用しました。ツリーのクリック動作がすぐに終了し、その後バックグラウンド
+　でページ読込するようになっています。ページ読込時に"Now Loading..."と表示します。
+
+■バグ修正
+
+・多量のポイントを設定したページをキャッシュした場合動作が遅くなる。
+・ロギング定義のCSV出力で、複数のプロバイダ(PLC)を指定すると、異常な値が出力される不具合。
+
+■2.0.11からのバージョンアップ方法
+
+1.下記のSQLを実行
+-- 警報音個別設定テーブル
+CREATE TABLE alarm_individual_setting_table (
+	alarm_individual_setting_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	provider VARCHAR(100) NOT NULL,
+	holder VARCHAR(100) NOT NULL,
+	type INTEGER NOT NULL,
+	PRIMARY KEY (alarm_individual_setting_id)
+);
+CREATE UNIQUE INDEX alarm_individual_setting_provider_idx ON alarm_individual_setting_table (provider, holder);
+CREATE INDEX item_table_system_idx ON item_table (system);
+
+2.classesフォルダを最新バージョンに上書きコピー
+3.libフォルダを最新バージョンに上書きコピー
+4.webappsフォルダを最新バージョンに上書きコピー
+5.setenv.batを最新バージョンに上書きコピー
+6.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.11 2005/11/14
+--------------------------------------------------------------------------------
+■追加機能
+
+・スケジュール・バーモード
+　00:00と24:00の入力が可能
+　viewclassにBarSchedule2Factoryを指定してください。
+
+例.
+<f11:page name="スケジュール" value="/images/Base/BACK.png">
+  <f11:schedule viewclass="BarSchedule2Factory" …
+
+■バグ修正
+
+・メンテナンス画面　ロギングデータダウンロード
+　初期画面の日付の不具合を修正
+
+■2.0.10からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.libフォルダを最新バージョンに上書きコピー
+3.webappsフォルダを最新バージョンに上書きコピー
+4.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.10 2005/11/10
+--------------------------------------------------------------------------------
+■追加機能
+
+・メンテナンス画面　ロギングデータダウンロード
+　「ダウンロード対象ロギングテーブル名称テーブル」の作成・更新する必要があります。
+・ハートビートによるライフチェック
+　TimeSet.xmlに設定を追加することで、一定間隔でPLCへのライフチェック用の
+　書き込みが可能になります。サンプルページのresources/TimeSet.xmlを
+　参照してください。
+・GraphViewシンボル
+　トレンドグラフのViewとScaleを自由な配置で使用することが可能になります。
+　サンプルページのpagedefine/graphview.xml並びにdocs/manual/pagedefine.xls
+　を参照してください。
+
+■バグ修正
+
+・警報メールの、記号・機器名称・表示メッセージの間に空白を入れました。
+
+■2.0.9からのバージョンアップ方法
+
+1.下記のSQLを実行
+　-- ダウンロード対象ロギングテーブル名称テーブル
+　CREATE TABLE download_loggingname_table (
+	logging_table_name VARCHAR(100) NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	PRIMARY KEY (logging_table_name)
+　);
+　CREATE UNIQUE INDEX download_loggingname_table_name_idx ON download_loggingname_table (name);
+2.ロギングテーブル名称(log_table_minute等)と画面に表示する名称(日報データ等)をこのテーブルに追加します。
+3.classesフォルダを最新バージョンに上書きコピー
+4.libフォルダを最新バージョンに上書きコピー
+5.webappsフォルダを最新バージョンに上書きコピー
+6.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.9 2005/10/25
+--------------------------------------------------------------------------------
+■バグ修正
+
+・メンテナンス/電子メール送信グループ
+　属性別・個別でグループを使用している時に、そのグループを削除できてしまう不具合。
+　グループが使用されている時は、削除できないように変更。
+　※E_Mail 属性別設定テーブル、E_Mail 個別設定テーブルの変更作業が伴います。
+・いくつかのデータが初期状態(initial_data)のまま表示される不具合。
+
+■2.0.8からのバージョンアップ方法(MySqlの場合)
+　コマンドプロンプトを立ち上げて
+　1.mysqldump -q -u ユーザー名 -pパスワード DB名 email_attribute_setting_table email_individual_setting_table
+　　でテーブルをバックアップします。
+　2.misc\emailconv.batを実行します。同フォルダに「EMailAttribute.sql」と「EMailIndividual.sql」
+　　が作成されます。
+　3.mysql -q -u ユーザー名 -pパスワード DB名 でコンソールクライアントを立ち上げ、
+　　DROP TABLE email_attribute_setting_table;
+　　DROP TABLE email_individual_setting_table;
+　4.下記のSQLを実行
+	-- E_Mail 属性別設定テーブル 
+	CREATE TABLE email_attribute_setting_table (
+		email_attribute_setting_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+		attribute_id INTEGER NOT NULL,
+		email_group_id INTEGER NOT NULL,
+		email_address text,
+		PRIMARY KEY (email_attribute_setting_id)
+	);
+	CREATE UNIQUE INDEX email_attribute_setting_attribute_idx ON email_attribute_setting_table (attribute_id, email_group_id);
+	
+	-- E_Mail 個別設定テーブル 
+	CREATE TABLE email_individual_setting_table (
+		email_individual_setting_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+		provider VARCHAR(100) NOT NULL,
+		holder VARCHAR(100) NOT NULL,
+		email_group_id INTEGER NOT NULL,
+		email_address text,
+		PRIMARY KEY (email_individual_setting_id)
+	);
+	CREATE UNIQUE INDEX email_individual_setting_holder_idx ON email_individual_setting_table (provider, holder, email_group_id);
+	CREATE INDEX email_individual_setting_email_idx ON email_individual_setting_table (email_group_id);
+　5.2で作成したsqlファイルを実行します。
+　　mysql -q -u ユーザー名 -pパスワード DB名 < EMailAttribute.sqlのパス
+　　mysql -q -u ユーザー名 -pパスワード DB名 < EMailIndividual.sqlのパス
+
+　6.classesフォルダを最新バージョンに上書きコピー
+　7.libフォルダを最新バージョンに上書きコピー
+　8.webappsフォルダを最新バージョンに上書きコピー
+　9.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.8 2005/10/14
+--------------------------------------------------------------------------------
+■追加機能
+
+・サーバーコマンド実行機能
+　任意のデジタルポイントの内容で、任意のコマンドを実行する機能。
+　詳細はdocs/manual/command.txtを参照してください。
+
+・トレンドグラフ横スケール設定ファイルの場所指定
+　ページ毎に場所指定が可能になりました。何も指定しない場合は今まで同様
+　classes/org/F11/scada/applet/graph/HorizontalScaleButtonFactory.xml
+　を参照します。設定を変更したい場合は/resourcesにHorizontalScaleButtonFactory.xmlを
+　コピーして、内容を変更しtrendgraph(trendgraph2)タグのhorizontalScaleFile属性で
+　場所を指定してください。
+
+　例.
+　<f11:trendgraph background="navy" …
+　  horizontalScaleFile="/resources/HorizontalScaleButtonFactory.xml">
+
+・電子メール設定の新機構
+　以下の設定をメンテナンス画面で編集することが可能になりました。旧機構と同様に
+　item_tableのemail_send_modeを設定した警報がメール送信の対象になります。
+
+　1.電子メール送信グループ マスター
+　　メールアドレスのグループを設定します。設定したグループは2, 3で使用することが可能です。
+　2.電子メール送信グループ 属性別設定
+　　警報の属性で送信先を設定します。
+　3.電子メール送信グループ 個別設定
+　　警報毎に送信先を設定します。
+
+　※新機構で送信先が一つ以上設定された場合、旧機構のメール設定(item_tableのemail_group_id)
+　　は働きません。旧機構の送信設定があり、新機構の送信設定が無い場合は、旧機構の設定で送信されます。
+　
+
+■バグ修正
+
+・サマリ・ヒストリ・履歴のダブルクリックで、ページジャンプできない不具合。
+
+■2.0.7からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.webappsフォルダを最新バージョンに上書きコピー
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.7 2005/10/07
+--------------------------------------------------------------------------------
+■バグ修正
+・メンテナンス画面からtrandgraph2を修正できない不具合。
+　trandgraph2を使っていない場合は、2.0.6のままで問題ありません。
+
+■2.0.6からのバージョンアップ方法
+
+1.webapps\ROOT\WEB-INF\classesフォルダを最新バージョンに上書きコピー
+
+--------------------------------------------------------------------------------
+Ver2.0.6 2005/10/03
+--------------------------------------------------------------------------------
+■追加機能
+
+・操作ログにユーザーのログイン/ログアウトを追加する。
+・アラームタイプ名の警報メッセージ表示の有無を設定できるようになりました。
+　尚、この設定は警報メッセージ印刷にも影響します。
+　表示属性定義(attribute_table)のアラームタイプ名表示モード(message_mode)
+　で指定してください。
+
+※注意事項
+　この追加機能の為アラームタイプ名表示モード列の追加が必要になります、
+　バージョンアップには表示属性定義(attribute_table)を再設定する必要があります。
+　詳細はバージョンアップ方法を参照してください。
+
+■バグ修正
+・PostgreSQLでいくつかの機能が起動しない不具合。
+・resourcesフォルダを整理しました。ユーザー設定ではないものは、lib/resources.jarに
+　移動。
+
+※移動したファイル
+　resources/Sqldefine.properties
+　resources/applet_log4j.xml
+　resources/colors.txt
+　resources/server_log4j.xml
+　resources/xwife_applet_log4j.properties
+　resources/xwife_server_collector_log4j.properties
+
+■2.0.5からのバージョンアップ方法
+
+1.表示属性定義(attribute_table)の列追加
+　1.1 MySQL
+　　1.1.1　ALTER TABLE attribute_table ADD message_mode BOOL DEFAULT '1' NOT NULL; を実行。
+　　1.1.2　アラームタイプ名表示モード(message_mode)列が表示有(true)で追加されます。
+
+　1.2 PostgreSQL
+　　1.2.1　ALTER TABLE attribute_table ADD message_mode BOOL DEFAULT true NOT NULL; を実行。
+　　1.2.2　アラームタイプ名表示モード(message_mode)列が表示有(true)で追加されます。
+
+　1.3 追加された列をfalseにすることで、アラームタイプ名の警報メッセージ表示無しになります。
+
+2.バージョンアップ以前の環境をバックアップ
+3.F-11_2_0_6に入れ替えてください。
+4.resourcesを物件に応じて変更。あるいは2.0.5のresourcesから「※移動したファイル」を削除した
+　ものをコピーしてください。
+5.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.5 2005/9/27
+--------------------------------------------------------------------------------
+■バグ修正
+・スケジュールでDAILY, MONTHLY, YEARLYをそれぞれ2つ以上設定した場合に、
+　2つ目以降のロギングが実行されない不具合。
+
+　例えばDAILYのロギングが3つ設定されていた場合、上から2つ目以降のスケジュール
+　が動作していませんでした。
+
+■2.0.4からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.4 2005/9/26
+--------------------------------------------------------------------------------
+■追加機能
+
+・操作ログを警報一覧に組み込む
+　操作ログ検索機能が警報一覧に組み込まれました。組み込みたくない場合
+　は、resources\ClientConfiguration.xmlのキー"operationlogging.addalarm"
+　の値をfalseにして下さい。初期値(指定しない場合)は組み込まれます。
+　
+　例.
+　    <entry key="operationlogging.addalarm">false</entry>
+
+■バグ修正
+・ロギング定義で複数PLCを指定した場合、通信エラー発生時に正常に値がとれ
+　なくなる不具合。
+・警報印字でDB保存を使用する時(Preferences.xmlの/server/alarm/print/classNameを指定)
+　エラーが発生し動作しない不具合。
+
+■2.0.3からのバージョンアップ方法
+
+1.classesフォルダを最新バージョンに上書きコピー
+2.操作ログを警報一覧に組み込まない場合は、上記設定を追加する。
+3.rejarを実行
+
+--------------------------------------------------------------------------------
+Ver2.0.3 2005/9/21
+--------------------------------------------------------------------------------
+■追加機能
+
+・バースケジュール機能
+　開始時刻と終了時刻が入っている場合、期間表示する機能を追加。
+　ページ定義でviewclass="BarScheduleFactory"と指定する。
+　画面：images\snapshot\Barスケジュール.png
+
+例.
+<f11:page name="スケジュール BAR2" value="/images/Base/BACK.png">
+	<f11:schedule viewclass="BarScheduleFactory" foreground="white"
+
+・トレンドグラフ　1本スケール
+　縦スケールが1つ表示で横長のトレンドグラフ
+　サンプルのtrend3.xmlを参照
+　画面：images\snapshot\ﾄﾚﾝﾄﾞスケール1本.png
+
+・ポイントコメント機能
+　警報ポイントに対してコメントを添付し、警報メールのbody部にメッセージ
+　を追加する機能。参照：L:\F-11\ドキュメント\pagedefine.xls
+　画面：images\snapshot\ポイントコメント.png
+
+・スケジュール設定　コピー機能
+　A&Aのグループ間コピーと曜日間コピーと同様の機能
+
+・rejar.batバージョンアップ
+　webapps\libへのファイルコピーを追加
+
+・デマンドグラフ　1カウント/1分対応
+　demandgraphタグの属性にexpectYCount="1"を追加
+　graphpropertyタグの属性horizontalScaleWidthを150000に設定
+
+例.
+　<f11:demandgraph x="200" … expectYCount="1">
+　	<f11:graphproperty verticalScaleCount="10" …
+	                   horizontalScaleWidth="150000"
+
+■バグ修正
+・テーブルからダイアログを表示したときに、タイトルを表示しない。
+
+■2.0.2からのバージョンアップ方法
+
+1.以下のSQLを実行
+
+--  ポイントコメント
+CREATE TABLE point_comment_table (
+	id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	provider VARCHAR(100) NOT NULL,
+	holder VARCHAR(100) NOT NULL,
+	comment text,
+	PRIMARY KEY (id)
+);
+CREATE UNIQUE INDEX point_comment_table_holder_idx ON point_comment_table (provider, holder);
+
+--  E_Mail送信先グループマスター 
+CREATE TABLE email_group_master_table (
+	email_group_id INTEGER NOT NULL,
+	kind INTEGER NOT NULL,
+	email_address text,
+	PRIMARY KEY (email_group_id, kind)
+);
+
+-- E_Mail 属性別設定テーブル 
+CREATE TABLE email_attribute_setting_table (
+	attribute_id INTEGER NOT NULL,
+	email_address text,
+	PRIMARY KEY (attribute_id)
+);
+
+-- E_Mail 個別設定テーブル 
+CREATE TABLE email_individual_setting_table (
+	provider VARCHAR(100) NOT NULL,
+	holder VARCHAR(100) NOT NULL,
+	email_address text,
+	PRIMARY KEY (provider, holder)
+);
+
+2.resources\Sqldefine.propertiesを最新バージョンに上書きコピー
+
+3.libフォルダを最新バージョンに上書きコピー
+
+4.classesフォルダを最新バージョンに上書きコピー
+
+5.rejarを最新バージョンに上書きコピーして、実行
+
+--------------------------------------------------------------------------------
+Ver2.0.2
+--------------------------------------------------------------------------------
+
+■2.0.0からのバージョンアップ方法
+
+1.以下のSQLを実行
+
+--  操作ログテーブル
+CREATE TABLE operation_logging_table (
+	id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	ope_date DATETIME NOT NULL,
+	ope_ip VARCHAR(50) NOT NULL,
+	ope_user VARCHAR(100) NOT NULL,
+	ope_before_value text NOT NULL,
+	ope_after_value text NOT NULL,
+	ope_provider VARCHAR(100) NOT NULL,
+	ope_holder VARCHAR(100) NOT NULL,
+	PRIMARY KEY (id)
+);
+--  操作ログインデックス定義 
+CREATE INDEX operation_logging_table_id_idx ON operation_logging_table (ope_date);
+
+--  バージョンアップで操作ログを追加した場合は、必ず以下のインデックスを作成してください。
+CREATE INDEX item_table_finder_idx ON item_table (provider, holder);
+
+--  多レコードロギング定義
+CREATE TABLE multi_record_define_table (
+	logging_table_name VARCHAR(100) NOT NULL,
+	provider VARCHAR(100) NOT NULL,
+	com_memory_kinds INTEGER,
+	com_memory_address INTEGER,
+	word_length INTEGER,
+	record_count INTEGER,
+	PRIMARY KEY (logging_table_name)
+);
+
+2.libフォルダを最新バージョンに上書きコピー
+
+3.classesフォルダを最新バージョンに上書きコピー
+
+4.rejarを最新バージョンに上書きコピーして、実行

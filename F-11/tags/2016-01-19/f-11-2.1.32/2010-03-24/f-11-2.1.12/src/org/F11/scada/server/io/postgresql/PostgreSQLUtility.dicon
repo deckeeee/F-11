@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components namespace="PostgreSQLUtility" >
+	<include path="org/F11/scada/server/io/postgresql/ItemUtil.dicon"/>
+	<include path="org/F11/scada/server/communicater/CommunicaterFactory.dicon"/>
+
+	<component class="org.F11.scada.server.io.postgresql.PostgreSQLUtility">
+		<arg>itemutil</arg>
+		<arg>CommunicaterFactory.communicaterFactory</arg>
+	</component>
+</components>

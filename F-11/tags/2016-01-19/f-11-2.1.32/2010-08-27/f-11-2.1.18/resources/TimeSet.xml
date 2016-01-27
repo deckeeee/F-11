@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="windows-31j"?>
+<f11:timeset xmlns:f11="http://www.F-11.org/scada">
+	<f11:timesettask schedule="HOUR" offset="0" milliOffsetMode="true">
+		<f11:write provider="P1" holder="TimeRead"/>
+		<f11:write provider="P2" holder="TimeWrite"/>
+	</f11:timesettask>
+</f11:timeset>

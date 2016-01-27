@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components namespace="CommunicaterFactory" >
+	<description>CommunicaterFactoryの設定</description>
+
+	<component class="org.F11.scada.server.communicater.CommunicaterFactoryImpl"
+		name="communicaterFactory"  />
+</components>

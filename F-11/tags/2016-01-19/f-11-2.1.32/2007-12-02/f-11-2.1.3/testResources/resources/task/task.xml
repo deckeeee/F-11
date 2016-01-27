@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+
+<!DOCTYPE tasks PUBLIC
+          "-//Project F-11//DTD F-11 Task Configuration 1.0//JP"
+          "http://f-11.sourceforge.jp/dtds/tasks_1_0.dtd">
+
+<tasks>
+	<schedule className="org.F11.scada.scheduling.Schedule">
+		<task className="org.F11.scada.server.autoprint.jasper.JasperAutoPrintTask">
+			<dataSource className="org.F11.scada.server.autoprint.jasper.data.DailyPrintDataSource">
+				<property name="dataSourceSql" value="SELECT * FROM log_table_hour" />
+				<property name="designPath" value="src/org/F11/scada/server/autoprint/jasper/data/design.xml" />
+				<exportor className="org.F11.scada.server.autoprint.jasper.exportor.PdfExportor">
+					<property name="out" value="c:/temp/daily%yyyyMMdd%.pdf" />
+				</exportor>
+			</dataSource>
+		</task>
+		<scheduleIterator className="org.F11.scada.server.autoprint.jasper.iterator.DailyIteratorJDBCWrapper">
+			<property name="propertyTable" value="autoprint_property_table" />
+			<property name="taskName" value="daily" />
+		</scheduleIterator>
+	</schedule>
+
+	<schedule className="org.F11.scada.scheduling.Schedule">
+		<task className="org.F11.scada.server.autoprint.jasper.JasperAutoPrintTask">
+			<dataSource className="org.F11.scada.server.autoprint.jasper.data.MonthlyPrintDataSource">
+				<property name="dataSourceSql" value="SELECT * FROM log_table_daily" />
+				<property name="designPath" value="src/org/F11/scada/server/autoprint/jasper/data/design2.xml" />
+				<exportor className="org.F11.scada.server.autoprint.jasper.exportor.PdfExportor">
+					<property name="out" value="c:/temp/monthly%yyyyMM%.pdf" />
+				</exportor>
+			</dataSource>
+		</task>
+		<scheduleIterator className="org.F11.scada.server.autoprint.jasper.iterator.MonthlyIteratorJDBCWrapper">
+			<property name="propertyTable" value="autoprint_property_table" />
+			<property name="taskName" value="month" />
+		</scheduleIterator>
+	</schedule>
+</tasks>

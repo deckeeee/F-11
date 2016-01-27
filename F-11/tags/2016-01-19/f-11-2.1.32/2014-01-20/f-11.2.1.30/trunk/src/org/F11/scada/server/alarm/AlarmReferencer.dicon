@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components.dtd">
+
+<components namespace="AlarmReferencer">
+	<include path="dao.dicon"/>
+	<include path="org/F11/scada/server/dao/ItemDao.dicon"/>
+	<component name="postgresql"
+		class="org.F11.scada.server.io.postgresql.PostgreSQLAlarmDataStore" />
+
+	<component class="org.F11.scada.server.alarm.table.AlarmIndividualSettingDao" >
+		<description>個別警報音設定テーブルDao</description>
+		<aspect>dao.interceptor</aspect>
+	</component>
+	<component class="org.F11.scada.server.alarm.table.postgresql.SoundStrategyImpl"
+		name="sound">
+		<description>個別警報音設定テーブル対応音声発信ロジック</description>
+	</component>
+	<component class="org.F11.scada.server.alarm.table.postgresql.PostgreSQLStrategyFactory"
+		name="strategy" />
+	<component name="alarm"
+		class="org.F11.scada.xwife.server.AlarmDataProvider">
+		<arg>strategy</arg>
+	</component>
+
+	<component name="alarmReferencer"
+		class="org.F11.scada.server.alarm.AlarmReferencerImpl"
+		instance="prototype">
+		<initMethod name="addDataStore">
+			<arg>postgresql</arg>
+		</initMethod>
+		<initMethod name="addDataStore">
+			<arg>alarm</arg>
+		</initMethod>
+		<initMethod name="addDataStore">
+			<arg>@org.F11.scada.server.alarm.print.AlarmPrintFactory@getAlarmDataStore()</arg>
+		</initMethod>
+	</component>
+
+	<component name="demandReferencer"
+		class="org.F11.scada.server.demand.DemandDataReferencer"
+		instance="prototype" />
+</components>
