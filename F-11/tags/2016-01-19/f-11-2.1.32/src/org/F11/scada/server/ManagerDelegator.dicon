@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Windows-31J"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+
+<components>
+	<include path="org/F11/scada/server/operationlog/OperationLogging.dicon"/>
+	
+	<component name="managerDelegator" class="org.F11.scada.server.ManagerDelegator">
+		<arg>@java.lang.Integer@parseInt(
+			@org.F11.scada.EnvironmentManager@get(
+				"/server/rmi/managerdelegator/rmiReceivePort", "" + @org.F11.scada.xwife.server.WifeMain@RMI_RECV_PORT_SERVER))
+		</arg>
+		<property name="service">opelog.opelogservice</property>
+	</component>
+</components>
