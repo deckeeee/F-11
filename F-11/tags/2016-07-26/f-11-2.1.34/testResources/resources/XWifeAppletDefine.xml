@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<f11:page_map xmlns:f11="http://www.F-11.org/scada">
+
+  <f11:statusbar>
+    <f11:imagesymbol visible="false">
+      <f11:if value="P1_D_1903100_Digital" visible="true">
+        <f11:property value="/images/kasai.png" blink="true" visible="true" />
+        <f11:property value="/images/kasai.png" blink="false" visible="false" />
+      </f11:if>
+    </f11:imagesymbol>
+
+    <f11:openurlsymbol visible="false" open="false">
+      <f11:if value="P1_D_1900000_Digital" visible="false">
+        <f11:property url="http://www.f-11.org/" open="true"/>
+      </f11:if>
+    </f11:openurlsymbol>
+
+	<f11:imagesymboleditable value="/images/changePB.png" dlgtitle="記号" dlgname="0">
+		<f11:destination>
+			<!-- f11:variableanalog provider="P1" holder="D_1903000_Digital" value="true"/ -->
+			<f11:fixeddigital provider="P1" holder="D_1903000_Digital" value="true"/>
+		</f11:destination>
+		<f11:destination>
+			<f11:fixeddigital provider="P1" holder="D_1903001_Digital" value="true"/>
+		</f11:destination>
+	</f11:imagesymboleditable>
+  </f11:statusbar>
+
+</f11:page_map>
