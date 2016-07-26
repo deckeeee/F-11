@@ -348,7 +348,7 @@ public class PortSelectorTest extends TestCase {
 		private ServerSocketChannel serverSocketChannel;
 		private final int port;
 
-		private ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+		private ByteBuffer buffer = ByteBuffer.allocate(1024);
 
 		public TcpServer(int port) throws Exception {
 			this.port = port;

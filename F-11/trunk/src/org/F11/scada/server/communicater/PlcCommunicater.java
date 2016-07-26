@@ -45,11 +45,11 @@ public final class PlcCommunicater implements Communicater {
 	private volatile LinkageCommand linkageCommand;
 
 	/** 送信バッファ */
-	private ByteBuffer sendBuffer = ByteBuffer.allocateDirect(2048);
+//	private ByteBuffer sendBuffer = ByteBuffer.allocate(2048);
 	/** 受信バッファ */
-	private ByteBuffer recvBuffer = ByteBuffer.allocateDirect(2048);
+	private ByteBuffer recvBuffer = ByteBuffer.allocate(2048);
 	/** 読込みデータバッファ */
-	private ByteBuffer recvData = ByteBuffer.allocateDirect(2048);
+	private ByteBuffer recvData = ByteBuffer.allocate(2048);
 	/** FINS/TCPプロトコル通信の有無 */
 	private boolean isFinsTcp;
 
@@ -191,12 +191,13 @@ public final class PlcCommunicater implements Communicater {
 			InterruptedException {
 		recvData.clear();
 		while (converter.hasCommand()) {
+			ByteBuffer sendBuffer = ByteBuffer.allocate(2048);
 			sendBuffer.clear();
 			converter.nextCommand(sendBuffer);
 			sendBuffer.flip();
 			// 送信後受信待ち
 			waiter.syncSendRecv(sendBuffer, recvBuffer);
-			WifeException ex = checkError();
+			WifeException ex = checkError(sendBuffer);
 			// エラー発生なら試行を繰り返す
 			for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
 				if (ex != null) {
@@ -209,7 +210,7 @@ public final class PlcCommunicater implements Communicater {
 				sendBuffer.flip();
 				// 送信後受信待ち
 				waiter.syncSendRecv(sendBuffer, recvBuffer);
-				ex = checkError();
+				ex = checkError(sendBuffer);
 			}
 			// エラー発生ならば、二重化PLCと通信
 			if (ex != null && device.getPlcIpAddress2() != null
@@ -224,7 +225,7 @@ public final class PlcCommunicater implements Communicater {
 				sendBuffer.flip();
 				// 送信後受信待ち
 				waiter.syncSendRecv(sendBuffer, recvBuffer);
-				ex = checkError();
+				ex = checkError(sendBuffer);
 				// エラー発生なら試行を繰り返す
 				for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
 					if (ex != null) {
@@ -237,7 +238,7 @@ public final class PlcCommunicater implements Communicater {
 					sendBuffer.flip();
 					// 送信後受信待ち
 					waiter.syncSendRecv(sendBuffer, recvBuffer);
-					ex = checkError();
+					ex = checkError(sendBuffer);
 				}
 			}
 			// FINS/TCPでエラー発生ならばポートを再オープン
@@ -251,7 +252,7 @@ public final class PlcCommunicater implements Communicater {
 				sendBuffer.flip();
 				// 送信後受信待ち
 				waiter.syncSendRecv(sendBuffer, recvBuffer);
-				ex = checkError();
+				ex = checkError(sendBuffer);
 				// エラー発生なら試行を繰り返す
 				for (int i = 0; i < device.getPlcRetryCount() && ex != null; i++) {
 					if (ex != null) {
@@ -264,7 +265,7 @@ public final class PlcCommunicater implements Communicater {
 					sendBuffer.flip();
 					// 送信後受信待ち
 					waiter.syncSendRecv(sendBuffer, recvBuffer);
-					ex = checkError();
+					ex = checkError(sendBuffer);
 				}
 			}
 
@@ -279,7 +280,7 @@ public final class PlcCommunicater implements Communicater {
 		recvData.flip();
 	}
 
-	private WifeException checkError() throws WifeException,
+	private WifeException checkError(ByteBuffer sendBuffer) throws WifeException,
 			InterruptedException {
 		WifeException ex = null;
 		if (recvBuffer.remaining() <= 0) {
