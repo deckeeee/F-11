@@ -40,6 +40,7 @@ import org.F11.scada.WifeException;
 import org.F11.scada.WifeUtilities;
 import org.F11.scada.server.converter.Converter;
 import org.F11.scada.server.converter.FINS;
+import org.F11.scada.server.converter.FINSTCP;
 import org.F11.scada.server.event.WifeCommand;
 
 /**
@@ -166,7 +167,7 @@ public class PlcCommunicaterTest extends TestCase {
 				return 5001;
 			}
 			public String getPlcCommKind() {
-				return "FINS";
+				return "FINSTCP";
 			}
 			public int getPlcNetNo() {
 				return 1;
@@ -202,7 +203,7 @@ public class PlcCommunicaterTest extends TestCase {
 				return 5;
 			}
 		};
-		commTcp = new PlcCommunicater(device, converter);
+		commTcp = new PlcCommunicater(device, new FINSTCP());
 		System.out.println("setUp end");
 	}
 
@@ -426,15 +427,18 @@ public class PlcCommunicaterTest extends TestCase {
 		private final int port;
 		private Map<String, byte[]> resMap = new HashMap<String, byte[]>();
 
-		private ByteBuffer recvBuffer = ByteBuffer.allocateDirect(1024);
+		private ByteBuffer recvBuffer = ByteBuffer.allocate(2048);
 		private ByteBuffer sendBuffer = ByteBuffer.allocate(2048);
 
 		public TcpServer(int port) throws Exception {
-			resMap.put("01028200000000011234",
+			resMap.put("46494e530000000c000000000000000000000005", WifeUtilities.toByteArray("00000000000000000005"));
+			resMap.put("46494e530000001c00000002000000008000020102030405000101028200000000011234",
 					WifeUtilities.toByteArray("01020000"));
-			resMap.put("0101820000000001",
+			resMap.put("46494e530000001a0000000200000000800002010203040500010101820000000001",
 					WifeUtilities.toByteArray("010100001234"));
-			resMap.put("0101820000000004",
+			resMap.put("46494e530000001a0000000200000000800002010203040500020101820000000004",
+					WifeUtilities.toByteArray("010100001234567887654321"));
+			resMap.put("46494e530000001a0000000200000000800002010203040500010101820000000004",
 					WifeUtilities.toByteArray("010100001234567887654321"));
 
 			this.port = port;
@@ -480,21 +484,32 @@ public class PlcCommunicaterTest extends TestCase {
 
 			Thread.yield();
 
-			byte[] recvData = new byte[recvBuffer.remaining() - 10];
-			recvBuffer.position(10);
+			byte[] recvData = new byte[recvBuffer.remaining()];
+			recvBuffer.position(0);
 			recvBuffer.get(recvData);
+//			System.out.println("recvData=" + WifeUtilities.toString(recvData));
+			recvBuffer.flip();
 			byte[] sendData = resMap.get(WifeUtilities.toString(recvData));
+//			System.out.println("sendData=" + sendData);
 			if (sendData != null) {
-				sendBuffer.clear();
-				sendBuffer.put(WifeUtilities.toByteArray("c00002"));
-				sendBuffer.put(recvBuffer.get(6));
-				sendBuffer.put(recvBuffer.get(7));
-				sendBuffer.put(recvBuffer.get(8));
-				sendBuffer.put(recvBuffer.get(3));
-				sendBuffer.put(recvBuffer.get(4));
-				sendBuffer.put(recvBuffer.get(5));
-				sendBuffer.put(recvBuffer.get(9));
-				sendBuffer.put(sendData).flip();
+				if ("00000000000000000005".equals(WifeUtilities.toString(sendData))) {
+					sendBuffer.clear();
+					sendBuffer.put(WifeUtilities.toByteArray("46494e530000001c0000000200000000"));
+					sendBuffer.put(WifeUtilities.toByteArray("c00002"));
+					sendBuffer.put(sendData).flip();
+				} else {
+					sendBuffer.clear();
+					sendBuffer.put(WifeUtilities.toByteArray("46494e530000001c0000000200000000"));
+					sendBuffer.put(WifeUtilities.toByteArray("c00002"));
+					sendBuffer.put(recvBuffer.get(22));
+					sendBuffer.put(recvBuffer.get(23));
+					sendBuffer.put(recvBuffer.get(24));
+					sendBuffer.put(recvBuffer.get(19));
+					sendBuffer.put(recvBuffer.get(20));
+					sendBuffer.put(recvBuffer.get(21));
+					sendBuffer.put(recvBuffer.get(25));
+					sendBuffer.put(sendData).flip();
+				}
 				System.out.println("server:"
 						+ WifeUtilities.toString(sendBuffer));
 			} else {

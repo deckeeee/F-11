@@ -79,7 +79,7 @@ public class TcpReplyWaiterTest extends TestCase {
 		sendData = ByteBuffer.wrap(WifeUtilities.toByteArray("c0000209080706050403020110ff"));
 		waiter.syncSendRecv(sendData, recvData);
 		assertEquals(0, recvData.remaining());
-		
+
 		// クローズ
 		waiter.close();
 	}
@@ -152,7 +152,7 @@ public class TcpReplyWaiterTest extends TestCase {
 		sendData = ByteBuffer.wrap(WifeUtilities.toByteArray("c0000209080706050403020110ff"));
 		waiter.syncSendRecv(sendData, recvData);
 		assertEquals(0, recvData.remaining());
-		
+
 		// クローズ
 		waiter.close();
 	}
@@ -306,7 +306,7 @@ public class TcpReplyWaiterTest extends TestCase {
 		private ServerSocketChannel serverSocketChannel;
 		private final int port;
 
-		private ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+		private ByteBuffer buffer = ByteBuffer.allocate(1024);
 
 		public TcpServer(int port) throws Exception {
 			this.port = port;

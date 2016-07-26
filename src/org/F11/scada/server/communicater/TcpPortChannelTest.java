@@ -78,7 +78,7 @@ public class TcpPortChannelTest extends TestCase {
 	}
 
 	/*
-	 * IDKey生成テスト 
+	 * IDKey生成テスト
 	 */
 	public void testMakeIDKey() throws Exception {
 		TcpPortChannel port =
@@ -281,7 +281,7 @@ public class TcpPortChannelTest extends TestCase {
 		private ServerSocketChannel serverSocketChannel;
 		private final int port;
 
-		private ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+		private ByteBuffer buffer = ByteBuffer.allocate(1024);
 
 		public TcpServer(int port) throws Exception {
 			this.port = port;

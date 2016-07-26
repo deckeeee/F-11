@@ -56,7 +56,7 @@ public final class UdpPortChannel implements PortListener, PortChannel {
 	private SendData sendData;
 
 	/** 受信バッファ */
-	private final ByteBuffer recvBuffer = ByteBuffer.allocateDirect(2048);
+	private final ByteBuffer recvBuffer = ByteBuffer.allocate(2048);
 
 	/** リスナーのマップ */
 	private final Map<String, RecvListener> id2listenerMap =
